@@ -14,7 +14,7 @@
  * decoding — we don't need server state for that.
  */
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, timingSafeEqual } from "node:crypto";
 import type {
 	SessionStorage,
 	SessionRecord,
@@ -24,19 +24,20 @@ import type {
 	SessionQuery,
 	SessionMetadata,
 	CookieStorageOptions,
-} from '../types.js';
+} from "../types.js";
 
 function b64urlEncode(buf: Buffer | string): string {
-	const b = typeof buf === 'string' ? Buffer.from(buf, 'utf8') : buf;
-	return b.toString('base64')
-		.replace(/\+/g, '-')
-		.replace(/\//g, '_')
-		.replace(/=+$/, '');
+	const b = typeof buf === "string" ? Buffer.from(buf, "utf8") : buf;
+	return b
+		.toString("base64")
+		.replace(/\+/g, "-")
+		.replace(/\//g, "_")
+		.replace(/=+$/, "");
 }
 
 function b64urlDecode(s: string): Buffer {
-	const padded = s + '='.repeat((4 - (s.length % 4)) % 4);
-	return Buffer.from(padded.replace(/-/g, '+').replace(/_/g, '/'), 'base64');
+	const padded = s + "=".repeat((4 - (s.length % 4)) % 4);
+	return Buffer.from(padded.replace(/-/g, "+").replace(/_/g, "/"), "base64");
 }
 
 function randomId(bytes = 24): string {
@@ -46,9 +47,7 @@ function randomId(bytes = 24): string {
 }
 
 function sign(secret: string, payload: string): string {
-	return b64urlEncode(
-		createHmac('sha256', secret).update(payload).digest(),
-	);
+	return b64urlEncode(createHmac("sha256", secret).update(payload).digest());
 }
 
 function safeEq(a: string, b: string): boolean {
@@ -67,16 +66,20 @@ export function encodeSessionCookie(
 	record: SessionRecord,
 	secret: string,
 ): string {
-	const payload = b64urlEncode(JSON.stringify({
-		id: record.id,
-		userId: record.userId,
-		data: record.data,
-		createdAt: record.createdAt.toISOString(),
-		lastSeenAt: record.lastSeenAt.toISOString(),
-		expiresAt: record.expiresAt.toISOString(),
-		...(record.absoluteExpiresAt ? { absoluteExpiresAt: record.absoluteExpiresAt.toISOString() } : {}),
-		...(record.metadata ? { metadata: record.metadata } : {}),
-	}));
+	const payload = b64urlEncode(
+		JSON.stringify({
+			id: record.id,
+			userId: record.userId,
+			data: record.data,
+			createdAt: record.createdAt.toISOString(),
+			lastSeenAt: record.lastSeenAt.toISOString(),
+			expiresAt: record.expiresAt.toISOString(),
+			...(record.absoluteExpiresAt
+				? { absoluteExpiresAt: record.absoluteExpiresAt.toISOString() }
+				: {}),
+			...(record.metadata ? { metadata: record.metadata } : {}),
+		}),
+	);
 	const sig = sign(secret, payload);
 	return `${payload}.${sig}`;
 }
@@ -86,25 +89,28 @@ export function decodeSessionCookie<T = SessionData>(
 	cookieValue: string,
 	secret: string,
 ): SessionRecord<T> | null {
-	const dot = cookieValue.indexOf('.');
+	const dot = cookieValue.indexOf(".");
 	if (dot < 0) return null;
 	const payload = cookieValue.slice(0, dot);
 	const sig = cookieValue.slice(dot + 1);
 	if (!safeEq(sig, sign(secret, payload))) return null;
 	try {
-		const obj = JSON.parse(b64urlDecode(payload).toString('utf8')) as Record<string, unknown>;
+		const obj = JSON.parse(b64urlDecode(payload).toString("utf8")) as Record<
+			string,
+			unknown
+		>;
 		const record: SessionRecord<T> = {
-			id: String(obj['id']),
-			userId: (obj['userId'] as string | null) ?? null,
-			data: (obj['data'] as T) ?? ({} as T),
-			createdAt: new Date(String(obj['createdAt'])),
-			lastSeenAt: new Date(String(obj['lastSeenAt'])),
-			expiresAt: new Date(String(obj['expiresAt'])),
+			id: String(obj["id"]),
+			userId: (obj["userId"] as string | null) ?? null,
+			data: (obj["data"] as T) ?? ({} as T),
+			createdAt: new Date(String(obj["createdAt"])),
+			lastSeenAt: new Date(String(obj["lastSeenAt"])),
+			expiresAt: new Date(String(obj["expiresAt"])),
 		};
-		const abs = obj['absoluteExpiresAt'];
-		if (typeof abs === 'string') record.absoluteExpiresAt = new Date(abs);
-		const meta = obj['metadata'];
-		if (meta && typeof meta === 'object') {
+		const abs = obj["absoluteExpiresAt"];
+		if (typeof abs === "string") record.absoluteExpiresAt = new Date(abs);
+		const meta = obj["metadata"];
+		if (meta && typeof meta === "object") {
 			record.metadata = meta as SessionMetadata;
 		}
 		return record;
@@ -114,18 +120,18 @@ export function decodeSessionCookie<T = SessionData>(
 }
 
 export class CookieSessionStorage implements SessionStorage {
-	readonly name = 'cookie' as const;
+	readonly name = "cookie" as const;
 	#secret: string;
 	#cookieName: string;
 	#defaultTtl: number;
-	#cookieOptions: NonNullable<CookieStorageOptions['cookieOptions']>;
+	#cookieOptions: NonNullable<CookieStorageOptions["cookieOptions"]>;
 
 	constructor(options: CookieStorageOptions) {
 		if (!options.secret || options.secret.length < 16) {
-			throw new Error('[session/cookie] secret must be at least 16 chars');
+			throw new Error("[session/cookie] secret must be at least 16 chars");
 		}
 		this.#secret = options.secret;
-		this.#cookieName = options.cookieName ?? 'nexus.sess';
+		this.#cookieName = options.cookieName ?? "nexus.sess";
 		this.#defaultTtl = options.defaultTtlSeconds ?? 60 * 60 * 24 * 7;
 		this.#cookieOptions = options.cookieOptions ?? {};
 	}
@@ -134,7 +140,7 @@ export class CookieSessionStorage implements SessionStorage {
 		return this.#cookieName;
 	}
 
-	get cookieOptions(): NonNullable<CookieStorageOptions['cookieOptions']> {
+	get cookieOptions(): NonNullable<CookieStorageOptions["cookieOptions"]> {
 		return this.#cookieOptions;
 	}
 
@@ -143,18 +149,18 @@ export class CookieSessionStorage implements SessionStorage {
 		const value = encodeSessionCookie(record, this.#secret);
 		const opts = this.#cookieOptions;
 		const parts = [`${this.#cookieName}=${value}`];
-		parts.push(`Path=${opts.path ?? '/'}`);
+		parts.push(`Path=${opts.path ?? "/"}`);
 		if (opts.domain) parts.push(`Domain=${opts.domain}`);
-		if (opts.httpOnly ?? true) parts.push('HttpOnly');
-		if (opts.secure ?? process.env['NODE_ENV'] === 'production') parts.push('Secure');
-		parts.push(`SameSite=${(opts.sameSite ?? 'lax').toUpperCase()}`);
-		const maxAge = opts.maxAgeSeconds ?? Math.max(
-			1,
-			Math.floor((record.expiresAt.getTime() - Date.now()) / 1000),
-		);
+		if (opts.httpOnly ?? true) parts.push("HttpOnly");
+		if (opts.secure ?? process.env["NODE_ENV"] === "production")
+			parts.push("Secure");
+		parts.push(`SameSite=${(opts.sameSite ?? "lax").toUpperCase()}`);
+		const maxAge =
+			opts.maxAgeSeconds ??
+			Math.max(1, Math.floor((record.expiresAt.getTime() - Date.now()) / 1000));
 		parts.push(`Max-Age=${maxAge}`);
-		if (opts.partitioned) parts.push('Partitioned');
-		return parts.join('; ');
+		if (opts.partitioned) parts.push("Partitioned");
+		return parts.join("; ");
 	}
 
 	/** Build a `Set-Cookie` header that clears the cookie. */
@@ -162,17 +168,21 @@ export class CookieSessionStorage implements SessionStorage {
 		const opts = this.#cookieOptions;
 		return [
 			`${this.#cookieName}=`,
-			`Path=${opts.path ?? '/'}`,
+			`Path=${opts.path ?? "/"}`,
 			`Max-Age=0`,
-			opts.domain ? `Domain=${opts.domain}` : '',
-		].filter(Boolean).join('; ');
+			opts.domain ? `Domain=${opts.domain}` : "",
+		]
+			.filter(Boolean)
+			.join("; ");
 	}
 
 	// ===========================================================================
 	// SessionStorage API
 	// ===========================================================================
 
-	async create<T = SessionData>(opts: CreateSessionOptions<T>): Promise<SessionRecord<T>> {
+	async create<T = SessionData>(
+		opts: CreateSessionOptions<T>,
+	): Promise<SessionRecord<T>> {
 		const now = new Date();
 		const ttl = (opts.ttlSeconds ?? this.#defaultTtl) * 1000;
 		const record: SessionRecord<T> = {
@@ -184,7 +194,9 @@ export class CookieSessionStorage implements SessionStorage {
 			expiresAt: new Date(now.getTime() + ttl),
 		};
 		if (opts.absoluteTtlSeconds) {
-			record.absoluteExpiresAt = new Date(now.getTime() + opts.absoluteTtlSeconds * 1000);
+			record.absoluteExpiresAt = new Date(
+				now.getTime() + opts.absoluteTtlSeconds * 1000,
+			);
 		}
 		if (opts.metadata) record.metadata = opts.metadata;
 		return record;

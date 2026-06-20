@@ -2,10 +2,13 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance.
 
-> Work in progress — this is the v0.1 MVP. The framework runs, the
-> decorator-driven DI works, three routing styles are supported, and
-> Zod validation is wired in. Auth, queue, scheduler, and Cloudflare
-> D1/KV adapters are next.
+> **v0.2** — feature-complete MVP. MVC core, DI, validation, three
+> routing styles, view engines (Rendu / Edge / Inertia), auth
+> (Session / JWT / OAuth / Passkey), queue (BullMQ / Cloudflare),
+> schedule (`@Cron` / `@Interval` / `@Timeout`), events
+> (`@OnEvent`), session (cookie / memory), and `nx` CLI all ship
+> out of the box. Cloudflare D1/KV/R2/DO adapters and AI agent
+> module are next (v0.3).
 
 ---
 
@@ -521,11 +524,42 @@ src/core/
 
 ## Roadmap
 
-The MVP (v0.1) is the MVC + DI + validation + view foundation.
+**v0.2 (current)** — feature modules, integrations, dev tooling.
 
-- **v0.2** — Inertia adapter, session auth, JWT, OAuth, BullMQ queue, event system, scheduler
-- **v0.3** — Cloudflare D1/KV/R2/Durable Objects adapters, AI agent module, MCP server
-- **v0.4** — React/Vue/Solid SSR adapters, Edge streaming view engine
+- ✅ MVC + DI + validation + view foundation
+- ✅ **`nexus/auth`** — Session / JWT / OAuth / Passkey (better-auth)
+- ✅ **`nexus/queue`** — BullMQ / Cloudflare Queues
+- ✅ **`nexus/schedule`** — `@Cron` / `@Interval` / `@Timeout`
+- ✅ **`nexus/events`** — `@OnEvent` with wildcards, priorities, guards
+- ✅ **`nexus/session`** — cookie (HMAC) / memory backends
+- ✅ **`nx` CLI** — Adonis ACE / Rails-style scaffolds
+- ✅ Design docs + user guides (English + Korean)
+
+**v0.3 (next)** — persistence, edge, AI.
+
+- Redis session backend (`SessionModule.forRoot({ backend: 'redis' })`)
+- Database session backend (Drizzle / Prisma adapter)
+- CSRF token integration + flash-message middleware
+- Distributed session rotation
+- Cloudflare D1 / KV / R2 / Durable Objects adapters
+- AI agent module + MCP server
+- `nx` improvements: completion scripts, plugin system, hot-reload
+
+**v0.4** — SSR, observability.
+
+- React / Vue / Svelte / Solid SSR adapter improvements
+- Edge streaming view engine
+- OpenTelemetry / Prometheus exporter
+- `nx dev` hot reload for worker code
+- Email integration (transactional + templating)
+
+**v0.5 → 1.0** — production hardening.
+
+- Schema migration tool (Drizzle-style generate / apply)
+- Production-grade rate limiting + WAF integration
+- Stable public API surface (semver guarantees)
+- Removal of all `v0.1` deprecated aliases (`@CurrentUser` → `@User`,
+  `@CurrentSession` → `@Session`, etc.)
 
 ---
 

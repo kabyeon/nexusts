@@ -26,10 +26,10 @@
  *   }
  */
 
-import 'reflect-metadata';
-import { Module } from '../core/decorators/module.js';
-import { SessionService } from './session.service.js';
-import type { SessionConfig } from './types.js';
+import "reflect-metadata";
+import { Module } from "../core/decorators/module.js";
+import { SessionService } from "./session.service.js";
+import type { SessionConfig } from "./types.js";
 
 @Module({
 	providers: [
@@ -44,14 +44,14 @@ export class SessionModule {
 			providers: [
 				SessionService,
 				{ provide: SessionService.TOKEN, useExisting: SessionService },
-				{ provide: 'SESSION_CONFIG', useValue: config },
+				{ provide: "SESSION_CONFIG", useValue: config },
 			],
 			exports: [SessionService, SessionService.TOKEN],
 		})
 		class ConfiguredSessionModule {}
 
-		Object.defineProperty(ConfiguredSessionModule, 'name', {
-			value: 'ConfiguredSessionModule',
+		Object.defineProperty(ConfiguredSessionModule, "name", {
+			value: "ConfiguredSessionModule",
 		});
 
 		return ConfiguredSessionModule;

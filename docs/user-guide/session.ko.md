@@ -38,7 +38,7 @@ import { SessionService, CurrentSession } from 'nexus/session';
 @Controller('/cart')
 export class CartController {
   @Post('/')
-  async add(@CurrentSession() session, @Body() body: { item: string }) {
+  async add(@Session() session, @Body() body: { item: string }) {
     const cart = (session?.data.cart ?? []) as string[];
     cart.push(body.item);
     return this.sessions.update(session.id, { dataPatch: { cart } });
@@ -154,16 +154,16 @@ const record = SessionService.decodeCookie(cookieValue, secret);
 
 ---
 
-## 5. `@CurrentSession` 데코레이터
+## 5. `@Session` 데코레이터
 
 ```ts
 @Get('/profile')
-profile(@CurrentSession() session: SessionRecord) {
+profile(@Session() session: SessionRecord) {
   return session.data;
 }
 
 @Get('/admin')
-admin(@CurrentSession({ required: true, role: 'admin' }) s) {
+admin(@Session({ required: true, role: 'admin' }) s) {
   return s;
 }
 ```
@@ -198,7 +198,7 @@ class AuthController {
   }
 
   @Post('/logout')
-  async logout(@CurrentSession() session) {
+  async logout(@Session() session) {
     await this.sessions.destroy(session.id, 'logout');
     const clearCookie = this.sessions.buildClearCookie();
     return new Response(null, {
@@ -217,7 +217,7 @@ class AuthController {
 
 ```ts
 @Post('/login')
-async login(@CurrentSession() session, @Body() body) {
+async login(@Session() session, @Body() body) {
   const fresh = await this.sessions.rotate(session.id);
   (fresh as { userId: string }).userId = body.userId;
   return new Response(null, {

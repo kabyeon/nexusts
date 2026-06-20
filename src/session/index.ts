@@ -4,7 +4,7 @@
  * Two backends out of the box:
  *   - cookie   — HMAC-signed, stateless, edge-friendly
  *   - memory   — in-process, for tests and single-instance dev
- *   - redis    — planned for v0.2
+ *   - redis    — planned for v0.3
  *
  * Quick start:
  *
@@ -23,11 +23,11 @@
  *   export class AppModule {}
  *
  *   // any controller
- *   import { SessionService, CurrentSession } from 'nexus/session';
+ *   import { SessionService, Session } from 'nexus/session';
  *
  *   class CartController {
  *     @Post('/')
- *     add(@CurrentSession() session, @Inject(SessionService.TOKEN) svc: SessionService) {
+ *     add(@Session() session, @Inject(SessionService.TOKEN) svc: SessionService) {
  *       return svc.update(session.id, { dataPatch: { cart: [...] } });
  *     }
  *   }
@@ -44,8 +44,15 @@ export {
 export { SessionService } from './session.service.js';
 export { SessionModule } from './session.module.js';
 export {
+	// v0.2 name (preferred)
+	Session,
+	// v0.1 alias (still exported, deprecated)
 	CurrentSession,
+	// Error classes
 	UnauthenticatedError,
 	SessionForbiddenError,
+	// Options type (v0.2 name)
+	type SessionOptions,
+	// v0.1 alias
 	type CurrentSessionOptions,
 } from './decorators/current-session.js';

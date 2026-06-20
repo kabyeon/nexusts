@@ -37,7 +37,7 @@ sits *alongside* `nexus/auth`. Users who don't need it pay no cost
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                      User code                                │
-│   @CurrentSession() session                                  │
+│   @Session() session                                  │
 │   sessions.update(id, { dataPatch: { cart } })               │
 └──────────────────────────────────────────────────────────────┘
                               │
@@ -46,7 +46,7 @@ sits *alongside* `nexus/auth`. Users who don't need it pay no cost
 │              nexus/session  (separate entry point)           │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
-│  │  SessionService  │  │ @CurrentSession  │  │  cookieName  │ │
+│  │  SessionService  │  │ @Session  │  │  cookieName  │ │
 │  │  (DI facade)      │  │ decorator        │  │  buildSet... │ │
 │  └──────────────────┘  └──────────────────┘  └──────────────┘ │
 │                              │                               │
@@ -275,7 +275,19 @@ either.
 - **Flash middleware** — auto-pop `data.flash` and clear it on
   read, mirroring Rails / AdonisJS.
 
-## 16. See also
+## 16. v0.2 changes
+
+- **Renamed** `@CurrentSession` → `@Session` to match the
+  short-form convention used by `@Req()` / `@Body()` / `@Ctx()`.
+  The old name still works as a thin alias (deprecated, will be
+  removed in v0.4).
+- **Renamed** `CurrentSessionOptions` → `SessionOptions`.
+- **Renamed** `BackendKind = 'redis'` v0.2 → 'redis' v0.3 (the Redis
+  backend ships in v0.3, not v0.2).
+- The auth-integration model is unchanged — `AuthService.bindSession()`
+  still binds an optional `SessionService`.
+
+## 17. See also
 
 - [`session.md`](../user-guide/session.md) — user guide
 - [`auth.md`](../user-guide/auth.md) — better-auth integration

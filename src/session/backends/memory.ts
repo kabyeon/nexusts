@@ -13,7 +13,7 @@ import type {
 	CreateSessionOptions,
 	UpdateSessionOptions,
 	SessionQuery,
-} from '../types.js';
+} from "../types.js";
 
 export interface MemoryStorageOptions {
 	/** GC interval in ms. Default: 60_000. */
@@ -25,11 +25,11 @@ export interface MemoryStorageOptions {
 function randomId(bytes = 24): string {
 	const arr = new Uint8Array(bytes);
 	crypto.getRandomValues(arr);
-	return Buffer.from(arr).toString('base64url');
+	return Buffer.from(arr).toString("base64url");
 }
 
 export class MemorySessionStorage implements SessionStorage {
-	readonly name = 'memory' as const;
+	readonly name = "memory" as const;
 	#sessions = new Map<string, SessionRecord>();
 	#gcHandle: ReturnType<typeof setInterval> | null = null;
 	#maxSessions: number;
@@ -45,7 +45,7 @@ export class MemorySessionStorage implements SessionStorage {
 		if (this.#gcHandle) return;
 		this.#gcHandle = setInterval(() => void this.gc(), this.#gcIntervalMs);
 		const h = this.#gcHandle as { unref?: () => void };
-		if (typeof h.unref === 'function') h.unref();
+		if (typeof h.unref === "function") h.unref();
 	}
 
 	async stop(): Promise<void> {
@@ -57,7 +57,9 @@ export class MemorySessionStorage implements SessionStorage {
 	// SessionStorage API
 	// ===========================================================================
 
-	async create<T = SessionData>(opts: CreateSessionOptions<T>): Promise<SessionRecord<T>> {
+	async create<T = SessionData>(
+		opts: CreateSessionOptions<T>,
+	): Promise<SessionRecord<T>> {
 		const now = new Date();
 		const ttl = (opts.ttlSeconds ?? 60 * 60 * 24 * 7) * 1000;
 		const record: SessionRecord<T> = {
@@ -69,7 +71,9 @@ export class MemorySessionStorage implements SessionStorage {
 			expiresAt: new Date(now.getTime() + ttl),
 		};
 		if (opts.absoluteTtlSeconds) {
-			record.absoluteExpiresAt = new Date(now.getTime() + opts.absoluteTtlSeconds * 1000);
+			record.absoluteExpiresAt = new Date(
+				now.getTime() + opts.absoluteTtlSeconds * 1000,
+			);
 		}
 		if (opts.metadata) record.metadata = opts.metadata;
 		this.#sessions.set(record.id, record as unknown as SessionRecord);
@@ -87,7 +91,10 @@ export class MemorySessionStorage implements SessionStorage {
 		// Touch — sliding expiry.
 		const now = new Date();
 		r.lastSeenAt = now;
-		r.expiresAt = new Date(now.getTime() + Math.max(60_000, r.expiresAt.getTime() - r.lastSeenAt.getTime()));
+		r.expiresAt = new Date(
+			now.getTime() +
+				Math.max(60_000, r.expiresAt.getTime() - r.lastSeenAt.getTime()),
+		);
 		this.#sessions.set(id, r); // refresh LRU position
 		return r;
 	}
@@ -99,11 +106,20 @@ export class MemorySessionStorage implements SessionStorage {
 			if (this.#isExpired(r)) continue;
 			if (query.userId !== undefined && r.userId !== query.userId) continue;
 			if (query.metadata) {
-				if (query.metadata.ipAddress && r.metadata?.ipAddress !== query.metadata.ipAddress) continue;
-				if (query.metadata.userAgent && r.metadata?.userAgent !== query.metadata.userAgent) continue;
+				if (
+					query.metadata.ipAddress &&
+					r.metadata?.ipAddress !== query.metadata.ipAddress
+				)
+					continue;
+				if (
+					query.metadata.userAgent &&
+					r.metadata?.userAgent !== query.metadata.userAgent
+				)
+					continue;
 			}
 			list.push(r);
-			if (query.limit && list.length >= (query.offset ?? 0) + query.limit) break;
+			if (query.limit && list.length >= (query.offset ?? 0) + query.limit)
+				break;
 		}
 		const offset = query.offset ?? 0;
 		const limit = query.limit ?? list.length;
@@ -174,7 +190,8 @@ export class MemorySessionStorage implements SessionStorage {
 
 	#isExpired(r: SessionRecord, now = Date.now()): boolean {
 		if (r.expiresAt.getTime() <= now) return true;
-		if (r.absoluteExpiresAt && r.absoluteExpiresAt.getTime() <= now) return true;
+		if (r.absoluteExpiresAt && r.absoluteExpiresAt.getTime() <= now)
+			return true;
 		return false;
 	}
 

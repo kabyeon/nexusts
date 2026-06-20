@@ -65,10 +65,7 @@ export const makeSessionCommand: Command = {
 	summary: "Scaffold a session helper class",
 	description:
 		"Generates an @Injectable session helper under src/session/services/.",
-	examples: [
-		"nx make:session Cart",
-		"nx make:session Flash",
-	],
+	examples: ["nx make:session Cart", "nx make:session Flash"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {

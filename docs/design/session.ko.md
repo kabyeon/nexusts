@@ -30,7 +30,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                      사용자 코드                              │
-│   @CurrentSession() session                                  │
+│   @Session() session                                  │
 │   sessions.update(id, { dataPatch: { cart } })               │
 └──────────────────────────────────────────────────────────────┘
                               │
@@ -39,7 +39,7 @@
 │              nexus/session  (별도 진입점)                    │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
-│  │  SessionService  │  │ @CurrentSession  │  │  cookieName  │ │
+│  │  SessionService  │  │ @Session  │  │  cookieName  │ │
 │  │  (DI facade)      │  │ decorator        │  │  buildSet... │ │
 │  └──────────────────┘  └──────────────────┘  └──────────────┘ │
 │                              │                               │
@@ -223,7 +223,14 @@ ApplicationContainer
 - **CSRF 토큰 통합** — 세션에 CSRF 토큰을 자동으로 바인딩하고 form post에서 검증.
 - **Flash 미들웨어** — `data.flash`를 자동으로 채우고 읽을 때 비우기. Rails / AdonisJS 스타일.
 
-## 16. 참고
+## 16. v0.2 변경사항
+
+- **이름 변경** `@CurrentSession` → `@Session`. `@Req()` / `@Body()` / `@Ctx()`의 짧은 형식 관례를 따른다. 이전 이름은 얇은 별칭으로 계속 작동 (deprecated, v0.4에서 제거 예정).
+- **이름 변경** `CurrentSessionOptions` → `SessionOptions`.
+- **Redis 백엔드 일정 변경**: v0.2가 아닌 **v0.3**에 출시.
+- Auth 통합 모델은 변경 없음 — `AuthService.bindSession()`는 여전히 옵션 `SessionService`를 바인딩한다.
+
+## 17. 참고
 
 - [`session.md`](../user-guide/session.md) — 사용자 가이드
 - [`auth.md`](../user-guide/auth.md) — better-auth 통합

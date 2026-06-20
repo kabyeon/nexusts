@@ -99,10 +99,12 @@ export interface SessionQuery {
  */
 export interface SessionStorage {
 	/** Backend name for diagnostics. */
-	readonly name: 'cookie' | 'memory' | 'redis' | 'database';
+	readonly name: "cookie" | "memory" | "redis" | "database";
 
 	/** Create a new session record. Returns the stored record. */
-	create<T = SessionData>(opts: CreateSessionOptions<T>): Promise<SessionRecord<T>>;
+	create<T = SessionData>(
+		opts: CreateSessionOptions<T>,
+	): Promise<SessionRecord<T>>;
 
 	/** Read by id. Returns null if missing or expired. */
 	read(id: string): Promise<SessionRecord | null>;
@@ -159,7 +161,7 @@ export interface CookieOptions {
 	path?: string;
 	httpOnly?: boolean;
 	secure?: boolean;
-	sameSite?: 'lax' | 'strict' | 'none';
+	sameSite?: "lax" | "strict" | "none";
 	maxAgeSeconds?: number;
 	partitioned?: boolean;
 }
@@ -168,7 +170,7 @@ export interface CookieOptions {
 // Configuration
 // ---------------------------------------------------------------------------
 
-export type SessionBackendKind = 'cookie' | 'memory' | 'redis';
+export type SessionBackendKind = "cookie" | "memory" | "redis";
 
 export interface SessionConfig {
 	/** Backend to use. Default: 'cookie'. */
@@ -199,11 +201,18 @@ export interface SessionConfig {
 // ---------------------------------------------------------------------------
 
 export type SessionEvent =
-	| { kind: 'session:created'; id: string; userId: string | null }
-	| { kind: 'session:read'; id: string }
-	| { kind: 'session:updated'; id: string }
-	| { kind: 'session:destroyed'; id: string; userId: string | null; reason: 'logout' | 'expired' | 'admin' | 'unknown' }
-	| { kind: 'session:expired'; id: string }
-	| { kind: 'session:rotated'; oldId: string; newId: string };
+	| { kind: "session:created"; id: string; userId: string | null }
+	| { kind: "session:read"; id: string }
+	| { kind: "session:updated"; id: string }
+	| {
+			kind: "session:destroyed";
+			id: string;
+			userId: string | null;
+			reason: "logout" | "expired" | "admin" | "unknown";
+	  }
+	| { kind: "session:expired"; id: string }
+	| { kind: "session:rotated"; oldId: string; newId: string };
 
-export type SessionEventListener = (event: SessionEvent) => void | Promise<void>;
+export type SessionEventListener = (
+	event: SessionEvent,
+) => void | Promise<void>;

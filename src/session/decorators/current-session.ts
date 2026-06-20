@@ -1,17 +1,19 @@
 /**
- * `@CurrentSession()` — controller parameter decorator that injects
- * the current session record (or null when unauthenticated).
+ * `@Session()` — controller parameter decorator that injects the
+ * current session record (or null when unauthenticated).
  *
- * Mirrors `@CurrentUser()` from `nexus/auth`.
+ * Mirrors `@CurrentUser()` from `nexus/auth` (shorter name follows
+ * the same convention as `@Req()` / `@Body()` / `@Ctx()` — the most
+ * common request decorator).
  *
  * Usage:
  *   @Get('/profile')
- *   me(@CurrentSession() session: SessionRecord) {
+ *   me(@Session() session: SessionRecord) {
  *     return session;
  *   }
  *
  *   @Get('/admin')
- *   admin(@CurrentSession({ required: true, role: 'admin' }) s: SessionRecord) {
+ *   admin(@Session({ required: true, role: 'admin' }) s: SessionRecord) {
  *     return this.adminService.runFor(s.userId!);
  *   }
  */
@@ -21,7 +23,7 @@ import { createParamDecorator } from '../../core/decorators/params.js';
 import { PARAM_TYPES } from '../../core/constants.js';
 import type { SessionRecord, SessionData } from '../types.js';
 
-export interface CurrentSessionOptions<T = SessionData> {
+export interface SessionOptions<T = SessionData> {
 	/**
 	 * Throw a synthetic 401 when no session is present. Default: false.
 	 * When true, the framework returns 401 without invoking the handler.
@@ -40,12 +42,28 @@ export interface CurrentSessionOptions<T = SessionData> {
 
 /**
  * Inject the current session record (or null if unauthenticated).
+ *
+ * Renamed from `@CurrentSession` (v0.2). The old name still works
+ * via a thin alias to keep migration painless.
  */
-export function CurrentSession<T = SessionData>(
-	options: CurrentSessionOptions<T> = {},
+export function Session<T = SessionData>(
+	options: SessionOptions<T> = {},
 ): ParameterDecorator {
 	return createParamDecorator(PARAM_TYPES.USER, options as never);
 }
+
+/**
+ * @deprecated use `Session` (renamed in v0.2).
+ *             Kept as a thin alias so existing code keeps compiling.
+ */
+export function CurrentSession<T = SessionData>(
+	options: SessionOptions<T> = {},
+): ParameterDecorator {
+	return Session<T>(options);
+}
+
+/** @deprecated renamed to {@link SessionOptions} in v0.2. */
+export type CurrentSessionOptions<T = SessionData> = SessionOptions<T>;
 
 /**
  * Convenience: throw 401 when no session is present.
