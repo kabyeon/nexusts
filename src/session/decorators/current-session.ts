@@ -18,10 +18,10 @@
  *   }
  */
 
-import 'reflect-metadata';
-import { createParamDecorator } from '../../core/decorators/params.js';
-import { PARAM_TYPES } from '../../core/constants.js';
-import type { SessionRecord, SessionData } from '../types.js';
+import "reflect-metadata";
+import { createParamDecorator } from "../../core/decorators/params.js";
+import { PARAM_TYPES } from "../../core/constants.js";
+import type { SessionRecord, SessionData } from "../types.js";
 
 export interface SessionOptions<T = SessionData> {
 	/**
@@ -70,9 +70,9 @@ export type CurrentSessionOptions<T = SessionData> = SessionOptions<T>;
  */
 export class UnauthenticatedError extends Error {
 	readonly status = 401;
-	constructor(message = 'Authentication required.') {
+	constructor(message = "Authentication required.") {
 		super(message);
-		this.name = 'UnauthenticatedError';
+		this.name = "UnauthenticatedError";
 	}
 }
 
@@ -81,8 +81,8 @@ export class UnauthenticatedError extends Error {
  */
 export class SessionForbiddenError extends Error {
 	readonly status = 403;
-	constructor(message = 'Insufficient permissions.') {
+	constructor(message = "Insufficient permissions.") {
 		super(message);
-		this.name = 'SessionForbiddenError';
+		this.name = "SessionForbiddenError";
 	}
 }

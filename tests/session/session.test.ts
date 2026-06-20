@@ -25,7 +25,7 @@ import {
 	encodeSessionCookie,
 	decodeSessionCookie,
 	Session,
-	CurrentSession,           // v0.1 alias — still exported
+	CurrentSession, // v0.1 alias — still exported
 	UnauthenticatedError,
 	SessionForbiddenError,
 } from "../../src/session/index.js";

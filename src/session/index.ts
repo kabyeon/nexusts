@@ -33,16 +33,16 @@
  *   }
  */
 
-export * from './types.js';
+export * from "./types.js";
 export {
 	MemorySessionStorage,
 	CookieSessionStorage,
 	encodeSessionCookie,
 	decodeSessionCookie,
 	type MemoryStorageOptions,
-} from './backends/index.js';
-export { SessionService } from './session.service.js';
-export { SessionModule } from './session.module.js';
+} from "./backends/index.js";
+export { SessionService } from "./session.service.js";
+export { SessionModule } from "./session.module.js";
 export {
 	// v0.2 name (preferred)
 	Session,
@@ -55,4 +55,4 @@ export {
 	type SessionOptions,
 	// v0.1 alias
 	type CurrentSessionOptions,
-} from './decorators/current-session.js';
+} from "./decorators/current-session.js";

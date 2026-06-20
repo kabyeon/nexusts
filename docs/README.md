@@ -65,6 +65,9 @@ Step-by-step guides for building applications.
 - **Repository layout** — see [`README.md`](../README.md)
 - **Source structure** — [`src/core/`](../src/core/)
 - **Tests** — [`tests/`](../tests/)
+- **Framework comparisons**:
+  - [`analysis/nestjs-comparison.md`](./analysis/nestjs-comparison.md) — feature gap analysis vs NestJS
+  - [`analysis/adonisjs-comparison.md`](./analysis/adonisjs-comparison.md) — feature gap analysis vs AdonisJS
 
 ---
 
