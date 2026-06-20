@@ -1,0 +1,196 @@
+# 시작하기
+
+> English version: [`getting-started.md`](./getting-started.md)
+
+이 가이드는 빈 디렉터리에서 약 5분 안에 실행되는 NexusJS 앱까지 안내합니다.
+
+## 1. 사전 요구 사항
+
+- **Bun** ≥ 1.1 — <https://bun.sh>
+- **TypeScript** ≥ 5.6 (Bun과 함께 자동 설치)
+- TS 지원이 있는 코드 에디터 (VS Code, Zed 등)
+
+대상 런타임에 따라 다음이 추가로 필요할 수 있습니다.
+
+- **Node.js** ≥ 22 (Bun을 사용하지 않는 경우)
+- **Cloudflare Wrangler** — Workers에 배포할 때만
+
+---
+
+## 2. 설치
+
+새 프로젝트에서:
+
+```bash
+bun add nexus reflect-metadata zod hono
+bun add -d @types/bun typescript vitest
+```
+
+> `reflect-metadata`는 peer dependency이며 애플리케이션 진입점에서 한 번 import되어야 합니다. `zod`와 `hono`는 NexusJS에 번들되어 있지만 타입 해석을 위해 명시적으로 설치하는 것을 권장합니다.
+
+---
+
+## 3. TypeScript 설정
+
+`tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["bun-types"]
+  },
+  "include": ["src/**/*.ts"]
+}
+```
+
+| 플래그 | 필수? | 이유 |
+| ---- | --------- | --- |
+| `experimentalDecorators` | 예 | `@Controller`, `@Inject` 등을 활성화 |
+| `emitDecoratorMetadata` | 권장 | bare-type 생성자 주입 활성화 (`tsc`/`ts-node`에서 동작; Bun transformer는 무시) |
+| `moduleResolution: "bundler"` | 권장 | Bun + ESM에 대한 최선의 지원 |
+| `strict` | 권장 | 표준 TS 위생 |
+
+---
+
+## 4. 최소 앱 만들기
+
+```
+my-app/
+├── src/
+│   └── app/
+│       ├── main.ts
+│       ├── app.module.ts
+│       └── controllers/
+│           └── home.controller.ts
+├── package.json
+└── tsconfig.json
+```
+
+### `src/app/main.ts`
+
+```ts
+import 'reflect-metadata';
+import { Application } from 'nexus';
+import { AppModule } from './app.module.js';
+
+const app = new Application(AppModule);
+
+await app.listen(3000);
+console.log('[nexus] http://localhost:3000 에서 수신 대기 중');
+```
+
+### `src/app/app.module.ts`
+
+```ts
+import { Module } from 'nexus';
+import { HomeController } from './controllers/home.controller.js';
+
+@Module({
+  controllers: [HomeController],
+})
+export class AppModule {}
+```
+
+### `src/app/controllers/home.controller.ts`
+
+```ts
+import { Controller, Get } from 'nexus';
+
+@Controller('/')
+export class HomeController {
+  @Get('/')
+  index() {
+    return { message: '안녕하세요, NexusJS!' };
+  }
+}
+```
+
+---
+
+## 5. 실행
+
+```bash
+bun src/app/main.ts
+```
+
+다음과 같이 표시됩니다.
+
+```
+[nexus] Routes registered. Listening on :3000
+[nexus] http://localhost:3000 에서 수신 대기 중
+```
+
+다른 셸에서:
+
+```bash
+$ curl http://localhost:3000/
+{"message":"안녕하세요, NexusJS!"}
+```
+
+---
+
+## 6. 핫 리로드
+
+```bash
+bun --hot src/app/main.ts
+```
+
+Bun의 `--hot` 플래그는 파일 변경 시 프로세스를 재시작합니다.
+
+---
+
+## 7. 다음 단계
+
+- **[컨트롤러 & 데코레이터](./controllers.md)** — `@Get`/`@Post`,
+  파라미터 데코레이터, 라우팅 스타일.
+- **[의존성 주입](./dependency-injection.md)** — `@Injectable`,
+  `@Inject`, 모듈.
+- **[검증](./validation.md)** — Zod 스키마를 사용한 `@Validate`.
+- **[Inertia.js 어댑터](./inertia.md)** — API 작성 없이 완전한 SPA UX.
+
+---
+
+## 8. 문제 해결
+
+| 문제 | 가능한 원인 | 해결 |
+| ------- | ------------ | ----- |
+| `Reflect.metadata is not a function` | `reflect-metadata`가 import되지 않음 | `main.ts` 맨 위에 `import 'reflect-metadata';` 추가 |
+| `Class "X" is missing the @Module() decorator` | 모듈 클래스에 `@Module({...})` 누락 | `@Module({ controllers: [...] })`를 클래스에 추가 |
+| `Cannot resolve token "DB"` | 어떤 모듈의 `providers`에도 토큰이 없음 | `{ provide: 'DB', useValue: drizzleInstance }`를 관련 모듈에 추가 |
+| `Decorator function return type expected` | 메서드가 아닌 것에 데코레이터 적용 | 데코레이터는 클래스, 메서드, 또는 파라미터에 적용 |
+| 정의한 경로가 404 | 경로 불일치 | `@Controller('/users')` + `@Get('/:id')`가 `/users/:id`를 만드는지 확인 |
+| `tsc`가 `Cannot find name 'reflect-metadata'` 보고 | `types` 배열에 `bun-types` 또는 `node` 누락 | `compilerOptions`에 `"types": ["bun-types"]` 추가 |
+
+---
+
+## 9. 프로젝트 구조
+
+프레임워크 소스는 `src/core/` 아래에 있습니다. 일반적인 사용자 앱:
+
+```
+my-app/
+├── src/
+│   └── app/
+│       ├── main.ts                # 진입점
+│       ├── app.module.ts          # 루트 모듈
+│       ├── modules/               # 기능 모듈
+│       │   └── user/
+│       │       ├── user.module.ts
+│       │       ├── user.controller.ts
+│       │       ├── user.service.ts
+│       │       └── user.repository.ts
+│       └── shared/                # 횡단 관심사
+│           ├── interceptors/
+│           └── filters/
+├── tests/
+├── package.json
+└── tsconfig.json
+```

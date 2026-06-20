@@ -1,0 +1,200 @@
+# Getting Started
+
+> 한국어 버전: [`getting-started.ko.md`](./getting-started.ko.md)
+
+This guide walks you from an empty directory to a running NexusJS app
+in about five minutes.
+
+## 1. Prerequisites
+
+- **Bun** ≥ 1.1 — <https://bun.sh>
+- **TypeScript** ≥ 5.6 (installed automatically with Bun)
+- A code editor with TS support (VS Code, Zed, etc.)
+
+Optional, depending on your target runtime:
+
+- **Node.js** ≥ 22 (only if not using Bun)
+- **Cloudflare Wrangler** — only if deploying to Workers
+
+---
+
+## 2. Install
+
+In a new project:
+
+```bash
+bun add nexus reflect-metadata zod hono
+bun add -d @types/bun typescript vitest
+```
+
+> `reflect-metadata` is a peer dependency and must be imported once at
+> the application entry point. `zod` and `hono` are bundled by NexusJS
+> but installing them explicitly is recommended so type resolution works.
+
+---
+
+## 3. Configure TypeScript
+
+`tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["bun-types"]
+  },
+  "include": ["src/**/*.ts"]
+}
+```
+
+| Flag | Required? | Why |
+| ---- | --------- | --- |
+| `experimentalDecorators` | yes | Enables `@Controller`, `@Inject`, etc. |
+| `emitDecoratorMetadata` | recommended | Enables bare-type constructor injection (works under `tsc`/`ts-node`; Bun's transformer ignores it) |
+| `moduleResolution: "bundler"` | recommended | Best support for Bun + ESM |
+| `strict` | recommended | Standard TS hygiene |
+
+---
+
+## 4. Create a minimal app
+
+```
+my-app/
+├── src/
+│   └── app/
+│       ├── main.ts
+│       ├── app.module.ts
+│       └── controllers/
+│           └── home.controller.ts
+├── package.json
+└── tsconfig.json
+```
+
+### `src/app/main.ts`
+
+```ts
+import 'reflect-metadata';
+import { Application } from 'nexus';
+import { AppModule } from './app.module.js';
+
+const app = new Application(AppModule);
+
+await app.listen(3000);
+console.log('[nexus] Listening on http://localhost:3000');
+```
+
+### `src/app/app.module.ts`
+
+```ts
+import { Module } from 'nexus';
+import { HomeController } from './controllers/home.controller.js';
+
+@Module({
+  controllers: [HomeController],
+})
+export class AppModule {}
+```
+
+### `src/app/controllers/home.controller.ts`
+
+```ts
+import { Controller, Get } from 'nexus';
+
+@Controller('/')
+export class HomeController {
+  @Get('/')
+  index() {
+    return { message: 'Hello, NexusJS!' };
+  }
+}
+```
+
+---
+
+## 5. Run it
+
+```bash
+bun src/app/main.ts
+```
+
+You should see:
+
+```
+[nexus] Routes registered. Listening on :3000
+[nexus] Listening on http://localhost:3000
+```
+
+And on another shell:
+
+```bash
+$ curl http://localhost:3000/
+{"message":"Hello, NexusJS!"}
+```
+
+---
+
+## 6. Hot reload
+
+```bash
+bun --hot src/app/main.ts
+```
+
+Bun's `--hot` flag restarts the process on file change.
+
+---
+
+## 7. Next steps
+
+- **[Controllers & decorators](./controllers.md)** — `@Get`/`@Post`,
+  parameter decorators, routing styles.
+- **[Dependency injection](./dependency-injection.md)** — `@Injectable`,
+  `@Inject`, modules.
+- **[Validation](./validation.md)** — `@Validate` with Zod schemas.
+- **[Inertia.js adapter](./inertia.md)** — full SPA UX without writing
+  an API.
+
+---
+
+## 8. Troubleshooting
+
+| Problem | Likely cause | Fix |
+| ------- | ------------ | --- |
+| `Reflect.metadata is not a function` | `reflect-metadata` not imported | Add `import 'reflect-metadata';` at the top of `main.ts` |
+| `Class "X" is missing the @Module() decorator` | Module class missing `@Module({...})` | Add `@Module({ controllers: [...] })` to the class |
+| `Cannot resolve token "DB"` | Token not in any module's `providers` | Add `{ provide: 'DB', useValue: drizzleInstance }` to the relevant module |
+| `Decorator function return type expected` | Decorator applied to a non-method | Decorators belong on classes, methods, or parameters |
+| 404 on a route you defined | Path mismatch | Check `@Controller('/users')` + `@Get('/:id')` produces `/users/:id` |
+| `tsc` reports `Cannot find name 'reflect-metadata'` | `types` array missing `bun-types` or `node` | Add `"types": ["bun-types"]` to `compilerOptions` |
+
+---
+
+## 9. Project layout · 프로젝트 구조
+
+The framework source lives under `src/core/`. A typical user app:
+
+```
+my-app/
+├── src/
+│   └── app/
+│       ├── main.ts                # entry point
+│       ├── app.module.ts          # root module
+│       ├── modules/               # feature modules
+│       │   └── user/
+│       │       ├── user.module.ts
+│       │       ├── user.controller.ts
+│       │       ├── user.service.ts
+│       │       └── user.repository.ts
+│       └── shared/                # cross-cutting concerns
+│           ├── interceptors/
+│           └── filters/
+├── tests/
+├── package.json
+└── tsconfig.json
+```
