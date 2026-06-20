@@ -1,0 +1,41 @@
+/**
+ * Public API for `nexus/static`.
+ *
+ * Quick start:
+ *
+ *   // src/app/app.module.ts
+ *   import { Module } from 'nexus';
+ *   import { StaticModule } from 'nexus/static';
+ *
+ *   @Module({
+ *     imports: [
+ *       StaticModule.forRoot({
+ *         root: './public',
+ *         prefix: '/public',
+ *       }),
+ *     ],
+ *   })
+ *   export class AppModule {}
+ *
+ *   // any service that needs to mount the middleware on a sub-app
+ *   import { StaticService } from 'nexus/static';
+ *
+ *   @Injectable()
+ *   class CustomServer {
+ *     constructor(@Inject(StaticService.TOKEN) private static: StaticService) {}
+ *     mount(app: Hono) {
+ *       app.use('/public/*', this.static.middleware());
+ *     }
+ *   }
+ *
+ * Features:
+ *   - Path-traversal protection (no `..`, no absolute paths)
+ *   - ETag-based conditional GET (304 Not Modified)
+ *   - Range requests (HTTP 206) for video / large files
+ *   - Sensible `Cache-Control` defaults
+ *   - `index.html` fallback for directory requests
+ *   - MIME-type inference for common formats
+ */
+
+export { StaticService, type ServeStaticOptions } from "./static.service.js";
+export { StaticModule } from "./static.module.js";

@@ -8,13 +8,21 @@
     "src/schedule/**/*.ts",
     "src/events/**/*.ts",
     "src/session/**/*.ts",
+    "src/health/**/*.ts",
+    "src/config/**/*.ts",
+    "src/logger/**/*.ts",
+    "src/static/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",
     "src/queue/**/*.d.ts",
     "src/schedule/**/*.d.ts",
     "src/events/**/*.d.ts",
-    "src/session/**/*.d.ts"
+    "src/session/**/*.d.ts",
+    "src/health/**/*.d.ts",
+    "src/config/**/*.d.ts",
+    "src/logger/**/*.d.ts",
+    "src/static/**/*.d.ts"
   ],
   "compilerOptions": {
     "rootDir": "./src"

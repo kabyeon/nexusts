@@ -15,6 +15,8 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Queue (BullMQ / Cloudflare Queues)** | [`queue.md`](./queue.md) | [`queue.ko.md`](./queue.ko.md) |
 | **Schedule · `@Cron` decorator** | [`schedule.md`](./schedule.md) | [`schedule.ko.md`](./schedule.ko.md) |
 | **Event System** | [`events.md`](./events.md) | [`events.ko.md`](./events.ko.md) |
+| **Session (cookie / memory / Redis)** | [`session.md`](./session.md) | [`session.ko.md`](./session.ko.md) |
+| **Production basics (health / config / logger / static)** | [`production-basics.md`](./production-basics.md) | [`production-basics.ko.md`](./production-basics.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 
