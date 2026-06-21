@@ -25,9 +25,9 @@
  *   nx migrate --folder ./drizzle --dialect postgres
  */
 
-import { resolve } from "node:path";
-import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { logger } from "../core/index.js";
 
@@ -58,7 +58,8 @@ export const migrateCommand: Command = {
 		},
 		{
 			name: "dialect",
-			description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite.",
+			description:
+				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite.",
 		},
 		{
 			name: "config",
@@ -70,9 +71,12 @@ export const migrateCommand: Command = {
 			(ctx.flags["folder"] as string | undefined) ??
 			resolve(ctx.cwd, ctx.config.paths.migrations);
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+			(ctx.flags["dialect"] as string | undefined) ??
+			ctx.config.dialect ??
+			"bun-sqlite";
 		const configPath =
-			(ctx.flags["config"] as string | undefined) ?? resolve(ctx.cwd, "drizzle.config.ts");
+			(ctx.flags["config"] as string | undefined) ??
+			resolve(ctx.cwd, "drizzle.config.ts");
 		const wantStatus = Boolean(ctx.flags["status"]);
 		const generateName = ctx.flags["generate"] as string | undefined;
 
@@ -119,14 +123,20 @@ function runDrizzleKit(cwd: string, args: string[]): Promise<number> {
  * applied migrations. Used when the user runs `nx migrate --status`
  * and we don't have a full app boot context.
  */
-async function runStatus(cwd: string, folder: string, dialect: string): Promise<number> {
+async function runStatus(
+	cwd: string,
+	folder: string,
+	dialect: string,
+): Promise<number> {
 	if (!existsSync(folder)) {
 		logger.warn(`migrations folder not found: ${folder}`);
 		return 0;
 	}
 	const url = readEnvUrl(dialect);
 	if (!url) {
-		logger.error(`could not read ${dialect} URL from environment. Set DATABASE_URL or NEXUS_DB_URL.`);
+		logger.error(
+			`could not read ${dialect} URL from environment. Set DATABASE_URL or NEXUS_DB_URL.`,
+		);
 		return 1;
 	}
 	const script = `
@@ -145,16 +155,24 @@ console.log(JSON.stringify({ total: applied.length, applied }, null, 2));
 await svc.close();
 `;
 	const tmpFile = resolve(cwd, ".nx-migrate-status.mjs");
-	await import("node:fs/promises").then((m) => m.writeFile(tmpFile, script, "utf-8"));
+	await import("node:fs/promises").then((m) =>
+		m.writeFile(tmpFile, script, "utf-8"),
+	);
 	try {
 		const code = await new Promise<number>((resP) => {
-			const child = spawn("bun", [tmpFile], { cwd, stdio: "inherit", shell: process.platform === "win32" });
+			const child = spawn("bun", [tmpFile], {
+				cwd,
+				stdio: "inherit",
+				shell: process.platform === "win32",
+			});
 			child.on("exit", (c) => resP(c ?? 0));
 			child.on("error", () => resP(1));
 		});
 		return code;
 	} finally {
-		await import("node:fs/promises").then((m) => m.unlink(tmpFile).catch(() => {}));
+		await import("node:fs/promises").then((m) =>
+			m.unlink(tmpFile).catch(() => {}),
+		);
 	}
 }
 

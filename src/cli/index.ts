@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+
 /**
  * `nx` — the Nexus CLI entry point.
  *
@@ -19,10 +20,9 @@
  * passes the resolved config + parsed flags to each command.
  */
 
-import { parseArgs, flagBool } from "./core/index.js";
-import { loadConfig } from "./core/config.js";
-import { logger, colors } from "./core/index.js";
 import { commands, findCommand } from "./commands/index.js";
+import { loadConfig } from "./core/config.js";
+import { colors, flagBool, logger, parseArgs } from "./core/index.js";
 
 async function main(): Promise<number> {
 	const parsed = parseArgs(process.argv.slice(2));
@@ -84,7 +84,9 @@ ${colors.bold("Commands")}
 	const nameWidth = Math.max(...commands.map((c) => c.name.length));
 	for (const c of commands) {
 		const padded = c.name.padEnd(nameWidth);
-		const aliasStr = c.aliases?.length ? ` ${colors.dim(`(${c.aliases.join(", ")})`)}` : "";
+		const aliasStr = c.aliases?.length
+			? ` ${colors.dim(`(${c.aliases.join(", ")})`)}`
+			: "";
 		console.log(`  ${colors.cyan(padded)}${aliasStr}  ${c.summary}`);
 	}
 
@@ -118,7 +120,10 @@ function renderCommandHelp(cmd: import("./core/index.js").Command): void {
 		console.log(colors.bold("\nFlags"));
 		for (const f of cmd.flags) {
 			const short = f.short ? `, -${f.short}` : "";
-			const def = f.default !== undefined ? ` ${colors.dim(`(default: ${String(f.default)})`)}` : "";
+			const def =
+				f.default !== undefined
+					? ` ${colors.dim(`(default: ${String(f.default)})`)}`
+					: "";
 			console.log(`  --${f.name}${short.padEnd(6)}  ${f.description}${def}`);
 		}
 	}

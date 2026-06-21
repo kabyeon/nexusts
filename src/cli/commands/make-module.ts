@@ -8,7 +8,13 @@
 
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, nameVariants, render, writeFile, flagBool } from "../core/index.js";
+import {
+	flagBool,
+	logger,
+	nameVariants,
+	render,
+	writeFile,
+} from "../core/index.js";
 import { templates } from "../templates/index.js";
 
 export const makeModuleCommand: Command = {
@@ -17,12 +23,12 @@ export const makeModuleCommand: Command = {
 	summary: "Generate a feature module",
 	description:
 		"Generates a @Module() class that wires a controller + service (+ optional repository) under src/app/modules/.",
-	examples: [
-		"nx make:module User",
-		"nx make:module User --no-controller",
-	],
+	examples: ["nx make:module User", "nx make:module User --no-controller"],
 	flags: [
-		{ name: "no-controller", description: "Skip including the controller in the module" },
+		{
+			name: "no-controller",
+			description: "Skip including the controller in the module",
+		},
 		{ name: "no-service", description: "Skip including the service" },
 		{ name: "no-repo", description: "Skip including the repository" },
 	],
@@ -36,7 +42,8 @@ export const makeModuleCommand: Command = {
 		const variants = nameVariants(name);
 		const hasController = !flagBool(ctx.flags, "no-controller", false);
 		const hasService = !flagBool(ctx.flags, "no-service", false);
-		const hasRepo = !flagBool(ctx.flags, "no-repo", false) && ctx.config.orm !== "none";
+		const hasRepo =
+			!flagBool(ctx.flags, "no-repo", false) && ctx.config.orm !== "none";
 
 		const code = render(templates.module, {
 			name: variants.pascal,

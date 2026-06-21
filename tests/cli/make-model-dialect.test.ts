@@ -3,12 +3,12 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import {
-	renderDrizzleDialect,
-	mapDrizzleType,
-} from "../../src/cli/templates/model/drizzle-dialect.js";
+import { describe, expect, it } from "vitest";
 import { render } from "../../src/cli/core/template.js";
+import {
+	mapDrizzleType,
+	renderDrizzleDialect,
+} from "../../src/cli/templates/model/drizzle-dialect.js";
 
 describe("renderDrizzleDialect", () => {
 	it("renders a postgres table with serial id", () => {

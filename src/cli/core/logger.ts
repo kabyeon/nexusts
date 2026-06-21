@@ -21,25 +21,25 @@ const wrap = (open: number, close: number) => (s: string) =>
 	USE_COLOR ? `\x1b[${open}m${s}\x1b[${close}m` : s;
 
 const c = {
-	reset:    wrap(0, 0),
-	bold:     wrap(1, 22),
-	dim:      wrap(2, 22),
-	red:      wrap(31, 39),
-	green:    wrap(32, 39),
-	yellow:   wrap(33, 39),
-	blue:     wrap(34, 39),
-	magenta:  wrap(35, 39),
-	cyan:     wrap(36, 39),
-	gray:     wrap(90, 39),
+	reset: wrap(0, 0),
+	bold: wrap(1, 22),
+	dim: wrap(2, 22),
+	red: wrap(31, 39),
+	green: wrap(32, 39),
+	yellow: wrap(33, 39),
+	blue: wrap(34, 39),
+	magenta: wrap(35, 39),
+	cyan: wrap(36, 39),
+	gray: wrap(90, 39),
 };
 
 const PREFIXES = {
-	info:    `${c.cyan("ℹ")}`,
+	info: `${c.cyan("ℹ")}`,
 	success: `${c.green("✔")}`,
-	warn:    `${c.yellow("⚠")}`,
-	error:   `${c.red("✖")}`,
-	debug:   `${c.gray("·")}`,
-	finger:  `${c.magenta("➜")}`,
+	warn: `${c.yellow("⚠")}`,
+	error: `${c.red("✖")}`,
+	debug: `${c.gray("·")}`,
+	finger: `${c.magenta("➜")}`,
 };
 
 export type LoggerLevel = "info" | "success" | "warn" | "error" | "debug";

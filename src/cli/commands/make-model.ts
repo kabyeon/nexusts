@@ -19,11 +19,17 @@
 
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, nameVariants, render, writeFile, flagList } from "../core/index.js";
+import {
+	flagList,
+	logger,
+	nameVariants,
+	render,
+	writeFile,
+} from "../core/index.js";
 import { templates } from "../templates/index.js";
 import {
-	renderDrizzleDialect,
 	mapDrizzleType,
+	renderDrizzleDialect,
 } from "../templates/model/drizzle-dialect.js";
 
 export const makeModelCommand: Command = {
@@ -49,13 +55,16 @@ export const makeModelCommand: Command = {
 		},
 		{
 			name: "dialect",
-			description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+			description:
+				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
 		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {
-			logger.error("Usage: nx make:model <Name> [--columns name:type,...] [--dialect ...]");
+			logger.error(
+				"Usage: nx make:model <Name> [--columns name:type,...] [--dialect ...]",
+			);
 			return 1;
 		}
 
@@ -73,12 +82,19 @@ export const makeModelCommand: Command = {
 		// Parse --columns. Default to a single `title:text` column.
 		const colsFlag = flagList(ctx.flags, "columns");
 		const columns = colsFlag.length > 0 ? colsFlag : ["title:text"];
-		const columnLines = renderColumns(columns, orm, ctx.flags["dialect"] as string | undefined);
+		const columnLines = renderColumns(
+			columns,
+			orm,
+			ctx.flags["dialect"] as string | undefined,
+		);
 		const prismaBlock = renderPrismaBlock(variants.pascal, columns);
 
 		let code: string;
 		if (orm === "drizzle") {
-			const dialect = (ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+			const dialect =
+				(ctx.flags["dialect"] as string | undefined) ??
+				ctx.config.dialect ??
+				"bun-sqlite";
 			if (!isValidDialect(dialect)) {
 				logger.error(
 					`Unsupported drizzle dialect: ${dialect}. Allowed: postgres, mysql, sqlite, bun-sqlite, d1.`,
@@ -120,13 +136,17 @@ export const makeModelCommand: Command = {
 			`run \`nx make:migration create_${tableName}_table\` to scaffold a migration.`,
 		);
 		if (orm === "drizzle") {
-			logger.finger(`run \`nx migrate\` to apply pending migrations to the database.`);
+			logger.finger(
+				`run \`nx migrate\` to apply pending migrations to the database.`,
+			);
 		}
 		return 0;
 	},
 };
 
-function isValidDialect(d: string): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
+function isValidDialect(
+	d: string,
+): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
 	return ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"].includes(d);
 }
 
@@ -136,7 +156,10 @@ function renderColumns(
 	dialect: string | undefined,
 ): string {
 	// `cols` may contain comma-separated entries (e.g. `--columns "a:text,b:int"`).
-	const flat = cols.flatMap((c) => c.split(",")).map((c) => c.trim()).filter(Boolean);
+	const flat = cols
+		.flatMap((c) => c.split(","))
+		.map((c) => c.trim())
+		.filter(Boolean);
 	return flat
 		.map((col) => {
 			const [colName, colType = "text"] = col.split(":");
@@ -174,9 +197,9 @@ function renderPrismaBlock(modelName: string, cols: string[]): string {
 	return ` * model ${modelName} {
  *   id          Int      @id @default(autoincrement())
 ${fieldLines
-		.split("\n")
-		.map((l) => ` *${l}`)
-		.join("\n")}
+	.split("\n")
+	.map((l) => ` *${l}`)
+	.join("\n")}
  *   createdAt   DateTime @default(now())
  *   updatedAt   DateTime @updatedAt
  * }`;

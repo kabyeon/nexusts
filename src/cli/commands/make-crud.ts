@@ -26,17 +26,17 @@
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import {
+	flagBool,
 	logger,
 	nameVariants,
 	render,
 	writeFile,
-	flagBool,
 } from "../core/index.js";
-import {
-	renderDrizzleDialect,
-	mapDrizzleType,
-} from "../templates/model/drizzle-dialect.js";
 import { templates } from "../templates/index.js";
+import {
+	mapDrizzleType,
+	renderDrizzleDialect,
+} from "../templates/model/drizzle-dialect.js";
 
 export const makeCrudCommand: Command = {
 	name: "make:crud",
@@ -55,7 +55,11 @@ export const makeCrudCommand: Command = {
 		{ name: "no-test", description: "Skip generating the test file" },
 		{ name: "style", description: "Override routing style" },
 		{ name: "orm", description: "Override ORM driver" },
-		{ name: "dialect", description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite" },
+		{
+			name: "dialect",
+			description:
+				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -65,12 +69,17 @@ export const makeCrudCommand: Command = {
 		}
 
 		const variants = nameVariants(name);
-		const style = (ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
+		const style =
+			(ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
 		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
-		const dialect = (ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+		const dialect =
+			(ctx.flags["dialect"] as string | undefined) ??
+			ctx.config.dialect ??
+			"bun-sqlite";
 		const noRepo = flagBool(ctx.flags, "no-repo", false) || orm === "none";
 		const noTest = flagBool(ctx.flags, "no-test", false);
-		const hasInertia = ctx.config.view === "inertia" && !flagBool(ctx.flags, "no-views", false);
+		const hasInertia =
+			ctx.config.view === "inertia" && !flagBool(ctx.flags, "no-views", false);
 
 		// Service/repo/controller names.
 		const controller = `${variants.pascal}Controller`;
@@ -80,7 +89,9 @@ export const makeCrudCommand: Command = {
 		const viewComponent = `${variants.pascal}s/Index`;
 		const viewShowComponent = `${variants.pascal}s/Show`;
 
-		logger.heading(`Scaffolding ${variants.pascal} (style=${style}, view=${ctx.config.view}, orm=${orm})`);
+		logger.heading(
+			`Scaffolding ${variants.pascal} (style=${style}, view=${ctx.config.view}, orm=${orm})`,
+		);
 		const written: string[] = [];
 
 		// 1) Controller
@@ -229,11 +240,7 @@ export const makeCrudCommand: Command = {
 				controller,
 				service,
 			});
-			const out = resolve(
-				ctx.cwd,
-				"tests",
-				`${variants.kebab}.test.ts`,
-			);
+			const out = resolve(ctx.cwd, "tests", `${variants.kebab}.test.ts`);
 			if (!writeFile(out, code, { skipIfExists: true })) {
 				logger.warn(`skipped (exists): ${out}`);
 			} else {
@@ -247,7 +254,9 @@ export const makeCrudCommand: Command = {
 		logger.info(`1. Review the generated files:`);
 		for (const f of written) logger.info(`     ${f}`);
 		logger.info(`2. Add ${variants.pascal}Module to AppModule.imports.`);
-		logger.info(`3. ${noRepo ? "" : `Run \`bunx drizzle-kit migrate\` (or your migration tool).`}`);
+		logger.info(
+			`3. ${noRepo ? "" : `Run \`bunx drizzle-kit migrate\` (or your migration tool).`}`,
+		);
 		logger.info(`4. Start the dev server: \`bun --hot src/app/main.ts\`.`);
 		logger.blank();
 

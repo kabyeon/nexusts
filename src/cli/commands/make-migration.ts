@@ -20,7 +20,10 @@ import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { logger, nameVariants, render, writeFile } from "../core/index.js";
 import { templates } from "../templates/index.js";
-import { renderDrizzleDialect, mapDrizzleType } from "../templates/model/drizzle-dialect.js";
+import {
+	mapDrizzleType,
+	renderDrizzleDialect,
+} from "../templates/model/drizzle-dialect.js";
 
 export const makeMigrationCommand: Command = {
 	name: "make:migration",
@@ -38,10 +41,14 @@ export const makeMigrationCommand: Command = {
 			name: "columns",
 			description: "Comma-separated `name:type` pairs (default: title:text)",
 		},
-		{ name: "orm", description: "Override ORM driver (drizzle|prisma|kysely|none)" },
+		{
+			name: "orm",
+			description: "Override ORM driver (drizzle|prisma|kysely|none)",
+		},
 		{
 			name: "dialect",
-			description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+			description:
+				"Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
 		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
@@ -52,13 +59,17 @@ export const makeMigrationCommand: Command = {
 		}
 
 		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
-		const dialect = (ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+		const dialect =
+			(ctx.flags["dialect"] as string | undefined) ??
+			ctx.config.dialect ??
+			"bun-sqlite";
 		const isDrizzle = orm === "drizzle";
-		const useGenericSql = orm === "none" || orm === "prisma" || orm === "kysely";
+		const useGenericSql =
+			orm === "none" || orm === "prisma" || orm === "kysely";
 
 		const variants = nameVariants(name);
 		const tableName = inferTableName(name);
-		const colsFlag = (ctx.flags["columns"] as string | string[] | undefined);
+		const colsFlag = ctx.flags["columns"] as string | string[] | undefined;
 		const cols = parseColumns(colsFlag ?? "title:text");
 		// For Drizzle: use the dialect-aware TS-style column rendering
 		// (e.g. `text('email')`, `integer('age')`). For plain SQL: keep
@@ -115,7 +126,9 @@ export const makeMigrationCommand: Command = {
 	},
 };
 
-function isValidDialect(d: string): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
+function isValidDialect(
+	d: string,
+): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
 	return ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"].includes(d);
 }
 
@@ -140,7 +153,10 @@ function parseColumns(input: string | string[]): Array<[string, string]> {
 		});
 }
 
-function renderSqlColumns(cols: Array<[string, string]>, dialect: string): string {
+function renderSqlColumns(
+	cols: Array<[string, string]>,
+	dialect: string,
+): string {
 	return cols
 		.map(([name, type]) => {
 			const sqlType = mapSqlType(type, dialect);
@@ -150,7 +166,10 @@ function renderSqlColumns(cols: Array<[string, string]>, dialect: string): strin
 		.join("\n");
 }
 
-function renderDrizzleColumns(cols: Array<[string, string]>, dialect: string): string {
+function renderDrizzleColumns(
+	cols: Array<[string, string]>,
+	dialect: string,
+): string {
 	return cols
 		.map(([name, type]) => {
 			const helper = mapDrizzleType(dialect, type);
@@ -168,7 +187,11 @@ function mapSqlType(t: string, dialect: string): string {
 			return dialect === "mysql" ? "VARCHAR(255)" : "TEXT";
 		case "int":
 		case "integer":
-			return dialect === "postgres" ? "INTEGER" : dialect === "mysql" ? "INT" : "INTEGER";
+			return dialect === "postgres"
+				? "INTEGER"
+				: dialect === "mysql"
+					? "INT"
+					: "INTEGER";
 		case "bigint":
 		case "bigintunsigned":
 			return dialect === "postgres" ? "BIGINT" : "BIGINT UNSIGNED";
@@ -184,11 +207,19 @@ function mapSqlType(t: string, dialect: string): string {
 			return dialect === "mysql" ? "DOUBLE" : "REAL";
 		case "datetime":
 		case "timestamp":
-			return dialect === "postgres" ? "TIMESTAMP" : dialect === "mysql" ? "DATETIME" : "INTEGER";
+			return dialect === "postgres"
+				? "TIMESTAMP"
+				: dialect === "mysql"
+					? "DATETIME"
+					: "INTEGER";
 		case "date":
 			return dialect === "mysql" ? "DATE" : "TEXT";
 		case "json":
-			return dialect === "postgres" ? "JSONB" : dialect === "mysql" ? "JSON" : "TEXT";
+			return dialect === "postgres"
+				? "JSONB"
+				: dialect === "mysql"
+					? "JSON"
+					: "TEXT";
 		case "jsonb":
 			return dialect === "postgres" ? "JSONB" : "TEXT";
 		default:

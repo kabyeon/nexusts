@@ -1,12 +1,13 @@
 /**
  * Re-exports for the CLI core.
  */
-export * from "./logger.js";
+
 export * from "./args.js";
 export * from "./config.js";
-export * from "./template.js";
-export * from "./prompts.js";
 export * from "./fs.js";
+export * from "./logger.js";
+export * from "./prompts.js";
+export * from "./template.js";
 
 /**
  * The CLI command contract. Every command module exports a default

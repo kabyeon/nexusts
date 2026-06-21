@@ -10,7 +10,7 @@
 import { readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, colors } from "../core/index.js";
+import { colors, logger } from "../core/index.js";
 
 interface DiscoveredRoute {
 	method: string;
@@ -56,8 +56,7 @@ export const routeListCommand: Command = {
 
 					const prefix =
 						Reflect.getMetadata("nexus:controller:prefix", cls) ?? "";
-					const routeList =
-						Reflect.getMetadata("nexus:routes", cls) ?? [];
+					const routeList = Reflect.getMetadata("nexus:routes", cls) ?? [];
 
 					for (const r of routeList) {
 						routes.push({

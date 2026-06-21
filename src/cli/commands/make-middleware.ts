@@ -13,10 +13,7 @@ export const makeMiddlewareCommand: Command = {
 	summary: "Generate a middleware class",
 	description:
 		"Generates an @Injectable() middleware class with a `handle(c, next)` method.",
-	examples: [
-		"nx make:middleware Auth",
-		"nx make:middleware RateLimit",
-	],
+	examples: ["nx make:middleware Auth", "nx make:middleware RateLimit"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {
@@ -37,7 +34,9 @@ export const makeMiddlewareCommand: Command = {
 
 		writeFile(out, code);
 		logger.success(`created ${out}`);
-		logger.finger(`register with: app.server.app.use('*', new ${variants.pascal}Middleware().handle)`);
+		logger.finger(
+			`register with: app.server.app.use('*', new ${variants.pascal}Middleware().handle)`,
+		);
 		return 0;
 	},
 };

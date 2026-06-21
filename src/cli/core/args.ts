@@ -109,7 +109,10 @@ function setFlag(
 	} else if (Array.isArray(existing)) {
 		existing.push(typeof value === "string" ? value : String(value));
 	} else {
-		flags[name] = [String(existing), typeof value === "string" ? value : String(value)];
+		flags[name] = [
+			String(existing),
+			typeof value === "string" ? value : String(value),
+		];
 	}
 }
 

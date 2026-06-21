@@ -15,11 +15,11 @@
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import {
+	flagBool,
 	logger,
 	nameVariants,
 	render,
 	writeFile,
-	flagBool,
 } from "../core/index.js";
 
 const WORKER_TEMPLATE = `

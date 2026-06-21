@@ -6,15 +6,23 @@
  */
 
 import "reflect-metadata";
-import { describe, it, expect } from "vitest";
-import { makeModelCommand } from "../../src/cli/commands/make-model.js";
-import { makeMigrationCommand } from "../../src/cli/commands/make-migration.js";
-import { writeFile as fsWriteFile, mkdir, rm, readFile } from "node:fs/promises";
-import { join } from "node:path";
+import {
+	writeFile as fsWriteFile,
+	mkdir,
+	readFile,
+	rm,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import { makeMigrationCommand } from "../../src/cli/commands/make-migration.js";
+import { makeModelCommand } from "../../src/cli/commands/make-model.js";
 
 async function makeTmp(): Promise<string> {
-	const d = join(tmpdir(), `nx-make-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
+	const d = join(
+		tmpdir(),
+		`nx-make-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+	);
 	await mkdir(d, { recursive: true });
 	return d;
 }
@@ -53,7 +61,10 @@ describe("make:model with --dialect", () => {
 			},
 		} as any);
 		expect(code).toBe(0);
-		const out = await readFile(join(cwd, "src/app/models/user.model.ts"), "utf-8");
+		const out = await readFile(
+			join(cwd, "src/app/models/user.model.ts"),
+			"utf-8",
+		);
 		expect(out).toContain("from 'drizzle-orm/pg-core'");
 		expect(out).toContain("pgTable");
 		expect(out).toContain("serial('id').primaryKey()");
@@ -92,7 +103,10 @@ describe("make:model with --dialect", () => {
 			},
 		} as any);
 		expect(code).toBe(0);
-		const out = await readFile(join(cwd, "src/app/models/item.model.ts"), "utf-8");
+		const out = await readFile(
+			join(cwd, "src/app/models/item.model.ts"),
+			"utf-8",
+		);
 		expect(out).toContain("from 'drizzle-orm/bun-sqlite'");
 		await rm(cwd, { recursive: true, force: true });
 	});
@@ -171,7 +185,10 @@ describe("make:migration with --dialect", () => {
 		const list = await readdir(join(cwd, "src/app/database/migrations"));
 		expect(list).toHaveLength(1);
 		expect(list[0]).toMatch(/\.ts$/);
-		const content = await readFile(join(cwd, "src/app/database/migrations", list[0]!), "utf-8");
+		const content = await readFile(
+			join(cwd, "src/app/database/migrations", list[0]!),
+			"utf-8",
+		);
 		expect(content).toContain("from 'drizzle-orm/pg-core'");
 		expect(content).toContain("pgTable");
 		expect(content).toContain("timestamp('created_at')");
@@ -264,9 +281,15 @@ describe("nx migrate command exists", () => {
 		const mod = require("../../src/cli/commands/migrate.js");
 		expect(mod.default.name).toBe("migrate");
 		expect(mod.default.aliases).toContain("m");
-		const hasStatus = mod.default.flags.some((f: { name: string }) => f.name === "status");
-		const hasGenerate = mod.default.flags.some((f: { name: string }) => f.name === "generate");
-		const hasFolder = mod.default.flags.some((f: { name: string }) => f.name === "folder");
+		const hasStatus = mod.default.flags.some(
+			(f: { name: string }) => f.name === "status",
+		);
+		const hasGenerate = mod.default.flags.some(
+			(f: { name: string }) => f.name === "generate",
+		);
+		const hasFolder = mod.default.flags.some(
+			(f: { name: string }) => f.name === "folder",
+		);
 		expect(hasStatus).toBe(true);
 		expect(hasGenerate).toBe(true);
 		expect(hasFolder).toBe(true);

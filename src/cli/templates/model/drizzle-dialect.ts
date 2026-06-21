@@ -54,7 +54,15 @@ interface DialectSpec {
 
 const DIALECT_SPECS: Record<string, DialectSpec> = {
 	postgres: {
-		imports: ["pgTable", "serial", "text", "timestamp", "boolean", "integer", "bigint"],
+		imports: [
+			"pgTable",
+			"serial",
+			"text",
+			"timestamp",
+			"boolean",
+			"integer",
+			"bigint",
+		],
 		importPath: "drizzle-orm/pg-core",
 		tableFn: "pgTable",
 		idHelper: "serial",
@@ -90,7 +98,15 @@ const DIALECT_SPECS: Record<string, DialectSpec> = {
 		tsDateMode: ", { mode: 'timestamp' }",
 	},
 	mysql: {
-		imports: ["mysqlTable", "int", "text", "timestamp", "boolean", "bigint", "double"],
+		imports: [
+			"mysqlTable",
+			"int",
+			"text",
+			"timestamp",
+			"boolean",
+			"bigint",
+			"double",
+		],
 		importPath: "drizzle-orm/mysql-core",
 		tableFn: "mysqlTable",
 		idHelper: "int",
@@ -107,13 +123,19 @@ export function mapDrizzleType(dialect: string, type: string): string {
 	if (t === "int" || t === "integer") {
 		return dialect === "mysql" ? "int" : "integer";
 	}
-	if (t === "bigint" || t === "bigintunsigned") return dialect === "mysql" ? "bigint" : "bigint";
-	if (t === "bool" || t === "boolean") return dialect === "mysql" ? "boolean" : "boolean";
+	if (t === "bigint" || t === "bigintunsigned")
+		return dialect === "mysql" ? "bigint" : "bigint";
+	if (t === "bool" || t === "boolean")
+		return dialect === "mysql" ? "boolean" : "boolean";
 	if (t === "float" || t === "number" || t === "real" || t === "double") {
 		return dialect === "mysql" ? "double" : "real";
 	}
 	if (t === "datetime" || t === "timestamp" || t === "date") {
-		return dialect === "mysql" ? "timestamp" : dialect === "postgres" ? "timestamp" : "integer";
+		return dialect === "mysql"
+			? "timestamp"
+			: dialect === "postgres"
+				? "timestamp"
+				: "integer";
 	}
 	if (t === "json" || t === "jsonb") {
 		return dialect === "mysql" ? "text" : "text";

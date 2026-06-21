@@ -11,9 +11,9 @@
  *   nx make:controller Post --style nest --no-service
  */
 
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, nameVariants, writeFile, render } from "../core/index.js";
+import { logger, nameVariants, render, writeFile } from "../core/index.js";
 import { templates } from "../templates/index.js";
 
 export const makeControllerCommand: Command = {
@@ -28,8 +28,14 @@ export const makeControllerCommand: Command = {
 		"nx make:controller Webhook --style functional",
 	],
 	flags: [
-		{ name: "style", description: "Override routing style (nest|adonis|functional)" },
-		{ name: "no-service", description: "Skip injecting a service into the controller" },
+		{
+			name: "style",
+			description: "Override routing style (nest|adonis|functional)",
+		},
+		{
+			name: "no-service",
+			description: "Skip injecting a service into the controller",
+		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -39,10 +45,13 @@ export const makeControllerCommand: Command = {
 		}
 
 		const variants = nameVariants(name);
-		const style = (ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
+		const style =
+			(ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
 
 		if (!["nest", "adonis", "functional"].includes(style)) {
-			logger.error(`Unknown style: ${style}. Allowed: nest, adonis, functional.`);
+			logger.error(
+				`Unknown style: ${style}. Allowed: nest, adonis, functional.`,
+			);
 			return 1;
 		}
 
@@ -50,7 +59,8 @@ export const makeControllerCommand: Command = {
 		const serviceName = `${variants.pascal}Service`;
 		const serviceCamel = variants.camel + "Service";
 
-		const tpl = templates.controller[style as keyof typeof templates.controller];
+		const tpl =
+			templates.controller[style as keyof typeof templates.controller];
 		const code = render(tpl, {
 			name: variants.pascal,
 			camel: variants.camel,
@@ -62,8 +72,9 @@ export const makeControllerCommand: Command = {
 		}).replace(
 			// Strip the unused service import line if --no-service.
 			/import .*\n/g,
-			(skipService ? (m: string) =>
-				m.includes("services/") ? "" : m : (m: string) => m),
+			skipService
+				? (m: string) => (m.includes("services/") ? "" : m)
+				: (m: string) => m,
 		);
 
 		const out = resolve(

@@ -13,12 +13,12 @@ export const makeServiceCommand: Command = {
 	summary: "Generate a service class",
 	description:
 		"Generates an @Injectable() service under src/app/services/. If the project's ORM is configured, the service constructor takes a repository.",
-	examples: [
-		"nx make:service User",
-		"nx make:service Order --no-repo",
-	],
+	examples: ["nx make:service User", "nx make:service Order --no-repo"],
 	flags: [
-		{ name: "no-repo", description: "Skip injecting a repository (no ORM dependency)" },
+		{
+			name: "no-repo",
+			description: "Skip injecting a repository (no ORM dependency)",
+		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];

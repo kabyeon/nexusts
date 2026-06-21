@@ -15,9 +15,9 @@
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import {
-	logger,
 	flagBool,
 	flagList,
+	logger,
 	render,
 	writeFile,
 } from "../core/index.js";

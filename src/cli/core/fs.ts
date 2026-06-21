@@ -2,8 +2,14 @@
  * Filesystem helpers for the CLI.
  */
 
-import { existsSync, mkdirSync, writeFileSync, statSync, readFileSync } from "node:fs";
-import { dirname, resolve, isAbsolute, relative } from "node:path";
+import {
+	existsSync,
+	mkdirSync,
+	readFileSync,
+	statSync,
+	writeFileSync,
+} from "node:fs";
+import { dirname, isAbsolute, relative, resolve } from "node:path";
 
 export interface WriteOptions {
 	/** Skip writing if the file exists. Default `false` (overwrite OK). */
@@ -16,7 +22,11 @@ export interface WriteOptions {
  * Write a file, creating parent directories as needed.
  * Throws if `skipIfExists` is `true` and the file already exists.
  */
-export function writeFile(path: string, contents: string, opts: WriteOptions = {}): boolean {
+export function writeFile(
+	path: string,
+	contents: string,
+	opts: WriteOptions = {},
+): boolean {
 	const base = opts.base ?? process.cwd();
 	const target = isAbsolute(path) ? path : resolve(base, path);
 
@@ -65,11 +75,12 @@ export function nameVariants(input: string) {
 	const trimmed = input.replace(/\.(ts|js|tsx|jsx)$/, "");
 
 	// PascalCase.
-	const pascal = trimmed
-		.split(/[\s_-]+/)
-		.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-		.filter(Boolean)
-		.join("") || input;
+	const pascal =
+		trimmed
+			.split(/[\s_-]+/)
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+			.filter(Boolean)
+			.join("") || input;
 
 	// camelCase.
 	const camel = pascal.charAt(0).toLowerCase() + pascal.slice(1);

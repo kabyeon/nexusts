@@ -5,26 +5,25 @@
  * here is the order commands appear in `nx help`.
  */
 
-import makeController from "./make-controller.js";
-import makeService from "./make-service.js";
-import makeModule from "./make-module.js";
-import makeModel from "./make-model.js";
-import makeMigration from "./make-migration.js";
-import makeMiddleware from "./make-middleware.js";
-import makeValidator from "./make-validator.js";
-import makeCrud from "./make-crud.js";
+import type { Command } from "../core/index.js";
+import info from "./info.js";
+import init from "./init.js";
 import makeAuth from "./make-auth.js";
+import makeController from "./make-controller.js";
+import makeCrud from "./make-crud.js";
+import makeListener from "./make-listener.js";
+import makeMiddleware from "./make-middleware.js";
+import makeMigration from "./make-migration.js";
+import makeModel from "./make-model.js";
+import makeModule from "./make-module.js";
 import makeQueue from "./make-queue.js";
 import makeSchedule from "./make-schedule.js";
-import makeListener from "./make-listener.js";
+import makeService from "./make-service.js";
 import makeSession from "./make-session.js";
+import makeValidator from "./make-validator.js";
 import migrate from "./migrate.js";
-import info from "./info.js";
-import routeList from "./route-list.js";
-import init from "./init.js";
 import newCmd from "./new.js";
-
-import type { Command } from "../core/index.js";
+import routeList from "./route-list.js";
 
 export const commands: Command[] = [
 	newCmd,

@@ -9,10 +9,10 @@
  * generation, the user runs `bun install` themselves.
  */
 
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, render, prompt, select, flagBool } from "../core/index.js";
+import { flagBool, logger, prompt, render, select } from "../core/index.js";
 import { templates } from "../templates/index.js";
 
 export const newCommand: Command = {
@@ -26,11 +26,21 @@ export const newCommand: Command = {
 		"nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite",
 	],
 	flags: [
-		{ name: "style", description: "Routing style (nest|adonis|functional|mixed)" },
-		{ name: "view",  description: "View engine (rendu|edge|inertia|none)" },
-		{ name: "orm",   description: "ORM driver (drizzle|prisma|kysely|none)" },
-		{ name: "db",    description: "Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)" },
-		{ name: "frontend", description: "Inertia frontend (react|vue|svelte|solid)" },
+		{
+			name: "style",
+			description: "Routing style (nest|adonis|functional|mixed)",
+		},
+		{ name: "view", description: "View engine (rendu|edge|inertia|none)" },
+		{ name: "orm", description: "ORM driver (drizzle|prisma|kysely|none)" },
+		{
+			name: "db",
+			description:
+				"Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)",
+		},
+		{
+			name: "frontend",
+			description: "Inertia frontend (react|vue|svelte|solid)",
+		},
 		{ name: "no-ssr", description: "Disable Inertia SSR" },
 		{ name: "no-interaction", description: "Disable interactive prompts" },
 	],
@@ -72,10 +82,14 @@ export const newCommand: Command = {
 
 		const db =
 			(ctx.flags["db"] as string | undefined) ??
-			(await select("Database driver", ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"], {
-				interactive,
-				default: "bun-sqlite",
-			}));
+			(await select(
+				"Database driver",
+				["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
+				{
+					interactive,
+					default: "bun-sqlite",
+				},
+			));
 
 		const frontend =
 			(ctx.flags["frontend"] as string | undefined) ??
@@ -112,7 +126,7 @@ export const newCommand: Command = {
 						build: "bun run build.ts",
 						start: "bun src/app/main.ts",
 						test: "vitest",
-						"nx": "nx",
+						nx: "nx",
 					},
 					dependencies: {
 						nexus: "*",

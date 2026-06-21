@@ -8,7 +8,7 @@
 
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, colors } from "../core/index.js";
+import { colors, logger } from "../core/index.js";
 
 export const infoCommand: Command = {
 	name: "info",
@@ -21,15 +21,15 @@ export const infoCommand: Command = {
 		logger.info(colors.bold("Resolved configuration"));
 		logger.blank();
 		logger.table([
-			["routing",          String(ctx.config.routing)],
-			["view",             String(ctx.config.view)],
-			["orm",              String(ctx.config.orm)],
-			["dialect",          String(ctx.config.dialect ?? "(none)")],
-			["database.driver",  String(ctx.config.database.driver)],
-			["database.url",     String(ctx.config.database.url)],
+			["routing", String(ctx.config.routing)],
+			["view", String(ctx.config.view)],
+			["orm", String(ctx.config.orm)],
+			["dialect", String(ctx.config.dialect ?? "(none)")],
+			["database.driver", String(ctx.config.database.driver)],
+			["database.url", String(ctx.config.database.url)],
 			["inertia.frontend", String(ctx.config.inertia.frontend)],
-			["inertia.ssr",      String(ctx.config.inertia.ssr)],
-			["inertia.version",  String(ctx.config.inertia.version)],
+			["inertia.ssr", String(ctx.config.inertia.ssr)],
+			["inertia.version", String(ctx.config.inertia.version)],
 		]);
 
 		logger.blank();
