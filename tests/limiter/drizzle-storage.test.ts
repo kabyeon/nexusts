@@ -64,9 +64,21 @@ describeIf("DrizzleRateLimitStorage (real SQLite)", () => {
 			storage,
 			rules: [{ path: "**", points: 2, duration: 60_000 }],
 		});
-		const a = await limiter.check("ip:1.1.1.1", { path: "**", points: 2, duration: 60_000 });
-		const b = await limiter.check("ip:1.1.1.1", { path: "**", points: 2, duration: 60_000 });
-		const c = await limiter.check("ip:1.1.1.1", { path: "**", points: 2, duration: 60_000 });
+		const a = await limiter.check("ip:1.1.1.1", {
+			path: "**",
+			points: 2,
+			duration: 60_000,
+		});
+		const b = await limiter.check("ip:1.1.1.1", {
+			path: "**",
+			points: 2,
+			duration: 60_000,
+		});
+		const c = await limiter.check("ip:1.1.1.1", {
+			path: "**",
+			points: 2,
+			duration: 60_000,
+		});
 		expect(a.allowed).toBe(true);
 		expect(b.allowed).toBe(true);
 		expect(c.allowed).toBe(false);

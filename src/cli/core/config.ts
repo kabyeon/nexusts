@@ -84,6 +84,8 @@ export interface NxConfig {
 	view: ViewEngine;
 	/** ORM driver. */
 	orm: OrmDriver;
+	/** Drizzle dialect (when `orm === 'drizzle'`). */
+	dialect?: "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1";
 	/** Database driver. */
 	database: {
 		driver: DatabaseDriver;

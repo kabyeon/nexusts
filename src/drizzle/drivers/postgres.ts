@@ -7,7 +7,11 @@
  * The first available driver is loaded at boot. The migrator path
  * follows whichever driver was selected.
  */
-import type { DrizzleDriverResult, DriverFactory, RawExecutor } from "./base.js";
+import type {
+	DrizzleDriverResult,
+	DriverFactory,
+	RawExecutor,
+} from "./base.js";
 import type { DrizzleConfig, PostgresConnectionOptions } from "../types.js";
 
 export const postgresDriver: DriverFactory = async (config) => {
@@ -18,7 +22,8 @@ export const postgresDriver: DriverFactory = async (config) => {
 
 	try {
 		const mod = await import("drizzle-orm/postgres-js");
-		const postgres = (await import("postgres-js" as any).catch(() => null)) ?? null;
+		const postgres =
+			(await import("postgres-js" as any).catch(() => null)) ?? null;
 		if (!postgres) {
 			// Fall back to bundled 'postgres' if available
 			throw new Error("postgres-js not installed");

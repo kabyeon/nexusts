@@ -199,7 +199,9 @@ export interface SessionConfig {
 	 */
 	database?: {
 		/** A `DrizzleService` instance (or anything with `rawQuery`). */
-		db: { rawQuery<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> };
+		db: {
+			rawQuery<T = unknown>(sql: string, params?: unknown[]): Promise<T[]>;
+		};
 		/** Table name. Default: 'nexus_sessions'. */
 		tableName?: string;
 	};

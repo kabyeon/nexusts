@@ -53,7 +53,10 @@ export class DrizzleRateLimitStorage implements RateLimitStorage {
 	#db: DrizzleService;
 	#table: string;
 
-	constructor(db: DrizzleService, options: Omit<DrizzleRateLimitOptions, "db"> = {}) {
+	constructor(
+		db: DrizzleService,
+		options: Omit<DrizzleRateLimitOptions, "db"> = {},
+	) {
 		this.#db = db;
 		this.#table = options.tableName ?? "nexus_rate_limits";
 	}

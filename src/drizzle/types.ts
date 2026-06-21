@@ -103,7 +103,11 @@ export type ConnectionOptions =
 export interface DrizzleConfig {
 	dialect: DrizzleDialect;
 	/** Connection details. Dialect-specific. */
-	connection: PostgresConnectionOptions | MysqlConnectionOptions | SqliteConnectionOptions | D1ConnectionOptions;
+	connection:
+		| PostgresConnectionOptions
+		| MysqlConnectionOptions
+		| SqliteConnectionOptions
+		| D1ConnectionOptions;
 	/** Enable query logging. */
 	logging?: boolean | ((query: string, params: unknown[]) => void);
 	/** Schema name (Postgres only). Default: 'public'. */
@@ -163,7 +167,11 @@ export interface ColumnMetadata {
 	autoIncrement: boolean;
 	unique: boolean;
 	default?: unknown;
-	references?: { table: string; column: string; onDelete?: "cascade" | "set null" | "restrict" };
+	references?: {
+		table: string;
+		column: string;
+		onDelete?: "cascade" | "set null" | "restrict";
+	};
 }
 
 export interface TableMetadata {

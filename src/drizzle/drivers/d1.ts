@@ -23,9 +23,16 @@ export const d1Driver: DriverFactory = async (config) => {
 			// D1 binding: prepared/statement API.
 			const stmt = binding.prepare(sql);
 			const lower = sql.trim().toLowerCase();
-			if (lower.startsWith("select") || lower.startsWith("pragma") || lower.startsWith("with")) {
+			if (
+				lower.startsWith("select") ||
+				lower.startsWith("pragma") ||
+				lower.startsWith("with")
+			) {
 				const r = await stmt.bind(...params).all();
-				return { rows: (r.results ?? []) as T[], affectedRows: (r.results ?? []).length };
+				return {
+					rows: (r.results ?? []) as T[],
+					affectedRows: (r.results ?? []).length,
+				};
 			}
 			const r = await stmt.bind(...params).run();
 			return {

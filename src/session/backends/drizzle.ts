@@ -70,7 +70,8 @@ export class DrizzleSessionStorage implements SessionStorage {
 			createdAt: options.columns?.createdAt ?? "created_at",
 			lastSeenAt: options.columns?.lastSeenAt ?? "last_seen_at",
 			expiresAt: options.columns?.expiresAt ?? "expires_at",
-			absoluteExpiresAt: options.columns?.absoluteExpiresAt ?? "absolute_expires_at",
+			absoluteExpiresAt:
+				options.columns?.absoluteExpiresAt ?? "absolute_expires_at",
 			metadata: options.columns?.metadata ?? "metadata",
 		};
 	}
@@ -149,9 +150,12 @@ export class DrizzleSessionStorage implements SessionStorage {
 		}
 		if (opts.extendSeconds !== undefined) {
 			sets.push(`${this.cols.expiresAt} = ?`);
-			params.push(toTimestamp(new Date(Date.now() + opts.extendSeconds * 1000)));
+			params.push(
+				toTimestamp(new Date(Date.now() + opts.extendSeconds * 1000)),
+			);
 		}
-		if (sets.length === 0) return this.read(id) as Promise<SessionRecord<T> | null>;
+		if (sets.length === 0)
+			return this.read(id) as Promise<SessionRecord<T> | null>;
 		sets.push(`${this.cols.lastSeenAt} = ?`);
 		params.push(toTimestamp(new Date()));
 		params.push(id);
@@ -188,10 +192,7 @@ export class DrizzleSessionStorage implements SessionStorage {
 			params.push(query.userId);
 		}
 		const whereSql = where.length > 0 ? `WHERE ${where.join(" AND ")}` : "";
-		await this.db.rawQuery(
-			`DELETE FROM ${this.tableName} ${whereSql}`,
-			params,
-		);
+		await this.db.rawQuery(`DELETE FROM ${this.tableName} ${whereSql}`, params);
 		return 0; // not all dialects return rowCount; treat as unknown
 	}
 

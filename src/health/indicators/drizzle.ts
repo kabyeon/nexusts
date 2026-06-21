@@ -14,7 +14,9 @@ export class DrizzleHealthIndicator implements HealthIndicator {
 
 	constructor(
 		name: string,
-		db: { rawQuery<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> },
+		db: {
+			rawQuery<T = unknown>(sql: string, params?: unknown[]): Promise<T[]>;
+		},
 		options: { timeoutMs?: number; probe?: string } = {},
 	) {
 		this.name = name;
@@ -31,7 +33,8 @@ export class DrizzleHealthIndicator implements HealthIndicator {
 				this.#db.rawQuery(probe),
 				new Promise<never>((_, reject) =>
 					setTimeout(
-						() => reject(new Error(`probe timed out after ${this.#timeoutMs}ms`)),
+						() =>
+							reject(new Error(`probe timed out after ${this.#timeoutMs}ms`)),
 						this.#timeoutMs,
 					),
 				),

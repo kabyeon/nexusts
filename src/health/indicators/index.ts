@@ -63,9 +63,7 @@ export class DiskHealthIndicator implements HealthIndicator {
 			const statfs = (await import("node:fs/promises")
 				.then((m) => m.statfs)
 				.catch(() => null)) as
-				| ((
-						p: string,
-				  ) => Promise<{
+				| ((p: string) => Promise<{
 						bavail: number;
 						bsize: number;
 						blocks: number;

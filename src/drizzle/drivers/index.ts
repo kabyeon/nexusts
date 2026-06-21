@@ -15,9 +15,15 @@ export { mysqlDriver } from "./mysql.js";
 export { sqliteDriver } from "./sqlite.js";
 export { bunSqliteDriver } from "./bun-sqlite.js";
 export { d1Driver } from "./d1.js";
-export type { DrizzleDriverResult, RawExecutor, DriverFactory } from "./base.js";
+export type {
+	DrizzleDriverResult,
+	RawExecutor,
+	DriverFactory,
+} from "./base.js";
 
-export async function resolveDriver(config: DrizzleConfig): Promise<DrizzleDriverResult> {
+export async function resolveDriver(
+	config: DrizzleConfig,
+): Promise<DrizzleDriverResult> {
 	switch (config.dialect) {
 		case "postgres":
 			return postgresDriver(config);

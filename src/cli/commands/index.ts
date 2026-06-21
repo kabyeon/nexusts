@@ -18,6 +18,7 @@ import makeQueue from "./make-queue.js";
 import makeSchedule from "./make-schedule.js";
 import makeListener from "./make-listener.js";
 import makeSession from "./make-session.js";
+import migrate from "./migrate.js";
 import info from "./info.js";
 import routeList from "./route-list.js";
 import init from "./init.js";
@@ -41,6 +42,7 @@ export const commands: Command[] = [
 	makeSchedule,
 	makeListener,
 	makeSession,
+	migrate,
 	routeList,
 	info,
 ];

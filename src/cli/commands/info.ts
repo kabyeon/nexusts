@@ -24,6 +24,7 @@ export const infoCommand: Command = {
 			["routing",          String(ctx.config.routing)],
 			["view",             String(ctx.config.view)],
 			["orm",              String(ctx.config.orm)],
+			["dialect",          String(ctx.config.dialect ?? "(none)")],
 			["database.driver",  String(ctx.config.database.driver)],
 			["database.url",     String(ctx.config.database.url)],
 			["inertia.frontend", String(ctx.config.inertia.frontend)],

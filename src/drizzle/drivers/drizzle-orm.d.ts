@@ -10,17 +10,27 @@ declare module "drizzle-orm" {
 	// ---------------------------------------------------------------------------
 	// Database
 	// ---------------------------------------------------------------------------
-	export interface PgDatabase<TQueryResult extends PgQueryResultHKT, TFullSchema = Record<string, unknown>, TSchema = TFullSchema> {
+	export interface PgDatabase<
+		TQueryResult extends PgQueryResultHKT,
+		TFullSchema = Record<string, unknown>,
+		TSchema = TFullSchema,
+	> {
 		select(): PgSelectBuilder<TQueryResult, TSchema>;
 		insert<T>(table: T): PgInsertBuilder<T, TQueryResult, TSchema>;
 		update<T>(table: T): PgUpdateBuilder<T, TQueryResult, TSchema>;
 		delete<T>(table: T): PgDeleteBuilder<T, TQueryResult, TSchema>;
 		execute<T = unknown>(query: SQL): Promise<T>;
-		transaction<T>(fn: (tx: PgDatabase<TQueryResult, TFullSchema, TSchema>) => Promise<T>): Promise<T>;
+		transaction<T>(
+			fn: (tx: PgDatabase<TQueryResult, TFullSchema, TSchema>) => Promise<T>,
+		): Promise<T>;
 	}
 	export type PgQueryResultHKT = any;
 
-	export interface MySqlDatabase<TQueryResult extends MySqlQueryResultHKT, TFullSchema = Record<string, unknown>, TSchema = TFullSchema> {
+	export interface MySqlDatabase<
+		TQueryResult extends MySqlQueryResultHKT,
+		TFullSchema = Record<string, unknown>,
+		TSchema = TFullSchema,
+	> {
 		select(): any;
 		insert<T>(table: T): any;
 		update<T>(table: T): any;
@@ -90,8 +100,14 @@ declare module "drizzle-orm" {
 		append(chunk: SQL): SQL;
 		getSQL(): SQL;
 	}
-	export function sql<U = unknown>(strings: TemplateStringsArray, ...values: any[]): SQL & SQLWrapper;
-	export function sql<U = unknown>(strings: TemplateStringsArray, ...values: any[]): Promise<unknown[]>;
+	export function sql<U = unknown>(
+		strings: TemplateStringsArray,
+		...values: any[]
+	): SQL & SQLWrapper;
+	export function sql<U = unknown>(
+		strings: TemplateStringsArray,
+		...values: any[]
+	): Promise<unknown[]>;
 
 	// ---------------------------------------------------------------------------
 	// Operators
@@ -129,7 +145,10 @@ declare module "drizzle-orm/postgres-js" {
 	import type { PgDatabase } from "drizzle-orm";
 	export function drizzle(
 		connection: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): PgDatabase<any, any, any>;
 	export const postgres: (url: string, opts?: any) => any;
 }
@@ -138,7 +157,10 @@ declare module "drizzle-orm/node-postgres" {
 	import type { PgDatabase } from "drizzle-orm";
 	export function drizzle(
 		connection: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): PgDatabase<any, any, any>;
 	export { Pool } from "pg";
 }
@@ -147,7 +169,10 @@ declare module "drizzle-orm/mysql2" {
 	import type { MySqlDatabase } from "drizzle-orm";
 	export function drizzle(
 		connection: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): MySqlDatabase<any, any, any>;
 }
 
@@ -155,7 +180,10 @@ declare module "drizzle-orm/better-sqlite3" {
 	import type { BetterSQLite3Database } from "drizzle-orm";
 	export function drizzle(
 		connection: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): BetterSQLite3Database;
 }
 
@@ -163,7 +191,10 @@ declare module "drizzle-orm/bun-sqlite" {
 	import type { BetterSQLite3Database } from "drizzle-orm";
 	export function drizzle(
 		connection: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): BetterSQLite3Database;
 }
 
@@ -171,7 +202,10 @@ declare module "drizzle-orm/d1" {
 	import type { BetterSQLite3Database } from "drizzle-orm";
 	export function drizzle(
 		binding: any,
-		options?: { schema?: any; logger?: boolean | ((q: string, p: unknown[]) => void) },
+		options?: {
+			schema?: any;
+			logger?: boolean | ((q: string, p: unknown[]) => void);
+		},
 	): BetterSQLite3Database;
 }
 
@@ -185,14 +219,22 @@ declare module "drizzle-orm/better-sqlite3/migrator" {
 declare module "drizzle-orm/postgres-js/migrator" {
 	export function migrate(
 		db: any,
-		options: { migrationsFolder: string; migrationsTable?: string; migrationsSchema?: string },
+		options: {
+			migrationsFolder: string;
+			migrationsTable?: string;
+			migrationsSchema?: string;
+		},
 	): Promise<void>;
 }
 
 declare module "drizzle-orm/node-postgres/migrator" {
 	export function migrate(
 		db: any,
-		options: { migrationsFolder: string; migrationsTable?: string; migrationsSchema?: string },
+		options: {
+			migrationsFolder: string;
+			migrationsTable?: string;
+			migrationsSchema?: string;
+		},
 	): Promise<void>;
 }
 

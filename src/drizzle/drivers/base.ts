@@ -30,4 +30,6 @@ export interface RawExecutor {
 	placeholder(index: number): string;
 }
 
-export type DriverFactory = (config: DrizzleConfig) => Promise<DrizzleDriverResult>;
+export type DriverFactory = (
+	config: DrizzleConfig,
+) => Promise<DrizzleDriverResult>;

@@ -26,12 +26,18 @@ const hasAnySqlite = hasBunSqlite || hasBetterSqlite3;
 
 describe("DrizzleService (config + lifecycle)", () => {
 	it("throws when used before open()", () => {
-		const svc = new DrizzleService({ dialect: "bun-sqlite", connection: { filename: ":memory:" } });
+		const svc = new DrizzleService({
+			dialect: "bun-sqlite",
+			connection: { filename: ":memory:" },
+		});
 		expect(() => svc.client).toThrow(/not opened/);
 	});
 
 	it("exposes dialect and config", () => {
-		const svc = new DrizzleService({ dialect: "postgres", connection: { url: "x" } });
+		const svc = new DrizzleService({
+			dialect: "postgres",
+			connection: { url: "x" },
+		});
 		expect(svc.dialect).toBe("postgres");
 	});
 });
@@ -53,11 +59,12 @@ describe.skipIf(!hasAnySqlite)("DrizzleService (real SQLite)", () => {
 
 	it("inserts and reads a row via raw", async () => {
 		await svc.raw`INSERT INTO users (email, age) VALUES (${"a@b.com"}, ${30})`.execute();
-		const row = await svc.raw`SELECT * FROM users WHERE email = ${"a@b.com"}`.first<{
-			id: number;
-			email: string;
-			age: number;
-		}>();
+		const row =
+			await svc.raw`SELECT * FROM users WHERE email = ${"a@b.com"}`.first<{
+				id: number;
+				email: string;
+				age: number;
+			}>();
 		expect(row?.email).toBe("a@b.com");
 		expect(row?.age).toBe(30);
 	});
@@ -136,9 +143,10 @@ describe.skipIf(!hasAnySqlite)("DrizzleRepository (real SQLite)", () => {
 	it("findAll() with simple where", async () => {
 		await svc.raw`INSERT INTO users (email, age) VALUES (${"a@b.com"}, ${30})`.execute();
 		await svc.raw`INSERT INTO users (email, age) VALUES (${"c@d.com"}, ${25})`.execute();
-		const rows = await svc.raw`SELECT * FROM users WHERE email = ${"a@b.com"}`.all<{
-			email: string;
-		}>();
+		const rows =
+			await svc.raw`SELECT * FROM users WHERE email = ${"a@b.com"}`.all<{
+				email: string;
+			}>();
 		expect(rows).toHaveLength(1);
 	});
 });
@@ -146,7 +154,10 @@ describe.skipIf(!hasAnySqlite)("DrizzleRepository (real SQLite)", () => {
 describe("RawQuery unit", () => {
 	it("records the SQL and parameters", () => {
 		const r = new RawQuery("SELECT 1", [], {
-			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({ rows: [], affectedRows: 0 }),
+			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({
+				rows: [],
+				affectedRows: 0,
+			}),
 			placeholder: (i) => `$${i}`,
 		});
 		expect(r.toSQL()).toBe("SELECT 1");
@@ -155,7 +166,10 @@ describe("RawQuery unit", () => {
 
 	it("execute() returns rows", async () => {
 		const r = new RawQuery("SELECT 1 as a", [], {
-			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({ rows: [{ a: 1 }], affectedRows: 0 }),
+			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({
+				rows: [{ a: 1 }],
+				affectedRows: 0,
+			}),
 			placeholder: (i) => `$${i}`,
 		});
 		const out = await r.execute<{ a: number }>();
@@ -164,7 +178,10 @@ describe("RawQuery unit", () => {
 
 	it("first() returns the first row or undefined", async () => {
 		const r = new RawQuery("SELECT 1 as a", [], {
-			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({ rows: [{ a: 1 }, { a: 2 }], affectedRows: 0 }),
+			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({
+				rows: [{ a: 1 }, { a: 2 }],
+				affectedRows: 0,
+			}),
 			placeholder: (i) => `$${i}`,
 		});
 		const first = await r.first<{ a: number }>();
@@ -173,10 +190,20 @@ describe("RawQuery unit", () => {
 
 	it("calls logger on run", async () => {
 		const log: Array<[string, unknown[]]> = [];
-		const r = new RawQuery("SELECT 1", [42], {
-			query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({ rows: [], affectedRows: 0 }),
-			placeholder: (i) => `$${i}`,
-		}, (q, p) => { log.push([q, p]); });
+		const r = new RawQuery(
+			"SELECT 1",
+			[42],
+			{
+				query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({
+					rows: [],
+					affectedRows: 0,
+				}),
+				placeholder: (i) => `$${i}`,
+			},
+			(q, p) => {
+				log.push([q, p]);
+			},
+		);
 		await r.execute();
 		expect(log).toEqual([["SELECT 1", [42]]]);
 	});
@@ -186,7 +213,10 @@ describe("RawQuery unit", () => {
 			"SELECT * FROM users WHERE id = ? AND email = ?",
 			[1, "a@b.com"],
 			{
-				query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({ rows: [], affectedRows: 0 }),
+				query: async (): Promise<{ rows: any[]; affectedRows: number }> => ({
+					rows: [],
+					affectedRows: 0,
+				}),
 				placeholder: (i) => `$${i}`,
 			},
 		);

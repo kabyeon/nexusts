@@ -49,7 +49,9 @@ describeIf("DrizzleSessionStorage (real SQLite)", () => {
 	it("create() persists a session", async () => {
 		const rec = await storage.create({ data: { foo: "bar" } });
 		expect(rec.id).toBeTruthy();
-		const rows = await svc.raw`SELECT * FROM nexus_sessions`.all<{ id: string }>();
+		const rows = await svc.raw`SELECT * FROM nexus_sessions`.all<{
+			id: string;
+		}>();
 		expect(rows).toHaveLength(1);
 	});
 

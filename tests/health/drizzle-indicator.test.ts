@@ -17,7 +17,9 @@ describe("DrizzleHealthIndicator", () => {
 		const ind = new DrizzleHealthIndicator("database", db);
 		const r = await ind.check();
 		expect(r.status).toBe("up");
-		expect((r.data as { latencyMs?: number } | undefined)?.latencyMs).toBeGreaterThanOrEqual(0);
+		expect(
+			(r.data as { latencyMs?: number } | undefined)?.latencyMs,
+		).toBeGreaterThanOrEqual(0);
 		await db.close();
 	});
 
@@ -40,7 +42,9 @@ describe("DrizzleHealthIndicator", () => {
 				return [];
 			},
 		};
-		const ind = new DrizzleHealthIndicator("database", slowDb as any, { timeoutMs: 50 });
+		const ind = new DrizzleHealthIndicator("database", slowDb as any, {
+			timeoutMs: 50,
+		});
 		const r = await ind.check();
 		expect(r.status).toBe("down");
 		expect(r.message).toContain("timed out");

@@ -84,7 +84,9 @@ export class DrizzleRepository<TTable = any, TRow = Record<string, unknown>> {
 	}
 
 	/** Insert one or more rows. Returns the inserted row(s). */
-	async create(values: Partial<TRow> | Array<Partial<TRow>>): Promise<TRow | TRow[]> {
+	async create(
+		values: Partial<TRow> | Array<Partial<TRow>>,
+	): Promise<TRow | TRow[]> {
 		const isArr = Array.isArray(values);
 		const q = (this.db.client.insert(this.table) as any)
 			.values(values as any)
@@ -113,7 +115,9 @@ export class DrizzleRepository<TTable = any, TRow = Record<string, unknown>> {
 	}
 
 	/** Run `fn` inside a transaction. */
-	async transaction<T>(fn: (tx: DrizzleRepository<TTable, TRow>) => Promise<T>): Promise<T> {
+	async transaction<T>(
+		fn: (tx: DrizzleRepository<TTable, TRow>) => Promise<T>,
+	): Promise<T> {
 		return this.db.transaction(async (txDb) => {
 			const txRepo = Object.create(this) as DrizzleRepository<TTable, TRow>;
 			Object.defineProperty(txRepo, "db", { value: txDb, writable: false });
@@ -137,7 +141,12 @@ export class DrizzleRepository<TTable = any, TRow = Record<string, unknown>> {
  */
 function whereSql(where: Where): string {
 	// Column equality shortcut: `{ email: 'a@b.com' }` becomes `email = ?`.
-	if (where && typeof where === "object" && !Array.isArray(where) && !(where as any).queryChunks) {
+	if (
+		where &&
+		typeof where === "object" &&
+		!Array.isArray(where) &&
+		!(where as any).queryChunks
+	) {
 		const parts: string[] = [];
 		for (const k of Object.keys(where)) parts.push(`${k} = ?`);
 		return parts.join(" AND ");
@@ -147,7 +156,12 @@ function whereSql(where: Where): string {
 }
 
 function whereParams(where: Where): unknown[] {
-	if (where && typeof where === "object" && !Array.isArray(where) && !(where as any).queryChunks) {
+	if (
+		where &&
+		typeof where === "object" &&
+		!Array.isArray(where) &&
+		!(where as any).queryChunks
+	) {
 		return Object.values(where);
 	}
 	return drizzleSqlToText(where).params;
@@ -166,7 +180,10 @@ function whereParams(where: Where): unknown[] {
  * every dialect (postgres / mysql / sqlite — they all accept `?` in
  * prepared statements via their respective drivers).
  */
-function drizzleSqlToText(node: any, out?: { text: string; params: unknown[] }): {
+function drizzleSqlToText(
+	node: any,
+	out?: { text: string; params: unknown[] },
+): {
 	text: string;
 	params: unknown[];
 } {

@@ -28,7 +28,12 @@ export class RawQuery {
 	private executor: RawExecutor;
 	private logger?: (q: string, p: unknown[]) => void;
 
-	constructor(sqlText: string, params: unknown[], executor: RawExecutor, logger?: (q: string, p: unknown[]) => void) {
+	constructor(
+		sqlText: string,
+		params: unknown[],
+		executor: RawExecutor,
+		logger?: (q: string, p: unknown[]) => void,
+	) {
 		this.sqlText = sqlText;
 		this.params = params;
 		this.executor = executor;

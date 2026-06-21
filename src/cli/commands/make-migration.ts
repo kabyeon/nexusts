@@ -4,38 +4,55 @@
  * Filename pattern: `YYYYMMDD_HHmmss_<snake>.sql` (or `.ts` for
  * Drizzle). The file is placed under the configured `paths.migrations`
  * directory.
+ *
+ * Drizzle dialect is chosen via `--dialect` (postgres | mysql | sqlite
+ * | bun-sqlite | d1) or `nx.config.ts`'s `dialect` field. Default: bun-sqlite.
+ *
+ * Drizzle migrations are TypeScript files that export a `pgTable` /
+ * `mysqlTable` / `sqliteTable` definition — the same shape as
+ * `nx make:model` — and are loaded by the Drizzle migrator at runtime.
+ *
+ * Plain SQL migrations work for any dialect that uses Drizzle's
+ * migrator (postgres-js / node-postgres / mysql2 / better-sqlite3).
  */
 
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import { logger, nameVariants, render, writeFile } from "../core/index.js";
 import { templates } from "../templates/index.js";
+import { renderDrizzleDialect, mapDrizzleType } from "../templates/model/drizzle-dialect.js";
 
 export const makeMigrationCommand: Command = {
 	name: "make:migration",
 	aliases: ["mkm", "make-migration"],
 	summary: "Generate a migration file",
 	description:
-		"Generates a migration under src/app/database/migrations/. The template is chosen from nx.config.ts's `orm` field.",
+		"Generates a migration under src/app/database/migrations/. The template is chosen from nx.config.ts's `orm` field. Use --dialect for Drizzle migrations.",
 	examples: [
 		"nx make:migration create_users_table",
-		"nx make:migration add_email_to_users --orm drizzle",
+		"nx make:migration add_email_to_users --orm drizzle --dialect postgres",
+		"nx make:migration drop_old_index --orm none",
 	],
 	flags: [
 		{
 			name: "columns",
 			description: "Comma-separated `name:type` pairs (default: title:text)",
 		},
-		{ name: "orm", description: "Override ORM driver (drizzle|prisma|kysely)" },
+		{ name: "orm", description: "Override ORM driver (drizzle|prisma|kysely|none)" },
+		{
+			name: "dialect",
+			description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite",
+		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		if (!name) {
-			logger.error("Usage: nx make:migration <Name>");
+			logger.error("Usage: nx make:migration <Name> [--dialect ...]");
 			return 1;
 		}
 
 		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
+		const dialect = (ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
 		const isDrizzle = orm === "drizzle";
 		const useGenericSql = orm === "none" || orm === "prisma" || orm === "kysely";
 
@@ -43,26 +60,64 @@ export const makeMigrationCommand: Command = {
 		const tableName = inferTableName(name);
 		const colsFlag = (ctx.flags["columns"] as string | string[] | undefined);
 		const cols = parseColumns(colsFlag ?? "title:text");
-		const columns = renderColumns(cols);
+		// For Drizzle: use the dialect-aware TS-style column rendering
+		// (e.g. `text('email')`, `integer('age')`). For plain SQL: keep
+		// the raw SQL syntax.
+		const drizzleColumns = renderDrizzleColumns(cols, dialect);
+		const sqlColumns = renderSqlColumns(cols, dialect);
 
-		const tpl = isDrizzle ? templates.migration.drizzle : templates.migration.sql;
-		const code = render(tpl, {
-			name: variants.pascal,
-			snake: variants.snake,
-			tableName,
-			columns,
-			timestamp: formatTimestamp(new Date()),
-		});
+		let code: string;
+		let extension: string;
+		if (isDrizzle) {
+			if (!isValidDialect(dialect)) {
+				logger.error(
+					`Unsupported drizzle dialect: ${dialect}. Allowed: postgres, mysql, sqlite, bun-sqlite, d1.`,
+				);
+				return 1;
+			}
+			code = renderDrizzleDialect(dialect);
+			code = render(code, {
+				name: variants.pascal,
+				snake: variants.snake,
+				tableName,
+				columns: drizzleColumns,
+				timestamp: formatTimestamp(new Date()),
+			});
+			extension = "ts";
+		} else if (useGenericSql) {
+			const tpl = templates.migration.sql;
+			code = render(tpl, {
+				name: variants.pascal,
+				snake: variants.snake,
+				tableName,
+				columns: sqlColumns,
+				timestamp: formatTimestamp(new Date()),
+			});
+			extension = "sql";
+		} else {
+			logger.error(
+				`Unsupported ORM for migration: ${orm}. Allowed: drizzle, none, prisma, kysely.`,
+			);
+			return 1;
+		}
 
-		const filename = `${formatTimestamp(new Date())}_${variants.snake}.${isDrizzle ? "ts" : "sql"}`;
+		const filename = `${formatTimestamp(new Date())}_${variants.snake}.${extension}`;
 		const out = resolve(ctx.cwd, ctx.config.paths.migrations, filename);
 
 		writeFile(out, code);
 		logger.success(`created ${out}`);
-		logger.finger(`run \`bunx drizzle-kit migrate\` (or your migration tool).`);
+		if (isDrizzle) {
+			logger.finger(`run \`nx migrate\` to apply pending migrations.`);
+		} else {
+			logger.finger(`run \`bunx drizzle-kit migrate\` or your migration tool.`);
+		}
 		return 0;
 	},
 };
+
+function isValidDialect(d: string): d is "postgres" | "mysql" | "sqlite" | "bun-sqlite" | "d1" {
+	return ["postgres", "mysql", "sqlite", "bun-sqlite", "d1"].includes(d);
+}
 
 function inferTableName(input: string): string {
 	// `create_users_table` → `users`; `add_email_to_users` → `users`;
@@ -85,34 +140,57 @@ function parseColumns(input: string | string[]): Array<[string, string]> {
 		});
 }
 
-function renderColumns(cols: Array<[string, string]>): string {
+function renderSqlColumns(cols: Array<[string, string]>, dialect: string): string {
 	return cols
 		.map(([name, type]) => {
-			const sqlType = mapType(type);
-			const notNull = /^[a-z]/.test(sqlType) ? " NOT NULL" : "";
+			const sqlType = mapSqlType(type, dialect);
+			const notNull = /NOT NULL/i.test(sqlType) ? "" : " NOT NULL";
 			return `  ${name} ${sqlType}${notNull},`;
 		})
 		.join("\n");
 }
 
-function mapType(t: string): string {
-	switch (t.toLowerCase()) {
+function renderDrizzleColumns(cols: Array<[string, string]>, dialect: string): string {
+	return cols
+		.map(([name, type]) => {
+			const helper = mapDrizzleType(dialect, type);
+			return `  ${name}: ${helper}('${name}'),`;
+		})
+		.join("\n");
+}
+
+function mapSqlType(t: string, dialect: string): string {
+	const type = t.toLowerCase();
+	switch (type) {
 		case "text":
 		case "string":
-			return "TEXT";
+		case "varchar":
+			return dialect === "mysql" ? "VARCHAR(255)" : "TEXT";
 		case "int":
 		case "integer":
-			return "INTEGER";
+			return dialect === "postgres" ? "INTEGER" : dialect === "mysql" ? "INT" : "INTEGER";
+		case "bigint":
+		case "bigintunsigned":
+			return dialect === "postgres" ? "BIGINT" : "BIGINT UNSIGNED";
+		case "serial":
+			return dialect === "postgres" ? "SERIAL" : "INTEGER AUTO_INCREMENT";
 		case "bool":
 		case "boolean":
-			return "BOOLEAN";
+			return dialect === "mysql" ? "BOOLEAN" : "BOOLEAN";
 		case "float":
 		case "number":
-			return "REAL";
+		case "real":
+		case "double":
+			return dialect === "mysql" ? "DOUBLE" : "REAL";
 		case "datetime":
 		case "timestamp":
+			return dialect === "postgres" ? "TIMESTAMP" : dialect === "mysql" ? "DATETIME" : "INTEGER";
 		case "date":
-			return "INTEGER";  // unix epoch
+			return dialect === "mysql" ? "DATE" : "TEXT";
+		case "json":
+			return dialect === "postgres" ? "JSONB" : dialect === "mysql" ? "JSON" : "TEXT";
+		case "jsonb":
+			return dialect === "postgres" ? "JSONB" : "TEXT";
 		default:
 			return "TEXT";
 	}

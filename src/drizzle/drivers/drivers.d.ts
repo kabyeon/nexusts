@@ -8,13 +8,19 @@
 declare module "pg" {
 	export class Pool {
 		constructor(config: any);
-		query<T = any>(sql: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }>;
+		query<T = any>(
+			sql: string,
+			params?: any[],
+		): Promise<{ rows: T[]; rowCount: number }>;
 		end(): Promise<void>;
 	}
 	export class Client {
 		constructor(config: any);
 		connect(): Promise<void>;
-		query<T = any>(sql: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }>;
+		query<T = any>(
+			sql: string,
+			params?: any[],
+		): Promise<{ rows: T[]; rowCount: number }>;
 		end(): Promise<void>;
 	}
 }
@@ -52,7 +58,10 @@ declare module "better-sqlite3" {
 declare module "postgres-js" {
 	interface Sql<T = any> {
 		unsafe<T = any>(query: string, params?: any[]): Promise<T[]>;
-		query<T = any>(strings: TemplateStringsArray, ...params: any[]): Promise<T[]>;
+		query<T = any>(
+			strings: TemplateStringsArray,
+			...params: any[]
+		): Promise<T[]>;
 		end(): Promise<void>;
 	}
 	function postgres(url: string, options?: any): Sql;

@@ -32,6 +32,10 @@ import {
 	writeFile,
 	flagBool,
 } from "../core/index.js";
+import {
+	renderDrizzleDialect,
+	mapDrizzleType,
+} from "../templates/model/drizzle-dialect.js";
 import { templates } from "../templates/index.js";
 
 export const makeCrudCommand: Command = {
@@ -51,6 +55,7 @@ export const makeCrudCommand: Command = {
 		{ name: "no-test", description: "Skip generating the test file" },
 		{ name: "style", description: "Override routing style" },
 		{ name: "orm", description: "Override ORM driver" },
+		{ name: "dialect", description: "Drizzle dialect (postgres|mysql|sqlite|bun-sqlite|d1). Default: bun-sqlite" },
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -62,6 +67,7 @@ export const makeCrudCommand: Command = {
 		const variants = nameVariants(name);
 		const style = (ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
 		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
+		const dialect = (ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
 		const noRepo = flagBool(ctx.flags, "no-repo", false) || orm === "none";
 		const noTest = flagBool(ctx.flags, "no-test", false);
 		const hasInertia = ctx.config.view === "inertia" && !flagBool(ctx.flags, "no-views", false);
@@ -131,17 +137,31 @@ export const makeCrudCommand: Command = {
 		// 3) Repository + Model (only if ORM is configured)
 		if (!noRepo) {
 			if (orm === "drizzle" || orm === "prisma" || orm === "kysely") {
-				const tpl = templates.model[orm];
-				const columns = renderDefaultColumns(orm);
-				const code = render(tpl, {
-					name: variants.pascal,
-					camel: variants.camel,
-					kebab: variants.kebab,
-					snake: variants.snake,
-					tableName,
-					columns,
-					prismaBlock: "",
-				});
+				let code: string;
+				if (orm === "drizzle") {
+					// Use the dialect-aware template.
+					const tpl = renderDrizzleDialect(dialect);
+					code = render(tpl, {
+						name: variants.pascal,
+						camel: variants.camel,
+						kebab: variants.kebab,
+						snake: variants.snake,
+						tableName,
+						columns: renderDrizzleColumns(dialect),
+						prismaBlock: "",
+					});
+				} else {
+					const tpl = templates.model[orm];
+					code = render(tpl, {
+						name: variants.pascal,
+						camel: variants.camel,
+						kebab: variants.kebab,
+						snake: variants.snake,
+						tableName,
+						columns: renderDefaultColumns(orm),
+						prismaBlock: "",
+					});
+				}
 				const out = resolve(
 					ctx.cwd,
 					ctx.config.paths.models,
@@ -243,6 +263,11 @@ function renderDefaultColumns(orm: string): string {
 		return "  title: string,";
 	}
 	return "  title text,";
+}
+
+function renderDrizzleColumns(dialect: string): string {
+	const helper = mapDrizzleType(dialect, "text");
+	return `  title: ${helper}('title').notNull(),`;
 }
 
 export default makeCrudCommand;

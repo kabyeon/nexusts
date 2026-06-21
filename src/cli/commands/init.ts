@@ -10,7 +10,7 @@
 import { resolve } from "node:path";
 import { existsSync } from "node:fs";
 import type { Command, CommandContext } from "../core/index.js";
-import { logger, render, writeFile, prompt, select, flagBool } from "../core/index.js";
+import { logger, render, writeFile, select, flagBool } from "../core/index.js";
 import { templates } from "../templates/index.js";
 
 export const initCommand: Command = {
@@ -90,8 +90,74 @@ export const initCommand: Command = {
 		writeFile(out, code);
 		logger.success(`created ${out}`);
 		logger.finger(`next: \`nx info\` to verify the resolved config.`);
+
+		// If Drizzle was selected, also scaffold a `drizzle.config.ts`.
+		if (orm === "drizzle") {
+			const drizzleConfig = drizzleConfigFor(db, ctx.cwd);
+			const drizzleOut = resolve(ctx.cwd, "drizzle.config.ts");
+			if (existsSync(drizzleOut) && !flagBool(ctx.flags, "merge", false)) {
+				logger.warn(`drizzle.config.ts already exists, skipping (use --merge to overwrite).`);
+			} else {
+				writeFile(drizzleOut, drizzleConfig);
+				logger.success(`created ${drizzleOut}`);
+				logger.finger(
+					`next: \`nx migrate --generate "init"\` to scaffold the first migration.`,
+				);
+			}
+		}
 		return 0;
 	},
 };
+
+/** Build a `drizzle.config.ts` based on the chosen DB driver. */
+function drizzleConfigFor(db: string, _cwd: string): string {
+	const dialect = dbToDialect(db);
+	if (dialect === null) {
+		// Fallback: bun-sqlite
+		return `import { defineConfig } from 'drizzle-kit';
+
+export default defineConfig({
+  dialect: 'sqlite',
+  schema: './src/app/models/*.model.ts',
+  out: './drizzle',
+  dbCredentials: {
+    url: process.env.DATABASE_URL ?? 'file:./app.db',
+  },
+});
+`;
+	}
+	const url =
+		dialect === "sqlite"
+			? `process.env.DATABASE_URL ?? 'file:./app.db'`
+			: `process.env.DATABASE_URL ?? ''`;
+	return `import { defineConfig } from 'drizzle-kit';
+
+export default defineConfig({
+  dialect: '${dialect}',
+  schema: './src/app/models/*.model.ts',
+  out: './drizzle',
+  dbCredentials: {
+    url: ${url},
+  },
+  verbose: true,
+  strict: true,
+});
+`;
+}
+
+function dbToDialect(db: string): string | null {
+	switch (db) {
+		case "bun-sqlite":
+		case "node-sqlite":
+		case "libsql":
+			return "sqlite";
+		case "postgres":
+			return "postgresql";
+		case "mysql":
+			return "mysql";
+		default:
+			return null;
+	}
+}
 
 export default initCommand;
