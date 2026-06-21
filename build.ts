@@ -1,20 +1,32 @@
 /**
  * Build script — bundles the framework into `dist/`.
  *
- * Run with `bun run build`. Two phases:
+ * Run with `bun run build`. Three phases:
  * 1. `bun.build()` produces ESM JavaScript (this is what Bun natively
  *    produces and what consumers execute).
  * 2. `tsc --emitDeclarationOnly` produces TypeScript declaration files
  *    so consumers get full type information.
+ * 3. Move all files from `dist/src/*` to `dist/*` so the published
+ *    layout matches `package.json` exports (which expect
+ *    `./cli/index.js`, not `./src/cli/index.js`).
  *
- * We split the two because Bun's bundler does not currently emit `.d.ts`.
+ * We split phases 1 and 2 because Bun's bundler does not currently
+ * emit `.d.ts`.
  *
- * NOTE: Only `src/core/**` and `src/index.ts` are bundled. The example
- * app under `src/app/**` is intentionally excluded — it lives alongside
- * the framework source so users can read it, but it's not part of the
- * published package.
+ * NOTE: Only `src/**` is bundled. The example app under `src/app/**`
+ * is intentionally excluded — it lives alongside the framework source
+ * so users can read it, but it's not part of the published package.
  */
-import { rmSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import {
+	existsSync,
+	mkdirSync,
+	readdirSync,
+	readFileSync,
+	renameSync,
+	rmSync,
+	statSync,
+} from "node:fs";
+import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const DIST = "dist";
@@ -25,9 +37,10 @@ mkdirSync(DIST, { recursive: true });
 
 // -------------------------------------------------------------------------
 // Phase 1: bun.build() — produces runtime artifacts.
-//          We bundle three entry points: the public `nexus` package
-//          (`src/index.ts`), the `nx` CLI (`src/cli/index.ts`), and
-//          the optional `nexus/auth` module (`src/auth/index.ts`).
+//          Each entrypoint is a separate module under `src/<name>/index.ts`.
+//          The bundler outputs them as `dist/src/<name>/index.js` (Bun
+//          preserves the source path); phase 3 moves them to
+//          `dist/<name>/index.js`.
 // -------------------------------------------------------------------------
 console.log("[build] bundling with bun.build()…");
 const result = await Bun.build({
@@ -59,7 +72,6 @@ const result = await Bun.build({
 		"./src/i18n/index.ts",
 		"./src/redis/index.ts",
 		"./src/grpc/index.ts",
-		
 	],
 	outdir: "./dist",
 	target: "bun",
@@ -82,9 +94,8 @@ console.log(`[build] wrote ${result.outputs.length} runtime files`);
 
 // -------------------------------------------------------------------------
 // Phase 2: tsc --emitDeclarationOnly — produces .d.ts files for consumers.
-//          We use tsconfig.build.json which sets `--include` for the SSR
-//          ambient module declarations, so the optional peer deps
-//          (react, vue, svelte, solid) type-check correctly.
+//          Outputs to `dist/src/*` (tsc preserves the rootDir structure);
+//          phase 3 moves them to `dist/*`.
 // -------------------------------------------------------------------------
 console.log("[build] generating type declarations via tsc…");
 const tsc = spawnSync(
@@ -119,18 +130,32 @@ if (tsc.status !== 0) {
 	process.exit(tsc.status ?? 1);
 }
 
-// Emit the top-level declarations too.
+// -------------------------------------------------------------------------
+// Phase 3: flatten `dist/src/*` to `dist/*`.
+//          Bun and tsc both emit `dist/src/<name>/...` because they
+//          preserve the source path relative to the project root.
+//          `package.json` `exports` points to `./<name>/index.js`,
+//          so we move everything up one level.
+// -------------------------------------------------------------------------
+console.log("[build] flattening dist/src/* → dist/*…");
+const SRC_DIST = join(DIST, "src");
+if (existsSync(SRC_DIST)) {
+	moveRecursive(SRC_DIST, DIST);
+	rmSync(SRC_DIST, { recursive: true, force: true });
+}
+
+// Emit the top-level entry declarations.
 await Bun.write(
 	`${DIST}/index.d.ts`,
 	`export * from './core/index.js';\nexport { default } from './core/application.js';\n`,
 );
 await Bun.write(
 	`${DIST}/cli/index.d.ts`,
-	`export {} from '../core/cli/index.js';\n`,
+	`export * from '../core/cli/index.js';\n`,
 );
 
 // -------------------------------------------------------------------------
-// Phase 3: emit a consumer-facing package.json.
+// Phase 4: emit a consumer-facing package.json.
 // -------------------------------------------------------------------------
 const rootPkg = JSON.parse(readFileSync("package.json", "utf8"));
 const consumerPkg = {
@@ -167,3 +192,25 @@ await Bun.write(`${DIST}/package.json`, JSON.stringify(consumerPkg, null, 2));
 console.log("[build] wrote dist/package.json");
 
 console.log("[build] done.");
+
+// -------------------------------------------------------------------------
+// Helpers
+// -------------------------------------------------------------------------
+
+/**
+ * Recursively move every file/dir from `srcDir` into `destDir`. If
+ * a file already exists at the destination, it's overwritten.
+ */
+function moveRecursive(srcDir: string, destDir: string): void {
+	for (const entry of readdirSync(srcDir)) {
+		const srcPath = join(srcDir, entry);
+		const destPath = join(destDir, entry);
+		if (statSync(srcPath).isDirectory()) {
+			mkdirSync(destPath, { recursive: true });
+			moveRecursive(srcPath, destPath);
+			rmSync(srcPath, { recursive: true, force: true });
+		} else {
+			renameSync(srcPath, destPath);
+		}
+	}
+}
