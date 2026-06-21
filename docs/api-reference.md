@@ -837,6 +837,45 @@ See [user-guide/metrics.md](./user-guide/metrics.md).
 
 ---
 
+## `nexus/ws` (v0.5)
+
+```ts
+import { WebSocketModule, WebSocketService, WebSocketGateway, OnWebSocketOpen, OnWebSocketMessage, OnWebSocketClose, WEBSOCKET_SERVICE_TOKEN, BunWsAdapter, NodeWsAdapter } from "nexus/ws";
+
+@Injectable()
+@WebSocketGateway("/ws")
+class ChatGateway {
+  constructor(@Inject(WEBSOCKET_SERVICE_TOKEN) private ws: WebSocketService) {}
+
+  @OnWebSocketOpen()
+  onOpen(client: WebSocketClient) { this.ws.joinRoom(client, "lobby"); }
+  @OnWebSocketMessage()
+  onMessage(client: WebSocketClient, data: { text: string }) {
+    this.ws.broadcastToRoom("lobby", { user: client.id, text: data.text });
+  }
+  @OnWebSocketClose()
+  onClose(client: WebSocketClient) { this.ws.leaveAllRooms(client); }
+}
+
+@Module({ imports: [WebSocketModule.forRoot({ gateways: [ChatGateway] })] })
+class AppModule {}
+
+// Bun
+const adapter = new BunWsAdapter(service);
+const { websocket } = await adapter.install(app, [ChatGateway]);
+Bun.serve({ port: 3000, fetch: app.fetch, websocket });
+
+// Node
+const adapter = new NodeWsAdapter(service);
+const { handleUpgrade } = await adapter.bind([ChatGateway]);
+const wss = new WebSocketServer({ noServer: true });
+server.on("upgrade", (req, socket, head) => handleUpgrade(req, socket, head));
+```
+
+See [user-guide/ws.md](./user-guide/ws.md).
+
+---
+
 ## Request-scoped DI (v0.4)
 
 ```ts

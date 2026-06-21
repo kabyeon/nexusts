@@ -9,6 +9,110 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] — 2026-06-23
+
+v0.5 is the **realtime** milestone. The framework gains a unified
+WebSocket API that works on Bun (primary) and Node.js (via the
+`ws` package) through a single decorator-based gateway pattern.
+The framework now ships 23 modules (was 22 in v0.4).
+
+### Added · `nexus/ws`
+
+`nexus/ws` gives a single, ergonomic API for Hono's
+runtime-specific WebSocket support.
+
+- **`@WebSocketGateway(path)`** — class decorator. Marks a class
+  as a WebSocket gateway. The framework installs a Hono
+  `upgradeWebSocket` handler at `<path>`.
+- **`@OnWebSocketOpen()`, `@OnWebSocketMessage()`,
+  `@OnWebSocketClose()`, `@OnWebSocketError()`** — method
+  decorator factories. Bind lifecycle events to specific methods.
+- **`WebSocketService`** — DI-friendly service for connection
+  tracking, rooms, and broadcasting.
+- **`WebSocketClient`** — per-connection wrapper with `id`,
+  `rooms`, `data`, `send()`, `close()`, `joinRoom()` /
+  `leaveRoom()`.
+- **Runtime auto-detection** — Bun is detected automatically. On
+  Node, the framework lazy-imports the `ws` package (optional
+  peer dep).
+- **`BunWsAdapter`** — wraps Hono's `createBunWebSocket` and
+  returns a `websocket` config object for `Bun.serve()`.
+- **`NodeWsAdapter`** — wraps the `ws` package, returns a
+  `handleUpgrade` function for `http.Server.upgrade` events.
+- **Rooms** — `joinRoom`, `leaveRoom`, `broadcastToRoom`,
+  `getRoomMembers`. Rooms auto-clean when empty.
+- **Broadcast** — `broadcast(data, filter?)` reaches every open
+  client; `sendTo(id, data)` reaches one.
+
+### Added · API surface
+
+```ts
+@Injectable()
+@WebSocketGateway("/ws")
+class ChatGateway {
+  constructor(@Inject(WEBSOCKET_SERVICE_TOKEN) private ws: WebSocketService) {}
+
+  @OnWebSocketOpen()
+  onOpen(client: WebSocketClient) { this.ws.joinRoom(client, "lobby"); }
+
+  @OnWebSocketMessage()
+  onMessage(client: WebSocketClient, data: { text: string }) {
+    this.ws.broadcastToRoom("lobby", { user: client.id, text: data.text });
+  }
+
+  @OnWebSocketClose()
+  onClose(client: WebSocketClient) { this.ws.leaveAllRooms(client); }
+}
+
+@Module({ imports: [WebSocketModule.forRoot({ gateways: [ChatGateway] })] })
+class AppModule {}
+```
+
+### Added · Auth patterns
+
+WebSocket auth via sub-protocol token, session cookie (existing
+`nexus/session` middleware), or first-message handshake. See
+`docs/user-guide/ws.md` for the full guide.
+
+### Changed
+
+- Package version bumped to `0.5.0`.
+- New bundle entry point: `./ws`. 23 entry points total;
+  46 runtime files emitted to `dist/`.
+
+### Dependencies
+
+- **Optional peer dep** `nexus/ws`:
+  - `ws` (^8.18.0) — only on Node runtime. Bun apps don't need it.
+
+### Documentation
+
+- New guide `docs/user-guide/ws.md` (English) + `ws.ko.md`
+  (Korean): quick start (Bun and Node), `WebSocketService` API,
+  `WebSocketClient` wrapper, auth patterns, heartbeats, Cloudflare
+  Workers integration recipe, configuration reference.
+- Updated:
+  - `docs/README.md` — module table now lists 23 entries.
+  - `docs/api-reference.md` — new `nexus/ws` section.
+  - `README.md` — module count 22 → 23; roadmap updated.
+
+### Verification (v0.5)
+
+- **490 / 490 tests pass** in 2.71s (excluding pre-existing failures
+  in `tests/validation`, `tests/e2e`, `tests/config` that predate
+  v0.3). Up from 464 in v0.4 (+26 new).
+- `tsc --noEmit` clean.
+- 23 bundle entry points; 46 runtime files emitted to `dist/`.
+
+### Migration from v0.4
+
+The vast majority of v0.4 code is compatible with v0.5 unchanged.
+No breaking changes in this release. New `nexus/ws` module is
+opt-in — install it (and the `ws` package on Node) only when you
+need WebSockets.
+
+---
+
 ## [0.4.0] — 2026-06-22
 
 v0.4 is the **observability and developer experience** milestone.
@@ -420,6 +524,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.5.0]: https://github.com/kabyeon/nexusjs/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/kabyeon/nexusjs/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/nexusjs/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/nexusjs/compare/v0.1.0...v0.2.0

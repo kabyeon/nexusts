@@ -23,6 +23,7 @@
     "src/sse/**/*.ts",
     "src/tracing/**/*.ts",
     "src/metrics/**/*.ts",
+    "src/ws/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",

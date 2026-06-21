@@ -25,6 +25,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Request-scoped DI (v0.4)** | [`request-scope.md`](./request-scope.md) | [`request-scope.ko.md`](./request-scope.ko.md) |
 | **Distributed tracing (v0.4)** | [`tracing.md`](./tracing.md) | [`tracing.ko.md`](./tracing.ko.md) |
 | **Prometheus metrics (v0.4)** | [`metrics.md`](./metrics.md) | [`metrics.ko.md`](./metrics.ko.md) |
+| **WebSockets (v0.5)** | [`ws.md`](./ws.md) | [`ws.ko.md`](./ws.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 

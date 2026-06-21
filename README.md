@@ -13,7 +13,7 @@
 
 ## What's in v0.4
 
-The framework now ships **22 independent modules** — every one is
+The framework now ships **23 independent modules** — every one is
 its own bundle entry point, so you install only what you use. Tier 1
 and Tier 2 gaps from the NestJS / AdonisJS gap analyses are now
 fully closed.
@@ -43,6 +43,7 @@ fully closed.
 | `nexus/tracing` | OpenTelemetry distributed tracing. Lazy SDK loading. `@Trace()` decorator. W3C + B3 propagation |
 | `nexus/metrics` | Prometheus / OpenMetrics. Counter / Gauge / Histogram / Summary. `@Counted()` / `@Timed()` decorators |
 | **Request-scoped DI** *(core)* | `@Injectable({ scope: 'request' })` for per-request provider lifetime via `AsyncLocalStorage` |
+| `nexus/ws` | WebSockets on Bun (primary) and Node (via `ws`). `@WebSocketGateway()`, `@OnWebSocketMessage()`, rooms, broadcast |
 
 See [docs/user-guide/drizzle.md](./docs/user-guide/drizzle.md) for the
 Drizzle integration guide, [docs/user-guide/tracing.md](./docs/user-guide/tracing.md)
@@ -66,7 +67,7 @@ v0.4 release notes.
 | Three view engines (Rendu/Edge/Inertia) | ❌ |   ✅   |   ❌   |    ✅     |
 | **Default ORM (Drizzle, 5 dialects)** |   △   | Lucid  |   ❌   |    ✅     |
 | **Multi-pod session, cache, limiter via Drizzle** |  △ | ✅ | ❌ | **✅** |
-| **22 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
+| **23 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
 | **SQL-injection-safe raw queries by construction** |   △   |   △   |   ❌   |    ✅     |
 | **Migrations + autoMigrate on boot** |   △   |   ✅   |   ❌   |    ✅     |
 
@@ -648,14 +649,16 @@ cross-cutting (limiter, shield, cache, drive, mail), and `nexus/drizzle`
 as the default ORM. Every Tier 1+2 gap from the NestJS / AdonisJS
 analyses is closed.
 
-**v0.4 (current)** ✅ — observability and developer experience.
+**v0.5 (current)** ✅ — WebSockets. Hono’s runtime-specific WebSocket support is now unified behind a single API: `@WebSocketGateway()` + `@OnWebSocketMessage()`. Works on Bun (primary, via `hono/bun`) and Node (via the `ws` package).
+
+**v0.4** ✅ — observability and developer experience.
 Every Tier 1 and Tier 2 gap from the NestJS / AdonisJS analyses
 is closed. New: `nexus/openapi`, `nexus/upload`, `nexus/sse`,
 `nexus/tracing`, `nexus/metrics`, and request-scoped DI in the
 core. The `nexus/session` `@CurrentSession` v0.1 alias is
 removed — use `@Session` instead.
 
-**v0.5** — long-term API stability + DX polish.
+**v1.0** — long-term API stability + DX polish.
 
 - `nexus/i18n` — multi-locale messages
 - AI agent module + MCP server

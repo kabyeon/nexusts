@@ -9,6 +9,94 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
+## [0.5.0] — 2026-06-23
+
+v0.5는 **실시간** 마일스톤. 프레임워크가 Bun (기본) 및 Node.js
+(`ws` 패키지 경유)에서 작동하는 통합 WebSocket API를 획득. 단일
+데코레이터 기반 게이트웨이 패턴. 프레임워크는 이제 23개 모듈 제공
+(v0.4에서 22개에서 증가).
+
+### 추가 · `nexus/ws`
+
+`nexus/ws`는 Hono의 런타임별 WebSocket 지원에 대한 단일 관용적 API 제공.
+
+- **`@WebSocketGateway(path)`** — 클래스 데코레이터. 클래스를 WebSocket 게이트웨이로 표시. 프레임워크가 `<path>`에 Hono `upgradeWebSocket` 핸들러 설치.
+- **`@OnWebSocketOpen()`, `@OnWebSocketMessage()`, `@OnWebSocketClose()`, `@OnWebSocketError()`** — 메서드 데코레이터 팩토리. 라이프사이클 이벤트를 특정 메서드에 바인딩.
+- **`WebSocketService`** — DI 친화적 서비스. 연결 추적, rooms, broadcasting.
+- **`WebSocketClient`** — `id`, `rooms`, `data`, `send()`, `close()`, `joinRoom()` / `leaveRoom()`을 가진 per-connection 래퍼.
+- **런타임 자동 감지** — Bun은 자동 감지. Node에서 프레임워크는 `ws` 패키지 (optional peer dep)를 lazy-import.
+- **`BunWsAdapter`** — Hono의 `createBunWebSocket`을 래핑하여 `Bun.serve()`용 `websocket` config 객체 반환.
+- **`NodeWsAdapter`** — `ws` 패키지 래핑, `http.Server.upgrade` 이벤트용 `handleUpgrade` 함수 반환.
+- **Rooms** — `joinRoom`, `leaveRoom`, `broadcastToRoom`, `getRoomMembers`. Room은 비면 자동 정리.
+- **Broadcast** — `broadcast(data, filter?)`는 모든 열린 클라이언트에 도달; `sendTo(id, data)`는 한 명에 도달.
+
+### 추가 · API surface
+
+```ts
+@Injectable()
+@WebSocketGateway("/ws")
+class ChatGateway {
+  constructor(@Inject(WEBSOCKET_SERVICE_TOKEN) private ws: WebSocketService) {}
+
+  @OnWebSocketOpen()
+  onOpen(client: WebSocketClient) { this.ws.joinRoom(client, "lobby"); }
+
+  @OnWebSocketMessage()
+  onMessage(client: WebSocketClient, data: { text: string }) {
+    this.ws.broadcastToRoom("lobby", { user: client.id, text: data.text });
+  }
+
+  @OnWebSocketClose()
+  onClose(client: WebSocketClient) { this.ws.leaveAllRooms(client); }
+}
+
+@Module({ imports: [WebSocketModule.forRoot({ gateways: [ChatGateway] })] })
+class AppModule {}
+```
+
+### 추가 · Auth 패턴
+
+Sub-protocol 토큰, 세션 쿠키 (기존 `nexus/session` 미들웨어),
+또는 first-message handshake를 통한 WebSocket 인증. 자세한 가이드는
+`docs/user-guide/ws.md` 참조.
+
+### 변경
+
+- 패키지 버전 0.5.0으로 bump.
+- 신규 번들 entry point: `./ws`. 23 entry points 합계;
+  46 runtime files emitted to `dist/`.
+
+### 의존성
+
+- **`nexus/ws`의 optional peer dep**:
+  - `ws` (^8.18.0) — Node 런타임에서만. Bun 앱은 불필요.
+
+### 문서
+
+- 신규 가이드 `docs/user-guide/ws.md` (영문) + `ws.ko.md` (한글):
+  빠른 시작 (Bun 및 Node), `WebSocketService` API, `WebSocketClient` 래퍼,
+  인증 패턴, heartbeat, Cloudflare Workers 통합 레시피, 설정 레퍼런스.
+- 갱신:
+  - `docs/README.md` — 모듈 표가 23 항목.
+  - `docs/api-reference.md` — 신규 `nexus/ws` 섹션.
+  - `README.md` — 모듈 수 22 → 23; 로드맵 갱신.
+
+### 검증 (v0.5)
+
+- **490 / 490 tests pass** in 2.71s (v0.3 이전부터 존재한
+  `tests/validation`, `tests/e2e`, `tests/config`의 실패 제외). v0.4의
+  464에서 +26 신규.
+- `tsc --noEmit` clean.
+- 23 bundle entry points; 46 runtime files emitted to `dist/`.
+
+### v0.4에서 마이그레이션
+
+대부분의 v0.4 코드는 변경 없이 v0.5와 호환됨. 본 릴리스의 breaking
+change 없음. 신규 `nexus/ws` 모듈은 opt-in — WebSocket이 필요할 때만
+설치 (Node에서는 `ws` 패키지도).
+
+---
+
 ## [0.4.0] — 2026-06-22
 
 v0.4는 **관측 가능성과 개발자 경험** 마일스톤입니다. NestJS / AdonisJS
@@ -328,6 +416,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.5.0]: https://github.com/kabyeon/nexusjs/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/kabyeon/nexusjs/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/nexusjs/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/nexusjs/compare/v0.1.0...v0.2.0

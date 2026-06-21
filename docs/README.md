@@ -27,7 +27,7 @@ provided in `*.ko.md` files.
 
 ---
 
-## Modules shipped in v0.4 (22 total)
+## Modules shipped in v0.5 (23 total)
 
 Every module is its own bundle entry point. Install only what you use.
 
@@ -56,6 +56,7 @@ Every module is its own bundle entry point. Install only what you use.
 | **Tracing** *(v0.4)* | `nexus/tracing` | `nexus/tracing` | [`user-guide/tracing.md`](./user-guide/tracing.md) |
 | **Metrics** *(v0.4)* | `nexus/metrics` | `nexus/metrics` | [`user-guide/metrics.md`](./user-guide/metrics.md) |
 | **Request-scoped DI** *(v0.4)* | `nexus` (core) | `nexus/core` | [`user-guide/request-scope.md`](./user-guide/request-scope.md) |
+| **WebSockets** *(v0.5)* | `nexus/ws` | `nexus/ws` | [`user-guide/ws.md`](./user-guide/ws.md) |
 
 ---
 
@@ -88,6 +89,7 @@ Step-by-step guides for building applications.
 | **Tracing** *(v0.4)* | [`user-guide/tracing.md`](./user-guide/tracing.md) | [`user-guide/tracing.ko.md`](./user-guide/tracing.ko.md) |
 | **Metrics** *(v0.4)* | [`user-guide/metrics.md`](./user-guide/metrics.md) | [`user-guide/metrics.ko.md`](./user-guide/metrics.ko.md) |
 | **Request-scoped DI** *(v0.4)* | [`user-guide/request-scope.md`](./user-guide/request-scope.md) | [`user-guide/request-scope.ko.md`](./user-guide/request-scope.ko.md) |
+| **WebSockets** *(v0.5)* | [`user-guide/ws.md`](./user-guide/ws.md) | [`user-guide/ws.ko.md`](./user-guide/ws.ko.md) |
 
 ---
 
@@ -145,8 +147,9 @@ Architectural deep-dives for contributors and advanced users.
 | **v0.1** | ✅ Shipped 2026-04-30 | MVC core, DI, validation, Rendu/Edge/Inertia adapters |
 | **v0.2** | ✅ Shipped 2026-05-15 | Session auth, BullMQ queue, event system, scheduler, CLI |
 | **v0.3** | ✅ Shipped 2026-06-21 | Production basics, cross-cutting, Drizzle ORM (default) |
-| **v0.4** | ✅ **Current** | Observability (openapi, upload, sse, tracing, metrics) + request-scoped DI |
-| v0.5 → 1.0 | Planned | `nexus/i18n`, AI agent module, production hardening, stable public API |
+| **v0.4** | ✅ Shipped 2026-06-22 | Observability (openapi, upload, sse, tracing, metrics) + request-scoped DI |
+| **v0.5** | ✅ **Current** | `nexus/ws` (Hono WebSocket integration, Bun + Node runtimes) |
+| v1.0 | Planned | `nexus/i18n`, AI agent module, production hardening, stable public API |
 
 The framework follows [Semantic Versioning](https://semver.org/). Until
 v1.0, minor version bumps may include breaking changes. See
