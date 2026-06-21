@@ -49,7 +49,7 @@ interface PlanEntry {
 export const initCommand: Command = {
 	name: "init",
 	aliases: ["i"],
-	summary: "Add NexusJS to the current (or target) directory",
+	summary: "Initialize nx.config.ts + src/app scaffold in the current directory",
 	description:
 		"Non-destructive scaffold: adds nx.config.ts, src/app/*, and merges NexusJS into the existing package.json and tsconfig.json. Skips files that already exist (unless --force).",
 	examples: [
