@@ -8,10 +8,11 @@ AdonisJS, and the edge performance of Hono.
 This documentation is primarily in English; Korean translations are
 provided in `*.ko.md` files.
 
-> **Current version: v0.4** — observability & DX. All Tier 1
-> and Tier 2 gaps from the NestJS / AdonisJS gap analyses are
-> closed. 22 modules. See [`../CHANGELOG.md`](../CHANGELOG.md) for
-> the release notes.
+> **Current version: v0.6** — gRPC + publishable dist. 26 modules.
+> The `nexus/grpc` module adds reflection-based gRPC server + typed
+> client. The build pipeline now emits a clean `dist/` that matches
+> `package.json` `exports` and exposes the `nx` CLI via `bin`.
+> See [`../CHANGELOG.md`](../CHANGELOG.md) for the release notes.
 
 ---
 
@@ -60,6 +61,7 @@ Every module is its own bundle entry point. Install only what you use.
 | **Crypto** *(v0.5)* | `nexus/crypto` | `nexus/crypto` | [`user-guide/crypto.md`](./user-guide/crypto.md) |
 | **i18n** *(v0.5)* | `nexus/i18n` | `nexus/i18n` | [`user-guide/i18n.md`](./user-guide/i18n.md) |
 | **Redis client** *(v0.5)* | `nexus/redis` | `nexus/redis` | [`user-guide/redis.md`](./user-guide/redis.md) |
+| **gRPC** *(v0.6)* | `nexus/grpc` | `nexus/grpc` | [`user-guide/grpc.md`](./user-guide/grpc.md) |
 
 ---
 
@@ -96,6 +98,7 @@ Step-by-step guides for building applications.
 | **Crypto** *(v0.5)* | [`user-guide/crypto.md`](./user-guide/crypto.md) | [`user-guide/crypto.ko.md`](./user-guide/crypto.ko.md) |
 | **i18n** *(v0.5)* | [`user-guide/i18n.md`](./user-guide/i18n.md) | [`user-guide/i18n.ko.md`](./user-guide/i18n.ko.md) |
 | **Redis client** *(v0.5)* | [`user-guide/redis.md`](./user-guide/redis.md) | [`user-guide/redis.ko.md`](./user-guide/redis.ko.md) |
+| **gRPC** *(v0.6)* | [`user-guide/grpc.md`](./user-guide/grpc.md) | [`user-guide/grpc.ko.md`](./user-guide/grpc.ko.md) |
 | **Testing the published package** *(dist/ 검증)* | [`user-guide/testing-published-package.md`](./user-guide/testing-published-package.md) | [`user-guide/testing-published-package.ko.md`](./user-guide/testing-published-package.ko.md) |
 
 ---
@@ -155,8 +158,9 @@ Architectural deep-dives for contributors and advanced users.
 | **v0.2** | ✅ Shipped 2026-05-15 | Session auth, BullMQ queue, event system, scheduler, CLI |
 | **v0.3** | ✅ Shipped 2026-06-21 | Production basics, cross-cutting, Drizzle ORM (default) |
 | **v0.4** | ✅ Shipped 2026-06-22 | Observability (openapi, upload, sse, tracing, metrics) + request-scoped DI |
-| **v0.5** | ✅ **Current** | `nexus/ws` (Hono WebSocket integration, Bun + Node) + `nexus/crypto` (encryption + hashing) |
-| v1.0 | Planned | `nexus/i18n`, AI agent module, production hardening, stable public API |
+| **v0.5** | ✅ Shipped 2026-06-23 | `nexus/ws` (Hono WebSocket integration, Bun + Node) + `nexus/crypto` (encryption + hashing) |
+| **v0.6** | ✅ **Current** 2026-06-24 | `nexus/grpc` (reflection-based gRPC server + typed client) + publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten) |
+| v1.0 | Planned | Stable public API surface (semver guarantees), multi-runtime CI, performance benchmarks, long-term LTS |
 
 The framework follows [Semantic Versioning](https://semver.org/). Until
 v1.0, minor version bumps may include breaking changes. See

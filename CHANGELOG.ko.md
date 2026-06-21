@@ -9,7 +9,75 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
-## [0.5.0] — 2026-06-23
+## [0.6.0] — 2026-06-24
+
+v0.6는 **gRPC + 툴링** 마일스톤. 프레임워크가 reflection 기반
+proto 로딩과 typed client API를 갖춘 gRPC 통합을 획득. 빌드
+파이프라인은 `package.json` `exports`와 일치하는 publish 가능한
+`dist/` 레이아웃을 생성.
+
+### 추가 · `nexus/grpc`
+
+`@grpc/grpc-js` + `@grpc/proto-loader` 기반의 gRPC 서버 + typed
+client 통합. 둘 다 **optional** peer dependency — gRPC 모듈을
+사용할 때만 설치.
+
+- **Reflection 기반 proto 로딩.** codegen 단계 없음. `.proto` 파일을
+  어디든 두고 `protoPath`만 `GrpcModule.forRoot(...)`에 전달.
+- **Decorator 기반 service 구현.** 클래스에 `@GrpcService("ServiceName")`,
+  메서드에 `@GrpcMethod("FindById")`를 붙이면 끝. JS 메서드명과
+  proto 메서드명은 독립적.
+- **DI 통합.** Service 구현은 완전한 DI 시민; `@Inject(Token)`로
+  database / event bus 등 의존성 주입 가능.
+- **Typed client.** `grpc.client<UserClient>("ServiceName", { url })`로
+  서비스 메서드당 하나씩 Promise를 반환하는 메서드를 가진 객체 반환.
+  메서드명은 camelCase로 변환 (`FindById` → `findById`).
+- **Multi-service / multi-proto.** 한 서버에 여러 서비스, 여러
+  `.proto` 파일을 호스팅.
+- **Lifecycle.** `await grpc.start()`로 bind, `await grpc.stop()`로
+  graceful shutdown (1s timeout 후 force).
+- **v1 범위: unary 메서드만.** Server-streaming, client-streaming,
+  bidi streaming은 v2에서 예정.
+
+### 수정 · 빌드 파이프라인
+
+- **`dist/src/*` → `dist/*` 평탄화.** `bun.build()`와 `tsc`가
+  source path를 보존해서 `dist/src/<name>/...`로 emit하던 문제 해결.
+  post-build `moveRecursive()` 단계로 `exports` 필드와 일치하는
+  publish 레이아웃 생성.
+- **Consumer `package.json`에 `bin` 필드 누락.** `bin: { nx: "./cli/index.js" }`
+  추가하여 `bunx nx` / `npx nx`가 install 후 정상 동작.
+- **`@opentelemetry/sdk-node` 빈 문자열 peer dep.** published
+  peer-deps 리스트에서 빈 문자열 제거.
+
+### 문서
+
+- 신규: [`docs/user-guide/grpc.md`](./docs/user-guide/grpc.md) (영어)
+  - [`grpc.ko.md`](./docs/user-guide/grpc.ko.md) (한국어)
+- 신규: [`docs/user-guide/testing-published-package.md`](./docs/user-guide/testing-published-package.md) (영어)
+  - [`testing-published-package.ko.md`](./docs/user-guide/testing-published-package.ko.md) (한국어)
+  — `dist/`를 로컬에서 테스트하는 3가지 방법 (`bun link` / `file:` / `npm pack`)
+
+### 검증 (v0.6)
+
+- `nexus/grpc`: 10 / 10 테스트 통과.
+- 전체 suite: 634 / 639 테스트 통과 (5개 실패는 v0.5부터 알려진
+  `tests/validation` 이슈, v0.6과 무관).
+- `bun run build` 결과: 26개 모듈의 깨끗한 `dist/` 생성, `exports`
+  필드가 end-to-end로 정상 resolve (`bun add ../nexusjs/dist` →
+  `bunx nx` 동작).
+- `bunx tsc --noEmit` `src/` 클린.
+- `nexus/grpc`은 `dist/`의 54번째 runtime file.
+
+### 참고
+
+- v0.5 작업 cycle 내내 `package.json` 버전은 0.4.0이었음. 0.6.0으로
+  bump하는 이유는 v0.6이 gRPC 모듈 + publish 가능한 `dist/` 파이프라인
+  둘 다 user-visible 추가이기 때문. v0.5 라인 (ws / crypto / i18n /
+  redis / cli)은 `0.5.0`으로 release; 이 commit은 package 버전을
+  문서화된 release line과 일치시킴.
+
+---
 
 v0.5는 **실시간** 마일스톤. 프레임워크가 Bun (기본) 및 Node.js
 (`ws` 패키지 경유)에서 작동하는 통합 WebSocket API를 획득. 단일
@@ -466,7 +534,6 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
-[0.5.0]: https://github.com/kabyeon/nexusjs/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/kabyeon/nexusjs/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/nexusjs/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/nexusjs/compare/v0.1.0...v0.2.0
