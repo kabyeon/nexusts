@@ -1,0 +1,239 @@
+/**
+ * Tests for `nx init`.
+ *
+ * Coverage:
+ * 1. Error path: target directory does not exist
+ * 2. Fresh init: only package.json exists → merge + create the rest
+ * 3. Re-run: all files already exist → skip (non-destructive)
+ * 4. --force: overwrites existing files
+ * 5. package.json merge: existing deps preserved, nexusjs added if missing
+ * 6. package.json no-op: nexusjs already in deps → file untouched
+ * 7. tsconfig.json merge: experimentalDecorators added if missing
+ * 8. Command registration: name, aliases
+ */
+
+import "reflect-metadata";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { mkdir, mkdtemp, readFile, rm, writeFile, stat } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { initCommand } from "../../src/cli/commands/init.js";
+import type { CommandContext } from "../../src/cli/core/index.js";
+
+async function makeTmp(): Promise<string> {
+	const d = await mkdtemp(join(tmpdir(), "nx-init-"));
+	return d;
+}
+
+function makeCtx(target: string, flags: Record<string, string | boolean> = {}): CommandContext {
+	return {
+		flags,
+		positional: [],
+		cwd: target,
+		raw: [],
+	} as unknown as CommandContext;
+}
+
+async function exists(p: string): Promise<boolean> {
+	try {
+		await stat(p);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+describe("nx init command registration", () => {
+	it("has the right name and aliases", () => {
+		expect(initCommand.name).toBe("init");
+		expect(initCommand.aliases).toContain("i");
+	});
+
+	it("declares the expected flags", () => {
+		const names = initCommand.flags?.map((f) => f.name) ?? [];
+		for (const expected of [
+			"target",
+			"style",
+			"view",
+			"orm",
+			"db",
+			"frontend",
+			"no-ssr",
+			"force",
+			"no-interaction",
+		]) {
+			expect(names).toContain(expected);
+		}
+	});
+});
+
+describe("nx init — error path", () => {
+	it("errors when target directory does not exist", async () => {
+		const target = join(tmpdir(), `nx-init-nope-${Date.now()}`);
+		// Don't create the directory
+		const code = await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+		expect(code).toBe(1);
+	});
+});
+
+describe("nx init — fresh install", () => {
+	let target: string;
+	beforeEach(async () => {
+		target = await makeTmp();
+	});
+	afterEach(async () => {
+		await rm(target, { recursive: true, force: true });
+	});
+
+	it("merges into an existing package.json and creates the rest", async () => {
+		// Simulate `bun init` output
+		await writeFile(
+			join(target, "package.json"),
+			JSON.stringify(
+				{
+					name: "my-app",
+					module: "index.ts",
+					type: "module",
+					private: true,
+					dependencies: { hono: "^4.6.0" },
+				},
+				null,
+				2,
+			),
+		);
+
+		const code = await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+		expect(code).toBe(0);
+
+		// Created files
+		expect(await exists(join(target, "nx.config.ts"))).toBe(true);
+		expect(await exists(join(target, "tsconfig.json"))).toBe(true);
+		expect(await exists(join(target, "src/app/main.ts"))).toBe(true);
+		expect(await exists(join(target, "src/app/app.module.ts"))).toBe(true);
+		expect(await exists(join(target, "src/app/controllers/home.controller.ts"))).toBe(
+			true,
+		);
+		expect(await exists(join(target, "README.md"))).toBe(true);
+
+		// package.json: merged — hono preserved, nexusjs added
+		const pkg = JSON.parse(await readFile(join(target, "package.json"), "utf8"));
+		expect(pkg.dependencies.hono).toBe("^4.6.0");
+		expect(pkg.dependencies.nexusjs).toBe("*");
+		expect(pkg.name).toBe("my-app"); // existing name preserved
+
+		// tsconfig.json: experimentalDecorators added
+		const ts = JSON.parse(await readFile(join(target, "tsconfig.json"), "utf8"));
+		expect(ts.compilerOptions.experimentalDecorators).toBe(true);
+		expect(ts.compilerOptions.emitDecoratorMetadata).toBe(true);
+		expect(ts.include).toContain("src/**/*.ts");
+		expect(ts.include).toContain("nx.config.ts");
+	});
+
+	it("is a no-op merge on package.json when nexusjs is already a dep", async () => {
+		const original = JSON.stringify(
+			{
+				name: "already-had-nexus",
+				dependencies: { nexusjs: "../nexusjs/dist/nexusjs-0.6.1.tgz" },
+			},
+			null,
+			2,
+		);
+		await writeFile(join(target, "package.json"), original);
+
+		await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+
+		// Should be byte-identical (merge detected no change needed)
+		const after = await readFile(join(target, "package.json"), "utf8");
+		expect(after).toBe(original);
+	});
+});
+
+describe("nx init — idempotent re-run", () => {
+	let target: string;
+	beforeEach(async () => {
+		target = await makeTmp();
+	});
+	afterEach(async () => {
+		await rm(target, { recursive: true, force: true });
+	});
+
+	it("skips files that already exist (without --force)", async () => {
+		await writeFile(join(target, "package.json"), JSON.stringify({ name: "x" }));
+		await writeFile(join(target, "nx.config.ts"), "// existing config");
+
+		// First run: creates everything
+		await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+
+		// Capture existing config
+		const existingConfig = await readFile(join(target, "nx.config.ts"), "utf8");
+
+		// Second run: should skip (or merge) without overwriting
+		await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+			}),
+		);
+
+		// nx.config.ts is unchanged
+		expect(await readFile(join(target, "nx.config.ts"), "utf8")).toBe(existingConfig);
+	});
+
+	it("--force overwrites existing files", async () => {
+		await writeFile(join(target, "package.json"), JSON.stringify({ name: "x" }));
+		await writeFile(join(target, "nx.config.ts"), "// OLD");
+		await mkdir(join(target, "src/app"), { recursive: true });
+		await writeFile(join(target, "src/app/main.ts"), "// OLD");
+
+		await initCommand.run!(
+			makeCtx(target, {
+				"no-interaction": true,
+				view: "none",
+				orm: "none",
+				db: "none",
+				frontend: "react",
+				force: true,
+			}),
+		);
+
+		// nx.config.ts was overwritten
+		const content = await readFile(join(target, "nx.config.ts"), "utf8");
+		expect(content).not.toBe("// OLD");
+		expect(content.length).toBeGreaterThan(0);
+	});
+});
