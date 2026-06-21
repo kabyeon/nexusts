@@ -153,8 +153,17 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kabyeon/nexusjs.git"
+  },
+  "homepage": "https://github.com/kabyeon/nexusjs#readme",
+  "bugs": {
+    "url": "https://github.com/kabyeon/nexusjs/issues"
+  },
   "scripts": {
     "build": "bun run build.ts",
     "dev": "bun --hot src/app/main.ts",

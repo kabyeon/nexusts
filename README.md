@@ -11,7 +11,7 @@
 
 ---
 
-## What's in v0.4
+## What's in v0.6
 
 The framework now ships **26 independent modules** — every one is
 its own bundle entry point, so you install only what you use. Tier 1
