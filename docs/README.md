@@ -96,6 +96,7 @@ Step-by-step guides for building applications.
 | **Crypto** *(v0.5)* | [`user-guide/crypto.md`](./user-guide/crypto.md) | [`user-guide/crypto.ko.md`](./user-guide/crypto.ko.md) |
 | **i18n** *(v0.5)* | [`user-guide/i18n.md`](./user-guide/i18n.md) | [`user-guide/i18n.ko.md`](./user-guide/i18n.ko.md) |
 | **Redis client** *(v0.5)* | [`user-guide/redis.md`](./user-guide/redis.md) | [`user-guide/redis.ko.md`](./user-guide/redis.ko.md) |
+| **Testing the published package** *(dist/ 검증)* | [`user-guide/testing-published-package.md`](./user-guide/testing-published-package.md) | [`user-guide/testing-published-package.ko.md`](./user-guide/testing-published-package.ko.md) |
 
 ---
 
