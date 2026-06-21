@@ -27,7 +27,6 @@
     "src/crypto/**/*.ts",
     "src/i18n/**/*.ts",
     "src/redis/**/*.ts",
-    "src/redis/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",
@@ -48,7 +47,12 @@
     "src/openapi/**/*.d.ts",
     "src/upload/**/*.d.ts",
     "src/sse/**/*.d.ts",
-    "src/tracing/**/*.d.ts"
+    "src/tracing/**/*.d.ts",
+    "src/metrics/**/*.d.ts",
+    "src/ws/**/*.d.ts",
+    "src/crypto/**/*.d.ts",
+    "src/i18n/**/*.d.ts",
+    "src/redis/**/*.d.ts"
   ],
   "compilerOptions": {
     "rootDir": "./src"

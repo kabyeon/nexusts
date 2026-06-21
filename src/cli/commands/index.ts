@@ -24,6 +24,7 @@ import makeValidator from "./make-validator.js";
 import dbMigrate from "./db-migrate.js";
 import dbSeed from "./db-seed.js";
 import newCmd from "./new.js";
+import repl from "./repl.js";
 import routeList from "./route-list.js";
 
 export const commands: Command[] = [
@@ -46,6 +47,7 @@ export const commands: Command[] = [
 	dbSeed,
 	routeList,
 	info,
+	repl,
 ];
 
 /** Look up a command by primary name OR by any alias. */

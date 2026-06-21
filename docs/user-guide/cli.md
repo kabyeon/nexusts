@@ -38,6 +38,7 @@ in `nexus/package.json`.
 | `nx make:middleware <Name>` | Middleware class |
 | `nx make:validator <Name>` | Zod DTO |
 | `nx route:list` | List registered routes |
+| `nx repl` | Interactive REPL with the app's services |
 | `nx info` | Print resolved config + env |
 | `nx help [command]` | Show help |
 
@@ -54,6 +55,7 @@ Every command has **short aliases**:
 | `nx make:validator` | `mv`, `make-validator` |
 | `nx make:crud` | `crud`, `make-crud`, `scaffold` |
 | `nx route:list` | `routes`, `route-list` |
+| `nx repl` | `console`, `shell` |
 | `nx info` | `i` |
 | `nx new` | `n` |
 | `nx init` | `i` |
@@ -268,6 +270,48 @@ nx make:validator CreateOrder
 ```
 
 ---
+
+## 6.5. `nx repl`
+
+Start an interactive REPL with the app's services
+pre-loaded. Useful for debugging, exploring data, and trying
+out queries without writing a throwaway script.
+
+```bash
+nx repl                                  # boot ./src/app/app.module.ts
+nx repl --module src/app/app.module.ts
+nx repl --no-boot                        # vanilla REPL (no app)
+nx repl --history /tmp/nx-history        # custom history file
+```
+
+Once inside:
+
+```
+❯ await db.select().from(users).all()
+❯ logger.info("hello from REPL")
+❯ .services              # list registered services
+❯ .routes                # list registered routes
+❯ .modules               # list registered modules
+❯ .help                  # all dot-commands
+❯ .exit                  # leave the REPL
+```
+
+Pre-loaded variables (when an app is booted):
+
+| Variable | Source |
+| -------- | ------ |
+| `app` | The `Application` instance |
+| `container` | The DI container |
+| `db` | `DrizzleService` (if registered) |
+| `logger` | `LoggerService` (if registered) |
+| `cfg` | `ConfigService` (if registered) |
+| `cache` | `CacheService` (if registered) |
+| `events` | `EventService` (if registered) |
+
+Multi-line input is detected by bracket-matching — an expression
+with an unclosed `{}`, `[]`, or `()` keeps the prompt in `...`
+continuation mode. History is persisted to `.nx-repl-history`
+(or the path given by `--history`).
 
 ## 7. `nx info`
 

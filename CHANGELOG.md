@@ -153,6 +153,17 @@ WebSocket auth via sub-protocol token, session cookie (existing
 - New bundle entry point: `./ws`. 23 entry points total;
   46 runtime files emitted to `dist/`.
 
+### Added · CLI
+
+- New `nx repl` command (aliases: `console`, `shell`). Boots
+  the user's AppModule and drops into an interactive REPL with
+  `app`, `container`, `db`, `logger`, `cfg`, `cache`, and
+  `events` pre-loaded. Supports multi-line input (bracket-matching),
+  async code, history (persisted to `.nx-repl-history`), and
+  dot-commands: `.help`, `.exit`, `.services`, `.modules`,
+  `.routes`, `.history`, `.clear`, `.reset`. Use `--no-boot`
+  for a vanilla REPL.
+
 ### Changed · CLI
 
 - `nx migrate` is now `nx db:migrate`. The old name still

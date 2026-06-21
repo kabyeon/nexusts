@@ -1041,6 +1041,7 @@ nx db:seed --create users                 # scaffold a new seed file
 nx db:seed --file 01_users                # run a single seed
 nx db:seed --reset                        # truncate all tables, then seed
 nx route:list                             # list registered routes
+nx repl                                   # interactive REPL with services
 nx info                                   # show resolved config
 ```
 

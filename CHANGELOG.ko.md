@@ -66,6 +66,16 @@ Sub-protocol 토큰, 세션 쿠키 (기존 `nexus/session` 미들웨어),
 - 신규 번들 entry point: `./ws`. 23 entry points 합계;
   46 runtime files emitted to `dist/`.
 
+### 추가 · CLI
+
+- 신규 `nx repl` 명령 (별칭: `console`, `shell`). 사용자의
+  AppModule을 boot하고 `app`, `container`, `db`, `logger`,
+  `cfg`, `cache`, `events`이 사전 로드된 대화형 REPL로 진입.
+  다중 행 입력 (bracket-matching), async 코드, history
+  (영구 저장), dot-commands 지원: `.help`, `.exit`,
+  `.services`, `.modules`, `.routes`, `.history`, `.clear`,
+  `.reset`. raw REPL을 원하면 `--no-boot` 사용.
+
 ### 변경 · CLI
 
 - `nx migrate`는 이제 `nx db:migrate`. 이전 이름은 하위 호환을
