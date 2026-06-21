@@ -18,6 +18,7 @@ import { ModuleScanner } from "./di/scanner.js";
 import { NexusServer, type NexusServerOptions } from "./http/server.js";
 import type { ViewAdapter } from "./view/types.js";
 import { RenduAdapter } from "./view/rendu.js";
+import { setViewPaths as setViewPathsModule } from "./view/view-engine.js";
 import type { Type } from "./di/tokens.js";
 import { Inertia, type InertiaConfig } from "./view/inertia/index.js";
 
@@ -85,6 +86,35 @@ export class Application {
 	/** Replace the default view adapter. */
 	setViewAdapter(adapter: ViewAdapter): this {
 		this.viewAdapter = adapter;
+		return this;
+	}
+
+	/**
+	 * Set the directories to search when a controller returns
+	 * `{ view: 'about.html' }`. Defaults to `[]` (no file-based
+	 * views; controllers must pass inline template source).
+	 *
+	 * Typical setup:
+	 *
+	 *   import { setViewPaths } from 'nexusjs/view';
+	 *   setViewPaths(['views', 'src/app/views']);
+	 *
+	 * or in `nx.config.ts`:
+	 *
+	 *   export default {
+	 *     view: 'rendu',
+	 *     viewPaths: ['views'],
+	 *   };
+	 *
+	 * After this, `@Get('/about') return { view: 'about.html', data }`
+	 * loads `views/about.html` from disk instead of treating the
+	 * string as inline template source.
+	 *
+	 * Edge-only runtimes (Cloudflare Workers) should leave this
+	 * empty and pass inline template strings.
+	 */
+	setViewPaths(paths: string[]): this {
+		setViewPathsModule(paths);
 		return this;
 	}
 

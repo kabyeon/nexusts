@@ -21,7 +21,19 @@ export class RenduAdapter implements ViewAdapter {
 		context?: ViewContext,
 		options?: ViewOptions,
 	): Promise<string> {
-		const merged = this.mergeData(data, context, options);
+		// Workaround for a Rendu 0.1.0 bug: its generated runtime
+		// does `typeof chunk === "string" ? chunk : new TextDecoder()
+		// .decode(chunk)`, so any non-string chunk (a number from
+		// `<?= year ?>`, a boolean, etc.) throws. We shallow-coerce
+		// top-level values to strings here. The framework's contract
+		// is that view templates render output — arithmetic in
+		// templates is rare and users who need it can wrap with
+		// `Number(...)` explicitly.
+		const safe: Record<string, any> = {};
+		for (const [k, v] of Object.entries(data)) {
+			safe[k] = typeof v === "string" ? v : v == null ? "" : String(v);
+		}
+		const merged = this.mergeData(safe, context, options);
 		return this.getCompiled(template, options)(merged);
 	}
 

@@ -48,18 +48,20 @@ import { templates } from "../templates/index.js";
 interface NxConfigValues {
 	routing: string;
 	view: string;
+	viewPaths: string[];
 	orm: string;
 	dbDriver: string;
 	dbUrl: string;
 	inertiaFrontend: string;
 	inertiaSSR: boolean;
 	inertiaVersion: string;
-	[key: string]: string | number | boolean | undefined | null;
+	[key: string]: string | number | boolean | string[] | undefined | null;
 }
 
 const DEFAULT_VALUES: NxConfigValues = {
 	routing: "nest",
 	view: "inertia",
+	viewPaths: ["views", "src/app/views"],
 	orm: "drizzle",
 	dbDriver: "bun-sqlite",
 	dbUrl: "app.db",
@@ -82,6 +84,10 @@ function parseExistingConfig(path: string): NxConfigValues {
 	};
 	const routing = grab(/routing:\s*['"]([^'"]+)['"]/);
 	const view = grab(/view:\s*['"]([^'"]+)['"]/);
+	const viewPathsMatch = src.match(/viewPaths:\s*\[([^\]]*)\]/);
+	if (viewPathsMatch) {
+		out.viewPaths = viewPathsMatch[1].split(",").map((s) => s.trim().replace(/^['"]|['"]$/g, "")).filter(Boolean);
+	}
 	const orm = grab(/orm:\s*['"]([^'"]+)['"]/);
 	const driver = grab(/driver:\s*['"]([^'"]+)['"]/);
 	const url = grab(/url:\s*process\.env\.DATABASE_URL\s*\?\?\s*['"]([^'"]+)['"]/);
@@ -143,6 +149,10 @@ export const configCommand: Command = {
 			description: "Routing style (nest|adonis|functional|mixed)",
 		},
 		{ name: "view", description: "View engine (rendu|edge|inertia|none)" },
+		{
+			name: "view-paths",
+			description: "Comma-separated directories searched for view files (e.g. views,src/app/views)",
+		},
 		{ name: "orm", description: "ORM driver (drizzle|prisma|kysely|none)" },
 		{
 			name: "db",
@@ -185,6 +195,9 @@ export const configCommand: Command = {
 			flagBool(ctx.flags, k, def);
 		if (flag("style")) values.routing = flag("style")!;
 		if (flag("view")) values.view = flag("view")!;
+	if (flag("view-paths")) {
+		values.viewPaths = (flag("view-paths") as string).split(",").map((s) => s.trim()).filter(Boolean);
+	}
 		if (flag("orm")) values.orm = flag("orm")!;
 		if (flag("db")) values.dbDriver = flag("db")!;
 		if (flag("db-url") !== undefined) values.dbUrl = flag("db-url")!;

@@ -204,6 +204,7 @@ export const initCommand: Command = {
 			const content = renderContent(entry.path, {
 				routing,
 				view,
+				viewPaths: ["views", "src/app/views"],
 				orm,
 				dbDriver: db,
 				dbUrl: db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "",
@@ -249,6 +250,7 @@ export const initCommand: Command = {
 interface RenderCtx {
 	routing: string;
 	view: string;
+	viewPaths: string[];
 	orm: string;
 	dbDriver: string;
 	dbUrl: string;
@@ -257,7 +259,7 @@ interface RenderCtx {
 	inertiaVersion: string;
 	targetName: string;
 	// Index signature so RenderCtx is assignable to RenderObject.
-	[key: string]: string | number | boolean | undefined | null;
+	[key: string]: string | number | boolean | string[] | undefined | null;
 }
 
 function renderContent(path: string, ctx: RenderCtx): string {

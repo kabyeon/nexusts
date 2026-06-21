@@ -19,6 +19,14 @@ export default {
   /** View engine — \`inertia\`, \`rendu\`, \`edge\`, or \`none\`. */
   view: '{{ view }}',
 
+  /**
+   * Directories searched when a controller returns a view file name
+   * (e.g. \`about.html\`). Empty array = inline templates only.
+   * Typical: \`['views', 'src/app/views']\`. On edge runtimes
+   * (Cloudflare Workers), leave empty and pass inline strings.
+   */
+  viewPaths: {{ viewPaths }},
+
   /** ORM driver — \`drizzle\`, \`prisma\`, \`kysely\`, or \`none\`. */
   orm: '{{ orm }}',
 

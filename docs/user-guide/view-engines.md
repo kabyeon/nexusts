@@ -198,6 +198,62 @@ async about() {
 }
 ```
 
+### File-based views (load from disk)
+
+If the `view` value ends in a known view file extension (`.html`,
+`.edge`, `.rendu`, `.eta`) AND `setViewPaths()` has been called,
+the framework loads the file from the first matching directory
+and uses its contents as the template source. Otherwise the
+string is treated as inline source (the default above).
+
+Configure once at boot:
+
+```ts
+// src/app/main.ts
+import { setViewPaths } from 'nexusjs/view';
+setViewPaths(['views', 'src/app/views']);
+```
+
+Or in `nx.config.ts`:
+
+```ts
+export default {
+  view: 'rendu',
+  viewPaths: ['views', 'src/app/views'],
+  // ...
+};
+```
+
+Then controllers can reference files directly:
+
+```ts
+@Get('/about')
+async about() {
+  return { view: 'about.html', data: { year: 2026 } };
+}
+```
+
+`views/about.html`:
+
+```html
+<h1>About Nexus</h1>
+<p>Founded <?= year ?>.</p>
+```
+
+The first directory containing `about.html` wins. If the file
+isn't found in any configured directory, the request fails
+with a clear error message naming the searched paths.
+
+> **Edge runtimes** (Cloudflare Workers) have no filesystem.
+> Leave `viewPaths` empty and pass inline template strings
+> instead.
+
+Top-level data values are coerced to strings before being
+passed to Rendu, so `<?= year ?>` with `year: 2026` renders
+`2026` (not the `TextDecoder.decode()` error that Rendu 0.1.0
+throws for non-string chunks). For arithmetic in templates,
+wrap explicitly: `<?= Number(count) + 1 ?>`.
+
 ### Direct response
 
 For full control, build a Response manually:
