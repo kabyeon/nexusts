@@ -225,8 +225,7 @@ ApplicationContainer
 
 ## 16. v0.2 변경사항
 
-- **이름 변경** `@CurrentSession` → `@Session`. `@Req()` / `@Body()` / `@Ctx()`의 짧은 형식 관례를 따른다. 이전 이름은 얇은 별칭으로 계속 작동 (deprecated, v0.4에서 제거 예정).
-- **이름 변경** `CurrentSessionOptions` → `SessionOptions`.
+- **이름 변경** `@CurrentSession` → `@Session`. `@Req()` / `@Body()` / `@Ctx()`의 짧은 형식 관례를 따른다.
 - **Redis 백엔드 일정 변경**: v0.2가 아닌 **v0.3**에 출시.
 - Auth 통합 모델은 변경 없음 — `AuthService.bindSession()`는 여전히 옵션 `SessionService`를 바인딩한다.
 

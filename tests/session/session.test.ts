@@ -25,7 +25,6 @@ import {
 	encodeSessionCookie,
 	decodeSessionCookie,
 	Session,
-	CurrentSession, // v0.1 alias — still exported
 	UnauthenticatedError,
 	SessionForbiddenError,
 } from "../../src/session/index.js";
@@ -330,7 +329,7 @@ describe("AuthService + SessionService binding", () => {
 	});
 });
 
-describe("@Session decorator (renamed from @CurrentSession in v0.2)", () => {
+describe("@Session decorator", () => {
 	it("exists and is callable", () => {
 		expect(typeof Session).toBe("function");
 	});
@@ -346,13 +345,6 @@ describe("@Session decorator (renamed from @CurrentSession in v0.2)", () => {
 		expect(() =>
 			Session({ assert: (_s: { id: string }) => true }),
 		).not.toThrow();
-	});
-
-	it("the v0.1 alias @CurrentSession still works (deprecation shim)", () => {
-		expect(typeof CurrentSession).toBe("function");
-		// Both names point to a working decorator.
-		expect(typeof CurrentSession()).toBe("function");
-		expect(typeof Session()).toBe("function");
 	});
 
 	it("throws when the user is not authenticated and required is true", async () => {

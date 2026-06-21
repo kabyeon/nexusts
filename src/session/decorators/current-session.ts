@@ -42,28 +42,12 @@ export interface SessionOptions<T = SessionData> {
 
 /**
  * Inject the current session record (or null if unauthenticated).
- *
- * Renamed from `@CurrentSession` (v0.2). The old name still works
- * via a thin alias to keep migration painless.
  */
 export function Session<T = SessionData>(
 	options: SessionOptions<T> = {},
 ): ParameterDecorator {
 	return createParamDecorator(PARAM_TYPES.USER, options as never);
 }
-
-/**
- * @deprecated use `Session` (renamed in v0.2).
- *             Kept as a thin alias so existing code keeps compiling.
- */
-export function CurrentSession<T = SessionData>(
-	options: SessionOptions<T> = {},
-): ParameterDecorator {
-	return Session<T>(options);
-}
-
-/** @deprecated renamed to {@link SessionOptions} in v0.2. */
-export type CurrentSessionOptions<T = SessionData> = SessionOptions<T>;
 
 /**
  * Convenience: throw 401 when no session is present.

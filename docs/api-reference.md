@@ -410,7 +410,7 @@ function OnEvent(pattern: string, opts?: { priority?: number; guard?: (payload: 
 import {
   SessionModule, SessionService,
   MemorySessionStorage, CookieSessionStorage, DrizzleSessionStorage,
-  Session, CurrentSession, // current alias
+  Session,
 } from 'nexus/session';
 
 class SessionModule { static forRoot(config: SessionConfig): Type; }
@@ -687,12 +687,205 @@ See [user-guide/drizzle.md](./user-guide/drizzle.md) for the full guide.
 
 ---
 
+## `nexus/openapi` (v0.4)
+
+```ts
+import { OpenAPIService, OpenAPIModule } from "nexus/openapi";
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiProperty, ApiSchema } from "nexus/openapi";
+
+@Module({
+  imports: [OpenAPIModule.forRoot({ title: "My App", version: "1.0.0", path: "/docs" })],
+})
+class AppModule {}
+
+// Decorators auto-derive from @Validate Zod schemas
+@Controller("/users")
+@ApiTags("Users")
+class UserController {
+  @Get("/:id")
+  @ApiOperation({ summary: "Find a user" })
+  @ApiResponse(200, { schema: UserSchema })
+  findById(@Param("id") id: number) { /* ... */ }
+}
+
+// GET /openapi.json  — OpenAPI 3.1 spec
+// GET /docs         — Scalar UI
+```
+
+See [user-guide/openapi.md](./user-guide/openapi.md).
+
+---
+
+## `nexus/upload` (v0.4)
+
+```ts
+import { UploadService, UploadModule, Upload, UploadedFile, UploadedFiles } from "nexus/upload";
+
+@Module({
+  imports: [UploadModule.forRoot({ maxFileSize: 10 * 1024 * 1024, allowedMimeTypes: ["image/*"] })],
+})
+class AppModule {}
+
+@Controller("/users")
+class UserController {
+  @Post("/avatar")
+  @Upload("avatar", { maxFiles: 1, required: true })
+  uploadAvatar(@UploadedFile("avatar") file: UploadedFile) {
+    return { url: `/files/${(file as any).storedKey}` };
+  }
+}
+```
+
+See [user-guide/upload.md](./user-guide/upload.md).
+
+---
+
+## `nexus/sse` (v0.4)
+
+```ts
+import { sse, SseStream, getLastEventId } from "nexus/sse";
+
+@Controller("/events")
+class EventController {
+  @Get("/")
+  events(@Req() c: any) {
+    return sse(c, (stream) => {
+      const t = setInterval(() => stream.send({ event: "tick", data: Date.now() }), 1000);
+      stream.onClose(() => clearInterval(t));
+    });
+  }
+}
+```
+
+`SseStream` guarantees that every `send()` before `close()` reaches
+the client (pending writes are awaited on close).
+
+See [user-guide/sse.md](./user-guide/sse.md).
+
+---
+
+## `nexus/tracing` (v0.4)
+
+```ts
+import { TracingService, TracingModule, Trace, withSpan } from "nexus/tracing";
+
+@Module({
+  imports: [TracingModule.forRoot({
+    serviceName: "my-app",
+    exporter: "otlp-http",
+    endpoint: "http://otel-collector:4318",
+    sampleRatio: 0.1,
+  })],
+})
+class AppModule {}
+
+class UserService {
+  @Trace()                       // span name = "UserService.findById"
+  findById(id: string) { /* ... */ }
+
+  @Trace("user.lookup", { attributes: { cache: "lru" } })
+  async lookup(name: string) { /* ... */ }
+}
+
+await withSpan("nightly.cleanup", async (span) => {
+  span.setAttribute("target", "sessions");
+  await cleanupSessions();
+});
+```
+
+`@opentelemetry/api` is the only required dependency. The SDK
+packages are optional peer deps.
+
+See [user-guide/tracing.md](./user-guide/tracing.md).
+
+---
+
+## `nexus/metrics` (v0.4)
+
+```ts
+import { MetricsService, MetricsModule, Counted, Timed } from "nexus/metrics";
+
+@Module({
+  imports: [MetricsModule.forRoot({ path: "/metrics", enableDefaultMetrics: true })],
+})
+class AppModule {}
+
+@Injectable()
+class UserService {
+  constructor(private metrics: MetricsService) {
+    this.requests = this.metrics.counter({
+      name: "user_requests_total",
+      labelNames: ["method", "status"],
+    });
+    this.duration = this.metrics.histogram({
+      name: "user_request_duration_seconds",
+      labelNames: ["method"],
+    });
+  }
+
+  @Counted("user_requests_total", { labels: () => ({ method: "GET" }) })
+  @Timed("user_request_duration_seconds", { labels: () => ({ method: "GET" }) })
+  async findById(id: string) { /* ... */ }
+}
+```
+
+`GET /metrics` returns Prometheus 0.0.4 (or OpenMetrics 1.0.0 if
+the client requests it). Default Node.js process metrics are
+registered automatically.
+
+See [user-guide/metrics.md](./user-guide/metrics.md).
+
+---
+
+## Request-scoped DI (v0.4)
+
+```ts
+import { Inject, Injectable, REQUEST, getRequest, getRequestScope } from "nexus";
+
+@Injectable({ scope: "request" })
+class RequestContext {
+  id = crypto.randomUUID();
+  userId: string | null = null;
+  constructor(@Inject(REQUEST) public req: any) { /* ... */ }
+}
+
+@Injectable()
+class AuditService {
+  // Same RequestContext instance shared across every consumer
+  // in this request, including deep in the call tree.
+  constructor(@Inject(RequestContext) private ctx: RequestContext) {}
+
+  log(event: string) { console.log(`[${this.ctx.id}] ${event}`); }
+}
+
+// Deep in the call tree (no DI plumbing):
+function audit() {
+  const ctx = getRequestScope();
+  if (!ctx) return;
+  // ...
+}
+```
+
+The framework installs a Hono middleware that activates a
+per-request scope via `AsyncLocalStorage` automatically.
+
+See [user-guide/request-scope.md](./user-guide/request-scope.md).
+
+---
+
 ## `nexus/cli` (`nx`)
+
+```ts
+import { commands, findCommand } from "nexus/cli";
+
+// 18 commands (v0.3, unchanged in v0.4):
+  // (unchanged in v0.4)
+
 
 ```ts
 import { commands, findCommand } from 'nexus/cli';
 
-// 18 commands (v0.3):
+// 18 commands (v0.3, unchanged in v0.4):
 //   new, init, make:crud, make:controller, make:service, make:module,
 //   make:model, make:migration, make:middleware, make:validator,
 //   make:auth, make:queue, make:schedule, make:listener, make:session,

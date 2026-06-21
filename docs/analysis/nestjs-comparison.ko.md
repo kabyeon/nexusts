@@ -1,9 +1,9 @@
 # NexusJS vs NestJS — 기능 격차 분석
 
 > English version: [`nestjs-comparison.md`](./nestjs-comparison.md)
-> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.4.0**
 
-이 문서는 NexusJS v0.3과 [NestJS](https://nestjs.com)를 비교하여
+이 문서는 NexusJS v0.4와 [NestJS](https://nestjs.com)를 비교하여
 프로덕션급 백엔드 기능 중 **존재**, **부분 존재**, **누락** 상태를
 식별한다. v0.3 마일스톤에서 모든 Tier 1 격차가 해소되었으므로 이
 분석은 v0.4+ 로드맵 우선순위를 정하기 위한 Tier 2+ 잔존 격차에
@@ -21,7 +21,7 @@
 
 범례: ✅ 출시됨 · ⚠️ 부분 지원 · ❌ 없음 · 🔵 써드파티 필요
 
-| 카테고리 | NestJS | NexusJS v0.3 | 비고 |
+| 카테고리 | NestJS | NexusJS v0.4 | 비고 |
 |----------|--------|--------------|------|
 | HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono 전용, GraphQL/WS/gRPC 없음 | REST + 함수형 + Nest/Adonis 스타일 |
 | DI | ✅ 요청 스코프, 순환 자동 해소 | ⚠️ Singleton + transient + request | 이제 request 스코프 지원 (`nexus/drizzle`의 ALS) |
@@ -263,7 +263,7 @@ v0.3 마일스톤은 v0.2 분석에서 식별된 **모든 Tier 1 격차**를 해
 
 ---
 
-## 8. 정직한 평가 (v0.3)
+## 8. 정직한 평가 (v0.4)
 
 NexusJS v0.3은 **대부분의 CRUD 백엔드에 프로덕션 준비됨**:
 
@@ -296,7 +296,7 @@ v0.6 이후 NexusJS는 Bun의 런타임 + ORM 이점을 가진, **NestJS가
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 릴리스 노트
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.4 릴리스 노트
 - [`../README.md`](../../README.md) — 현재 상태 & 로드맵
 - [`../../user-guide/`](../../user-guide/) — 17개 모듈 가이드
 - [`../../design/`](../../design/) — 아키텍처 심층 문서

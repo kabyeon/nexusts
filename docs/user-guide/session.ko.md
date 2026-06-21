@@ -33,7 +33,7 @@ export class AppModule {}
 ```ts
 // src/controllers/cart.controller.ts
 import { Controller, Post, Body } from 'nexus';
-import { SessionService, CurrentSession } from 'nexus/session';
+import { SessionService, Session } from 'nexus/session';
 
 @Controller('/cart')
 export class CartController {

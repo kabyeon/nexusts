@@ -1,7 +1,7 @@
 # Getting Started
 
 > 한국어 버전: [`getting-started.ko.md`](./getting-started.ko.md)
-> Current version: **v0.3** — see [`../../CHANGELOG.md`](../../CHANGELOG.md).
+> Current version: **v0.4** — see [`../../CHANGELOG.md`](../../CHANGELOG.md).
 
 This guide walks you from an empty directory to a running NexusJS app
 with the **default ORM (Drizzle)** and the most common modules in
@@ -29,7 +29,7 @@ In a new project:
 bun add nexus reflect-metadata zod hono
 bun add -d @types/bun typescript vitest
 
-# Pick the modules you need. v0.3 ships 17 independent modules.
+# Pick the modules you need. v0.4 ships 22 independent modules.
 bun add nexus/drizzle            # the default ORM
 bun add nexus/auth               # if you need auth
 bun add nexus/queue              # if you need background jobs

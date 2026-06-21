@@ -18,7 +18,7 @@
  *   @Controller('/cart')
  *   class CartController {
  *     @Post('/')
- *     add(@CurrentSession() session: SessionRecord) {
+ *     add(@Session() session: SessionRecord) {
  *       const cart = (session.data.cart ?? []) as Item[];
  *       // ...
  *       return this.sessionService.update(session.id, { dataPatch: { cart } });

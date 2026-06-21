@@ -384,6 +384,146 @@ class DrizzleAdapter {
 
 ---
 
+## `nexus/openapi` (v0.4)
+
+```ts
+import { OpenAPIService, OpenAPIModule } from "nexus/openapi";
+import { ApiTags, ApiOperation, ApiResponse } from "nexus/openapi";
+
+@Module({
+  imports: [OpenAPIModule.forRoot({ title: "My App", version: "1.0.0", path: "/docs" })],
+})
+class AppModule {}
+
+@Controller("/users")
+@ApiTags("Users")
+class UserController {
+  @Get("/:id")
+  @ApiOperation({ summary: "사용자 조회" })
+  findById(@Param("id") id: number) { /* ... */ }
+}
+
+// GET /openapi.json  — OpenAPI 3.1 스펙
+// GET /docs         — Scalar UI
+```
+
+---
+
+## `nexus/upload` (v0.4)
+
+```ts
+import { UploadModule, Upload, UploadedFile } from "nexus/upload";
+
+@Module({
+  imports: [UploadModule.forRoot({ maxFileSize: 10 * 1024 * 1024 })],
+})
+class AppModule {}
+
+@Controller("/users")
+class UserController {
+  @Post("/avatar")
+  @Upload("avatar", { maxFiles: 1, required: true })
+  uploadAvatar(@UploadedFile("avatar") file: UploadedFile) {
+    return { url: `/files/${(file as any).storedKey}` };
+  }
+}
+```
+
+---
+
+## `nexus/sse` (v0.4)
+
+```ts
+import { sse } from "nexus/sse";
+
+@Controller("/events")
+class EventController {
+  @Get("/")
+  events(@Req() c: any) {
+    return sse(c, (stream) => {
+      const t = setInterval(() => stream.send({ event: "tick", data: Date.now() }), 1000);
+      stream.onClose(() => clearInterval(t));
+    });
+  }
+}
+```
+
+`SseStream`은 `close()` 전에 호출된 모든 `send()`가 클라이언트에 도달함을 보장.
+
+---
+
+## `nexus/tracing` (v0.4)
+
+```ts
+import { TracingModule, Trace, withSpan } from "nexus/tracing";
+
+@Module({
+  imports: [TracingModule.forRoot({
+    serviceName: "my-app",
+    exporter: "otlp-http",
+    endpoint: "http://otel-collector:4318",
+  })],
+})
+class AppModule {}
+
+class UserService {
+  @Trace()
+  findById(id: string) { /* ... */ }
+}
+
+await withSpan("nightly.cleanup", async (span) => {
+  span.setAttribute("target", "sessions");
+  await cleanupSessions();
+});
+```
+
+`@opentelemetry/api`만 필수 의존성. SDK 패키지는 optional peer dep.
+
+---
+
+## `nexus/metrics` (v0.4)
+
+```ts
+import { MetricsModule, Counted, Timed } from "nexus/metrics";
+
+@Module({
+  imports: [MetricsModule.forRoot({ path: "/metrics", enableDefaultMetrics: true })],
+})
+class AppModule {}
+
+class UserService {
+  @Counted("user_requests_total", { labels: () => ({ method: "GET" }) })
+  @Timed("user_request_duration_seconds", { labels: () => ({ method: "GET" }) })
+  async findById(id: string) { /* ... */ }
+}
+```
+
+`GET /metrics`는 Prometheus 0.0.4 반환 (또는 클라이언트가 요청 시 OpenMetrics 1.0.0). 기본 Node.js 프로세스 메트릭 자동 등록.
+
+---
+
+## Request-scoped DI (v0.4)
+
+```ts
+import { Inject, Injectable, REQUEST, getRequest } from "nexus";
+
+@Injectable({ scope: "request" })
+class RequestContext {
+  id = crypto.randomUUID();
+  constructor(@Inject(REQUEST) public req: any) { /* ... */ }
+}
+
+@Injectable()
+class AuditService {
+  constructor(@Inject(RequestContext) private ctx: RequestContext) {}
+  log(event: string) { console.log(`[${this.ctx.id}] ${event}`); }
+}
+```
+
+프레임워크가 `AsyncLocalStorage`로 요청별 scope를 활성화하는 Hono 미들웨어 자동 설치.
+
+---
+
 ## 참고
 
 - [시작하기](./user-guide/getting-started.ko.md)

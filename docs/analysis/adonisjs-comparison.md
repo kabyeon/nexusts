@@ -1,9 +1,9 @@
 # NexusJS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.4.0**
 
-This document compares NexusJS v0.3 against [AdonisJS v6](https://adonisjs.com)
+This document compares NexusJS v0.4 against [AdonisJS v6](https://adonisjs.com)
 to identify which core backend features are **present**,
 **partially present**, or **missing**. The v0.3 milestone closed the
 biggest gap (Lucid ORM) by adopting Drizzle as the default.
@@ -19,11 +19,11 @@ biggest gap (Lucid ORM) by adopting Drizzle as the default.
 
 ---
 
-## 1. Summary table (v0.3)
+## 1. Summary table (v0.4)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | AdonisJS | NexusJS v0.3 | Notes |
+| Category | AdonisJS | NexusJS v0.4 | Notes |
 |----------|----------|--------------|-------|
 | HTTP / routing | ✅ Resource routes, groups, middleware | ✅ 3 styles | Tie |
 | **ORM** | ✅ **Lucid** (first-party, batteries-included) | ✅ **Drizzle** (first-party, 5 dialects) | **Was** a big gap; **now** equivalent via Drizzle's Lucid-style ergonomics |
@@ -60,9 +60,9 @@ WebSocket) are Tier 3.
 
 ---
 
-## 2. Closed in v0.3 (recent wins)
+## 2. Closed in v0.3 + v0.4 (recent wins)
 
-The v0.3 milestone closed the most-asked-for AdonisJS-style
+The v0.3 and v0.4 milestones together closed the most-asked-for AdonisJS-style
 batteries. Here's what shipped:
 
 | Was missing in v0.2 | Shipped in v0.3 | Module |
@@ -78,7 +78,7 @@ batteries. Here's what shipped:
 | DB session backend | ✅ | `DrizzleSessionStorage` (joins the existing cookie / memory backends) |
 | Migrations via CLI | ✅ | `nx migrate` + `nx migrate --generate` (Drizzle-driven) |
 
-Total: **10 AdonisJS-style batteries** shipped in v0.3.
+Total: **16 AdonisJS-style batteries** shipped in v0.3 + v0.4 (10 in v0.3 + 6 in v0.4).
 
 ---
 
@@ -225,9 +225,9 @@ existing code paths.
 
 ---
 
-## 8. Honest assessment (v0.3)
+## 8. Honest assessment (v0.4)
 
-The v0.3 release **transformed the AdonisJS comparison** from "many
+The v0.4 release **transformed the AdonisJS comparison** from "many
 big gaps" to "small Tier 1+2 gaps". The most-asked-for
 AdonisJS-style batteries — ORM, mail, drive, shield, cache,
 static, health, logging — are all first-party in NexusJS now.
@@ -266,7 +266,7 @@ NexusJS is the more flexible starting point.
 
 ## 9. See also
 
-+ [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 release notes
++ [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.4 release notes
 + [`../README.md`](../../README.md) — current status & roadmap
 + [`../../user-guide/drizzle.md`](../../user-guide/drizzle.md) — the Lucid-equivalent guide
 + [`../../user-guide/`](../../user-guide/) — guides for the 17 modules

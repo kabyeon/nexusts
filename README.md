@@ -2,18 +2,21 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance.
 
-> **v0.3 — production-ready.** All 17 modules ship. Drizzle is the
-> default ORM with full Lucid-equivalent ergonomics. Multi-pod
-> session, health, rate-limit, and cache via any Drizzle-compatible
-> database. The `nx` CLI scaffolds models, migrations, and runs
-> them. See [CHANGELOG.md](./CHANGELOG.md) for the v0.3 release notes.
+> **v0.4 — observability & DX.** All 22 modules ship. Tier 1 and
+> Tier 2 gaps from the NestJS / AdonisJS gap analyses are now fully
+> closed. New in v0.4: `nexus/openapi`, `nexus/upload`, `nexus/sse`,
+> `nexus/tracing`, `nexus/metrics`, and request-scoped DI in the
+> core. See [CHANGELOG.md](./CHANGELOG.md) for the v0.4 release
+> notes.
 
 ---
 
-## What's in v0.3
+## What's in v0.4
 
-The framework now ships **17 independent modules** — every one is
-its own bundle entry point, so you install only what you use.
+The framework now ships **22 independent modules** — every one is
+its own bundle entry point, so you install only what you use. Tier 1
+and Tier 2 gaps from the NestJS / AdonisJS gap analyses are now
+fully closed.
 
 | Module | Purpose |
 | ------ | ------- |
@@ -34,10 +37,18 @@ its own bundle entry point, so you install only what you use.
 | `nexus/drive` | File storage abstraction. Memory / Local / S3 / R2 drivers |
 | `nexus/mail` | Outbound email. Null / File / SMTP transports. MJML rendering |
 | `nexus/drizzle` | **Default ORM.** 5 dialects, `DrizzleModel`, `DrizzleRepository`, migrations, raw SQL (injection-safe) |
+| `nexus/openapi` | OpenAPI 3.1 spec generation + Scalar UI. Auto-derives from Zod validation schemas |
+| `nexus/upload` | Multipart file upload. `@Upload()` / `@UploadedFile()` decorators. Size, MIME, count validation |
+| `nexus/sse` | Server-Sent Events. `SseStream` with pending-write tracking. `sse(c, handler)` helper |
+| `nexus/tracing` | OpenTelemetry distributed tracing. Lazy SDK loading. `@Trace()` decorator. W3C + B3 propagation |
+| `nexus/metrics` | Prometheus / OpenMetrics. Counter / Gauge / Histogram / Summary. `@Counted()` / `@Timed()` decorators |
+| **Request-scoped DI** *(core)* | `@Injectable({ scope: 'request' })` for per-request provider lifetime via `AsyncLocalStorage` |
 
 See [docs/user-guide/drizzle.md](./docs/user-guide/drizzle.md) for the
-Drizzle integration guide, and [CHANGELOG.md](./CHANGELOG.md) for the
-detailed v0.3 release notes.
+Drizzle integration guide, [docs/user-guide/tracing.md](./docs/user-guide/tracing.md)
+for OpenTelemetry, [docs/user-guide/metrics.md](./docs/user-guide/metrics.md)
+for Prometheus, and [CHANGELOG.md](./CHANGELOG.md) for the detailed
+v0.4 release notes.
 
 ---
 
@@ -55,7 +66,7 @@ detailed v0.3 release notes.
 | Three view engines (Rendu/Edge/Inertia) | ❌ |   ✅   |   ❌   |    ✅     |
 | **Default ORM (Drizzle, 5 dialects)** |   △   | Lucid  |   ❌   |    ✅     |
 | **Multi-pod session, cache, limiter via Drizzle** |  △ | ✅ | ❌ | **✅** |
-| **17 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
+| **22 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
 | **SQL-injection-safe raw queries by construction** |   △   |   △   |   ❌   |    ✅     |
 | **Migrations + autoMigrate on boot** |   △   |   ✅   |   ❌   |    ✅     |
 
@@ -118,6 +129,10 @@ import { DriveModule } from 'nexus/drive';
 import { MailModule } from 'nexus/mail';
 import { ShieldModule } from 'nexus/shield';
 import { AuthModule } from 'nexus/auth';
+import { OpenAPIModule } from 'nexus/openapi';
+import { UploadModule } from 'nexus/upload';
+import { TracingModule } from 'nexus/tracing';
+import { MetricsModule } from 'nexus/metrics';
 import { UserModule } from './modules/user.module.js';
 import { configSchema } from './config/schema.js';
 
@@ -137,6 +152,10 @@ import { configSchema } from './config/schema.js';
     LimiterModule.forRoot({ rules: [{ path: '/api/*', points: 100, duration: '1m' }] }),
     ShieldModule.forRoot({ csrf: { enabled: true }, hsts: { maxAge: 31_536_000 } }),
     AuthModule.forRoot({ /* better-auth config */ }),
+    OpenAPIModule.forRoot({ title: 'My App', version: '1.0.0', path: '/docs' }),
+    UploadModule.forRoot({ maxFileSize: 10 * 1024 * 1024 }),
+    TracingModule.forRoot({ serviceName: 'my-app', exporter: 'otlp-http' }),
+    MetricsModule.forRoot({ path: '/metrics' }),
     UserModule,
   ],
 })
@@ -624,19 +643,26 @@ src/
 
 **v0.1** ✅ — MVC core, DI, validation, Rendu/Edge/Inertia adapters, CLI bootstrap.
 **v0.2** ✅ — auth, queue, schedule, events, session, full `nx` CLI.
-**v0.3 (current)** ✅ — production basics (health, config, logger, static),
+**v0.3** ✅ — production basics (health, config, logger, static),
 cross-cutting (limiter, shield, cache, drive, mail), and `nexus/drizzle`
 as the default ORM. Every Tier 1+2 gap from the NestJS / AdonisJS
 analyses is closed.
 
-**v0.4** — observability & AI.
+**v0.4 (current)** ✅ — observability and developer experience.
+Every Tier 1 and Tier 2 gap from the NestJS / AdonisJS analyses
+is closed. New: `nexus/openapi`, `nexus/upload`, `nexus/sse`,
+`nexus/tracing`, `nexus/metrics`, and request-scoped DI in the
+core. The `nexus/session` `@CurrentSession` v0.1 alias is
+removed — use `@Session` instead.
 
-- `nexus/tracing` — OpenTelemetry exporter
-- `nexus/metrics` — Prometheus exporter
+**v0.5** — long-term API stability + DX polish.
+
 - `nexus/i18n` — multi-locale messages
 - AI agent module + MCP server
+- Performance benchmarks + cross-runtime parity tests
+- Long-term LTS support plan
 
-**v0.5 → 1.0** — production hardening.
+**v1.0** — semver guarantees on the public API surface.
 
 - Stable public API surface (semver guarantees)
 - Removal of all `v0.1` deprecated aliases

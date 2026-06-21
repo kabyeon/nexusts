@@ -1,11 +1,11 @@
 # NexusJS vs AdonisJS — 기능 격차 분석
 
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
-> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.4.0**
 
-이 문서는 NexusJS v0.3과 [AdonisJS v6](https://adonisjs.com)를
+이 문서는 NexusJS v0.4와 [AdonisJS v6](https://adonisjs.com)를
 비교하여 핵심 백엔드 기능 중 **존재**, **부분 존재**, **누락** 상태를
-식별한다. v0.3 마일스톤은 기본 ORM으로 Drizzle를 채택하여 가장 큰
+식별한다. v0.4 마일스톤은 관측 가능성 + DX를 더하여 모든 Tier 1+2 격차를 해소했다.
 격차(Lucid ORM)를 해소했다.
 
 > **중요**: AdonisJS와 NestJS는 겹치지만 구별되는 문제를 해결한다.
@@ -19,11 +19,11 @@
 
 ---
 
-## 1. 요약 표 (v0.3)
+## 1. 요약 표 (v0.4)
 
 범례: ✅ 출시됨 · ⚠️ 부분 지원 · ❌ 없음 · 🔵 써드파티 필요
 
-| 카테고리 | AdonisJS | NexusJS v0.3 | 비고 |
+| 카테고리 | AdonisJS | NexusJS v0.4 | 비고 |
 |----------|----------|--------------|------|
 | HTTP / 라우팅 | ✅ Resource routes, groups, middleware | ✅ 3개 스타일 | 동등 |
 | **ORM** | ✅ **Lucid** (1급, 배터리 포함) | ✅ **Drizzle** (1급, 5개 dialect) | **예전 큰 격차 →** 이제 Drizzle의 Lucid 스타일 ergonomics로 동등 |
@@ -58,9 +58,9 @@ Logging** 이다. 잔존 격차(encryption, i18n, WebSocket)는 Tier 3다.
 
 ---
 
-## 2. v0.3에서 해소된 항목 (최근 성과)
+## 2. v0.3 + v0.4에서 해소된 항목 (최근 성과)
 
-v0.3 마일스톤은 가장 많이 요청된 AdonisJS 스타일 배터리를
+v0.3 + v0.4 마일스톤은 가장 많이 요청된 AdonisJS 스타일 배터리를
 출시했다. 출시된 내용은 다음과 같다:
 
 | v0.2에서 누락 | v0.3에서 출시 | 모듈 |
@@ -76,7 +76,7 @@ v0.3 마일스톤은 가장 많이 요청된 AdonisJS 스타일 배터리를
 | DB session 백엔드 | ✅ | `DrizzleSessionStorage` (기존 cookie / memory 백엔드에 추가) |
 | CLI를 통한 마이그레이션 | ✅ | `nx migrate` + `nx migrate --generate` (Drizzle 기반) |
 
-합계: v0.3에서 **10개의 AdonisJS 스타일 배터리** 출시.
+합계: v0.3 + v0.4에서 **16개의 AdonisJS 스타일 배터리** 출시 (v0.3에서 10개, v0.4에서 6개).
 
 ---
 
@@ -217,14 +217,14 @@ v0.3 마일스톤은 가장 많이 요청된 AdonisJS 스타일 배터리를
 
 ---
 
-## 8. 정직한 평가 (v0.3)
+## 8. 정직한 평가 (v0.4)
 
-v0.3 릴리스는 AdonisJS 비교를 **"많은 큰 격차"에서 "작은 Tier 1+2
+v0.4 릴리스는 AdonisJS 비교를 **"많은 큰 격차"에서 "남은 격차는 거의 없음"으로 전환했다.**
 격차"로** 변환했다. 가장 많이 요청된 AdonisJS 스타일 배터리 — ORM,
 mail, drive, shield, cache, static, health, logging — 모두 이제
 NexusJS의 1급이다.
 
-AdonisJS v6 대비 NexusJS v0.3의 차별점:
+AdonisJS v6 대비 NexusJS v0.4의 차별점:
 
 | NexusJS 장점 | AdonisJS 장점 |
 | ----------------- | ------------------- |
@@ -244,7 +244,7 @@ AdonisJS가 여전히 가지고 있고 NexusJS가 가지지 않은 것:
 - i18n (Tier 2)
 - VineJS validator (논쟁 — Zod가 더 인기)
 
-v0.3에서 "AdonisJS 기능 패리티"까지의 경로는 "NestJS 기능 패리티"와
+v0.4에서 "AdonisJS 기능 패리티"까지의 경로는 "NestJS 기능 패리티"와
 대략 동일하다 — v0.4는 잔존 Tier 1+2 배터리를, v0.5는 API 완성도를,
 v0.6은 분산 시스템 primitive를 추가한다.
 
@@ -257,7 +257,7 @@ v0.6 이후 비교는 대부분 **패러다임 vs 패러다임**이다: AdonisJS
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 릴리스 노트
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.4 릴리스 노트
 - [`../README.md`](../../README.md) — 현재 상태 & 로드맵
 - [`../../user-guide/drizzle.md`](../../user-guide/drizzle.md) — Lucid 등가 가이드
 - [`../../user-guide/`](../../user-guide/) — 17개 모듈 가이드

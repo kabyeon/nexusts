@@ -1,9 +1,9 @@
 # NexusJS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.4.0**
 
-This document compares NexusJS v0.3 against [NestJS](https://nestjs.com)
+This document compares NexusJS v0.4 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. The v0.3 milestone closed all
 Tier 1 gaps; this analysis now focuses on the remaining Tier 2+ gaps
@@ -17,11 +17,11 @@ that block feature parity.
 
 ---
 
-## 1. Summary table (v0.3)
+## 1. Summary table (v0.4)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusJS v0.3 | Notes |
+| Category | NestJS | NexusJS v0.4 | Notes |
 |----------|--------|--------------|-------|
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono only, no GraphQL/WS/gRPC | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ⚠️ Singleton + transient + request | **Now** supports request scope (via `nexus/drizzle` ALS) |
@@ -255,7 +255,7 @@ the standard for modern backend services.
 
 ---
 
-## 8. Honest assessment (v0.3)
+## 8. Honest assessment (v0.4)
 
 NexusJS v0.4 is **production-ready for the majority of backend
 services**:
@@ -294,7 +294,7 @@ that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 release notes
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.4 release notes
 - [`../README.md`](../../README.md) — current status & roadmap
 - [`../../user-guide/`](../../user-guide/) — guides for the 17 modules
 - [`../../design/`](../../design/) — architectural deep-dives

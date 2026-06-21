@@ -8,8 +8,10 @@ AdonisJS, and the edge performance of Hono.
 This documentation is primarily in English; Korean translations are
 provided in `*.ko.md` files.
 
-> **Current version: v0.3** — production-ready. See
-> [`../CHANGELOG.md`](../CHANGELOG.md) for the release notes.
+> **Current version: v0.4** — observability & DX. All Tier 1
+> and Tier 2 gaps from the NestJS / AdonisJS gap analyses are
+> closed. 22 modules. See [`../CHANGELOG.md`](../CHANGELOG.md) for
+> the release notes.
 
 ---
 
@@ -17,7 +19,7 @@ provided in `*.ko.md` files.
 
 | Section | English | 한국어 |
 | ------- | ------- | ------ |
-| **Changelog** (변경 로그) | [`../CHANGELOG.md`](../CHANGELOG.md) | (English only) |
+| **Changelog** (변경 로그) | [`../CHANGELOG.md`](../CHANGELOG.md) | [`../CHANGELOG.ko.md`](../CHANGELOG.ko.md) |
 | **Design documents** (아키텍처 · 설계) | [`docs/design/`](./design/) | [`docs/design/`](./design/) (`*.ko.md`) |
 | **User guide** (사용자 메뉴얼) | [`docs/user-guide/`](./user-guide/) | [`docs/user-guide/`](./user-guide/) (`*.ko.md`) |
 | **Analysis** (분석 · 비교) | [`docs/analysis/`](./analysis/) | [`docs/analysis/`](./analysis/) (`*.ko.md`) |
@@ -25,7 +27,7 @@ provided in `*.ko.md` files.
 
 ---
 
-## Modules shipped in v0.3 (17 total)
+## Modules shipped in v0.4 (22 total)
 
 Every module is its own bundle entry point. Install only what you use.
 
@@ -48,6 +50,12 @@ Every module is its own bundle entry point. Install only what you use.
 | **Drive** | `nexus/drive` | `nexus/drive` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
 | **Mail** | `nexus/mail` | `nexus/mail` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
 | **Drizzle** | `nexus/drizzle` | `nexus/drizzle` | [`user-guide/drizzle.md`](./user-guide/drizzle.md) |
+| **OpenAPI** *(v0.4)* | `nexus/openapi` | `nexus/openapi` | [`user-guide/openapi.md`](./user-guide/openapi.md) |
+| **Upload** *(v0.4)* | `nexus/upload` | `nexus/upload` | [`user-guide/upload.md`](./user-guide/upload.md) |
+| **SSE** *(v0.4)* | `nexus/sse` | `nexus/sse` | [`user-guide/sse.md`](./user-guide/sse.md) |
+| **Tracing** *(v0.4)* | `nexus/tracing` | `nexus/tracing` | [`user-guide/tracing.md`](./user-guide/tracing.md) |
+| **Metrics** *(v0.4)* | `nexus/metrics` | `nexus/metrics` | [`user-guide/metrics.md`](./user-guide/metrics.md) |
+| **Request-scoped DI** *(v0.4)* | `nexus` (core) | `nexus/core` | [`user-guide/request-scope.md`](./user-guide/request-scope.md) |
 
 ---
 
@@ -74,6 +82,12 @@ Step-by-step guides for building applications.
 | **Drizzle ORM (default ORM)** | [`user-guide/drizzle.md`](./user-guide/drizzle.md) | [`user-guide/drizzle.ko.md`](./user-guide/drizzle.ko.md) |
 | Runtime & deployment | [`user-guide/runtime-deployment.md`](./user-guide/runtime-deployment.md) | [`user-guide/runtime-deployment.ko.md`](./user-guide/runtime-deployment.ko.md) |
 | **CLI · `nx` command runner** | [`user-guide/cli.md`](./user-guide/cli.md) | [`user-guide/cli.ko.md`](./user-guide/cli.ko.md) |
+| **OpenAPI** *(v0.4)* | [`user-guide/openapi.md`](./user-guide/openapi.md) | [`user-guide/openapi.ko.md`](./user-guide/openapi.ko.md) |
+| **Upload** *(v0.4)* | [`user-guide/upload.md`](./user-guide/upload.md) | [`user-guide/upload.ko.md`](./user-guide/upload.ko.md) |
+| **SSE** *(v0.4)* | [`user-guide/sse.md`](./user-guide/sse.md) | [`user-guide/sse.ko.md`](./user-guide/sse.ko.md) |
+| **Tracing** *(v0.4)* | [`user-guide/tracing.md`](./user-guide/tracing.md) | [`user-guide/tracing.ko.md`](./user-guide/tracing.ko.md) |
+| **Metrics** *(v0.4)* | [`user-guide/metrics.md`](./user-guide/metrics.md) | [`user-guide/metrics.ko.md`](./user-guide/metrics.ko.md) |
+| **Request-scoped DI** *(v0.4)* | [`user-guide/request-scope.md`](./user-guide/request-scope.md) | [`user-guide/request-scope.ko.md`](./user-guide/request-scope.ko.md) |
 
 ---
 
@@ -130,9 +144,9 @@ Architectural deep-dives for contributors and advanced users.
 | ------- | ------ | ----- |
 | **v0.1** | ✅ Shipped 2026-04-30 | MVC core, DI, validation, Rendu/Edge/Inertia adapters |
 | **v0.2** | ✅ Shipped 2026-05-15 | Session auth, BullMQ queue, event system, scheduler, CLI |
-| **v0.3** | ✅ **Current** | Production basics, cross-cutting, Drizzle ORM (default) |
-| v0.4 | Planned | Observability (tracing, metrics), i18n, AI agent module |
-| v0.5 → 1.0 | Planned | Production hardening, stable public API |
+| **v0.3** | ✅ Shipped 2026-06-21 | Production basics, cross-cutting, Drizzle ORM (default) |
+| **v0.4** | ✅ **Current** | Observability (openapi, upload, sse, tracing, metrics) + request-scoped DI |
+| v0.5 → 1.0 | Planned | `nexus/i18n`, AI agent module, production hardening, stable public API |
 
 The framework follows [Semantic Versioning](https://semver.org/). Until
 v1.0, minor version bumps may include breaking changes. See
