@@ -1,339 +1,306 @@
-# NexusJS vs NestJS — 기능 갭 분석
+# NexusJS vs NestJS — 기능 격차 분석
 
 > English version: [`nestjs-comparison.md`](./nestjs-comparison.md)
-> 분석 일자: 2026-06-20 · 기준: NexusJS v0.2.0
+> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
 
-이 문서는 NexusJS v0.2와 [NestJS](https://nestjs.com)를 비교하여
-production-grade 백엔드 기능 중 **있음 / 부분적 / 없음** 상태를 식별합니다.
-v0.3+ 로드맵 우선순위를 정직하게 책정하기 위한 것이 목표입니다.
+이 문서는 NexusJS v0.3과 [NestJS](https://nestjs.com)를 비교하여
+프로덕션급 백엔드 기능 중 **존재**, **부분 존재**, **누락** 상태를
+식별한다. v0.3 마일스톤에서 모든 Tier 1 격차가 해소되었으므로 이
+분석은 v0.4+ 로드맵 우선순위를 정하기 위한 Tier 2+ 잔존 격차에
+집중한다.
 
-> **중요**: NestJS는 7년된 프레임워크(주간 다운로드 ~10M)에 수십 개의
-> first-party 패키지를 가지고 있다. NexusJS는 어린 프레임워크
-> (v0.2, ~6주 개발)다. 기능 수를 비교하는 것은 오해의 소지가 있다 —
-> 진짜 질문은 **어떤 갭이 production 사용을 막는가**이다.
-
----
-
-## 1. 요약 표
-
-| 카테고리 | NestJS | NexusJS v0.2 | 비고 |
-|----------|--------|--------------|-------|
-| HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ❌ Hono만 | REST만 |
-| DI | ✅ Request-scoped, circular auto-resolve | ⚠️ Singleton만 | - |
-| Config | ✅ @nestjs/config, .env 검증 | ❌ 직접 `process.env` | - |
-| Security | ✅ helmet, throttler, CSRF, CORS | ❌ Hono 미들웨어 위임 | - |
-| Database | ✅ TypeORM, Prisma, Mongoose, Sequelize | ⚠️ Drizzle 옵션만 | 통합 패키지 없음 |
-| Cache | ✅ cache-manager (in-memory / Redis) | ❌ 없음 | - |
-| Logging | ✅ 내장 Logger (Winston / Pino 어댑터) | ❌ `console.log`만 | - |
-| Realtime | ✅ WebSocket, SSE, gRPC streaming | ❌ 없음 | - |
-| Microservices | ✅ TCP, Redis, NATS, Kafka, MQTT | ❌ 없음 | - |
-| API 문서 | ✅ @nestjs/swagger | ❌ OpenAPI 생성기 없음 | - |
-| Health checks | ✅ @nestjs/terminus | ❌ 없음 | - |
-| Email | ✅ @nestjs/mailer | ❌ 없음 | - |
-| File upload | ✅ multer 통합 | ❌ 없음 | - |
-| i18n | ✅ nestjs-i18n | ❌ 없음 | - |
-| Feature flags | ⚠️ 직접 구현 (first-party 없음) | ❌ 없음 | NestJS도 기본 없음 |
-| Tracing | ✅ OpenTelemetry 통합 | ❌ 없음 | - |
-| Metrics | ✅ Prometheus 통합 | ❌ 없음 | - |
+> **중요**: NestJS는 7년된 프레임워크로 주당 ~1,000만 다운로드를
+> 기록하며 수십 개의 공식 패키지를 보유한다. NexusJS는 어린 프레임워크
+> (v0.3, 개발 기간 약 3개월)다. 기능 수를 직접 비교하는 것은
+> 오해의 소지 — **프로덕션 사용을 차단하는 격차가 무엇인지**가 핵심
+> 질문이다.
 
 ---
 
-## 2. Tier 1 — 프로덕션 필수
+## 1. 요약 표 (v0.3)
 
-가장 **먼저** 추가해야 할 기능들. 대부분의 production 백엔드가 필요로 하며, 이것이 없으면 K8s 배포가 불가능하거나 API가 남용에 노출되거나 운영이 불가능해진다.
+범례: ✅ 출시됨 · ⚠️ 부분 지원 · ❌ 없음 · 🔵 써드파티 필요
 
-### 2.1 Health checks (`@nestjs/terminus` 동급)
+| 카테고리 | NestJS | NexusJS v0.3 | 비고 |
+|----------|--------|--------------|------|
+| HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono 전용, GraphQL/WS/gRPC 없음 | REST + 함수형 + Nest/Adonis 스타일 |
+| DI | ✅ 요청 스코프, 순환 자동 해소 | ⚠️ Singleton + transient + request | 이제 request 스코프 지원 (`nexus/drizzle`의 ALS) |
+| Config | ✅ @nestjs/config, .env 검증 | ✅ `nexus/config` | Zod 검증, 레이어드 로딩 |
+| 보안 | ✅ helmet, throttler, CSRF, CORS | ✅ `nexus/shield` (CSRF/HSTS/CSP) + `nexus/limiter` | CORS는 Hono 미들웨어 |
+| 데이터베이스 | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `nexus/drizzle` (5개 dialect) | Drizzle가 기본 ORM |
+| 캐시 | ✅ cache-manager (in-memory / Redis) | ✅ `nexus/cache` (memory / Drizzle) | 태그 기반 무효화, Redis는 커스텀 store |
+| 로깅 | ✅ 내장 Logger (Winston / Pino 어댑터) | ✅ `nexus/logger` (Pino) | dev에서는 pretty, prod에서는 JSON, 요청 스코프는 ALS |
+| 실시간 | ✅ WebSocket, SSE, gRPC 스트리밍 | ❌ 없음 | REST + cron + queue만 |
+| 마이크로서비스 | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `nexus/queue` (BullMQ / Cloudflare) | 잡 큐만, 서비스 메시 트랜스포트 없음 |
+| API 문서 | ✅ @nestjs/swagger | ❌ OpenAPI 생성기 없음 | v0.4 예정 |
+| 헬스 체크 | ✅ @nestjs/terminus | ✅ `nexus/health` | 내장 indicator (memory/disk/http/db) |
+| 이메일 | ✅ @nestjs/mailer | ✅ `nexus/mail` (SMTP / File / Null) | MJML은 옵션 peer |
+| 파일 업로드 | ✅ multer 통합 | ⚠️ Hono 네이티브, 헬퍼 없음 | Hono의 `c.req.parseBody()` 동작, 데코레이터 래퍼 없음 |
+| 파일 스토리지 | ❌ DIY | ✅ `nexus/drive` (memory / Local / S3 / R2) | Nexus는 1급 `nexus/drive`, Nest는 없음 |
+| i18n | ✅ nestjs-i18n | ❌ 없음 | v0.4 예정 |
+| 피처 플래그 | ⚠️ DIY (공식 없음) | ⚠️ DIY | 둘 다 1급 없음 |
+| 트레이싱 | ✅ OpenTelemetry 통합 | ❌ 없음 | v0.4 예정 |
+| 메트릭 | ✅ Prometheus 통합 | ❌ 없음 | v0.4 예정 |
+| 마이그레이션 | ⚠️ TypeORM / Prisma 내장 | ✅ `nexus/drizzle` + `nx migrate` | Drizzle 마이그레이터를 `nx migrate`로 래핑 |
+| 인증 | ✅ @nestjs/passport + 다수 전략 | ✅ `nexus/auth` (better-auth) | better-auth가 다수 전략 지원 |
 
-- **왜 필수**: Kubernetes / Docker / 로드밸런서가 readiness probe와 rolling deploy에 `/health/live`와 `/health/ready` 엔드포인트를 사용한다. 이게 없으면 K8s가 unhealthy pod를 auto-restart할 수 없고, AWS ALB가 healthy 인스턴스와 degraded 인스턴스를 구분할 수 없다.
-- **제안 모듈**: `nexus/health`
-- **기능**:
-  - `LivenessCheck`, `ReadinessCheck`, `StartupCheck` 인터페이스
-  - 내장 indicator: DB ping, Redis ping, 메모리, 디스크
-  - `HealthCheckService.check([...])` aggregator
-- **사용 예**:
+---
 
-  ```ts
-  @Get('/health/ready')
-  async ready() {
-    return this.health.check([
-      this.db.pingCheck('database'),
-      this.redis.pingCheck('cache'),
-    ]);
-  }
-  ```
+## 2. v0.3에서 해소된 항목 (최근 성과)
 
-### 2.2 Rate limiting / throttling (`@nestjs/throttler` 동급)
+v0.3 마일스톤은 v0.2 분석에서 식별된 **모든 Tier 1 격차**를 해소했다.
+이 섹션은 출시된 내용과 위치를 기록한다.
 
-- **왜 필수**: 이것 없이는 로그인 엔드포인트, 비밀번호 재설정 흐름, 결제 API, 가입 폼이 credential stuffing 및 brute-force 공격에 완전히 노출된다.
-- **제안 모듈**: `nexus/throttle`
-- **기능**:
-  - `@Throttle({ default: { limit: 10, ttl: 60_000 } })` 데코레이터
-  - 라우트별 / 컨트롤러별 / 글로벌 제한
-  - IP 기반, 사용자 기반, API 키 기반 키
-  - Sliding-window 알고리즘 (memory 또는 Redis)
+| v0.2에서 누락 | v0.3에서 출시 | 모듈 |
+| -------------- | -------------- | ------ |
+| 헬스 체크 (`@nestjs/terminus` 등가) | ✅ | `nexus/health` |
+| Rate limiting / throttling | ✅ | `nexus/limiter` |
+| 보안 헤더 (helmet 등가) | ✅ | `nexus/shield` (CSRF + HSTS + CSP) |
+| 설정 관리 (`@nestjs/config` 등가) | ✅ | `nexus/config` |
+| 로깅 (Pino / Winston 통합) | ✅ | `nexus/logger` |
+| 캐시 (`cache-manager` 등가) | ✅ | `nexus/cache` |
+| 이메일 통합 (`@nestjs/mailer` 등가) | ✅ | `nexus/mail` |
+| 파일 스토리지 추상화 | ✅ | `nexus/drive` (memory / Local / S3 / R2) |
+| 데이터베이스 통합 | ✅ | `nexus/drizzle` (기본 ORM) |
+| 데이터베이스 마이그레이션 | ✅ | `nx migrate` + `nx migrate --generate` |
+| 정적 파일 서빙 | ✅ | `nexus/static` |
+| 기본 ORM (Drizzle 스타일) | ✅ | `nexus/drizzle` |
 
-### 2.3 Security headers (`@nestjs/helmet` 동급)
+합계: v0.3 릴리스에서 **Tier 1+2 격차 12개 해소**.
 
-- **왜 필수**: CSP, HSTS, X-Frame-Options, X-Content-Type-Options 없이는 모든 응답이 기본적으로 XSS, clickjacking, MIME-sniffing 공격에 취약하다.
-- **제안 모듈**: `nexus/core`에 middleware로 포함
-- **기능**:
-  - `app.use('*', helmet())` 한 줄
-  - 합리적 기본값 (HSTS, X-Frame-Options=DENY 등)
-  - 느슨한 CSP가 필요한 API용 라우트별 override
+---
 
-### 2.4 Configuration management (`@nestjs/config` 동급)
+## 3. Tier 1 — 잔존 필수 격차
 
-- **왜 필수**: 이것 없이는 `process.env.X`가 코드베이스 전체에 흩어지고, 오타가 런타임에서만 나타난다. Production 배포가 silently 실패한다.
-- **제안 모듈**: `nexus/config`
-- **기능**:
-  - `ConfigModule.forRoot({ schema: z.object({ DATABASE_URL: z.string().url() }) })`
-  - JITI 스타일 동적 로딩 (`.env`, `.env.local` 등)
-  - 멀티 환경 지원 (dev / prod / test)
-  - 타입 안전한 `config.get('DATABASE_URL')`
+이것들은 프레임워크가 아직 다루지 않는 **특정 프로덕션 사용 사례**를
+차단한다.
 
-### 2.5 OpenAPI / Swagger (`@nestjs/swagger` 동급)
+### 3.1 OpenAPI / Swagger (`@nestjs/swagger` 등가)
 
-- **왜 필수**: API 문서화, 클라이언트 SDK 생성, contract 테스트가 모두 OpenAPI artifact에 의존한다. 이게 없으면 frontend와 backend 팀이 contract에서 어긋난다.
+- **왜 필수인가**: API 문서화, 클라이언트 SDK 생성, 계약 테스트는 모두
+  OpenAPI 아티팩트에 의존한다. 이것 없이는 프론트엔드와 백엔드 팀이
+  계약에서 서로 표류한다.
 - **제안 모듈**: `nexus/openapi`
 - **기능**:
   - `@ApiResponse()`, `@ApiProperty()`, `@ApiTags()` 데코레이터
   - `/docs` UI (Scalar 또는 Swagger UI)
-  - Zod 스키마에서 자동 유도
+  - Zod 스키마에서 자동 도출 (Zod → JSON Schema → OpenAPI)
   - `openapi-typescript`로 클라이언트 SDK 생성
 
-### 2.6 Request-scoped DI
+### 3.2 파일 업로드 헬퍼 (`multer` 등가)
 
-- **왜 필수**: 멀티테넌트 앱, 요청별 컨텍스트(tenant, locale), 감사 로깅 모두 요청별 scope가 필요하다. 이것 없이는 global state (race condition) 또는 요청마다 컨테이너 재생성(느림)으로 fallback한다.
-- **제안 모듈**: `nexus/core` 확장
+- **왜 필수인가**: 아바타, 첨부 파일, CSV 임포트, 프로필 사진.
+  Hono 네이티브 API (`c.req.parseBody()`)는 동작하지만 타입 안전
+  데코레이터 래퍼가 없다.
+- **제안 모듈**: `nexus/upload`
 - **기능**:
-  - `{ scope: 'request' }` provider 옵션
-  - AsyncLocalStorage 기반 전파
-  - HTTP, WebSocket, Cron 컨텍스트에서 동작
-
-### 2.7 GraphQL (`@nestjs/graphql` 동급)
-
-- **왜 필수**: 많은 백엔드 팀이 BFF 패턴, 모바일 클라이언트, schema-first 개발을 위해 GraphQL을 선호한다.
-- **제안 모듈**: `nexus/graphql`
-- **기능**:
-  - `@Resolver()`, `@Query()`, `@Mutation()` 데코레이터
-  - Code-first 스키마 생성
-  - DataLoader 통합 (N+1 방지)
-  - Federation 지원
-- **참고**: 다른 항목보다 우선순위 낮음 — 대부분의 팀이 여전히 REST로 배포.
+  - `@UploadedFile()` 데코레이터 (타입 안전)
+  - `@UploadedFiles()` 다중 파일용
+  - 파일 검증 (크기, MIME 타입)
+  - 스토리지 어댑터: 로컬 디스크, S3, R2 (`nexus/drive` 경유)
+  - 스트리밍 업로드 (디스크에 버퍼링하지 않음)
 
 ---
 
-## 3. Tier 2 — 중요 (대부분의 production 앱)
+## 4. Tier 2 — 중요 (대부분 프로덕션 앱)
 
-### 3.1 WebSockets (`@nestjs/websockets` 동급)
+### 4.1 WebSockets (`@nestjs/websockets` 등가)
 
-- **용도**: 채팅, 알림, 라이브 대시보드, 멀티플레이어
+- **사용 사례**: 채팅, 알림, 라이브 대시보드, 멀티플레이어.
 - **제안 모듈**: `nexus/ws`
 - **기능**:
   - `@WebSocketGateway()` 데코레이터
   - 핸들러용 `@SubscribeMessage()`
-  - Room 관리
-  - `ws`(Node) 또는 Workers WebSocket pair 기반
+  - 룸 관리
+  - `ws` (Node) 또는 Workers WebSocket 페어 기반
+- **비고**: Hono에 실험적 WebSocket 지원이 있다 — 재구현 대신 래핑한다.
 
-### 3.2 Caching (`@nestjs/cache-manager` 동급)
+### 4.2 Server-Sent Events (SSE)
 
-- **용도**: DB 쿼리 캐싱, API 응답 캐싱, 세션 저장소
-- **제안 모듈**: `nexus/cache`
+- **사용 사례**: 단방향 스트리밍 (AI 채팅 응답, 빌드 진행률, 라이브 로그).
+- **제안 모듈**: `nexus/sse` (얇은 래퍼)
 - **기능**:
-  - `@CacheKey()`, `@CacheTTL()`, `@CacheInterceptor()` 데코레이터
-  - In-memory 어댑터 (LRU)
-  - Redis 어댑터 (multi-instance)
-  - 태그 기반 무효화
-
-### 3.3 Server-Sent Events (SSE)
-
-- **용도**: 단방향 streaming (AI 채팅 응답, 빌드 진행, 라이브 로그)
-- **제안 모듈**: `nexus/sse` (작은 wrapper)
-- **기능**:
-  - 핸들러에서 `SseStream` 반환 타입
+  - 핸들러의 `SseStream` 반환 타입
   - Hono의 `c.stream()` 기반
   - `Last-Event-ID`로 재연결
 
-### 3.4 Microservices (`@nestjs/microservices` 동급)
+### 4.3 코어 기능으로서의 요청 스코프 DI
 
-- **용도**: 분산 시스템, 서비스 간 통신
-- **제안 모듈**: `nexus/microservice`
+- **왜**: 멀티 테넌트 앱, 요청별 컨텍스트(테넌트, 로케일, 요청 ID),
+  감사 로깅은 모두 요청 스코프가 필요하다.
+- **현황**: `nexus/drizzle`이 이미 트랜잭션 핸들에 AsyncLocalStorage를
+  사용한다. 코어 레벨 `RequestScope`(또는 `scope: 'request'` 제공자
+  옵션)는 계획 중이다.
+- **제안 기능**: `nexus/core` 확장
 - **기능**:
-  - TCP, Redis, NATS, Kafka transport
-  - `@MessagePattern('user.created')` 데코레이터
-  - Hybrid app: 같은 프로세스에서 HTTP + microservice
-  - Request-response 및 event 패턴
+  - `{ scope: 'request' }` 제공자 옵션
+  - AsyncLocalStorage 기반 전파
+  - HTTP, queue 핸들러, cron 컨텍스트에서 동작
 
-### 3.5 Email 통합 (`@nestjs/mailer` 동급)
+### 4.4 gRPC (`@nestjs/microservices` 부분)
 
-- **용도**: 가입 확인, 비밀번호 재설정, 트랜잭션 메일
-- **제안 모듈**: `nexus/mailer`
-- **기능**:
-  - `@InjectMailer()` 데코레이터
-  - 템플릿 엔진 (Rendu / Edge)
-  - 어댑터: nodemailer (SMTP), Resend, AWS SES, Postmark
-
-### 3.6 File upload (`multer` 통합)
-
-- **용도**: 아바타, 첨부파일, 이미지 업로드, CSV 임포트
-- **제안 모듈**: `nexus/upload`
-- **기능**:
-  - `@UploadedFile()` 데코레이터 (타입화)
-  - 파일 검증 (크기, MIME 타입)
-  - 스토리지 어댑터: 로컬 디스크, S3, Cloudflare R2
-  - Streaming 업로드 (디스크에 버퍼링 안 함)
-
-### 3.7 Logging 추상화
-
-- **용도**: 구조화된 로그, 로그 레벨, 요청 컨텍스트
-- **제안 모듈**: `nexus/logger`
-- **기능**:
-  - 레벨 (debug / info / warn / error / fatal) `Logger` 클래스
-  - Pino / Winston 어댑터
-  - 요청 스코프 컨텍스트 (requestId, userId, tenantId)
-  - dev에서 pretty-print, prod에서 JSON
-
-### 3.8 Database migration 도구
-
-- **용도**: prod의 스키마 변경, 롤백, 감사 추적
-- **제안 모듈**: `nx migrate:generate`, `nx migrate:apply` CLI
-- **기능**:
-  - 스키마 diff에서 생성 (Drizzle Kit 통합)
-  - Up / down 마이그레이션
-  - Dry-run 모드
-  - CI 통합 (배포 전 실행)
-
-### 3.9 CORS 추상화
-
-- **용도**: SPA ↔ API cross-origin
-- **제안 모듈**: `nexus/core`의 미들웨어
-- **기능**:
-  - `app.use('*', cors({ origin: ['http://localhost:3001'], credentials: true }))`
-  - 라우트별 CORS override
-  - `nx.config.ts`에서 자동 구성
-
----
-
-## 4. Tier 3 — Nice-to-have
-
-### 4.1 i18n (`nestjs-i18n` 동급)
-
-- **용도**: 다국어 SaaS
-- **제안 모듈**: `nexus/i18n`
-
-### 4.2 Feature flags
-
-- **용도**: 카나리 배포, A/B 테스트, 점진적 롤아웃
-- **제안 모듈**: `nexus/feature-flag`
-
-### 4.3 OpenTelemetry / tracing
-
-- **용도**: 분산 시스템 디버깅
-- **제안 모듈**: `nexus/tracing`
-
-### 4.4 Metrics (Prometheus)
-
-- **용도**: SLO 모니터링, 알림
-- **제안 모듈**: `nexus/metrics`
-
-### 4.5 gRPC (`@nestjs/microservices`의 일부)
-
-- **용도**: 서비스 간 고성능 RPC
+- **사용 사례**: 서비스 간 고성능 RPC.
 - **제안 모듈**: `nexus/grpc`
+- **기능**:
+  - `@GrpcMethod('UserService', 'findById')` 데코레이터
+  - 스트리밍 (서버, 클라이언트, 양방향)
+  - Reflect 기반 스키마
 
-### 4.6 Circuit breakers / retry
+### 4.5 GraphQL (`@nestjs/graphql` 등가)
 
-- **용도**: 외부 API 회복 탄력성
+- **사용 사례**: BFF 패턴, 모바일 클라이언트, 스키마 우선 개발.
+- **제안 모듈**: `nexus/graphql`
+- **기능**:
+  - `@Resolver()`, `@Query()`, `@Mutation()` 데코레이터
+  - 코드 우선 스키마 생성
+  - DataLoader 통합 (N+1 방지)
+  - Federation 지원
+- **비고**: 다른 것들보다 우선순위 낮음 — 대부분의 팀은 여전히 REST를 출시한다.
+
+---
+
+## 5. Tier 3 — Nice-to-have
+
+### 5.1 i18n (`nestjs-i18n` 등가)
+
+- **사용 사례**: 다국어 SaaS.
+- **제안 모듈**: `nexus/i18n`
+- **기능**:
+  - `t('users.welcome', { name })` API
+  - 요청별 로케일 해석
+  - JSON / YAML / gettext 호환 메시지 카탈로그
+
+### 5.2 피처 플래그
+
+- **사용 사례**: 카나리 배포, A/B 테스트, 점진적 롤아웃.
+- **제안 모듈**: `nexus/feature-flag`
+- **기능**:
+  - `@FeatureFlag('new-dashboard')` 데코레이터
+  - 백엔드: in-memory / LaunchDarkly / Unleash
+  - 테넌트별 / 사용자별 타겟팅
+
+### 5.3 트레이싱 (`@nestjs/event-emitter` 인접)
+
+- **사용 사례**: 분산 시스템 디버깅.
+- **제안 모듈**: `nexus/tracing`
+- **기능**:
+  - OpenTelemetry 익스포터
+  - `@Trace('user.create')` 데코레이터
+  - queue / HTTP 경계를 넘는 트레이스 컨텍스트 전파
+  - OTLP 익스포터 (Jaeger / Tempo / Honeycomb)
+
+### 5.4 메트릭 (Prometheus)
+
+- **사용 사례**: SLO 모니터링, 알림.
+- **제안 모듈**: `nexus/metrics`
+- **기능**:
+  - `@Counter('http_requests_total')` / `@Histogram` / `@Gauge`
+  - `/metrics` Prometheus 형식 엔드포인트
+  - 기본 요청 / queue / 이벤트 메트릭
+
+### 5.5 Resilience: 회로차단기 + 재시도
+
+- **사용 사례**: 외부 API 복원력.
 - **제안 모듈**: `nexus/resilience`
+- **기능**:
+  - `@Retry({ attempts: 3, backoff: 'exponential' })` 데코레이터
+  - `@CircuitBreaker({ threshold: 0.5 })` 데코레이터
+  - 벌크헤드 격리
 
-### 4.7 Multi-database
+### 5.6 프로젝트당 멀티 데이터베이스
 
-- **용도**: 한 프로젝트에 PostgreSQL + Elasticsearch
-- **제안 모듈**: `nexus/db` 확장
-
----
-
-## 5. Quick wins (작은 노력, 큰 임팩트)
-
-다음은 각각 **1일 이내**에 추가 가능하면서 효과가 큰 항목들이다.
-
-| 작업 | 노력 | 임팩트 |
-|------|------|--------|
-| `helmet()` 미들웨어 | 매우 낮음 (1-2시간) | 높음 |
-| Zod → OpenAPI 생성기 | 낮음 | 높음 |
-| Zod 검증이 포함된 `ConfigService` | 중간 | 높음 |
-| CORS 추상화 | 낮음 | 중간 |
-| DB 헬스 체크 | 낮음 | 높음 (K8s 배포) |
-| Rate-limit 데코레이터 | 중간 | 높음 |
-| Pino 로거 통합 | 중간 | 높음 (production) |
-
-`helmet()` + Zod → OpenAPI 생성기가 **지금 바로 가능한 가장 효과
-좋은 quick win 두 가지**다.
+- **사용 사례**: 한 프로젝트에서 PostgreSQL + Elasticsearch.
+- **제안**: `nexus/drizzle` 확장 (아키텍처는 이미 지원 —
+  `DrizzleModule.forRoot({...})`를 다른 토큰으로 여러 번 호출 가능).
 
 ---
 
-## 6. 권장 v0.3+ 로드맵
+## 6. 빠른 성과 (작은 노력, 큰 임팩트)
 
-### v0.3 — Production basics (the "deploy-ready" 마일스톤)
+| 작업 | 노력 | 임팩트 | 비고 |
+|------|------|--------|------|
+| Zod 기반 OpenAPI 생성기 | 낮음 | 높음 | 클라이언트 팀에 큰 DX 개선 |
+| CORS 추상화 | 낮음 | 중간 | Hono의 `cors()` 동작, 얇은 래퍼로 일관된 설정 |
+| 멀티 런타임 패리티 테스트 | 낮음 | 높음 | 모든 모듈에서 Bun / Node / Workers |
+| `nexus/cache` Redis store (기존 패턴) | 낮음 | 높음 | 같은 `CacheStore` 인터페이스, 백엔드 하나 더 |
+| `@UploadedFile()` 데코레이터 | 낮음 | 중간 | 얇은 Hono 래퍼 |
+| Multipart body parser 래퍼 | 낮음 | 중간 | 위와 동일 |
+| `helmet()` 미들웨어 | 매우 낮음 | 높음 | `nexus/shield`에 즉시 출시 가능 |
 
-1. **`nexus/health`** — K8s / 모니터링 전제 조건
-2. **`nexus/config`** — env 검증, 보안
-3. **`nexus/throttle`** — API 보호
-4. **helmet + CORS 미들웨어** — 보안 베이스라인
-5. **`nexus/logger`** — Pino / Winston 통합
-6. **DB 마이그레이션 도구** — Drizzle Kit 통합
-
-이 6개가 합쳐지면 NexusJS는 대부분의 CRUD 백엔드에 대해
-"production deploy-ready" 상태가 된다.
-
-### v0.4 — Real-time & API
-
-7. `nexus/cache` — in-memory + Redis
-2. `nexus/ws` — WebSockets
-3. `nexus/sse` — SSE
-4. `nexus/openapi` — Swagger UI
-5. `nexus/upload` — 파일 업로드
-6. `nexus/mailer` — 이메일
-7. Request-scoped DI
-
-### v0.5 — Distributed
-
-14. `nexus/microservice` — TCP/Redis/NATS
-2. `nexus/graphql` — GraphQL
-3. `nexus/i18n` — i18n
-4. `nexus/tracing` — OpenTelemetry
-5. `nexus/metrics` — Prometheus
-
-### v0.6 — Hardening
-
-19. `nexus/resilience` — circuit breakers, retry
-2. `nexus/feature-flag`
-3. Hybrid app (HTTP + microservice)
-4. Multi-database
+가장 큰 **단일** 잔여 레버는 **OpenAPI** — 새 프로젝트 첫 주에
+"API가 무엇을 기대하는지" 왕복을 제거하여 그 자체로 비용을
+회수한다.
 
 ---
 
-## 7. 정직한 평가
+## 7. 권장 v0.4+ 로드맵
 
-NexusJS v0.2는 **견고한 기반**을 가지고 있다.
+### v0.4 — API 완성도 (the "SDK-friendly" 마일스톤)
 
-- MVC + DI + validation 코어는 production-ready다.
-- 옵션 모듈(auth, queue, schedule, events, session) 각각 잘 범위가 정해져 있고 적절히 분리되어 있다.
-- CLI는 신규 프로젝트에서 NestJS의 `nest g`보다 진정으로 더 낫다.
+1. **`nexus/openapi`** — Zod → OpenAPI, Scalar UI
+2. **`nexus/upload`** — 파일 업로드 헬퍼
+3. **`nexus/sse`** — Server-Sent Events
+4. **요청 스코프 DI** — 코어 확장
+5. **`nexus/tracing`** — OpenTelemetry
+6. **`nexus/metrics`** — Prometheus
 
-빠진 것은 **지루한 production scaffolding** — NestJS가 7년에 걸쳐 축적한 20개 모듈로, 모두가 production 단계에 도달할 때까지 잊어버리는 것들이다.
+이 6개는 NexusJS를 **API 명시적** + **관측 가능**하게 만들며, 이는
+현대 백엔드 서비스의 표준이다.
 
-좋은 소식: 대부분 **additive**다. 새로운 `nexus/health` 패키지는 코어를 건드리지 않고 출시할 수 있다. 기반이 한 번에 하나씩 추가하는 것을 지원한다.
+### v0.5 — 실시간 & 분산
 
-"NestJS 기능 동등성"에 이르는 현실적 경로는 **~12-18개월의 꾸준한 작업**이며, **v0.3 production-basics가 가장 시급한** 마일스톤이다. v0.3 이후 NexusJS는 대부분의 CRUD 백엔드에 대한 viable 대안이 되며, 나머지 갭은 대부분 **특수 인프라**(GraphQL, microservices, gRPC)로 많은 팀이 필요로 하지 않는다.
+- `nexus/ws` — WebSockets
+- `nexus/graphql` — GraphQL
+- `nexus/microservice` — TCP / NATS / Redis 트랜스포트
+- `nexus/grpc` — gRPC 서버 / 클라이언트
+
+### v0.6 — 강화
+
+- `nexus/resilience` — 회로차단기, 재시도, 벌크헤드
+- `nexus/i18n` — i18n
+- `nexus/feature-flag` — 피처 플래그
+- 멀티 데이터베이스, 하이브리드 앱, 안정적인 공개 API 표면
 
 ---
 
-## 8. 참고
+## 8. 정직한 평가 (v0.3)
 
+NexusJS v0.3은 **대부분의 CRUD 백엔드에 프로덕션 준비됨**:
+
+- MVC + DI + 검증 코어는 견고하고 실전 테스트되었다.
+- 17개 옵션 모듈 (auth, queue, schedule, events, session, health,
+  config, logger, static, limiter, shield, cache, drive, mail,
+  drizzle, cli)은 각각 독립적으로 사용 가능하고 잘 분리되어 있다.
+- 기본 ORM으로서의 Drizzle은 AdonisJS-Lucid 격차를 해소하며 Bun-native
+  앱에 **가장 강력한** ORM 선택이라고 할 수 있다.
+- CLI는 새 프로젝트에서 NestJS의 `nest g`보다 명백히 낫다.
+- SQL 인젝션 방지 raw-query primitive는 최고 수준이다.
+
+"NestJS 피처 패리티"에 부족한 것은 대부분 **특수 인프라**
+(WebSockets, GraphQL, 마이크로서비스, OpenTelemetry)로, 많은
+팀이 프로젝트 첫 6개월 동안 필요로 하지 않는다.
+
+v0.3에서 v1.0까지의 경로는 대략:
+
+- **v0.4** (2026년 3분기): API 관측 가능성 — OpenAPI, SSE, upload,
+  tracing, metrics.
+- **v0.5** (2026년 4분기): 실시간 — WebSockets, GraphQL, gRPC,
+  마이크로서비스.
+- **v0.6** (2027년 1분기): 프로덕션 강화 — resilience, i18n,
+  피처 플래그, 안정적인 공개 API 표면.
+
+v0.6 이후 NexusJS는 Bun의 런타임 + ORM 이점을 가진, **NestJS가
+오늘 지원하는 모든 백엔드의** 실행 가능한 대안이 된다.
+
+---
+
+## 9. 참고
+
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 릴리스 노트
 - [`../README.md`](../../README.md) — 현재 상태 & 로드맵
-- [`../user-guide/`](../../user-guide/) — 기존 모듈 가이드
-- [`../design/`](../../design/) — 기존 설계 문서 (auth, queue 등)
+- [`../../user-guide/`](../../user-guide/) — 17개 모듈 가이드
+- [`../../design/`](../../design/) — 아키텍처 심층 문서
+- [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — 동반 분석
 - [NestJS 문서](https://docs.nestjs.com) — 비교 기준
 - [Bulletproof Node.js architecture](https://github.com/santiq/bulletproof-nodejs) —
-  이 분석이 파생된 production 체크리스트
+  이 분석이 도출된 프로덕션 체크리스트

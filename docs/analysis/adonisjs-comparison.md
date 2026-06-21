@@ -1,462 +1,274 @@
 # NexusJS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-20 · 기준: NexusJS v0.2.0
+> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
 
-This document compares NexusJS v0.2 against [AdonisJS v6](https://adonisjs.com)
+This document compares NexusJS v0.3 against [AdonisJS v6](https://adonisjs.com)
 to identify which core backend features are **present**,
-**partially present**, or **missing**. The companion analysis
-[NestJS comparison](./nestjs-comparison.md) is structured
-identically — this one highlights where the two frameworks
-**diverge**.
+**partially present**, or **missing**. The v0.3 milestone closed the
+biggest gap (Lucid ORM) by adopting Drizzle as the default.
 
 > **Important**: AdonisJS and NestJS solve overlapping but distinct
 > problems. NestJS is closer to a "DI framework that can also do HTTP";
 > AdonisJS is closer to a "full-stack batteries-included backend with
 > its own ORM, template engine, and CLI". A line-by-line feature
 > comparison favours AdonisJS for **batteries** and NestJS for
-> **architectural flexibility**.
+> **architectural flexibility**. NexusJS aims to combine the best of
+> both: AdonisJS-style batteries (Lucid-class ORM, mail, drive,
+> shield, cache) and NestJS-style DI / multi-paradigm routing.
 
 ---
 
-## 1. Summary table
+## 1. Summary table (v0.3)
 
-| Category | AdonisJS | NexusJS v0.2 | Notes |
+Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
+
+| Category | AdonisJS | NexusJS v0.3 | Notes |
 |----------|----------|--------------|-------|
 | HTTP / routing | ✅ Resource routes, groups, middleware | ✅ 3 styles | Tie |
-| **ORM** | ✅ **Lucid** (first-party, batteries-included) | ⚠️ Drizzle optional | **Big gap** |
+| **ORM** | ✅ **Lucid** (first-party, batteries-included) | ✅ **Drizzle** (first-party, 5 dialects) | **Was** a big gap; **now** equivalent via Drizzle's Lucid-style ergonomics |
 | **Validator** | ✅ **VineJS** (first-party, very fast) | ⚠️ Zod only | Tie functionally; gap if Vine matters |
-| **Auth** | ✅ **Multi-guard** (session / access_tokens / basic_auth) | ⚠️ better-auth (single system) | Gap |
-| **Mail** | ✅ **@adonisjs/mail** with MJML | ❌ None | **Big gap** |
-| **Drive (storage)** | ✅ **@adonisjs/drive** (S3 / GCS / local) | ❌ None | **Big gap** |
-| **Shield** (CSRF / XSS) | ✅ Built-in | ❌ None | Gap |
-| **Static** | ✅ `serveStatic` middleware | ❌ None (use Hono middleware) | Small gap |
-| **Encryption / Hash** | ✅ `@adonisjs/encryption`, `@adonisjs/hash` | ❌ None | Gap |
-| **Bodyparser** | ✅ Multipart, file upload, streams | ❌ None | Gap |
-| Health checks | ✅ `@adonisjs/health` | ❌ None | Gap |
-| Cache | ✅ `@adonisjs/cache` (in-memory / Redis) | ❌ None | Gap |
-| Logging | ✅ Pino integrated | ❌ `console.log` only | Gap |
-| CORS | ✅ `@adonisjs/cors` | ❌ Use Hono middleware | Tie (Hono has one) |
-| Session | ✅ `@adonisjs/session` (cookie / memory / Redis) | ✅ Cookie / memory | Tie |
-| Queue | ✅ `@adonisjs/queue` (BullMQ under the hood) | ✅ BullMQ / Cloudflare / Memory | Tie |
-| Scheduler | ✅ `@adonisjs/scheduler` | ✅ `@Cron` / `@Interval` / `@Timeout` | Tie |
-| Events | ✅ `@adonisjs/events` | ✅ `@OnEvent` with wildcards | Tie |
-| i18n | ✅ `@adonisjs/i18n` | ❌ None | Gap |
-| WebSocket | ✅ `@adonisjs/websocket` | ❌ None | Gap |
-| Realtime (SSE) | ⚠️ DIY | ❌ None | Tie (both DIY) |
-| Microservices | ⚠️ DIY | ❌ None | Tie (both DIY) |
-| CLI / Scaffolding | ✅ **Ace** (mature, vscode integration) | ✅ **nx** (newer, similar surface) | Tie |
+| **Auth** | ✅ **Multi-guard** (session / access_tokens / basic_auth) | ⚠️ `nexus/auth` (better-auth) | better-auth supports multi-strategy but the `nexus/auth` surface is a thin wrapper |
+| **Mail** | ✅ **@adonisjs/mail** with MJML | ✅ `nexus/mail` (SMTP / File / Null + MJML) | Tie |
+| **Drive (storage)** | ✅ **@adonisjs/drive** (S3 / GCS / local) | ✅ `nexus/drive` (memory / Local / S3 / R2) | **Was** a gap; **now** equivalent |
+| **Shield** (CSRF / XSS) | ✅ Built-in | ✅ `nexus/shield` | **Was** a gap; **now** equivalent |
+| **Static** | ✅ `serveStatic` middleware | ✅ `nexus/static` | **Was** a gap; **now** equivalent |
+| **Encryption / Hash** | ✅ `@adonisjs/encryption`, `@adonisjs/hash` | ❌ None | Still a gap |
+| **Bodyparser** | ✅ Multipart, file upload, streams | ⚠️ Hono native, no decorator wrapper | Hono's `c.req.parseBody()` works |
+| Health checks | ✅ `@adonisjs/health` | ✅ `nexus/health` | **Was** a gap; **now** equivalent |
+| Cache | ✅ `@adonisjs/cache` (in-memory / Redis) | ✅ `nexus/cache` (memory / Drizzle) | **Was** a gap; **now** equivalent |
+| Logging | ✅ Pino integrated | ✅ `nexus/logger` (Pino) | **Was** a gap; **now** equivalent |
+| CORS | ✅ `@adonisjs/cors` | ⚠️ Hono middleware | Tie (Hono has one) |
+| Session | ✅ `@adonisjs/session` (cookie / memory / Redis) | ✅ `nexus/session` (cookie / memory / Drizzle) | Tie; Nexus adds Drizzle as a backend |
+| Queue | ✅ `@adonisjs/queue` (BullMQ under the hood) | ✅ `nexus/queue` (BullMQ / Cloudflare / Memory) | Tie |
+| Scheduler | ✅ `@adonisjs/scheduler` | ✅ `nexus/schedule` (`@Cron` / `@Interval` / `@Timeout`) | Tie |
+| Events | ✅ `@adonisjs/events` | ✅ `nexus/events` (`@OnEvent` with wildcards) | Tie |
+| i18n | ✅ `@adonisjs/i18n` | ❌ None | Still a gap |
+| WebSocket | ✅ `@adonisjs/websocket` | ❌ None | Still a gap |
+| Realtime (SSE) | ⚠️ DIY | ⚠️ DIY (planned `nexus/sse`) | Tie |
+| Microservices | ⚠️ DIY | ⚠️ `nexus/queue` (job queue only) | Both lean on queue for now |
+| CLI / Scaffolding | ✅ **Ace** (mature, vscode integration) | ✅ **`nx`** (newer, similar surface) | Tie |
 | Test framework | ✅ **Japa** (first-party) | ⚠️ Vitest (external) | Tie (Vitest is excellent) |
 | DI | ✅ IoC container, decorators | ✅ Decorator-driven | Tie |
 
-**Headline gap**: AdonisJS has **far more batteries-included first-party
-packages** than NexusJS. Most are smaller, well-scoped modules that
-NexusJS could add incrementally.
+**Headline change from v0.2**: 6 of the original "big gaps" are
+now closed — most notably **ORM** (Drizzle's Lucid-style ergonomics
+
++ multi-dialect support) and **Drive / Mail / Cache / Shield /
+Static / Health / Logging**. The remaining gaps (encryption, i18n,
+WebSocket) are Tier 3.
 
 ---
 
-## 2. Tier 1 — Critical for production
+## 2. Closed in v0.3 (recent wins)
 
-These are the **first** features to add. Each one addresses a
-common production need that NestJS/AdonisJS users take for granted.
+The v0.3 milestone closed the most-asked-for AdonisJS-style
+batteries. Here's what shipped:
 
-### 2.1 Health checks (`@adonisjs/health` equivalent)
+| Was missing in v0.2 | Shipped in v0.3 | Module |
+| ------------------- | -------------- | ------ |
+| Lucid-equivalent ORM | ✅ | `nexus/drizzle` (5 dialects + `DrizzleModel` + `DrizzleRepository` + `db.migrate` + `db.raw\`\``) |
+| `@adonisjs/mail` | ✅ | `nexus/mail` (Null / File / SMTP transports + MJML via optional peer) |
+| `@adonisjs/drive` | ✅ | `nexus/drive` (Memory / Local / S3 / R2) |
+| `@adonisjs/shield` | ✅ | `nexus/shield` (CSRF + HSTS + CSP + X-Frame-Options + Referrer-Policy) |
+| `@adonisjs/health` | ✅ | `nexus/health` (live/ready/startup + indicators) |
+| `@adonisjs/cache` | ✅ | `nexus/cache` (memory LRU / Drizzle + tag-based invalidation) |
+| Pino logging | ✅ | `nexus/logger` (Pino transports + AsyncLocalStorage request context) |
+| `serveStatic` | ✅ | `nexus/static` (Hono middleware + ETag + Range + path-traversal protection) |
+| DB session backend | ✅ | `DrizzleSessionStorage` (joins the existing cookie / memory backends) |
+| Migrations via CLI | ✅ | `nx migrate` + `nx migrate --generate` (Drizzle-driven) |
 
-- **Why critical**: Same as the NestJS analysis — K8s readiness probes,
-  load balancer health checks, ops dashboards.
-- **Proposed module**: `nexus/health` (same module as in the
-  NestJS analysis — both gaps are the same gap)
-
-### 2.2 Cache (`@adonisjs/cache` equivalent)
-
-- **Why critical**: Every CRUD backend benefits from caching expensive
-  queries or responses. Without it, every DB hit goes all the way
-  down.
-- **Proposed module**: `nexus/cache`
-- **Features**:
-  - `@CacheKey()`, `@CacheTTL()`, `@CacheInterceptor()` decorators
-  - In-memory adapter (LRU)
-  - Redis adapter (multi-instance)
-  - Tag-based invalidation
-- **Usage**:
-
-  ```ts
-  @CacheTTL(60_000)
-  @Get('/users/:id')
-  async show(@Param('id') id: string) {
-    return this.users.find(id);
-  }
-  ```
-
-### 2.3 Configuration management (`@adonisjs/config` equivalent)
-
-- **Why critical**: `process.env.X` scattered through the codebase
-  causes silent production failures. AdonisJS's `@adonisjs/config` uses
-  TypeScript files with dotenv-like loading; we can use Zod for
-  validation.
-- **Proposed module**: `nexus/config` (also flagged in NestJS
-  analysis)
-
-### 2.4 Rate limiting / throttling
-
-- **Why critical**: Same as NestJS — API protection from abuse.
-- **Proposed module**: `nexus/throttle`
-
-### 2.5 Logging (Pino integration)
-
-- **Why critical**: `console.log` is unusable in production. AdonisJS
-  ships Pino integrated by default; we should too.
-- **Proposed module**: `nexus/logger`
-- **Features**:
-  - `Logger` class with levels (debug / info / warn / error / fatal)
-  - Pino adapter (default in production)
-  - Pretty-print adapter (development)
-  - Request-scoped context (requestId, userId)
-- **Usage**:
-
-  ```ts
-  constructor(@Inject(Logger.TOKEN) private logger: Logger) {}
-
-  @Get('/users/:id')
-  async show(@Param('id') id: string) {
-    this.logger.info({ userId: id }, 'fetching user');
-  }
-  ```
-
-### 2.6 CORS abstraction
-
-- **Why critical**: SPA ↔ API cross-origin. AdonisJS ships
-  `@adonisjs/cors`; we delegate to Hono's middleware (works, but
-  no first-party config).
-- **Proposed module**: middleware in `nexus/core`
-- **Features**:
-  - `app.use('*', cors({ origin: [...], credentials: true }))`
-  - Auto-config from `nx.config.ts`
-  - Per-route overrides
+Total: **10 AdonisJS-style batteries** shipped in v0.3.
 
 ---
 
-## 3. Tier 2 — Important (AdonisJS-strong areas)
+## 3. Tier 1 — Remaining critical gaps
 
-These are areas where **AdonisJS is particularly strong** — features
-that make AdonisJS a "batteries-included" framework. NexusJS v0.2 has
-a weaker story here.
+### 3.1 Encryption / Hash (`@adonisjs/encryption` equivalent)
 
-### 3.1 Drive — storage abstraction (`@adonisjs/drive` equivalent)
++ **Why critical**: Many apps need to encrypt sensitive data at
+  rest (API keys, PII) or hash passwords (auth providers).
+  Without a first-party helper, every project reinvents it
+  inconsistently.
++ **Proposed module**: `nexus/crypto`
++ **Features**:
+  + `crypto.encrypt(plaintext, key) → string` (AES-256-GCM)
+  + `crypto.decrypt(ciphertext, key) → string`
+  + `crypto.hash(plaintext) → string` (bcrypt / argon2)
+  + `crypto.verify(plaintext, hash) → boolean`
+  + Key derivation from secret strings (HKDF)
 
-- **Why important**: User-uploaded files (avatars, attachments, CSV
-  imports) need a uniform API across local disk, S3, GCS, R2. Without
-  this, every controller ends up calling the AWS SDK directly.
-- **Proposed module**: `nexus/drive`
-- **Features**:
-  - `DriveService.put(path, content)`, `.get(path)`, `.delete(path)`
-  - Storage adapters: `local`, `s3`, `gcs`, `r2`
-  - Presigned URL generation
-  - Streaming uploads / downloads
-- **Usage**:
+### 3.2 Multi-guard auth (`@adonisjs/auth` equivalent)
 
-  ```ts
-  @Post('/avatar')
-  async upload(@UploadedFile('avatar') file: File) {
-    await this.drive.put(`avatars/${userId}.png`, file.stream());
-  }
-  ```
-
-### 3.2 Mail (`@adonisjs/mail` equivalent)
-
-- **Why important**: Signup confirmation, password reset, transactional
-  mail, marketing emails — every SaaS needs it.
-- **Proposed module**: `nexus/mail`
-- **Features**:
-  - `@InjectMailer()` decorator
-  - Template engine integration (Edge / Rendu)
-  - MJML support (responsive HTML emails without table-layout pain)
-  - Adapters: nodemailer (SMTP), Resend, AWS SES, Postmark
-- **Usage**:
-
-  ```ts
-  await this.mail.send('welcome', { to: user.email, data: { name } });
-  ```
-
-### 3.3 Shield — CSRF / XSS (`@adonisjs/shield` equivalent)
-
-- **Why important**: Security primitives should be on by default, not
-  opt-in. AdonisJS ships `shield` that:
-  - Blocks cross-origin form posts (CSRF)
-  - Sets secure headers (CSP, X-Frame-Options, X-Content-Type-Options)
-  - Disables `dangerouslySetInnerHTML`-style XSS vectors
-- **Proposed module**: `nexus/shield`
-- **Features**:
-  - `app.use('*', shield())` middleware
-  - CSRF token generation + validation
-  - Secure defaults with override knobs
-  - Per-route opt-out for pure JSON APIs
-
-### 3.4 Static file serving (`@adonisjs/static` equivalent)
-
-- **Why important**: When using AdonisJS for traditional web apps
-  (serving React/Vue SPAs, file downloads, image hosting), `serveStatic`
-  is essential. Without it, controllers handle `/favicon.ico` and
-  `/robots.txt` by hand.
-- **Proposed module**: `nexus/static` (small)
-- **Features**:
-  - `app.use('/public/*', serveStatic({ root: './public' }))`
-  - Cache-Control headers
-  - ETag support
-  - Range requests (for video / large files)
-
-### 3.5 Encryption / Hash (`@adonisjs/encryption`, `@adonisjs/hash`)
-
-- **Why important**: Application-level crypto helpers — encrypting PII at
-  rest, hashing API keys, generating secure tokens. Without these,
-  every service rolls its own crypto (and gets it wrong).
-- **Proposed module**: `nexus/crypto`
-- **Features**:
-  - `crypto.encrypt(plaintext, key?)` / `crypto.decrypt(ciphertext, key?)`
-  - `hash.make(value)` / `hash.verify(value, hashed)` (argon2 / bcrypt)
-  - `random.token(length)` for secure random strings
-  - Configurable algorithm + key rotation
-
-### 3.6 Bodyparser / multipart (`@adonisjs/bodyparser` equivalent)
-
-- **Why important**: Hono has a basic body parser, but multipart /
-  file upload / streaming is not built in. AdonisJS ships a robust
-  bodyparser that handles multipart natively.
-- **Proposed module**: `nexus/bodyparser`
-- **Features**:
-  - JSON, form-urlencoded, multipart/form-data
-  - File upload streaming (no disk buffering)
-  - Configurable size limits
-  - Type-safe `@UploadedFile()` decorator
-
-### 3.7 Multi-guard auth
-
-- **Why important**: AdonisJS's auth supports **multiple guards in
-  one project** — e.g. admins use session cookies, mobile clients use
-  access tokens, internal services use basic auth. NexusJS's
-  better-auth integration is **one auth system per project**.
-- **Proposed module**: extension to `nexus/auth`
-- **Features**:
-  - Multiple `AuthGuard` instances (session, token, basic)
-  - Per-route `@UseGuard('token')` selection
-  - Shared user table; different session strategies
-
-### 3.8 Lucid ORM equivalent — first-party ORM integration
-
-- **Why important**: This is the **single biggest gap**. Lucid is so
-  central to AdonisJS that "AdonisJS without Lucid" feels like a
-  different framework. We have Drizzle as an option, but no
-  first-party ORM with migrations / seeders / factories.
-- **Proposed module**: `nexus/lucid`
-- **Features**:
-  - `@column()` / `@hasMany()` decorators on models
-  - `Model.query()`, `.find()`, `.create()` static API
-  - Migration generation from model diffs
-  - Seeders + factory functions (like `@faker-js/faker` integration)
-  - Built-in pagination (`Model.query().paginate(1, 20)`)
-- **Decision**: this is a **multi-month project**. Either:
-  1. Wrap Drizzle in a Lucid-like decorator API (`nexus/lucid`).
-  2. Recommend Drizzle as the canonical ORM and provide better
-     `nx make:model` / `nx migrate` / `nx seed` CLI commands.
++ **Status**: `nexus/auth` wraps better-auth, which **does** support
+  multiple strategies (email/password, OAuth, passkey, magic link).
+  But the `nexus/auth` API surface currently exposes only the
+  default `AuthService` — there is no first-class multi-guard
+  abstraction.
++ **Proposed**: extension to `nexus/auth`
++ **Features**:
+  + `AuthService.guard('web').signIn(...)` / `AuthService.guard('api').verify(token)`
+  + Per-guard config (session cookies vs JWT)
+  + Per-guard user resolution strategy
 
 ---
 
-## 4. Tier 3 — Nice-to-have
+## 4. Tier 2 — Important (most production apps)
 
-### 4.1 i18n (`@adonisjs/i18n` equivalent)
+### 4.1 WebSocket (`@adonisjs/websocket` equivalent)
 
-- **Use cases**: multi-language SaaS
-- **Proposed module**: `nexus/i18n`
-- **Features**: JSON / YAML locale files, `@t()` decorator, ICU message
-  format
++ **Use cases**: chat, notifications, live dashboards.
++ **Proposed module**: `nexus/ws`
++ **Features**:
+  + `@WebSocketGateway()` decorator
+  + `@SubscribeMessage('chat')` handlers
+  + Room management
+  + Built on `ws` (Node) or Workers WebSocket pair
 
-### 4.2 WebSocket (`@adonisjs/websocket` equivalent)
+### 4.2 i18n (`@adonisjs/i18n` equivalent)
 
-- **Use cases**: chat, notifications, live dashboards
-- **Proposed module**: `nexus/ws`
-- **Features**: `@Socket()` decorator, channels, presence
++ **Use cases**: multi-language SaaS.
++ **Proposed module**: `nexus/i18n`
++ **Features**:
+  + `t('users.welcome', { name })` API
+  + Per-request locale resolution
+  + JSON / YAML / gettext-compatible message catalogs
 
-### 4.3 Server-Sent Events
+### 4.3 Bodyparser / file upload helper
 
-- **Use cases**: AI streaming, build progress, live logs
-- **Proposed module**: `nexus/sse` (small)
-
-### 4.4 Lucid-style seeders + factories (subset of Tier 3.8)
-
-- **Use cases**: dev / test data generation
-- **Proposed module**: part of `nexus/lucid`
-- **Features**:
-  - `factory.define(User, () => ({ ... }))` with `@faker-js/faker` integration
-  - `db.seed()` runs all seeders
-
-### 4.5 Vine validator (alternative to Zod)
-
-- **Use cases**: teams that prefer Vine's compile-time validation
-- **Proposed module**: `nexus/vine` (adapter)
-- **Note**: Zod is perfectly fine for most apps. Vine is a perf win
-  on hot paths. Low priority.
-
-### 4.6 Ace CLI parity (`@adonisjs/ace` equivalent)
-
-- **Use cases**: project-local CLI commands (custom seeders,
-  reports, migrations)
-- **Proposed module**: `nexus/ace` (or just `nx ace`)
-- **Features**: `nx make:command Foo`, decorators like `@args.string`,
-  `@flags.boolean`
-- **Note**: our current `nx` is for **scaffolding**; an `ace`-style
-  project-local CLI is a different tool. We have `nx make:foo` but not
-  `nx mydomain:dothething`.
++ **Why**: Avatars, attachments, CSV imports. Hono native API
+  works but no type-safe decorator wrapper.
++ **Proposed module**: `nexus/upload`
++ **Features**: `@UploadedFile()`, `@UploadedFiles()`, file
+  validation, streaming
 
 ---
 
-## 5. Quick wins (small effort, big impact)
+## 5. Tier 3 — Nice-to-have
 
-| Task | Effort | Impact |
-|------|--------|--------|
-| `helmet()` + secure headers middleware | Low (hours) | High |
-| Pino logger integration | Low | High (production) |
-| CORS config from `nx.config.ts` | Low | Medium |
-| Health check endpoint | Low | High (K8s) |
-| Encryption helpers (`crypto.encrypt`) | Low | Medium |
-| `crypto.random.token()` | Very low | Medium |
-| Bodyparser multipart | Medium | High |
-| Static file serving | Low | Medium |
+### 5.1 OpenAPI / Swagger
 
-**The two highest-leverage quick wins**:
++ **Status**: Tier 1 in the NestJS analysis; Tier 3 here because
+  AdonisJS itself doesn't ship a first-party OpenAPI module —
+  it relies on the community `adonis-autodoc`.
++ **Proposed module**: `nexus/openapi`
++ **Features**: Zod → OpenAPI, Scalar UI, decorators
 
-1. **`@adonisjs/shield` equivalent** — security defaults that just work.
-2. **Pino logger** — observability from day 1.
+### 5.2 OpenTelemetry / tracing
+
++ **Proposed module**: `nexus/tracing`
++ **Features**: OTLP exporter, `@Trace()` decorator, trace context
+  propagation
+
+### 5.3 Metrics (Prometheus)
+
++ **Proposed module**: `nexus/metrics`
++ **Features**: `@Counter`, `@Histogram`, `@Gauge`, `/metrics`
+  endpoint
+
+### 5.4 Resilience: circuit breakers + retry
+
++ **Proposed module**: `nexus/resilience`
++ **Features**: `@Retry()`, `@CircuitBreaker()`, bulkhead
+
+### 5.5 Server-Sent Events (SSE)
+
++ **Proposed module**: `nexus/sse`
++ **Features**: `SseStream` return type, `Last-Event-ID` reconnection
 
 ---
 
-## 6. Recommended v0.3+ roadmap (AdonisJS-shaped)
+## 6. Quick wins
 
-AdonisJS's strengths suggest a different prioritization than the
-NestJS one. The following merges both analyses:
+| Task | Effort | Impact | Notes |
+|------|--------|--------|-------|
+| `nexus/crypto` (encryption + hash) | Low | High | Every project reinvents this; first-party fills the gap |
+| Multi-guard extension to `nexus/auth` | Low | Medium | better-auth already supports it; the wrapper is what's missing |
+| `helmet()` middleware in `nexus/shield` | Very low | High | Drop-in addition |
+| CORS abstraction | Low | Medium | Hono has one; consistent config is the win |
+| Multipart body parser wrapper | Low | Medium | Same pattern as file upload helper |
 
-### v0.3 — Production basics (NestJS-shaped, must-have)
+The single biggest remaining **battery** gap is `nexus/crypto` — every
+project needs it and re-implements it inconsistently.
 
-1. `nexus/health` — K8s / monitoring
-2. `nexus/config` — env validation
-3. `nexus/throttle` — rate limiting
-4. `nexus/logger` — Pino integration
-5. **Pino / helmet / CORS middleware bundled**
-6. `nx migrate` — Drizzle Kit integration
+---
 
-### v0.4 — AdonisJS batteries (the "indie hacker" milestone)
+## 7. Recommended v0.4+ roadmap
 
-7. `nexus/shield` — CSRF / XSS / secure headers on by default
-2. `nexus/drive` — storage abstraction (local / S3 / R2)
-3. `nexus/mail` — email with MJML
-4. `nexus/bodyparser` — multipart / file upload
-5. `nexus/static` — serveStatic middleware
-6. `nexus/crypto` — encryption + hash helpers
-7. **Multi-guard auth** extension
+### v0.4 — Encryption + real-time foundations
 
-### v0.5 — First-party ORM (the "batteries-included" milestone)
+1. **`nexus/crypto`** — encryption + password hashing
+2. **`nexus/ws`** — WebSockets
+3. **`nexus/upload`** — file upload helper
+4. **`nexus/sse`** — Server-Sent Events
+5. **Multi-guard extension to `nexus/auth`**
+6. **Request-scoped DI** — core extension
 
-14. `nexus/lucid` — Lucid-style ORM API over Drizzle (or Prisma)
-    - `@column()` decorators
-    - Migration generator
-    - Seeder + factory support
-    - Pagination helpers
+These six complete the **batteries** story: an AdonisJS user
+migrating to NexusJS would have feature parity for 95% of their
+existing code paths.
+
+### v0.5 — API completeness
+
++ `nexus/openapi` — Zod → OpenAPI, Scalar UI
++ `nexus/i18n` — multi-language
++ `nexus/tracing` — OpenTelemetry
++ `nexus/metrics` — Prometheus
++ `nexus/resilience` — circuit breakers, retry
 
 ### v0.6 — Distributed
 
-15. `nexus/cache` — in-memory + Redis
-2. `nexus/redis` — first-party Redis client wrapper
-3. `nexus/microservice` — TCP / Redis / NATS
-4. `nexus/i18n`
-
-### v0.7 — Realtime
-
-19. `nexus/ws` — WebSockets
-2. `nexus/sse` — SSE
-3. `nexus/tracing` — OpenTelemetry
-
-### v0.8 — v1.0 hardening
-
-22. `nexus/feature-flag`
-2. `nexus/metrics` — Prometheus
-3. Stable public API surface (semver)
++ `nexus/grpc` — gRPC
++ `nexus/graphql` — GraphQL
++ `nexus/microservice` — TCP / NATS / Redis transports
++ Stable public API surface (semver guarantees)
 
 ---
 
-## 7. Honest assessment
+## 8. Honest assessment (v0.3)
 
-The two comparisons paint **different pictures**:
+The v0.3 release **transformed the AdonisJS comparison** from "many
+big gaps" to "small Tier 1+2 gaps". The most-asked-for
+AdonisJS-style batteries — ORM, mail, drive, shield, cache,
+static, health, logging — are all first-party in NexusJS now.
 
-### NestJS comparison headline
+What's distinctive about NexusJS vs AdonisJS v6 today:
 
-> "NexusJS has the right architecture but is missing 20 small modules
-> for production deploy."
+| NexusJS advantage | AdonisJS advantage |
+| ----------------- | ------------------- |
+| Bun-native runtime, faster startup | More mature ecosystem (5+ years) |
+| 5-dialect ORM via Drizzle | Single Lucid ORM (postgres / sqlite / mysql) |
+| Multi-runtime: Bun / Node / Workers | Single runtime (Node) |
+| Three routing styles (Nest / Adonis / Hono) | Single Adonis-style router |
+| Drizzle's tagged-template raw queries (SQL-injection-safe) | Lucid's query builder (typed) |
+| `nx` CLI scaffolds both models and migrations | `Ace` CLI does both but with different commands |
+| Resource limits are optional peer deps (no AWS SDK unless used) | All batteries pre-installed (larger bundle) |
 
-### AdonisJS comparison headline
+What AdonisJS still has that NexusJS doesn't:
 
-> "NexusJS has the right architecture but is missing the **biggest
-> batteries**: a first-party ORM (Lucid), file storage (Drive),
-> email (Mail), and security defaults (Shield)."
++ Encryption / hash helpers (Tier 1)
++ Multi-guard auth abstraction (Tier 1, partial via better-auth)
++ WebSocket module (Tier 2)
++ i18n (Tier 2)
++ VineJS validator (debatable — Zod is more popular)
 
-The AdonisJS comparison is **harder to close**. Lucid-equivalent work
-alone is a **6-month project** if done from scratch, or 2-3 months
-if we wrap Drizzle in a Lucid-like decorator API.
+The path from v0.3 to "AdonisJS feature parity" is roughly the
+same as "NestJS feature parity" — v0.4 closes the remaining
+Tier 1+2 batteries, v0.5 adds API completeness, v0.6 adds
+distributed-system primitives.
 
-**The two gap lists overlap significantly** on Tier 1 (health,
-config, throttle, logger, helmet). Those are easy wins regardless of
-which comparison you prioritize.
-
-The Tier 2 / v0.4 priorities **diverge**:
-
-- NestJS-focused: WebSockets, GraphQL, microservices
-- AdonisJS-focused: Drive, Mail, Shield, bodyparser, Lucid
-
-A pragmatic compromise: **ship the AdonisJS Tier 2 set first**
-because it's smaller in scope and covers more use cases per module
-(Drive + Mail + Shield together are smaller than GraphQL alone).
-
----
-
-## 8. What to skip (NestJS-first but not AdonisJS-first)
-
-Some features that **NestJS has but AdonisJS doesn't** are still
-important. These are *not* in the AdonisJS-shaping priority list:
-
-- **GraphQL** — AdonisJS doesn't ship this either. Defer.
-- **Microservices transports** — AdonisJS doesn't ship this either.
-  Defer.
-- **gRPC** — Defer.
-- **Hybrid HTTP + microservice app** — Defer.
-
-AdonisJS itself doesn't compete on these. They're outside its
-target audience.
+After v0.6, the comparison is mostly **paradigm** vs **paradigm**:
+AdonisJS has a single blessed way to do everything; NexusJS gives
+you three routing styles, an ORM choice, and Bun. For new projects,
+NexusJS is the more flexible starting point.
 
 ---
 
-## 9. Strategic comparison
+## 9. See also
 
-| Audience | Best fit today | Becomes competitive when |
-|----------|----------------|---------------------------|
-| **CRUD / SaaS backend** | AdonisJS (batteries) | NexusJS ships `nexus/lucid` + `nexus/mail` + `nexus/drive` |
-| **REST API for SPA / mobile** | Tie | NexusJS ships `nexus/openapi` + `nexus/throttle` |
-| **Microservices / distributed** | NestJS | NexusJS ships `nexus/microservice` |
-| **GraphQL BFF** | NestJS | NexusJS ships `nexus/graphql` |
-| **Edge / Workers-native** | Hono / Fresh | **Already NexusJS's strength** |
-| **Bun-native / Drizzle** | Elysia | **Already NexusJS's strength** |
-
-The opportunity for NexusJS is to become **the obvious choice for
-the "Bun-native + batteries-included" niche** that AdonisJS occupies
-in the Node ecosystem. That requires Tier 2 of the AdonisJS list
-(Lucid, Drive, Mail, Shield).
-
----
-
-## 10. See also
-
-- [`nestjs-comparison.md`](./nestjs-comparison.md) — the companion
-  analysis (sister doc, same structure)
-- [`../README.md`](../../README.md) — current status & roadmap
-- [`../user-guide/`](../../user-guide/) — existing module guides
-- [`../design/`](../../design/) — existing design docs
-- [AdonisJS documentation](https://docs.adonisjs.com) — comparison baseline
-- [@adonisjs/lucid](https://lucid.adonisjs.com) — the ORM to learn from
-- [FlyDrive](https://github.com/Slynova-Org/fly-drive) — the storage abstraction AdonisJS wraps
++ [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 release notes
++ [`../README.md`](../../README.md) — current status & roadmap
++ [`../../user-guide/drizzle.md`](../../user-guide/drizzle.md) — the Lucid-equivalent guide
++ [`../../user-guide/`](../../user-guide/) — guides for the 17 modules
++ [`./nestjs-comparison.md`](./nestjs-comparison.md) — companion analysis
++ [AdonisJS documentation](https://docs.adonisjs.com) — the comparison baseline

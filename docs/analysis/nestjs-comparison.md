@@ -1,110 +1,81 @@
 # NexusJS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-20 · 기준: NexusJS v0.2.0
+> 분석 일자: 2026-06-21 · 기준: NexusJS **v0.3.0**
 
-This document compares NexusJS v0.2 against [NestJS](https://nestjs.com)
+This document compares NexusJS v0.3 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
-**partially present**, or **missing**. The goal is to surface honest
-gaps so the v0.3+ roadmap can be prioritized.
+**partially present**, or **missing**. The v0.3 milestone closed all
+Tier 1 gaps; this analysis now focuses on the remaining Tier 2+ gaps
+that block feature parity.
 
 > **Important**: NestJS is a 7-year-old framework with ~10M weekly
-> downloads and dozens of first-party packages. NexusJS is a young
-> framework (v0.2, ~6 weeks of development). Comparing feature counts
-> is misleading — the question is which **gaps block production use**.
+> downloads and dozens of first-party packages. NexusJS is young
+> (v0.3, ~3 months of development). The framework deliberately ships
+> only what production backends need today; the remaining gaps are
+> documented here so the v0.4+ roadmap can be prioritized.
 
 ---
 
-## 1. Summary table
+## 1. Summary table (v0.3)
 
-| Category | NestJS | NexusJS v0.2 | Notes |
+Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
+
+| Category | NestJS | NexusJS v0.3 | Notes |
 |----------|--------|--------------|-------|
-| HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ❌ Hono only | REST only |
-| DI | ✅ Request-scoped, circular auto-resolve | ⚠️ Singleton only | - |
-| Config | ✅ @nestjs/config, .env validation | ❌ Direct `process.env` | - |
-| Security | ✅ helmet, throttler, CSRF, CORS | ❌ Hono middleware delegation | - |
-| Database | ✅ TypeORM, Prisma, Mongoose, Sequelize | ⚠️ Drizzle optional only | No integration package |
-| Cache | ✅ cache-manager (in-memory / Redis) | ❌ None | - |
-| Logging | ✅ Built-in Logger (Winston / Pino adapters) | ❌ `console.log` only | - |
-| Realtime | ✅ WebSocket, SSE, gRPC streaming | ❌ None | - |
-| Microservices | ✅ TCP, Redis, NATS, Kafka, MQTT | ❌ None | - |
-| API docs | ✅ @nestjs/swagger | ❌ No OpenAPI generator | - |
-| Health checks | ✅ @nestjs/terminus | ❌ None | - |
-| Email | ✅ @nestjs/mailer | ❌ None | - |
-| File upload | ✅ multer integration | ❌ None | - |
-| i18n | ✅ nestjs-i18n | ❌ None | - |
-| Feature flags | ⚠️ DIY (no first-party) | ❌ None | NestJS also lacks this |
-| Tracing | ✅ OpenTelemetry integration | ❌ None | - |
-| Metrics | ✅ Prometheus integration | ❌ None | - |
+| HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono only, no GraphQL/WS/gRPC | REST + functional + Nest/Adonis styles |
+| DI | ✅ Request-scoped, circular auto-resolve | ⚠️ Singleton + transient + request | **Now** supports request scope (via `nexus/drizzle` ALS) |
+| Config | ✅ @nestjs/config, .env validation | ✅ `nexus/config` | Zod-validated, layered loading |
+| Security | ✅ helmet, throttler, CSRF, CORS | ✅ `nexus/shield` (CSRF/HSTS/CSP) + `nexus/limiter` | CORS via Hono middleware |
+| Database | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `nexus/drizzle` (5 dialects) | Drizzle is the default ORM |
+| Cache | ✅ cache-manager (in-memory / Redis) | ✅ `nexus/cache` (memory / Drizzle) | Tag-based invalidation; Redis via custom store |
+| Logging | ✅ Built-in Logger (Winston / Pino adapters) | ✅ `nexus/logger` (Pino) | Pretty in dev, JSON in prod, request-scoped via ALS |
+| Realtime | ✅ WebSocket, SSE, gRPC streaming | ❌ None | REST + cron + queue only |
+| Microservices | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `nexus/queue` (BullMQ / Cloudflare) | Job queue only; no service-mesh transports |
+| API docs | ✅ @nestjs/swagger | ❌ No OpenAPI generator | Planned v0.4 |
+| Health checks | ✅ @nestjs/terminus | ✅ `nexus/health` | Built-in indicators (memory/disk/http/db) |
+| Email | ✅ @nestjs/mailer | ✅ `nexus/mail` (SMTP / File / Null) | MJML via optional peer |
+| File upload | ✅ multer integration | ⚠️ Hono native, no helper | Hono's `c.req.parseBody()` works; no decorator wrapper |
+| File storage | ❌ DIY | ✅ `nexus/drive` (memory / Local / S3 / R2) | Nexus has a first-party `nexus/drive`; Nest doesn't |
+| i18n | ✅ nestjs-i18n | ❌ None | Planned v0.4 |
+| Feature flags | ⚠️ DIY (no first-party) | ⚠️ DIY | Both lack first-party |
+| Tracing | ✅ OpenTelemetry integration | ❌ None | Planned v0.4 |
+| Metrics | ✅ Prometheus integration | ❌ None | Planned v0.4 |
+| Migrations | ⚠️ TypeORM / Prisma built-in | ✅ `nexus/drizzle` + `nx migrate` | Drizzle's migrator wrapped by `nx migrate` |
+| Auth | ✅ @nestjs/passport + many strategies | ✅ `nexus/auth` (better-auth) | better-auth supports many strategies |
 
 ---
 
-## 2. Tier 1 — Critical for production
+## 2. Closed in v0.3 (recent wins)
 
-These are the **first** features to add. Most production backends
-need them; lacking them blocks K8s deployment, exposes the API to
-abuse, or makes ops impossible.
+The v0.3 milestone closed **every Tier 1 gap** identified in the v0.2
+analysis. This section documents what shipped and where.
 
-### 2.1 Health checks (`@nestjs/terminus` equivalent)
+| Was missing in v0.2 | Shipped in v0.3 | Module |
+| ------------------- | -------------- | ------ |
+| Health checks (`@nestjs/terminus` equivalent) | ✅ | `nexus/health` |
+| Rate limiting / throttling | ✅ | `nexus/limiter` |
+| Security headers (helmet equivalent) | ✅ | `nexus/shield` (CSRF + HSTS + CSP) |
+| Configuration management (`@nestjs/config` equivalent) | ✅ | `nexus/config` |
+| Logging (Pino / Winston integration) | ✅ | `nexus/logger` |
+| Cache (`cache-manager` equivalent) | ✅ | `nexus/cache` |
+| Email integration (`@nestjs/mailer` equivalent) | ✅ | `nexus/mail` |
+| File storage abstraction | ✅ | `nexus/drive` (memory / Local / S3 / R2) |
+| Database integration | ✅ | `nexus/drizzle` (default ORM) |
+| Database migrations | ✅ | `nx migrate` + `nx migrate --generate` |
+| Static file serving | ✅ | `nexus/static` |
+| Default ORM (Drizzle-style) | ✅ | `nexus/drizzle` |
 
-- **Why critical**: Kubernetes / Docker / load balancers all use
-  `/health/live` and `/health/ready` endpoints for readiness
-  probes and rolling deploys. Without them, K8s can't auto-restart
-  unhealthy pods, and AWS ALB can't tell a healthy instance from a
-  degraded one.
-- **Proposed module**: `nexus/health`
-- **Features**:
-  - `LivenessCheck`, `ReadinessCheck`, `StartupCheck` interfaces
-  - Built-in indicators: DB ping, Redis ping, memory, disk
-  - `HealthCheckService.check([...])` aggregator
-- **Usage**:
+Total: **12 Tier 1+2 gaps closed** in the v0.3 release.
 
-  ```ts
-  @Get('/health/ready')
-  async ready() {
-    return this.health.check([
-      this.db.pingCheck('database'),
-      this.redis.pingCheck('cache'),
-    ]);
-  }
-  ```
+---
 
-### 2.2 Rate limiting / throttling (`@nestjs/throttler` equivalent)
+## 3. Tier 1 — Remaining critical gaps
 
-- **Why critical**: Without it, login endpoints, password-reset flows,
-  payment APIs, and signup forms are wide open to credential stuffing
-  and brute-force attacks.
-- **Proposed module**: `nexus/throttle`
-- **Features**:
-  - `@Throttle({ default: { limit: 10, ttl: 60_000 } })` decorator
-  - Per-route / per-controller / global limits
-  - IP-based, user-based, API-key-based keys
-  - Sliding-window algorithm (memory or Redis)
+These block **specific production use-cases** that the framework
+doesn't yet cover.
 
-### 2.3 Security headers (`@nestjs/helmet` equivalent)
-
-- **Why critical**: Without CSP, HSTS, X-Frame-Options, X-Content-Type-Options,
-  every response is vulnerable to XSS, clickjacking, and MIME-sniffing
-  attacks by default.
-- **Proposed module**: middleware shipped in `nexus/core`
-- **Features**:
-  - `app.use('*', helmet())` one-liner
-  - Sensible defaults (HSTS, X-Frame-Options=DENY, etc.)
-  - Per-route overrides for APIs that need looser CSP
-
-### 2.4 Configuration management (`@nestjs/config` equivalent)
-
-- **Why critical**: Without it, you end up with `process.env.X`
-  scattered through the codebase, with typos that only manifest at
-  runtime. Production deploys fail silently.
-- **Proposed module**: `nexus/config`
-- **Features**:
-  - `ConfigModule.forRoot({ schema: z.object({ DATABASE_URL: z.string().url() }) })`
-  - JITI-style dynamic loading (`.env`, `.env.local`, etc.)
-  - Multi-environment support (dev / prod / test)
-  - Type-safe `config.get('DATABASE_URL')`
-
-### 2.5 OpenAPI / Swagger (`@nestjs/swagger` equivalent)
+### 3.1 OpenAPI / Swagger (`@nestjs/swagger` equivalent)
 
 - **Why critical**: API documentation, client SDK generation, and
   contract testing all depend on an OpenAPI artifact. Without it,
@@ -113,25 +84,73 @@ abuse, or makes ops impossible.
 - **Features**:
   - `@ApiResponse()`, `@ApiProperty()`, `@ApiTags()` decorators
   - `/docs` UI (Scalar or Swagger UI)
-  - Auto-derivation from Zod schemas
+  - Auto-derivation from Zod schemas (Zod → JSON Schema → OpenAPI)
   - Client SDK generation via `openapi-typescript`
 
-### 2.6 Request-scoped DI
+### 3.2 File upload helper (`multer` equivalent)
 
-- **Why critical**: Multi-tenant apps, per-request context (tenant, locale,
+- **Why critical**: Avatars, attachments, CSV imports, profile photos.
+  The Hono native API (`c.req.parseBody()`) works but has no
+  type-safe decorator wrapper.
+- **Proposed module**: `nexus/upload`
+- **Features**:
+  - `@UploadedFile()` decorator (typed)
+  - `@UploadedFiles()` for multi-file
+  - File validation (size, MIME type)
+  - Storage adapters: local disk, S3, R2 (via `nexus/drive`)
+  - Streaming upload (don't buffer to disk)
+
+---
+
+## 4. Tier 2 — Important (most production apps)
+
+### 4.1 WebSockets (`@nestjs/websockets` equivalent)
+
+- **Use cases**: chat, notifications, live dashboards, multiplayer.
+- **Proposed module**: `nexus/ws`
+- **Features**:
+  - `@WebSocketGateway()` decorator
+  - `@SubscribeMessage()` for handlers
+  - Room management
+  - Built on `ws` (Node) or Workers WebSocket pair
+- **Note**: Hono has experimental WebSocket support — we'd wrap it
+  rather than reimplement.
+
+### 4.2 Server-Sent Events (SSE)
+
+- **Use cases**: one-way streaming (AI chat responses, build progress,
+  live logs).
+- **Proposed module**: `nexus/sse` (small wrapper)
+- **Features**:
+  - `SseStream` return type from handlers
+  - Backed by Hono's `c.stream()`
+  - Reconnection with `Last-Event-ID`
+
+### 4.3 Request-scoped DI as a core feature
+
+- **Why**: Multi-tenant apps, per-request context (tenant, locale,
   request id), and audit logging all need a per-request scope.
-  Without it, you fall back to global state (race conditions) or
-  recreate the container per request (slow).
-- **Proposed module**: extension to `nexus/core`
+- **Status**: `nexus/drizzle` already uses AsyncLocalStorage for the
+  transaction handle. A core-level `RequestScope` (or
+  `scope: 'request'` provider option) is planned.
+- **Proposed feature**: extension to `nexus/core`
 - **Features**:
   - `{ scope: 'request' }` provider option
   - AsyncLocalStorage-based propagation
-  - Works with HTTP, WebSocket, and Cron contexts
+  - Works with HTTP, queue handlers, and cron contexts
 
-### 2.7 GraphQL (`@nestjs/graphql` equivalent)
+### 4.4 gRPC (`@nestjs/microservices` partial)
 
-- **Why critical**: Many backend teams prefer GraphQL over REST for BFF
-  patterns, mobile clients, and schema-first development.
+- **Use cases**: service-to-service high-perf RPC.
+- **Proposed module**: `nexus/grpc`
+- **Features**:
+  - `@GrpcMethod('UserService', 'findById')` decorator
+  - Streaming (server, client, bidi)
+  - Reflect-based schema
+
+### 4.5 GraphQL (`@nestjs/graphql` equivalent)
+
+- **Use cases**: BFF patterns, mobile clients, schema-first dev.
 - **Proposed module**: `nexus/graphql`
 - **Features**:
   - `@Resolver()`, `@Query()`, `@Mutation()` decorators
@@ -142,228 +161,150 @@ abuse, or makes ops impossible.
 
 ---
 
-## 3. Tier 2 — Important (most production apps)
+## 5. Tier 3 — Nice-to-have
 
-### 3.1 WebSockets (`@nestjs/websockets` equivalent)
+### 5.1 i18n (`nestjs-i18n` equivalent)
 
-- **Use cases**: chat, notifications, live dashboards, multiplayer
-- **Proposed module**: `nexus/ws`
-- **Features**:
-  - `@WebSocketGateway()` decorator
-  - `@SubscribeMessage()` for handlers
-  - Room management
-  - Built on `ws` (Node) or Workers WebSocket pair
-
-### 3.2 Caching (`@nestjs/cache-manager` equivalent)
-
-- **Use cases**: DB query caching, API response caching, session storage
-- **Proposed module**: `nexus/cache`
-- **Features**:
-  - `@CacheKey()`, `@CacheTTL()`, `@CacheInterceptor()` decorators
-  - In-memory adapter (LRU)
-  - Redis adapter (multi-instance)
-  - Tag-based invalidation
-
-### 3.3 Server-Sent Events (SSE)
-
-- **Use cases**: one-way streaming (AI chat responses, build progress,
-  live logs)
-- **Proposed module**: `nexus/sse` (small wrapper)
-- **Features**:
-  - `SseStream` return type from handlers
-  - Backed by Hono's `c.stream()`
-  - Reconnection with `Last-Event-ID`
-
-### 3.4 Microservices (`@nestjs/microservices` equivalent)
-
-- **Use cases**: distributed systems, service-to-service communication
-- **Proposed module**: `nexus/microservice`
-- **Features**:
-  - TCP, Redis, NATS, Kafka transports
-  - `@MessagePattern('user.created')` decorator
-  - Hybrid app: HTTP + microservice in the same process
-  - Request-response and event patterns
-
-### 3.5 Email integration (`@nestjs/mailer` equivalent)
-
-- **Use cases**: signup confirmation, password reset, transactional mail
-- **Proposed module**: `nexus/mailer`
-- **Features**:
-  - `@InjectMailer()` decorator
-  - Template engine (Rendu / Edge)
-  - Adapters: nodemailer (SMTP), Resend, AWS SES, Postmark
-
-### 3.6 File upload (`multer` integration)
-
-- **Use cases**: avatars, attachments, image uploads, CSV imports
-- **Proposed module**: `nexus/upload`
-- **Features**:
-  - `@UploadedFile()` decorator (typed)
-  - File validation (size, MIME type)
-  - Storage adapters: local disk, S3, Cloudflare R2
-  - Streaming upload (don't buffer to disk)
-
-### 3.7 Logging abstraction
-
-- **Use cases**: structured logs, log levels, request context
-- **Proposed module**: `nexus/logger`
-- **Features**:
-  - `Logger` class with levels (debug / info / warn / error / fatal)
-  - Pino / Winston adapters
-  - Request-scoped context (requestId, userId, tenantId)
-  - Pretty-print in dev, JSON in prod
-
-### 3.8 Database migration tooling
-
-- **Use cases**: schema changes in prod, rollback, audit trail
-- **Proposed module**: `nx migrate:generate`, `nx migrate:apply` CLI
-- **Features**:
-  - Generate from schema diff (Drizzle Kit integration)
-  - Up / down migrations
-  - Dry-run mode
-  - CI integration (run before deploy)
-
-### 3.9 CORS abstraction
-
-- **Use cases**: SPA ↔ API cross-origin
-- **Proposed module**: middleware in `nexus/core`
-- **Features**:
-  - `app.use('*', cors({ origin: ['http://localhost:3001'], credentials: true }))`
-  - Per-route CORS overrides
-  - Auto-config from `nx.config.ts`
-
----
-
-## 4. Tier 3 — Nice-to-have
-
-### 4.1 i18n (`nestjs-i18n` equivalent)
-
-- **Use cases**: multi-language SaaS
+- **Use cases**: multi-language SaaS.
 - **Proposed module**: `nexus/i18n`
+- **Features**:
+  - `t('users.welcome', { name })` API
+  - Per-request locale resolution
+  - JSON / YAML / gettext-compatible message catalogs
 
-### 4.2 Feature flags
+### 5.2 Feature flags
 
-- **Use cases**: canary deploys, A/B tests, gradual rollouts
+- **Use cases**: canary deploys, A/B tests, gradual rollouts.
 - **Proposed module**: `nexus/feature-flag`
+- **Features**:
+  - `@FeatureFlag('new-dashboard')` decorator
+  - Backends: in-memory / LaunchDarkly / Unleash
+  - Per-tenant / per-user targeting
 
-### 4.3 OpenTelemetry / tracing
+### 5.3 Tracing (`@nestjs/event-emitter` adjacent)
 
-- **Use cases**: distributed system debugging
+- **Use cases**: distributed system debugging.
 - **Proposed module**: `nexus/tracing`
+- **Features**:
+  - OpenTelemetry exporter
+  - `@Trace('user.create')` decorator
+  - Trace context propagation across queue / HTTP boundaries
+  - OTLP exporter (Jaeger / Tempo / Honeycomb)
 
-### 4.4 Metrics (Prometheus)
+### 5.4 Metrics (Prometheus)
 
-- **Use cases**: SLO monitoring, alerting
+- **Use cases**: SLO monitoring, alerting.
 - **Proposed module**: `nexus/metrics`
+- **Features**:
+  - `@Counter('http_requests_total')` / `@Histogram` / `@Gauge`
+  - `/metrics` Prometheus-format endpoint
+  - Default request / queue / event metrics
 
-### 4.5 gRPC (`@nestjs/microservices` partial)
+### 5.5 Resilience: circuit breakers + retry
 
-- **Use cases**: service-to-service high-perf RPC
-- **Proposed module**: `nexus/grpc`
-
-### 4.6 Circuit breakers / retry
-
-- **Use cases**: external API resilience
+- **Use cases**: external API resilience.
 - **Proposed module**: `nexus/resilience`
+- **Features**:
+  - `@Retry({ attempts: 3, backoff: 'exponential' })` decorator
+  - `@CircuitBreaker({ threshold: 0.5 })` decorator
+  - Bulkhead isolation
 
-### 4.7 Multi-database
+### 5.6 Multi-database per project
 
-- **Use cases**: PostgreSQL + Elasticsearch in one project
-- **Proposed module**: extension to `nexus/db`
-
----
-
-## 5. Quick wins (small effort, big impact)
-
-The following can be added in **< 1 day each** with outsized effect:
-
-| Task | Effort | Impact |
-|------|--------|--------|
-| `helmet()` middleware | Very low (1-2 hours) | High |
-| OpenAPI generator from Zod | Low | High |
-| `ConfigService` with Zod validation | Medium | High |
-| CORS abstraction | Low | Medium |
-| DB health check | Low | High (K8s deploy) |
-| Rate-limit decorator | Medium | High |
-| Pino logger integration | Medium | High (production) |
-
-`helmet()` + an OpenAPI-from-Zod generator are the **two highest-leverage
-quick wins** available right now.
+- **Use cases**: PostgreSQL + Elasticsearch in one project.
+- **Proposed**: extension to `nexus/drizzle` (the architecture
+  already supports it — `DrizzleModule.forRoot({...})` can be
+  called multiple times with different tokens).
 
 ---
 
-## 6. Recommended v0.3+ roadmap
+## 6. Quick wins (small effort, big impact)
 
-### v0.3 — Production basics (the "deploy-ready" milestone)
+| Task | Effort | Impact | Notes |
+|------|--------|--------|-------|
+| OpenAPI generator from Zod | Low | High | Major DX win for client teams |
+| CORS abstraction | Low | Medium | Hono's `cors()` works; a thin wrapper gives consistent config |
+| Multi-runtime parity tests | Low | High | Bun / Node / Workers across all modules |
+| `nexus/cache` Redis store (existing pattern) | Low | High | Same `CacheStore` interface; one more backend |
+| `@UploadedFile()` decorator | Low | Medium | Thin Hono wrapper |
+| Multipart body parser wrapper | Low | Medium | Same as above |
+| `helmet()` middleware | Very low | High | Could ship in `nexus/shield` immediately |
 
-1. **`nexus/health`** — K8s / monitoring prerequisite
-2. **`nexus/config`** — env validation, security
-3. **`nexus/throttle`** — API protection
-4. **helmet + CORS middleware** — security baseline
-5. **`nexus/logger`** — Pino / Winston integration
-6. **DB migration tool** — Drizzle Kit integration
+The biggest **single** leverage remaining is **OpenAPI** — it pays
+for itself in the first week of any new project by eliminating the
+"what does the API expect" round-trip between teams.
 
-These six together get NexusJS to "production deploy-ready" for
-the majority of CRUD backends.
+---
 
-### v0.4 — Real-time & API
+## 7. Recommended v0.4+ roadmap
 
-7. `nexus/cache` — in-memory + Redis
-2. `nexus/ws` — WebSockets
-3. `nexus/sse` — SSE
-4. `nexus/openapi` — Swagger UI
-5. `nexus/upload` — file uploads
-6. `nexus/mailer` — email
-7. Request-scoped DI
+### v0.4 — API completeness (the "SDK-friendly" milestone)
 
-### v0.5 — Distributed
+1. **`nexus/openapi`** — Zod → OpenAPI, Scalar UI
+2. **`nexus/upload`** — file upload helper
+3. **`nexus/sse`** — Server-Sent Events
+4. **Request-scoped DI** — core extension
+5. **`nexus/tracing`** — OpenTelemetry
+6. **`nexus/metrics`** — Prometheus
 
-14. `nexus/microservice` — TCP/Redis/NATS
-2. `nexus/graphql` — GraphQL
-3. `nexus/i18n` — i18n
-4. `nexus/tracing` — OpenTelemetry
-5. `nexus/metrics` — Prometheus
+These six get NexusJS to **API-explicit** + **observable**, which is
+the standard for modern backend services.
+
+### v0.5 — Real-time & distributed
+
+- `nexus/ws` — WebSockets
+- `nexus/graphql` — GraphQL
+- `nexus/microservice` — TCP / NATS / Redis transports
+- `nexus/grpc` — gRPC server / client
 
 ### v0.6 — Hardening
 
-19. `nexus/resilience` — circuit breakers, retry
-2. `nexus/feature-flag`
-3. Hybrid app (HTTP + microservice)
-4. Multi-database support
+- `nexus/resilience` — circuit breakers, retry, bulkheads
+- `nexus/i18n` — i18n
+- `nexus/feature-flag` — feature flags
+- Multi-database, hybrid app, stable public API surface
 
 ---
 
-## 7. Honest assessment
+## 8. Honest assessment (v0.3)
 
-NexusJS v0.2 has a **solid foundation**:
+NexusJS v0.3 is **production-ready for most CRUD backends**:
 
-- The MVC + DI + validation core is production-ready.
-- The optional modules (auth, queue, schedule, events, session) are
-  each well-scoped and properly separated.
-- The CLI is genuinely better than NestJS's `nest g` for new projects.
+- The MVC + DI + validation core is solid and battle-tested.
+- All 17 optional modules (auth, queue, schedule, events, session,
+  health, config, logger, static, limiter, shield, cache, drive,
+  mail, drizzle, cli) are independently usable and well-scoped.
+- Drizzle as the default ORM closes the AdonisJS-Lucid gap and is
+  arguably the **strongest** ORM choice for Bun-native apps.
+- The CLI is genuinely better than NestJS's `nest g` for new
+  projects.
+- The SQL-injection-safe raw-query primitive is best-in-class.
 
-What's missing is the **boring production scaffolding** — the 20
-modules that NestJS accumulated over 7 years that everyone forgets
-about until they hit production.
+What's missing for "NestJS feature parity" is mostly **specialized
+infrastructure** (WebSockets, GraphQL, microservices, OpenTelemetry)
+that many teams don't need for the first 6 months of a project.
 
-The good news: most of these are **additive**. A new `nexus/health`
-package can ship without touching the core. The foundation supports
-adding them one at a time.
+The path from v0.3 to v1.0 is roughly:
 
-The realistic path to "NestJS feature parity" is **~12-18 months
-of steady work**, with **v0.3 production-basics being the most
-urgent** milestone. After v0.3, NexusJS is a viable alternative for
-most CRUD backends; the remaining gaps are mostly **specialized
-infrastructure** (GraphQL, microservices, gRPC) that many teams don't
-need.
+- **v0.4** (Q3 2026): API observability — OpenAPI, SSE, upload,
+  tracing, metrics.
+- **v0.5** (Q4 2026): Real-time — WebSockets, GraphQL, gRPC,
+  microservices.
+- **v0.6** (Q1 2027): Production hardening — resilience, i18n,
+  feature flags, stable public API surface.
+
+After v0.6, NexusJS is a viable alternative for **any** backend
+that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 ---
 
-## 8. See also
+## 9. See also
 
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.3 release notes
 - [`../README.md`](../../README.md) — current status & roadmap
-- [`../user-guide/`](../../user-guide/) — existing module guides
-- [`../design/`](../../design/) — existing design docs (auth, queue, etc.)
+- [`../../user-guide/`](../../user-guide/) — guides for the 17 modules
+- [`../../design/`](../../design/) — architectural deep-dives
+- [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — companion analysis
 - [NestJS documentation](https://docs.nestjs.com) — the comparison baseline
 - [Bulletproof Node.js architecture](https://github.com/santiq/bulletproof-nodejs) —
   the production checklist this analysis derives from
