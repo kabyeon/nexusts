@@ -46,7 +46,8 @@ export class StaticService {
 		// Normalize prefix to always start with `/` and end without `/` (except root).
 		const prefix = options.prefix ?? "/";
 		this.#prefix = prefix === "/" ? "/" : prefix.replace(/\/$/, "");
-		this.#index = options.index === false ? false : options.index ?? "index.html";
+		this.#index =
+			options.index === false ? false : (options.index ?? "index.html");
 		this.#cacheControl = options.cacheControl ?? "public, max-age=3600";
 		this.#etag = options.etag ?? true;
 		this.#range = options.range ?? true;
@@ -99,7 +100,9 @@ export class StaticService {
 			if (size > this.#maxFileSize) return next();
 
 			// ETag.
-			const etag = this.#etag ? `"${this.#computeEtag(filePath, size, fileStat.mtimeMs)}"` : null;
+			const etag = this.#etag
+				? `"${this.#computeEtag(filePath, size, fileStat.mtimeMs)}"`
+				: null;
 			if (etag) {
 				const inm = c.req.header("if-none-match");
 				if (inm && inm === etag) {

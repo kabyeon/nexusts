@@ -6,10 +6,7 @@
  * added here.
  */
 
-import type {
-	HealthIndicator,
-	HealthIndicatorResult,
-} from "../types.js";
+import type { HealthIndicator, HealthIndicatorResult } from "../types.js";
 
 /**
  * Memory pressure indicator. Reports `'down'` when heap usage
@@ -61,8 +58,17 @@ export class DiskHealthIndicator implements HealthIndicator {
 			// Best-effort: rely on Bun / Node to throw if statfs is unsupported.
 			// We use a tiny shell-out only when the runtime exposes one.
 			// Fall back to 'up' if we can't tell.
-			const statfs = await import("node:fs/promises").then((m) => m.statfs).catch(() => null) as
-				| ((p: string) => Promise<{ bavail: number; bsize: number; blocks: number; bfree: number }>)
+			const statfs = (await import("node:fs/promises")
+				.then((m) => m.statfs)
+				.catch(() => null)) as
+				| ((
+						p: string,
+				  ) => Promise<{
+						bavail: number;
+						bsize: number;
+						blocks: number;
+						bfree: number;
+				  }>)
 				| null;
 			if (!statfs) {
 				return { status: "up", message: "statfs unavailable; skipping" };
@@ -78,7 +84,10 @@ export class DiskHealthIndicator implements HealthIndicator {
 					data: { free, total, freeRatio, path: this.#path },
 				};
 			}
-			return { status: "up", data: { free, total, freeRatio, path: this.#path } };
+			return {
+				status: "up",
+				data: { free, total, freeRatio, path: this.#path },
+			};
 		} catch (err) {
 			return {
 				status: "down",
@@ -137,7 +146,11 @@ export class CustomPingIndicator implements HealthIndicator {
 	#ping: () => Promise<void> | void;
 	#timeoutMs: number;
 
-	constructor(name: string, ping: () => Promise<void> | void, timeoutMs = 3000) {
+	constructor(
+		name: string,
+		ping: () => Promise<void> | void,
+		timeoutMs = 3000,
+	) {
 		this.name = name;
 		this.#ping = ping;
 		this.#timeoutMs = timeoutMs;
@@ -150,7 +163,11 @@ export class CustomPingIndicator implements HealthIndicator {
 			await Promise.race([
 				Promise.resolve(this.#ping()),
 				new Promise<never>((_, reject) =>
-					setTimeout(() => reject(new Error(`ping timed out after ${this.#timeoutMs}ms`)), this.#timeoutMs),
+					setTimeout(
+						() =>
+							reject(new Error(`ping timed out after ${this.#timeoutMs}ms`)),
+						this.#timeoutMs,
+					),
 				),
 			]);
 			return { status: "up" };

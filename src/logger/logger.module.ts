@@ -32,10 +32,7 @@ import { Logger } from "./logger.service.js";
 import type { LoggerOptions } from "./types.js";
 
 @Module({
-	providers: [
-		Logger,
-		{ provide: Logger.TOKEN, useExisting: Logger },
-	],
+	providers: [Logger, { provide: Logger.TOKEN, useExisting: Logger }],
 	exports: [Logger, Logger.TOKEN],
 })
 export class LoggerModule {

@@ -24,7 +24,11 @@ interface PinoLike {
 let pinoSingleton: PinoLike | null = null;
 let prettySingleton: PinoLike | null = null;
 
-async function loadPino(pretty: boolean, level: LogLevel, base?: Record<string, unknown>): Promise<PinoLike> {
+async function loadPino(
+	pretty: boolean,
+	level: LogLevel,
+	base?: Record<string, unknown>,
+): Promise<PinoLike> {
 	const pinoMod = await import("pino");
 	const pino = pinoMod.default ?? pinoMod;
 	if (pretty) {
@@ -41,11 +45,13 @@ async function loadPino(pretty: boolean, level: LogLevel, base?: Record<string, 
 		// Try to use pino-pretty if installed.
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-require-imports
-			const prettyMod = (globalThis as { require?: (id: string) => unknown }).require?.("pino-pretty") as
-				| ((opts: unknown) => unknown)
-				| undefined;
+			const prettyMod = (
+				globalThis as { require?: (id: string) => unknown }
+			).require?.("pino-pretty") as ((opts: unknown) => unknown) | undefined;
 			if (prettyMod) {
-				prettySingleton = (pino as unknown as (opts: unknown) => PinoLike)(opts);
+				prettySingleton = (pino as unknown as (opts: unknown) => PinoLike)(
+					opts,
+				);
 				return prettySingleton;
 			}
 		} catch {
@@ -93,12 +99,24 @@ export class PinoTransport implements LogTransport {
 		const { level, time, msg, ...rest } = record;
 		const obj = { time, ...rest };
 		switch (level) {
-			case "trace": this.#pino.trace(obj, msg); break;
-			case "debug": this.#pino.debug(obj, msg); break;
-			case "info": this.#pino.info(obj, msg); break;
-			case "warn": this.#pino.warn(obj, msg); break;
-			case "error": this.#pino.error(obj, msg); break;
-			case "fatal": this.#pino.fatal(obj, msg); break;
+			case "trace":
+				this.#pino.trace(obj, msg);
+				break;
+			case "debug":
+				this.#pino.debug(obj, msg);
+				break;
+			case "info":
+				this.#pino.info(obj, msg);
+				break;
+			case "warn":
+				this.#pino.warn(obj, msg);
+				break;
+			case "error":
+				this.#pino.error(obj, msg);
+				break;
+			case "fatal":
+				this.#pino.fatal(obj, msg);
+				break;
 		}
 	}
 }
@@ -129,12 +147,24 @@ export class PrettyTransport implements LogTransport {
 		const { level, time, msg, ...rest } = record;
 		const obj = { time, ...rest };
 		switch (level) {
-			case "trace": this.#pino.trace(obj, msg); break;
-			case "debug": this.#pino.debug(obj, msg); break;
-			case "info": this.#pino.info(obj, msg); break;
-			case "warn": this.#pino.warn(obj, msg); break;
-			case "error": this.#pino.error(obj, msg); break;
-			case "fatal": this.#pino.fatal(obj, msg); break;
+			case "trace":
+				this.#pino.trace(obj, msg);
+				break;
+			case "debug":
+				this.#pino.debug(obj, msg);
+				break;
+			case "info":
+				this.#pino.info(obj, msg);
+				break;
+			case "warn":
+				this.#pino.warn(obj, msg);
+				break;
+			case "error":
+				this.#pino.error(obj, msg);
+				break;
+			case "fatal":
+				this.#pino.fatal(obj, msg);
+				break;
 		}
 	}
 }

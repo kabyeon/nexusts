@@ -19,7 +19,7 @@
  * carries the error message).
  */
 
-export type HealthStatus = 'up' | 'down';
+export type HealthStatus = "up" | "down";
 
 export interface HealthIndicatorResult<T = unknown> {
 	/** Whether the check passed. */
@@ -67,7 +67,7 @@ export interface HealthCheckResult {
 }
 
 /** Which kind of check we're running. */
-export type HealthCheckKind = 'liveness' | 'readiness' | 'startup';
+export type HealthCheckKind = "liveness" | "readiness" | "startup";
 
 /** Configuration for the HealthModule. */
 export interface HealthConfig {
