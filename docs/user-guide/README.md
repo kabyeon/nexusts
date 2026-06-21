@@ -26,6 +26,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Distributed tracing (v0.4)** | [`tracing.md`](./tracing.md) | [`tracing.ko.md`](./tracing.ko.md) |
 | **Prometheus metrics (v0.4)** | [`metrics.md`](./metrics.md) | [`metrics.ko.md`](./metrics.ko.md) |
 | **WebSockets (v0.5)** | [`ws.md`](./ws.md) | [`ws.ko.md`](./ws.ko.md) |
+| **Redis client (v0.5)** | [`redis.md`](./redis.md) | [`redis.ko.md`](./redis.ko.md) |
 | **Crypto (v0.5)** | [`crypto.md`](./crypto.md) | [`crypto.ko.md`](./crypto.ko.md) |
 | **i18n (v0.5)** | [`i18n.md`](./i18n.md) | [`i18n.ko.md`](./i18n.ko.md) |
 | Runtime & deployment | [`runtime-deployment.md`](./runtime-deployment.md) | [`runtime-deployment.ko.md`](./runtime-deployment.ko.md) |

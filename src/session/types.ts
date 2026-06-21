@@ -54,6 +54,8 @@ export type SessionData = Record<string, unknown>;
 // ---------------------------------------------------------------------------
 
 export interface CreateSessionOptions<T = SessionData> {
+	/** User id associated with the session (set on sign-in). */
+	userId?: string | null;
 	/** TTL in seconds. Default: 7 days. */
 	ttlSeconds?: number;
 	/** Hard absolute TTL regardless of activity. */
@@ -69,6 +71,8 @@ export interface CreateSessionOptions<T = SessionData> {
 }
 
 export interface UpdateSessionOptions<T = SessionData> {
+	/** Set the userId (or null to log out). */
+	userId?: string | null;
 	/** Replace data with a partial patch. */
 	dataPatch?: Partial<T>;
 	/** Extend the sliding expiry by N seconds. */
@@ -99,7 +103,7 @@ export interface SessionQuery {
  */
 export interface SessionStorage {
 	/** Backend name for diagnostics. */
-	readonly name: "cookie" | "memory" | "redis" | "database";
+	readonly name: "cookie" | "memory" | "redis" | "cloudflare-kv" | "database";
 
 	/** Create a new session record. Returns the stored record. */
 	create<T = SessionData>(
@@ -156,6 +160,13 @@ export interface CookieStorageOptions {
 	cookieOptions?: CookieOptions;
 }
 
+export interface RedisSessionStorageConfig {
+	/** A pre-built `RedisClient` (from `nexus/redis`). Required. */
+	client: import("../redis/types.js").RedisClient;
+	/** Key prefix. Default: "session:". */
+	keyPrefix?: string;
+}
+
 export interface CookieOptions {
 	domain?: string;
 	path?: string;
@@ -170,7 +181,12 @@ export interface CookieOptions {
 // Configuration
 // ---------------------------------------------------------------------------
 
-export type SessionBackendKind = "cookie" | "memory" | "redis" | "database";
+export type SessionBackendKind =
+	| "cookie"
+	| "memory"
+	| "redis"
+	| "cloudflare-kv"
+	| "database";
 
 export interface SessionConfig {
 	/** Backend to use. Default: 'cookie'. */
@@ -184,11 +200,10 @@ export interface SessionConfig {
 		/** Max sessions in memory before evicting LRU. Default: 100_000. */
 		maxSessions?: number;
 	};
-	/** Redis backend config (v0.2). */
-	redis?: {
-		connection: string | { host: string; port: number; password?: string };
-		keyPrefix?: string;
-	};
+	/** Redis backend config (uses ). */
+	redis?: RedisSessionStorageConfig;
+	/** Cloudflare Workers KV backend config (uses `nexus/redis` cloudflare adapter). */
+	cloudflareKv?: RedisSessionStorageConfig;
 	/**
 	 * Database backend config (uses `nexus/drizzle`).
 	 *

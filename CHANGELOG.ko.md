@@ -99,6 +99,36 @@ Sub-protocol 토큰, 세션 쿠키 (기존 `nexus/session` 미들웨어),
 - `tsc --noEmit` clean.
 - 23 bundle entry points; 46 runtime files emitted to `dist/`.
 
+### 추가 · `nexus/redis`
+
+런타임 인식 Redis 호환 키/값 클라이언트. 새로운 `redis` 및
+`cloudflare-kv` 세션/캐시 백엔드를 구동. 세 가지 런타임 어댑터
+(+ 인-프로세스 `memory`):
+
+- **`bun`** — 내장 `Bun.redis` 사용 (추가 패키지 없음).
+- **`node`** — `ioredis` 사용 (이제 옵션 peer dep).
+- **`cloudflare`** — Cloudflare Workers KV 사용 (추가 패키지 없음;
+  Workers / Pages 런타임에 이상적).
+- **`memory`** — 인-프로세스 맵 (테스트 및 단일 프로세스 dev용).
+
+런타임에서 자동 감지. 네 어댑터 모두 동일한 `RedisClient`
+API를 가지므로 키/값 저장소가 필요한 모든 모듈이 같은
+클라이언트 셰이프 사용 가능.
+
+### 추가 · `nexus/session` — Redis & Cloudflare KV 백엔드
+
+`SessionModule.forRoot({ backend: "redis", redis: { client, keyPrefix } })`가
+새 `RedisSessionStorage` 사용 (Bun, Node 또는 `RedisClient`를
+노출하는 모든 런타임에서 작동). Cloudflare Workers의 경우
+`CloudflareKVAdapter` 전달 후 `backend: "cloudflare-kv"` 사용.
+사용자별 세션 인덱스 자동 유지; `gc()`가 고아 정리.
+
+### 추가 · `nexus/cache` — Redis 캐시 스토어
+
+`RedisCacheStore`는 `RedisClient`를 래핑하는 `CacheStore`. 태그
+기반 무효화는 `gc()`가 정리하는 태그별 인덱스를 통해 지원. 같은
+설정이 Bun (`Bun.redis`), Node (`ioredis`), Cloudflare Workers (KV)에서 작동.
+
 ### v0.4에서 마이그레이션
 
 대부분의 v0.4 코드는 변경 없이 v0.5와 호환됨. 본 릴리스의 breaking

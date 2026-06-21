@@ -17,6 +17,38 @@ a unified WebSocket API that works on Bun (primary) and Node.js
 password-hashing module. The framework now ships 24 modules
 (was 22 in v0.4).
 
+### Added · `nexus/redis`
+
+A runtime-aware Redis-compatible key/value client. Powers the new
+`redis` and `cloudflare-kv` session / cache backends. Three
+runtime adapters (plus an in-process `memory`):
+
+- **`bun`** — uses the built-in `Bun.redis` (no extra package).
+- **`node`** — uses `ioredis` (now an optional peer dep).
+- **`cloudflare`** — uses Cloudflare Workers KV (no extra package;
+  ideal for the Workers / Pages runtime).
+- **`memory`** — in-process map (for tests and single-process dev).
+
+Auto-detected from the runtime. Same `RedisClient` API across
+all four adapters, so any module that needs a key/value store
+can use the same client shape.
+
+### Added · `nexus/session` — Redis & Cloudflare KV backends
+
+`SessionModule.forRoot({ backend: "redis", redis: { client, keyPrefix } })`
+uses the new `RedisSessionStorage` (works on Bun, Node, or any
+other runtime that exposes a `RedisClient`). For Cloudflare
+Workers, pass a `CloudflareKVAdapter` and use
+`backend: "cloudflare-kv"`. Per-user session indexes are
+maintained automatically; `gc()` cleans up orphans.
+
+### Added · `nexus/cache` — Redis cache store
+
+`RedisCacheStore` is a `CacheStore` that wraps a `RedisClient`.
+Tag-based invalidation is supported via a per-tag index that
+`gc()` prunes. Same config works on Bun (`Bun.redis`),
+Node (`ioredis`), or Cloudflare Workers (KV).
+
 ### Migration from v0.4
 
 The vast majority of v0.4 code is compatible with v0.5 unchanged.
@@ -195,6 +227,38 @@ and `@adonisjs/hash`.
   signed cookies will be invalidated on upgrade** because the
   derived HMAC key differs from the previous direct-HMAC approach.
   Users will need to re-authenticate after upgrading.
+
+### Added · `nexus/redis`
+
+A runtime-aware Redis-compatible key/value client. Powers the new
+`redis` and `cloudflare-kv` session / cache backends. Three
+runtime adapters (plus an in-process `memory`):
+
+- **`bun`** — uses the built-in `Bun.redis` (no extra package).
+- **`node`** — uses `ioredis` (now an optional peer dep).
+- **`cloudflare`** — uses Cloudflare Workers KV (no extra package;
+  ideal for the Workers / Pages runtime).
+- **`memory`** — in-process map (for tests and single-process dev).
+
+Auto-detected from the runtime. Same `RedisClient` API across
+all four adapters, so any module that needs a key/value store
+can use the same client shape.
+
+### Added · `nexus/session` — Redis & Cloudflare KV backends
+
+`SessionModule.forRoot({ backend: "redis", redis: { client, keyPrefix } })`
+uses the new `RedisSessionStorage` (works on Bun, Node, or any
+other runtime that exposes a `RedisClient`). For Cloudflare
+Workers, pass a `CloudflareKVAdapter` and use
+`backend: "cloudflare-kv"`. Per-user session indexes are
+maintained automatically; `gc()` cleans up orphans.
+
+### Added · `nexus/cache` — Redis cache store
+
+`RedisCacheStore` is a `CacheStore` that wraps a `RedisClient`.
+Tag-based invalidation is supported via a per-tag index that
+`gc()` prunes. Same config works on Bun (`Bun.redis`),
+Node (`ioredis`), or Cloudflare Workers (KV).
 
 ### Migration from v0.4
 

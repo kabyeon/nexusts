@@ -410,6 +410,8 @@ function OnEvent(pattern: string, opts?: { priority?: number; guard?: (payload: 
 import {
   SessionModule, SessionService,
   MemorySessionStorage, CookieSessionStorage, DrizzleSessionStorage,
+  RedisSessionStorage, CloudflareKVSessionStorage,
+  type RedisSessionStorageConfig,
   Session,
 } from 'nexus/session';
 
@@ -834,6 +836,30 @@ the client requests it). Default Node.js process metrics are
 registered automatically.
 
 See [user-guide/metrics.md](./user-guide/metrics.md).
+
+---
+
+## `nexus/redis` (v0.5)
+
+```ts
+import { createRedisClient, RedisModule, REDIS_CLIENT_TOKEN } from "nexus/redis";
+
+// Auto-detect runtime adapter
+const redis = createRedisClient({ url: "redis://localhost:6379" });
+await redis.set("user:42", "alice", { ex: 60 });
+
+// Used internally by session / cache backends.
+@Module({ imports: [RedisModule.forRoot({ adapter: "bun" })] })
+class AppModule {}
+```
+
+Three runtime adapters:
+- `bun` — uses `Bun.redis` (built-in, no extra dep)
+- `node` — uses `ioredis` (optional peer dep)
+- `cloudflare` — uses Workers KV (no dep; for Cloudflare Workers)
+- `memory` — in-process (for tests / single-process dev)
+
+See [user-guide/redis.md](./user-guide/redis.md).
 
 ---
 

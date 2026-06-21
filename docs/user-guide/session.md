@@ -114,10 +114,49 @@ SessionModule.forRoot({
 LRU-evicting `Map`. Good for tests, `bunx nx dev`, single-instance
 deployments. GC runs on `setInterval`.
 
-### Redis (v0.2)
+### Redis (v0.5)
 
-Planned. The interface is already defined; only the backend
-implementation is missing.
+Multi-pod session storage via `nexus/redis`. The `client` is a
+`RedisClient` from `nexus/redis` — same package that powers the
+`nexus/cache` Redis store and the Cloudflare KV backend.
+
+```ts
+import { SessionModule } from 'nexus/session';
+import { createRedisClient } from 'nexus/redis';
+
+SessionModule.forRoot({
+  backend: 'redis',
+  redis: {
+    client: createRedisClient({ url: process.env.REDIS_URL! }),
+    keyPrefix: 'sess:',
+  },
+});
+```
+
+### Cloudflare KV (v0.5)
+
+For Cloudflare Workers / Pages, pass a `CloudflareKVAdapter`
+instead of a Redis adapter. Same code path as the Redis backend —
+the framework re-uses the same storage class with a different
+underlying client.
+
+```ts
+import { SessionModule } from 'nexus/session';
+import { CloudflareKVAdapter } from 'nexus/redis';
+
+export default {
+  async fetch(req: Request, env: Env) {
+    return new SessionModule().forRoot({
+      backend: 'cloudflare-kv',
+      cloudflareKv: { client: new CloudflareKVAdapter({ kv: env.SESSIONS }) },
+    });
+    // ... continue with the session module
+  },
+};
+```
+
+If the `kv` field is omitted, the adapter auto-detects
+`globalThis.env.KV` inside a Workers request handler.
 
 ---
 

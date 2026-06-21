@@ -138,6 +138,10 @@
     "./i18n": {
       "types": "./dist/i18n/index.d.ts",
       "import": "./dist/i18n/index.js"
+    },
+    "./redis": {
+      "types": "./dist/redis/index.d.ts",
+      "import": "./dist/redis/index.js"
     }
   },
   "bin": {
@@ -181,8 +185,8 @@
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
     "bullmq": "^5.79.0",
-    "hono": "^4.6.0",
     "ioredis": "^5.11.1",
+    "hono": "^4.6.0",
     "pino": "^10.3.1",
     "reflect-metadata": "^0.2.2",
     "rendu": "^0.1.0",

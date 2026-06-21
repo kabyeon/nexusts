@@ -92,6 +92,43 @@ SessionModule.forRoot({
 
 형식: `<base64url(payload)>.<base64url(HMAC-SHA256)>`. 상태 비저장 — 서버 측 상태 불필요. 공유 스토리지가 없는 Workers / Vercel / Deno Deploy에 이상적.
 
+### Redis (v0.5)
+
+다중 pod 세션 스토리지(`nexus/redis` 경유). `client`는 `nexus/redis`의 `RedisClient`로, `nexus/cache` Redis 스토어와 Cloudflare KV 백엔드를 구동하는 같은 패키지.
+
+```ts
+import { SessionModule } from 'nexus/session';
+import { createRedisClient } from 'nexus/redis';
+
+SessionModule.forRoot({
+  backend: 'redis',
+  redis: {
+    client: createRedisClient({ url: process.env.REDIS_URL! }),
+    keyPrefix: 'sess:',
+  },
+});
+```
+
+### Cloudflare KV (v0.5)
+
+Cloudflare Workers / Pages의 경우 Redis 어댑터 대신 `CloudflareKVAdapter` 전달. Redis 백엔드와 같은 코드 경로 — 프레임워크가 같은 스토리지 클래스를 다른 기본 클라이언트로 재사용.
+
+```ts
+import { SessionModule } from 'nexus/session';
+import { CloudflareKVAdapter } from 'nexus/redis';
+
+export default {
+  async fetch(req: Request, env: Env) {
+    return new SessionModule().forRoot({
+      backend: 'cloudflare-kv',
+      cloudflareKv: { client: new CloudflareKVAdapter({ kv: env.SESSIONS }) },
+    });
+  },
+};
+```
+
+`kv` 필드가 생략되면 Workers 요청 핸들러 내에서 어댑터가 `globalThis.env.KV`를 자동 감지.
+
 ### Memory
 
 ```ts

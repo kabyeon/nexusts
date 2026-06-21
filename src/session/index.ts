@@ -4,7 +4,8 @@
  * Two backends out of the box:
  *   - cookie   — HMAC-signed, stateless, edge-friendly
  *   - memory   — in-process, for tests and single-instance dev
- *   - redis    — planned for v0.5
+ *   - redis    — multi-pod via `nexus/redis` (Bun/Node/Workers KV)
+ *   - cloudflare-kv — Workers KV (via `nexus/redis` cloudflare adapter)
  *
  * Quick start:
  *
@@ -37,9 +38,12 @@ export * from "./types.js";
 export {
 	MemorySessionStorage,
 	CookieSessionStorage,
+	RedisSessionStorage,
+	CloudflareKVSessionStorage,
 	encodeSessionCookie,
 	decodeSessionCookie,
 	type MemoryStorageOptions,
+	type RedisSessionStorageConfig,
 } from "./backends/index.js";
 export { SessionService } from "./session.service.js";
 export { SessionModule } from "./session.module.js";

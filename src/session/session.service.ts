@@ -13,6 +13,10 @@
  */
 
 import { Inject, Injectable } from '../core/decorators/index.js';
+import {
+	RedisSessionStorage,
+	CloudflareKVSessionStorage,
+} from './backends/redis.js';
 import type {
 	SessionStorage,
 	SessionConfig,
@@ -228,8 +232,30 @@ export class SessionService {
 				this.#cookie = backend;
 				return backend;
 			}
-			case 'redis':
-				throw new Error('[session] redis backend is planned for v0.2.');
+			case 'redis': {
+				if (!config.redis) {
+					throw new Error(
+						'[session] backend=redis requires `redis` in config. ' +
+							'Provide `{ client: RedisClient, keyPrefix?: string }`. ' +
+							'Use `createRedisClient({ ... })` from `nexus/redis`.',
+					);
+				}
+				return new RedisSessionStorage(config.redis.client, {
+					keyPrefix: config.redis.keyPrefix,
+				});
+			}
+			case 'cloudflare-kv': {
+				if (!config.cloudflareKv) {
+					throw new Error(
+						'[session] backend=cloudflare-kv requires `cloudflareKv` in config. ' +
+							'Provide `{ client: RedisClient, keyPrefix?: string }` where ' +
+							'`client` is a `CloudflareKVAdapter` from `nexus/redis`.',
+					);
+				}
+				return new CloudflareKVSessionStorage(config.cloudflareKv.client, {
+					keyPrefix: config.cloudflareKv.keyPrefix,
+				});
+			}
 			case 'database': {
 				if (!config.database) {
 					throw new Error(

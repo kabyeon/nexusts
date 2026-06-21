@@ -202,17 +202,50 @@ class UserService {
 
 ### Custom store
 
+For Redis / Workers KV, use the built-in `RedisCacheStore` from
+`nexus/redis`. It implements `CacheStore` and supports
+tag-based invalidation:
+
+```ts
+import { CacheModule } from 'nexus/cache';
+import { RedisCacheStore, createRedisClient } from 'nexus/redis';
+
+CacheModule.forRoot({
+  store: new RedisCacheStore(
+    createRedisClient({ url: process.env.REDIS_URL! }),
+    { keyPrefix: 'cache:' },
+  ),
+});
+```
+
+For Cloudflare Workers, pass a `CloudflareKVAdapter`:
+
+```ts
+import { CacheModule } from 'nexus/cache';
+import { CloudflareKVAdapter } from 'nexus/redis';
+
+CacheModule.forRoot({
+  store: new RedisCacheStore(
+    new CloudflareKVAdapter({ kv: c.env.CACHE_KV }),
+    { keyPrefix: 'cache:' },
+  ),
+});
+```
+
+Custom stores (any non-Redis backend) implement the `CacheStore`
+interface:
+
 ```ts
 import { CacheService, CacheStore } from 'nexus/cache';
 
-class RedisStore implements CacheStore {
-  readonly kind = 'redis';
+class MyStore implements CacheStore {
+  readonly kind = 'my-store';
   async get<T>(key: string) { /* ... */ }
   async set<T>(key: string, value: T, opts?: CacheSetOptions) { /* ... */ }
   // ...
 }
 
-CacheModule.forRoot({ store: new RedisStore(redis) });
+CacheModule.forRoot({ store: new MyStore() });
 ```
 
 ---

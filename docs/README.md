@@ -27,7 +27,7 @@ provided in `*.ko.md` files.
 
 ---
 
-## Modules shipped in v0.5 (25 total)
+## Modules shipped in v0.5 (26 total)
 
 Every module is its own bundle entry point. Install only what you use.
 
@@ -59,6 +59,7 @@ Every module is its own bundle entry point. Install only what you use.
 | **WebSockets** *(v0.5)* | `nexus/ws` | `nexus/ws` | [`user-guide/ws.md`](./user-guide/ws.md) |
 | **Crypto** *(v0.5)* | `nexus/crypto` | `nexus/crypto` | [`user-guide/crypto.md`](./user-guide/crypto.md) |
 | **i18n** *(v0.5)* | `nexus/i18n` | `nexus/i18n` | [`user-guide/i18n.md`](./user-guide/i18n.md) |
+| **Redis client** *(v0.5)* | `nexus/redis` | `nexus/redis` | [`user-guide/redis.md`](./user-guide/redis.md) |
 
 ---
 
@@ -94,6 +95,7 @@ Step-by-step guides for building applications.
 | **WebSockets** *(v0.5)* | [`user-guide/ws.md`](./user-guide/ws.md) | [`user-guide/ws.ko.md`](./user-guide/ws.ko.md) |
 | **Crypto** *(v0.5)* | [`user-guide/crypto.md`](./user-guide/crypto.md) | [`user-guide/crypto.ko.md`](./user-guide/crypto.ko.md) |
 | **i18n** *(v0.5)* | [`user-guide/i18n.md`](./user-guide/i18n.md) | [`user-guide/i18n.ko.md`](./user-guide/i18n.ko.md) |
+| **Redis client** *(v0.5)* | [`user-guide/redis.md`](./user-guide/redis.md) | [`user-guide/redis.ko.md`](./user-guide/redis.ko.md) |
 
 ---
 
