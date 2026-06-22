@@ -108,7 +108,7 @@ export const dbMigrateCommand: Command = {
 	},
 };
 
-function runDrizzleKit(cwd: string, args: string[]): Promise<number> {
+export function runDrizzleKit(cwd: string, args: string[]): Promise<number> {
 	return new Promise((resolveP) => {
 		const cmd = "bunx";
 		logger.info(`$ ${cmd} drizzle-kit ${args.join(" ")}`);
