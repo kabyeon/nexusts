@@ -9,6 +9,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.3] — 2026-06-26
+
+### Changed · View engine moved to `nexusjs/view` package
+
+The view engine has been extracted from `src/core/view/` into its own top-level
+module (`src/view/`), available as `nexusjs/view`. This means:
+
+- Users who do _not_ render templates no longer pay the bundle cost.
+- The view engine is now a separate entry point in the build.
+- Internal imports within `nexusjs` still resolve correctly via
+  relative paths + the `@/view/*` alias.
+
+### Added · Eta template engine
+
+A new `EtaAdapter` is available for users who prefer EJS-style syntax.
+It works on every runtime (Bun, Node, Deno, Cloudflare Workers) because
+Eta compiles templates to pure JavaScript functions.
+
+- File extension `.eta` → `EtaAdapter`
+- Optional peer dep: `bun add eta`
+- See `docs/user-guide/view-engines.md`
+
+### Added · Auto-adapter selection by file extension
+
+`renderView()` now picks the template adapter automatically:
+
+| Extension | Adapter       |
+|-----------|---------------|
+| `.html`   | `RenduAdapter` |
+| `.rendu`  | `RenduAdapter` |
+| `.edge`   | `EdgeAdapter`  |
+| `.eta`    | `EtaAdapter`   |
+
+Inline templates (no extension) default to Rendu.
+
+### Fixed · `nx init` now generates `setViewPaths()` call
+
+When `nx init` scaffolds a new project, the generated `src/app/main.ts`
+now includes a `setViewPaths()` call based on the `viewPaths` setting
+in `nx.config.ts`. This closes a DX gap where users had to manually
+add the call.
+
+### Tests
+
+- 687 total (683 pass, 4 pre-existing failures)
+- +6: EtaAdapter tests (5 pass, 1 "missing package" test removed)
+
+---
+
 ## [0.6.2] — 2026-06-26
 
 v0.6.2 adds two companion CLI commands to the existing
@@ -547,7 +596,7 @@ Node's built-in `Intl` API.
 ### Added · `nexusjs/ws`
 
 v0.4 is the **observability and developer experience** milestone.
-Every "Tier 1" *and* "Tier 2" gap from the NestJS / AdonisJS
+Every "Tier 1" _and_ "Tier 2" gap from the NestJS / AdonisJS
 feature analyses is closed. The framework now ships 22 modules
 (was 17 in v0.3).
 

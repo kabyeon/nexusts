@@ -12,7 +12,7 @@
 
 import "reflect-metadata";
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
@@ -20,7 +20,7 @@ import {
 	setViewPaths,
 	getViewPaths,
 	loadTemplate,
-} from "../../src/core/view/view-engine.js";
+} from "../../src/view/view-engine.js";
 
 async function makeTmp(): Promise<string> {
 	return mkdtemp(join(tmpdir(), "nx-view-"));

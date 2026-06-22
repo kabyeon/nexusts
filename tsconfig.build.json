@@ -28,6 +28,7 @@
     "src/i18n/**/*.ts",
     "src/redis/**/*.ts",
     "src/grpc/**/*.ts",
+    "src/view/**/*.ts",
     "src/core/**/*.d.ts",
     "src/cli/**/*.d.ts",
     "src/auth/**/*.d.ts",

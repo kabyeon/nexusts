@@ -384,7 +384,7 @@ class NexusRouterImpl implements NexusRouter {
 }
 
 async function renderViewResponse(c: any, value: any): Promise<Response> {
-	const { renderView } = await import("../view/view-engine.js");
+	const { renderView } = await import("../../view/view-engine.js");
 	const html = await renderView(value.view, value.data ?? {});
 	return c.html(html, value.status ?? 200);
 }

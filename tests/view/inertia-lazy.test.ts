@@ -12,7 +12,7 @@ import { Module } from '@core/decorators/module';
 import { Controller } from '@core/decorators/controller';
 import { Get } from '@core/decorators/http-methods';
 import { Inject } from '@core/decorators/injectable';
-import { Inertia, lazy } from '@core/view/inertia';
+import { Inertia, lazy } from '@/view/inertia';
 
 @Controller('/lazy')
 class LazyController {

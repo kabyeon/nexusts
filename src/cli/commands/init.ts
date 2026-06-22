@@ -267,12 +267,18 @@ function renderContent(path: string, ctx: RenderCtx): string {
 		case "nx.config.ts":
 			return render(templates.project["nx.config.ts"], ctx);
 		case "src/app/main.ts":
-			return `import 'reflect-metadata';
+			const vp = ctx.viewPaths?.filter(Boolean) ?? [];
+			const vpImport = vp.length > 0
+				? `import { setViewPaths } from "nexusjs/view";\n`
+				: "";
+			const vpCall = vp.length > 0
+				? `\nsetViewPaths([\n${vp.map((p: string) => `  "${p}"`).join(",\n")}\n]);\n`
+				: "";
+			return `${vpImport}import 'reflect-metadata';
 import { Application } from 'nexusjs';
 import { AppModule } from './app.module.js';
 
-const app = new Application(AppModule);
-
+const app = new Application(AppModule);${vpCall}
 await app.listen(3000);
 console.log('[nexusjs] Listening on http://localhost:3000');
 `;

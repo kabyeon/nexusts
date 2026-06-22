@@ -18,7 +18,7 @@ import { Controller } from '@core/decorators/controller';
 import { Get, Post } from '@core/decorators/http-methods';
 import { Inject } from '@core/decorators/injectable';
 import { Body } from '@core/decorators/params';
-import { Inertia } from '@core/view/inertia';
+import { Inertia } from '@/view/inertia';
 
 @Controller('/users')
 class UsersFormController {

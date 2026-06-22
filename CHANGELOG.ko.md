@@ -9,7 +9,51 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
-## [0.6.2] — 2026-06-26
+## [0.6.3] — 2026-06-26
+
+### 변경 · 뷰 엔진을 `nexusjs/view` 패키지로 분리
+
+뷰 엔진이 `src/core/view/`에서 자체 최상위 모듈(`src/view/`)로
+이동하여 `nexusjs/view`로 사용 가능해졌습니다:
+
+- 템플릿을 렌더링하지 않는 사용자는 더 이상 번들 비용을 부담하지 않습니다.
+- 뷰 엔진은 이제 빌드의 별도 entry point입니다.
+- `nexusjs` 내부의 import는 상대 경로 + `@/view/*` alias로 계속 정상 작동합니다.
+
+### 추가 · Eta 템플릿 엔진
+
+EJS 스타일 문법을 선호하는 사용자를 위한 새로운 `EtaAdapter`가
+추가되었습니다. Eta는 템플릿을 순수 JavaScript 함수로 컴파일하므로
+모든 런타임(Bun, Node, Deno, Cloudflare Workers)에서 작동합니다.
+
+- 파일 확장자 `.eta` → `EtaAdapter`
+- 선택적 peer dep: `bun add eta`
+- 자세한 내용은 `docs/user-guide/view-engines.ko.md` 참조
+
+### 추가 · 파일 확장자별 자동 어댑터 선택
+
+`renderView()`가 파일 확장자에 따라 템플릿 어댑터를 자동 선택:
+
+| 확장자 | 어댑터 |
+|-----------|---------------|
+| `.html`   | `RenduAdapter` |
+| `.rendu`  | `RenduAdapter` |
+| `.edge`   | `EdgeAdapter`  |
+| `.eta`    | `EtaAdapter`   |
+
+인라인 템플릿(확장자 없음)은 Rendu를 기본값으로 사용합니다.
+
+### 수정 · `nx init`이 `setViewPaths()` 호출을 포함하도록 개선
+
+`nx init`으로 프로젝트를 scaffold할 때 생성되는 `src/app/main.ts`에
+이제 `nx.config.ts`의 `viewPaths` 설정에 기반한 `setViewPaths()`
+호출이 포함됩니다. 사용자가 수동으로 호출을 추가해야 했던 DX 격차를
+해소했습니다.
+
+### 테스트
+
+- 총 687개 (683 통과, 4 기존 실패)
+- +6: EtaAdapter 테스트 (5 통과, 1 "패키지 없음" 테스트 제거)
 
 v0.6.2는 기존 `nx new <name>` 흐름에 두 개의 companion CLI 커맨드를
 추가하고, npm에 실제로 push하는 데 필요한 publish 메타데이터를 보강.
@@ -678,7 +722,6 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
-[0.6.2]: https://github.com/kabyeon/nexusjs/compare/v0.6.1...v0.6.2
 [0.4.0]: https://github.com/kabyeon/nexusjs/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/nexusjs/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/nexusjs/compare/v0.1.0...v0.2.0

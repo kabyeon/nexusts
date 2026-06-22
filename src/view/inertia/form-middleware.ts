@@ -20,7 +20,7 @@
  * `InertiaFormBuilder` handles that at the action level (303 + PRG).
  */
 import type { Context, Next } from "hono";
-import type { Middleware } from "../../http/middleware.js";
+import type { Middleware } from "../../core/http/middleware.js";
 
 export interface InertiaFormMiddlewareOptions {
 	/**

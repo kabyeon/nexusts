@@ -35,7 +35,7 @@ import {
   merge,
   deepMerge,
   once,
-} from '@core/view/inertia';
+} from '@/view/inertia';
 
 class Counter {
   n = 0;

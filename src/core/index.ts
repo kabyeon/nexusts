@@ -21,7 +21,7 @@ export * from "./http/index.js";
 export * from "./validation/index.js";
 
 // View
-export * from "./view/index.js";
+export * from "../view/index.js";
 
 // ORM
 export * from "./orm/index.js";

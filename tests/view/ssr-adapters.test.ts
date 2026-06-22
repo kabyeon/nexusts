@@ -15,8 +15,8 @@ import {
 	ComponentRegistry,
 	createRegistry,
 	asRegistry,
-} from "@core/view/inertia/ssr/registry";
-import type { SsrAdapter, SsrRenderResult } from "@core/view/inertia";
+} from "@/view/inertia/ssr/registry";
+import type { SsrAdapter, SsrRenderResult } from "@/view/inertia";
 
 describe("ComponentRegistry", () => {
 	it("registers and resolves components", () => {
@@ -92,7 +92,7 @@ describe("Adapter contract", () => {
 
 describe("createReactAdapter (factory contract)", () => {
 	it("returns an adapter with name='react'", async () => {
-		const mod = await import("@core/view/inertia/ssr/react-adapter");
+		const mod = await import("@/view/inertia/ssr/react-adapter");
 		expect(typeof mod.createReactAdapter).toBe("function");
 		const Home = () => "Home";
 		const adapter = mod.createReactAdapter({ components: { Home } });
@@ -103,7 +103,7 @@ describe("createReactAdapter (factory contract)", () => {
 
 describe("createVueAdapter (factory contract)", () => {
 	it("exposes createVueAdapter with name='vue'", async () => {
-		const mod = await import("@core/view/inertia/ssr/vue-adapter");
+		const mod = await import("@/view/inertia/ssr/vue-adapter");
 		const Home = { name: "Home" };
 		const adapter = mod.createVueAdapter({ components: { Home } });
 		expect(adapter.name).toBe("vue");
@@ -113,14 +113,14 @@ describe("createVueAdapter (factory contract)", () => {
 
 describe("createSvelteAdapter (factory contract)", () => {
 	it("exposes createSvelteAdapter with name='svelte'", async () => {
-		const mod = await import("@core/view/inertia/ssr/svelte-adapter");
+		const mod = await import("@/view/inertia/ssr/svelte-adapter");
 		const Home = { render: () => ({ html: "<h1>Home</h1>" }) };
 		const adapter = mod.createSvelteAdapter({ components: { Home } });
 		expect(adapter.name).toBe("svelte");
 	});
 
 	it("falls back to Svelte 4 component.render when svelte/server is missing", async () => {
-		const mod = await import("@core/view/inertia/ssr/svelte-adapter");
+		const mod = await import("@/view/inertia/ssr/svelte-adapter");
 		const Svelte4Component = {
 			render: (props: any) => ({
 				html: `<h1>${props.title}</h1>`,
@@ -136,7 +136,7 @@ describe("createSvelteAdapter (factory contract)", () => {
 	});
 
 	it("throws clearly for missing components", async () => {
-		const mod = await import("@core/view/inertia/ssr/svelte-adapter");
+		const mod = await import("@/view/inertia/ssr/svelte-adapter");
 		const adapter = mod.createSvelteAdapter({ components: {} });
 		await expect(adapter.render("Missing", {})).rejects.toThrow(
 			/Component "Missing" is not registered/,
@@ -146,7 +146,7 @@ describe("createSvelteAdapter (factory contract)", () => {
 
 describe("createSolidAdapter (factory contract)", () => {
 	it("exposes createSolidAdapter with name='solid'", async () => {
-		const mod = await import("@core/view/inertia/ssr/solid-adapter");
+		const mod = await import("@/view/inertia/ssr/solid-adapter");
 		const Home = () => "Home";
 		const adapter = mod.createSolidAdapter({ components: { Home } });
 		expect(adapter.name).toBe("solid");

@@ -2,12 +2,15 @@
  * View engine abstraction.
  *
  * The framework can render templates using any installed engine. Built-in
- * adapters ship for Rendu (PHP-style templates) and Edge (Adonis-style).
+ * adapters ship for Rendu (PHP-style templates), Edge (Adonis-style),
+ * and Eta (EJS-style).
  *
  * The default adapter is Rendu because it works on every runtime —
  * Cloudflare Workers, Bun, Deno, and Node — without extra dependencies.
  */
 import { RenduAdapter } from "./rendu.js";
+import { EdgeAdapter } from "./edge.js";
+import { EtaAdapter } from "./eta.js";
 import type { ViewAdapter, ViewContext } from "./types.js";
 
 export type { ViewAdapter, ViewContext, ViewOptions } from "./types.js";
@@ -15,9 +18,9 @@ export type { ViewAdapter, ViewContext, ViewOptions } from "./types.js";
 /**
  * Directories to search when the `view` value looks like a file path
  * (e.g. `"about.html"` or `"emails/welcome.html"`). Configured via
- * `Application.setViewPaths()`. Empty by default — pass an empty
- * array (the default) to require inline templates, or set the paths
- * once at boot to enable file-based views.
+ * `setViewPaths()` or `Application.setViewPaths()`. Empty by default
+ * — pass an empty array (the default) to require inline templates,
+ * or set the paths once at boot to enable file-based views.
  */
 let viewPaths: string[] = [];
 
@@ -45,15 +48,31 @@ function isViewFilePath(name: string): boolean {
 }
 
 /**
- * Render a view using the default (Rendu) adapter.
+ * Pick the right adapter for a given template source. Selection
+ * is by file extension:
+ *   `.edge`  → EdgeAdapter
+ *   `.eta`   → EtaAdapter
+ *   `.html` / `.rendu` / no extension  → RenduAdapter (default)
+ */
+function selectAdapter(template: string): ViewAdapter {
+	const lower = template.toLowerCase();
+	if (lower.endsWith(".edge")) return new EdgeAdapter();
+	if (lower.endsWith(".eta")) return new EtaAdapter();
+	return new RenduAdapter();
+}
+
+/**
+ * Render a view.
  *
  * - If `template` ends in a known view file extension (`.html`,
  *   `.edge`, `.rendu`, `.eta`) and `viewPaths` is non-empty, the
  *   file is loaded from the first matching directory and used
- *   as the template source.
- * - Otherwise `template` is treated as inline template source.
+ *   as the template source. The adapter is picked by extension.
+ * - Otherwise `template` is treated as inline template source
+ *   with the default (Rendu) adapter.
  *
- * Override the adapter with `app.setViewAdapter()`.
+ * Override the default adapter globally with
+ * `app.setViewAdapter()`.
  */
 export async function renderView(
 	template: string,
@@ -70,7 +89,7 @@ export async function renderView(
 		}
 		source = loaded;
 	}
-	const adapter = new RenduAdapter();
+	const adapter = selectAdapter(source);
 	return adapter.render(source, data, context);
 }
 
