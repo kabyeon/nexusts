@@ -98,4 +98,41 @@ describe("ConfigService", () => {
 		const port = process.env["PORT"];
 		expect(svc.env("PORT")).toBe(port);
 	});
+
+	it("load() merges static config", () => {
+		const svc = new ConfigService({
+			schema: baseSchema,
+			load: [{ PORT: 4000 }],
+		});
+		expect(svc.get("PORT")).toBe(4000);
+	});
+
+	it("load values override defaults but not env", () => {
+		const saved = process.env["PORT"];
+		process.env["PORT"] = "7000";
+		try {
+			const svc = new ConfigService({
+				schema: baseSchema,
+				load: [{ PORT: 5000 }],
+			});
+			expect(svc.get("PORT")).toBe(7000);
+		} finally {
+			if (saved) process.env["PORT"] = saved;
+			else delete process.env["PORT"];
+		}
+	});
+
+	it("load value used when env var is absent", () => {
+		const saved = process.env["NODE_ENV"];
+		delete process.env["NODE_ENV"];
+		try {
+			const svc = new ConfigService({
+				schema: baseSchema,
+				load: [{ NODE_ENV: "production" }],
+			});
+			expect(svc.get("NODE_ENV")).toBe("production");
+		} finally {
+			if (saved) process.env["NODE_ENV"] = saved;
+		}
+	});
 });

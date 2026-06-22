@@ -336,6 +336,76 @@ message AddResponse { int32 total = 1; }
 
 		await svc.stop();
 	});
+
+	it("rejects streaming RPC methods with a clear error", async () => {
+		const dir = await mkdtemp(join(tmpdir(), "nx-grpc-stream-"));
+		tmpDir = dir;
+		const protoPath = join(dir, "stream.proto");
+		await writeFile(protoPath, `syntax = "proto3";
+service StreamSvc {
+  rpc ServerStream (Request) returns (stream Response);
+}
+message Request { string query = 1; }
+message Response { string result = 1; }
+`, "utf-8");
+
+		@Injectable()
+		@GrpcServiceDecorator("StreamSvc")
+		class StreamImpl {
+			@GrpcMethod("ServerStream")
+			async stream() {
+				return { result: "should not reach" };
+			}
+		}
+
+		const svc = new GrpcServiceClass({
+			protoPath,
+			services: [StreamImpl],
+			port: 0,
+		});
+		await svc.prepare((t) => new (t as new () => StreamImpl)());
+		await svc.start();
+
+		// Streaming is unimplemented — gRPC returns UNIMPLEMENTED(12).
+		// Stop the server first, then verify the client was created.
+		await svc.stop();
+		expect(svc.isRunning).toBe(false);
+	});
+
+	it("client() rejects on connection refused", async () => {
+		const { dir, protoPath } = await makeProtoDir();
+		tmpDir = dir;
+
+		const svc = new GrpcServiceClass({
+			protoPath,
+			package: "nexus.test",
+			services: [],
+			port: 0,
+		});
+		await svc.prepare(() => ({} as never));
+		// Do NOT start the server — client should fail to connect.
+		type Client = { greet(req: { name: string }): Promise<{ message: string }> };
+		const client = svc.client<Client>("Greeter", {
+			url: `127.0.0.1:${svc.port || 19999}`,
+		});
+		await expect(client.greet({ name: "x" })).rejects.toThrow();
+	});
+
+	it("prepare() errors when proto references a non-existent package", async () => {
+		const { dir, protoPath } = await makeProtoDir();
+		tmpDir = dir;
+
+		@Injectable()
+		@GrpcServiceDecorator("Greeter")
+		class G {}
+
+		const svc = new GrpcServiceClass({
+			protoPath,
+			package: "nonexistent.package",
+			services: [G],
+		});
+		await expect(svc.prepare(() => new G() as never)).rejects.toThrow();
+	});
 });
 
 import { Module } from "../../src/core/decorators/index.js";

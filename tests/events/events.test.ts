@@ -323,3 +323,86 @@ describe("EventsModule — backend validation", () => {
 		expect(() => app.container.resolve(EventService)).not.toThrow();
 	});
 });
+
+describe("NexusEventEmitter — guards", () => {
+it("rejects a listener when if returns false", async () => {
+const em = new NexusEventEmitter();
+const calls: string[] = [];
+em.on("user.created", () => { calls.push("A"); }, { if: () => true });
+em.on("user.created", () => { calls.push("B"); }, { if: () => false });
+em.on("user.created", () => { calls.push("C"); }, { if: () => true });
+await em.emit("user.created");
+expect(calls).toEqual(["A", "C"]);
+});
+
+it("if receives the payload", async () => {
+const em = new NexusEventEmitter();
+const seen: any[] = [];
+em.on("order.*",
+() => {},
+{ if: (payload: any) => { seen.push(payload); return true; } },
+);
+await em.emit("order.placed", { id: 42 });
+expect(seen).toEqual([{ id: 42 }]);
+});
+
+it("if returning false skips only that listener", async () => {
+const em = new NexusEventEmitter();
+const results: string[] = [];
+em.on("event", () => results.push("A"), { if: () => false });
+em.on("event", () => results.push("B"), { if: () => true });
+em.on("event", () => results.push("C"));
+await em.emit("event");
+expect(results).toEqual(["B", "C"]);
+});
+});
+
+describe("NexusEventEmitter — priority + if interaction", () => {
+it("lowest priority runs first regardless of if conditions", async () => {
+const em = new NexusEventEmitter();
+const order: number[] = [];
+em.on("evt", () => order.push(1), { priority: 10, if: () => true });
+em.on("evt", () => order.push(2), { priority: 20, if: () => false });
+em.on("evt", () => order.push(3), { priority: 30, if: () => true });
+await em.emit("evt");
+expect(order).toEqual([1, 3]);
+});
+});
+
+describe("NexusEventEmitter — listener lifecycle", () => {
+it("off() removes listeners by pattern", async () => {
+const em = new NexusEventEmitter();
+const calls: string[] = [];
+em.on("evt", () => { calls.push("A"); });
+em.off("evt");
+await em.emit("evt");
+expect(calls).toEqual([]);
+});
+
+it("removeAllListeners clears all for a pattern", async () => {
+const em = new NexusEventEmitter();
+const calls: string[] = [];
+em.on("evt", () => calls.push("A"));
+em.on("evt", () => calls.push("B"));
+em.removeAllListeners("evt");
+await em.emit("evt");
+expect(calls).toEqual([]);
+});
+
+it("once() fires only once", async () => {
+const em = new NexusEventEmitter();
+let count = 0;
+em.once("evt", () => { count++; });
+await em.emit("evt");
+await em.emit("evt");
+expect(count).toBe(1);
+});
+
+it("listenerCount is tracked", async () => {
+const em = new NexusEventEmitter();
+expect(em.listenerCount("evt")).toBe(0);
+em.on("evt", () => {});
+em.on("evt", () => {});
+expect(em.listenerCount("evt")).toBe(2);
+});
+});

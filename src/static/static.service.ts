@@ -6,7 +6,7 @@
  */
 
 import type { Context, MiddlewareHandler } from "hono";
-import { createReadStream, statSync } from "node:fs";
+import { createReadStream } from "node:fs";
 import { stat, open } from "node:fs/promises";
 import { resolve as pathResolve, normalize, join, sep } from "node:path";
 

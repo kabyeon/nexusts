@@ -233,3 +233,51 @@ describe("CryptoModule", () => {
 		expect(enc.decrypt(out)).toBe("hello");
 	});
 });
+
+describe("EncryptionService — signRaw / verifyRaw", () => {
+	const enc = new EncryptionService(KEY);
+
+	it("signRaw produces a base64url-encoded signature", () => {
+		const sig = enc.signRaw("message");
+		expect(typeof sig).toBe("string");
+		expect(sig.length).toBeGreaterThan(0);
+	});
+
+	it("verifyRaw accepts the matching signature", () => {
+		const sig = enc.signRaw("message");
+		expect(enc.verifyRaw("message", sig)).toBe(true);
+	});
+
+	it("verifyRaw rejects a tampered value", () => {
+		const sig = enc.signRaw("message");
+		expect(enc.verifyRaw("tampered", sig)).toBe(false);
+	});
+
+	it("signRaw with purpose produces a different signature", () => {
+		const sigSession = enc.signRaw("token", "session");
+		const sigCsrf = enc.signRaw("token", "csrf");
+		expect(sigSession).not.toBe(sigCsrf);
+	});
+
+	it("verifyRaw with wrong purpose returns false", () => {
+		const sig = enc.signRaw("token", "session");
+		expect(enc.verifyRaw("token", sig, "csrf")).toBe(false);
+		expect(enc.verifyRaw("token", sig, "session")).toBe(true);
+	});
+
+	it("signRaw/verifyRaw round-trip with empty string", () => {
+		const sig = enc.signRaw("");
+		expect(enc.verifyRaw("", sig)).toBe(true);
+		expect(enc.verifyRaw("x", sig)).toBe(false);
+	});
+
+	it("signRaw/verifyRaw round-trip with unicode", () => {
+		const sig = enc.signRaw("한글 🚀");
+		expect(enc.verifyRaw("한글 🚀", sig)).toBe(true);
+	});
+
+	it("verifyRaw returns false for garbage signature", () => {
+		expect(enc.verifyRaw("x", "not-a-valid-signature")).toBe(false);
+		expect(enc.verifyRaw("x", "")).toBe(false);
+	});
+});

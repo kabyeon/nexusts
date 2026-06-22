@@ -10,7 +10,7 @@
 import { Controller } from '../../core/decorators/controller.js';
 import { Get } from '../../core/decorators/http-methods.js';
 import { Param } from '../../core/decorators/params.js';
-import { RenduAdapter } from '../../core/view/rendu.js';
+import { RenduAdapter } from '../../view/rendu.js';
 
 @Controller('/')
 export class HomeController {
