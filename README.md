@@ -82,14 +82,20 @@ v0.4 release notes.
 ## Install
 
 ```bash
-# Scaffold a new project (requires Node.js ≥ 22 or Bun ≥ 1.3)
-npx @kabyeon/nexusjs new my-app
+# Scaffold a new project
+bunx create-nexusjs my-app
 cd my-app
 bun install
 bun run dev
 ```
 
-Or initialize NexusJS in an existing project:
+Or use npm:
+
+```bash
+npx create-nexusjs my-app
+```
+
+### Manual setup in an existing project
 
 ```bash
 bun add @kabyeon/nexusjs reflect-metadata zod hono
