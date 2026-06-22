@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Application, Controller, Get, Param } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Module, Param } from "@kabyeon/nexusjs";
 
 /**
  * 01-basic-mvc — minimal NexusJS application with a single
@@ -24,5 +24,8 @@ class HelloController {
   }
 }
 
-const app = new Application(HelloController);
+@Module({ controllers: [HelloController] })
+class AppModule {}
+
+const app = new Application(AppModule);
 await app.listen(3000);

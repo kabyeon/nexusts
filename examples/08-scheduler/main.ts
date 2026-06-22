@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Application, Module, Injectable, Controller, Get } from "@kabyeon/nexusjs";
-import { Cron, Interval, Timeout, ScheduleService } from "@kabyeon/nexusjs/schedule";
+import { Cron, Interval, Timeout, ScheduleService, ScheduleModule } from "@kabyeon/nexusjs/schedule";
 
 /**
  * 08-scheduler — cron-style scheduled tasks.
@@ -39,7 +39,7 @@ class HealthController {
 }
 
 @Module({
-  imports: [ScheduleService.forRoot()],
+  imports: [ScheduleModule.forRoot()],
   controllers: [HealthController],
   providers: [Tasks],
 })

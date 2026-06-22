@@ -2,7 +2,9 @@ import "reflect-metadata";
 import {
   Application, Controller, Get, Post, Body, Ctx, Module, Inject, Injectable,
 } from "@kabyeon/nexusjs";
-import { SessionService, sessionMiddleware, Session } from "@kabyeon/nexusjs/session";
+import {
+  SessionService, SessionModule, sessionMiddleware, Session,
+} from "@kabyeon/nexusjs/session";
 
 /**
  * 04-session-auth — cookie-based session login.
@@ -18,6 +20,7 @@ import { SessionService, sessionMiddleware, Session } from "@kabyeon/nexusjs/ses
  */
 
 @Injectable()
+@Controller("/")
 class AuthController {
   constructor(
     @Inject(SessionService.TOKEN) private sessions: SessionService,

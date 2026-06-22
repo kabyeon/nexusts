@@ -2,7 +2,7 @@ import "reflect-metadata";
 import {
   Application, Controller, Get, Post, Body, Module, Inject, Injectable, Param,
 } from "@kabyeon/nexusjs";
-import { EventService, OnEvent } from "@kabyeon/nexusjs/events";
+import { EventService, EventsModule, OnEvent } from "@kabyeon/nexusjs/events";
 
 /**
  * 07-events — typed event emitter with wildcards, priorities, guards.
@@ -54,7 +54,7 @@ class EventController {
 }
 
 @Module({
-  imports: [EventService.forRoot()],
+  imports: [EventsModule.forRoot()],
   controllers: [EventController],
   providers: [UserListener],
 })
