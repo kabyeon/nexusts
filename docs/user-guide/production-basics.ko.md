@@ -115,7 +115,6 @@ import { configSchema } from './config/schema.js';
   imports: [
     ConfigModule.forRoot({
       schema: configSchema,
-      envFilePaths: ['.env.local', '.env'],
       exitOnError: process.env['NODE_ENV'] === 'production',
     }),
   ],
@@ -152,14 +151,58 @@ class DatabaseService {
 
 ### 레이어드 로딩
 
+설정값은 다음 순서로 해석된다 (높을수록 우선):
+
 ```
-process.env (기본 레이어, 충돌 시 우선)
-   ↓
-.env / .env.local (env 기본값 오버라이드)
-   ↓
-load() 정적 레이어 (최저 우선)
-   ↓
-Zod 스키마 검증
+1. process.env                    ← 런타임 오버라이드 (Docker/K8s/CI)
+2. .env.{NODE_ENV}                ← 환경별 (예: .env.production)
+3. .env.local                     ← 로컬 개발자 설정 (.gitignore 권장)
+4. .env                            ← 공통 기본값 (git 커밋)
+5. load() 정적 레이어             ← 최저 우선순위
+```
+
+### 환경별 `.env` 자동 로딩
+
+기본적으로 `ConfigModule.forRoot()`는 `NODE_ENV`에 따라 환경별
+파일을 자동 로드합니다:
+
+| 파일 | 용도 | Git ? |
+|------|------|-------|
+| `.env` | 공통 기본값 (모든 환경) | ✅ 커밋 |
+| `.env.local` | 로컬 오버라이드 (내 컴퓨터만) | ❌ `.gitignore` |
+| `.env.development` | 개발 환경값 | ✅ 커밋 |
+| `.env.production` | 프로덕션 시크릿 | ✅ 커밋 |
+| `.env.testing` | 테스트 전용값 | ✅ 커밋 |
+
+```ts
+// .env.production 예제
+DATABASE_URL=postgres://user:pass@prod:5432/myapp
+LOG_LEVEL=warn
+```
+
+```ts
+// .env.development 예제
+DATABASE_URL=postgres://localhost:5432/myapp
+LOG_LEVEL=debug
+```
+
+자동 로딩 비활성화 또는 경로 커스터마이즈:
+
+```ts
+ConfigModule.forRoot({
+  schema: configSchema,
+  // 명시적 파일 목록 (자동 감지 비활성화)
+  envFilePaths: ['.env.custom', '/etc/secrets/.env'],
+
+  // env 파일 로딩 완전 비활성화
+  envFile: false,
+
+  // NODE_ENV 재정의 (기본값: process.env.NODE_ENV)
+  nodeEnv: process.env.APP_ENV ?? 'development',
+
+  // 필수값 누락 시 즉시 실패
+  exitOnError: process.env.NODE_ENV === 'production',
+});
 ```
 
 ---

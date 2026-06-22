@@ -117,7 +117,6 @@ import { configSchema } from './config/schema.js';
   imports: [
     ConfigModule.forRoot({
       schema: configSchema,
-      envFilePaths: ['.env.local', '.env'],
       exitOnError: process.env['NODE_ENV'] === 'production',
     }),
   ],
@@ -154,14 +153,58 @@ returns `string` (not `unknown`) without manual type annotations.
 
 ### Layered loading
 
+Config values are resolved in this order (higher wins):
+
 ```
-process.env (base layer, wins on conflict)
-   ↓
-.env / .env.local (overrides env defaults)
-   ↓
-load() static layers (lowest priority)
-   ↓
-Zod schema validation
+1. process.env                    ← runtime overrides (Docker/K8s/CI)
+2. .env.{NODE_ENV}                ← environment-specific (e.g. .env.production)
+3. .env.local                     ← local developer overrides (add to .gitignore)
+4. .env                            ← shared defaults (committed to git)
+5. load() static layers            ← lowest priority
+```
+
+### Environment-aware `.env` loading
+
+By default, `ConfigModule.forRoot()` auto-loads environment-specific
+files based on `NODE_ENV`:
+
+| File | Purpose | Git ? |
+|------|---------|-------|
+| `.env` | Shared defaults (all environments) | ✅ committed |
+| `.env.local` | Local overrides (your machine only) | ❌ `.gitignore` |
+| `.env.development` | Dev-specific values | ✅ committed |
+| `.env.production` | Production secrets | ✅ committed |
+| `.env.testing` | Test-specific overrides | ✅ committed |
+
+```ts
+// Example .env.production
+DATABASE_URL=postgres://user:pass@prod:5432/myapp
+LOG_LEVEL=warn
+```
+
+```ts
+// Example .env.development
+DATABASE_URL=postgres://localhost:5432/myapp
+LOG_LEVEL=debug
+```
+
+Disable auto-loading or customize the paths:
+
+```ts
+ConfigModule.forRoot({
+  schema: configSchema,
+  // Custom: explicit file list (no auto-detection)
+  envFilePaths: ['.env.custom', '/etc/secrets/.env'],
+
+  // Disable env file loading entirely
+  envFile: false,
+
+  // Override the detected NODE_ENV (default: process.env.NODE_ENV)
+  nodeEnv: process.env.APP_ENV ?? 'development',
+
+  // Fail fast on missing required values
+  exitOnError: process.env.NODE_ENV === 'production',
+});
 ```
 
 ---
