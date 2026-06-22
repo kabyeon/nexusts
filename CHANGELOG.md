@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.4] — 2026-06-22
+
+### Changed · Default view engine to Rendu
+
+The default view engine has changed from `inertia` to `rendu` in both
+`nx init` and `nx new` CLI prompts. `rendu` now appears first in the
+selection list and is the default when no `--view` flag is passed.
+
+### Added · `eta` to CLI view engine options
+
+The Eta template engine (`.eta` files) is now listed as a selectable
+option in `nx init` and `nx new`.
+
+### Fixed · Static file serving path resolution
+
+`StaticModule.mount()` now correctly strips the leading slash from the
+relative path before resolving it against the root directory. Previously
+`/static/test.html` produced `/test.html` as the relative path, which
+was rejected as absolute by the safe-resolve guard, returning 404.
+
+### Added · Application auto-loads `viewPaths` from `nx.config.ts`
+
+The `Application` constructor now attempts to load `nx.config.ts` at
+boot via `tryLoadNxConfig()`. If the file has a `viewPaths` string,
+it is applied automatically — no explicit `app.setViewPaths()` call
+is needed in `main.ts`.
+
+### Removed · Explicit `app.setViewPaths()` from generated scaffold
+
+Generated `main.ts` no longer calls `app.setViewPaths()` or imports
+from `nexusjs/view`. The view path is read from `nx.config.ts` at
+runtime.
+
+---
+
 ## [0.6.3] — 2026-06-26
 
 ### Changed · View engine moved to `nexusjs/view` package

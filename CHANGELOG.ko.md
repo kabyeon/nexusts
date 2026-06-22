@@ -9,6 +9,40 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
+## [0.6.4] — 2026-06-22
+
+### 변경 · 기본 View engine을 Rendu로
+
+`nx init`과 `nx new` CLI 프롬프트의 기본 View engine이 `inertia`에서
+`rendu`로 변경되었습니다. `rendu`가 선택 목록의 첫 번째이자 기본값입니다.
+
+### 추가 · CLI view engine 옵션에 `eta` 추가
+
+이제 `nx init`과 `nx new`에서 Eta 템플릿 엔진(`.eta` 파일)을 선택
+옵션으로 사용할 수 있습니다.
+
+### 수정 · 정적 파일 경로 resolution
+
+`StaticModule.mount()`가 이제 상대 경로의 선행 슬래시를 올바르게
+제거합니다. 이전에는 `/static/test.html`이 `/test.html`이라는
+상대 경로를 생성했고, safe-resolve guard가 절대 경로로 판단하여
+404를 반환했습니다.
+
+### 추가 · Application이 `nx.config.ts`에서 `viewPaths` 자동 로드
+
+`Application` 생성자가 부트 시 `nx.config.ts`를 로드하는
+`tryLoadNxConfig()`를 호출합니다. 파일에 `viewPaths` 문자열이
+있으면 자동으로 적용되므로 `main.ts`에서 `app.setViewPaths()`를
+명시적으로 호출할 필요가 없습니다.
+
+### 제거 · 생성된 scaffold에서 `app.setViewPaths()` 제거
+
+`main.ts`가 더 이상 `app.setViewPaths()`를 호출하거나
+`nexusjs/view`를 import하지 않습니다. view 경로는 런타임에
+`nx.config.ts`에서 읽어옵니다.
+
+---
+
 ## [0.6.3] — 2026-06-26
 
 ### 변경 · 뷰 엔진을 `nexusjs/view` 패키지로 분리
