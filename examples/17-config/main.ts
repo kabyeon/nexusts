@@ -38,4 +38,5 @@ class AppController {
 class AppModule {}
 
 const app = new Application(AppModule);
-await app.listen(3000);
+const port = Number(process.env.PORT ?? 3000);
+await app.listen(port);

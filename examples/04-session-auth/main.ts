@@ -66,4 +66,5 @@ const app = new Application(AppModule);
 const sessions = app.container.resolve(SessionService.TOKEN) as SessionService;
 app.server.app.use("*", sessionMiddleware(sessions));
 
-await app.listen(3000);
+const port = Number(process.env.PORT ?? 3000);
+await app.listen(port);

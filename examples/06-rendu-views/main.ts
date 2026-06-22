@@ -58,4 +58,5 @@ class AppModule {}
 const app = new Application(AppModule);
 app.server.app.use("/static/*", staticMiddleware);
 
-await app.listen(3000);
+const port = Number(process.env.PORT ?? 3000);
+await app.listen(port);

@@ -9,6 +9,35 @@ NexusJS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ---
 
+## [Unreleased]
+
+### 추가
+
+- `Inertia` 어댑터와 SSR 엔진을 `@kabyeon/nexusjs/view` 에서 re-export
+  (그동안은 deep import 로만 사용 가능했음). `Inertia`,
+  `createReactAdapter`, `createVueAdapter`, `defer` / `always` / `merge`
+  / `once` / `optional` / `deepMerge` 헬퍼, `InertiaFormBuilder`,
+  `renderDefaultRoot` 포함.
+- `examples/28-31` 아래 4개 Inertia 예제 추가:
+  - `28-inertia-react-spa` — Inertia v2 + React, 클라이언트 렌더링
+  - `29-inertia-react-ssr` — Inertia v2 + React, `react-dom/server` 로
+    서버 사이드 렌더링
+  - `30-inertia-vue-spa` — Inertia v2 + Vue 3, 클라이언트 렌더링
+  - `31-inertia-vue-ssr` — Inertia v2 + Vue 3,
+    `@vue/server-renderer` 로 서버 사이드 렌더링
+- smoke test runner 가 `.tsx` / Vue SSR 예제 지원
+  (per-example tsconfig stub 에 `jsx: "react-jsx"` 추가).
+- 이전 27개 examples 모두 `PORT` env 읽도록 변경 — smoke test runner가
+  수동 dev server(3000 포트 사용)와 충돌 없이 순차적으로 free port 할당.
+
+### 수정
+
+- `Inertia`가 `package.json` `exports`에 `./inertia` subpath가 선언되지
+  않아 published package에서 import 불가했음.
+  `@kabyeon/nexusjs/view` 에서 re-export 하는 방식으로 사용자 친화적으로 해결.
+
+---
+
 ## [0.6.8] — 2026-06-22
 
 ### 추가

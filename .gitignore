@@ -48,6 +48,10 @@ coverage/
 *.db-shm
 *.db-wal
 
+# Inertia examples — the React/Vue client bundles are produced by
+# `bun build` (see the example README). Not checked in.
+examples/*/public/app.js
+
 # Cloudflare
 .wrangler/
 .dev.vars

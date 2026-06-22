@@ -69,4 +69,5 @@ app.server.router.raw("GET", "/hello/:name", (c) => {
   return c.json({ style: "functional", message: svc.greet(name) });
 });
 
-await app.listen(3000);
+const port = Number(process.env.PORT ?? 3000);
+await app.listen(port);

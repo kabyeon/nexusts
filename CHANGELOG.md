@@ -9,6 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- `Inertia` adapter and SSR engine re-exported from `@kabyeon/nexusjs/view`
+  (was previously only available via deep imports). Includes `Inertia`,
+  `createReactAdapter`, `createVueAdapter`, `defer` / `always` / `merge`
+  / `once` / `optional` / `deepMerge` helpers, `InertiaFormBuilder`, and
+  `renderDefaultRoot`.
+- 4 new Inertia examples under `examples/28-31`:
+  - `28-inertia-react-spa` — Inertia v2 + React, client-side rendering
+  - `29-inertia-react-ssr` — Inertia v2 + React, server-side rendering
+    with `react-dom/server`
+  - `30-inertia-vue-spa` — Inertia v2 + Vue 3, client-side rendering
+  - `31-inertia-vue-ssr` — Inertia v2 + Vue 3, server-side rendering
+    with `@vue/server-renderer`
+- Smoke test runner now supports `.tsx` / `vue` SSR examples
+  (`jsx: "react-jsx"` in the per-example tsconfig stub).
+- All 27 prior examples now read `PORT` from env, so the smoke test
+  runner can pick free ports sequentially without colliding with
+  manually-running dev servers on 3000.
+
+### Fixed
+
+- `Inertia` was unreachable from the published package because the
+  `./inertia` subpath was not declared in `package.json` `exports`.
+  Re-exporting from `@kabyeon/nexusjs/view` is the user-friendly fix.
+
+---
+
 ## [0.6.8] — 2026-06-22
 
 ### Added

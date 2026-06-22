@@ -43,6 +43,10 @@ bun add @kabyeon/nexusjs reflect-metadata zod hono
 | 25 | [`static-files`](./25-static-files) | `@kabyeon/nexusjs/static` | Beginner |
 | 26 | [`health`](./26-health) | `@kabyeon/nexusjs/health` | Beginner |
 | 27 | [`request-scope`](./27-request-scope) | Core | Intermediate |
+| 28 | [`inertia-react-spa`](./28-inertia-react-spa) | `@kabyeon/nexusjs/view` + Inertia + React | Intermediate |
+| 29 | [`inertia-react-ssr`](./29-inertia-react-ssr) | `@kabyeon/nexusjs/view` + Inertia + React (SSR) | Advanced |
+| 30 | [`inertia-vue-spa`](./30-inertia-vue-spa) | `@kabyeon/nexusjs/view` + Inertia + Vue | Intermediate |
+| 31 | [`inertia-vue-ssr`](./31-inertia-vue-ssr) | `@kabyeon/nexusjs/view` + Inertia + Vue (SSR) | Advanced |
 
 ---
 

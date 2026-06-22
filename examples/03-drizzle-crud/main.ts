@@ -76,4 +76,5 @@ await app.container
   .client
   .run(sql`CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL)`);
 
-await app.listen(3000);
+const port = Number(process.env.PORT ?? 3000);
+await app.listen(port);

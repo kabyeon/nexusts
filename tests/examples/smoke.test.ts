@@ -69,9 +69,13 @@ const EXAMPLE_TSCONFIG = {
 		esModuleInterop: true,
 		skipLibCheck: true,
 		noEmit: true,
+		// Some examples (28–31) import .tsx components from the
+		// server. `react-jsx` avoids the "React is not defined"
+		// runtime error from the classic JSX transform.
+		jsx: "react-jsx",
 		types: ["bun-types"],
 	},
-	include: ["./**/*.ts", "../../src/**/*.ts"],
+	include: ["./**/*.ts", "./*.tsx", "./**/*.tsx", "../../src/**/*.ts"],
 };
 async function ensureExampleTsconfig(exampleDir: string): Promise<void> {
 	const target = path.join(exampleDir, "tsconfig.json");
