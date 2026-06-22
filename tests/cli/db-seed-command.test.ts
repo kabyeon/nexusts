@@ -11,7 +11,7 @@
  */
 
 import "reflect-metadata";
-import { writeFile, mkdir, readdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -26,18 +26,17 @@ function makeConfig(overrides: Record<string, unknown> = {}) {
 		database: { driver: "bun-sqlite" as const, url: ":memory:" },
 		inertia: { frontend: "react" as const, ssr: false, version: "1.0.0" },
 		paths: {
-			app: "src/app",
-			controllers: "src/app/controllers",
-			services: "src/app/services",
-			modules: "src/app/modules",
-			models: "src/app/models",
-			migrations: "src/app/database/migrations",
-			middleware: "src/app/middleware",
-			dto: "src/app/dto",
+			app: "app",
+			controllers: "app/controllers",
+			services: "app/services",
+			modules: "app/modules",
+			models: "app/models",
+			migrations: "app/database/migrations",
+			middleware: "app/middleware",
+			dto: "app/dto",
 			...overrides,
 		},
 		moduleStyle: "nest" as const,
-		controllersExtra: [],
 	};
 }
 
@@ -58,7 +57,7 @@ describe("nx db:seed — registration", () => {
 	});
 
 	it("lists --file, --create, --reset, --folder, --dialect flags", () => {
-		const names = dbSeedCommand.flags.map((f) => f.name);
+		const names = (dbSeedCommand.flags ?? []).map((f) => f.name);
 		expect(names).toContain("file");
 		expect(names).toContain("create");
 		expect(names).toContain("reset");
