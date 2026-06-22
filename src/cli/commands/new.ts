@@ -143,7 +143,7 @@ export const newCommand: Command = {
 						nx: "nx",
 					},
 					dependencies: {
-						nexusjs: "*",
+						"@kabyeon/nexusjs": "*",
 						"reflect-metadata": "^0.2.2",
 						hono: "^4.6.0",
 						zod: "^3.23.8",
@@ -176,8 +176,8 @@ export const newCommand: Command = {
 		writeFileSync(
 			resolve(target, "app/main.ts"),
 			`import 'reflect-metadata';
-import { Application } from 'nexusjs';
-import { StaticModule } from 'nexusjs/static';
+import { Application } from '@kabyeon/nexusjs';
+import { StaticModule } from '@kabyeon/nexusjs/static';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -192,7 +192,7 @@ console.log("[nexusjs] Listening on http://localhost:" + port);
 
 		writeFileSync(
 			resolve(target, "app/app.module.ts"),
-			`import { Module } from 'nexusjs';
+			`import { Module } from '@kabyeon/nexusjs';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
@@ -206,7 +206,7 @@ export class AppModule {}
 		mkdirSync(resolve(target, "app/controllers"), { recursive: true });
 		writeFileSync(
 			resolve(target, "app/controllers/home.controller.ts"),
-			`import { Controller, Get } from 'nexusjs';
+			`import { Controller, Get } from '@kabyeon/nexusjs';
 
 @Controller('/')
 export class HomeController {

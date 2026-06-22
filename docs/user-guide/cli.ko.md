@@ -8,13 +8,13 @@ Nexus는 Adonis ACE / Ruby on Rails 스타일의 CLI를 `nx` 명령어로 제공
 
 ## 1. 설치
 
-CLI는 `nexusjs` 패키지에 포함되어 있어 추가 의존성이 필요 없습니다.
+CLI는 `@kabyeon/nexusjs` 패키지에 포함되어 있어 추가 의존성이 필요 없습니다.
 
 ```bash
 bun add nexus reflect-metadata zod hono
 ```
 
-설치 후 `bunx nx ...`가 `nexusjs/package.json`의 `bin` 항목을 통해 자동 동작합니다.
+설치 후 `bunx nx ...`가 `@kabyeon/nexusjs/package.json`의 `bin` 항목을 통해 자동 동작합니다.
 
 ---
 
@@ -347,11 +347,11 @@ nx make:crud Post --no-interaction --style nest --view inertia --orm drizzle
 
 ## 11. 프로그래매틱 API
 
-모든 CLI 모듈은 `nexusjs/cli`에서 import할 수도 있습니다.
+모든 CLI 모듈은 `@kabyeon/nexusjs/cli`에서 import할 수도 있습니다.
 
 ```ts
-import { loadConfig, render, parseArgs } from 'nexusjs/cli';
-import controllerTemplate from 'nexusjs/cli/templates/controller/nest.js';
+import { loadConfig, render, parseArgs } from '@kabyeon/nexusjs/cli';
+import controllerTemplate from '@kabyeon/nexusjs/cli/templates/controller/nest.js';
 
 const config = await loadConfig();
 const code = render(controllerTemplate, {
@@ -372,8 +372,8 @@ const code = render(controllerTemplate, {
 
 ```ts
 // src/cli/commands/make-feature.ts
-import type { Command, CommandContext } from 'nexusjs/cli';
-import { logger, writeFile, render } from 'nexusjs/cli';
+import type { Command, CommandContext } from '@kabyeon/nexusjs/cli';
+import { logger, writeFile, render } from '@kabyeon/nexusjs/cli';
 
 export default {
   name: 'make:feature',

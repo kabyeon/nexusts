@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`queue.ko.md`](./queue.ko.md)
 
-NexusJS ships a queue module under `nexusjs/queue` that wraps two
+NexusJS ships a queue module under `@kabyeon/nexusjs/queue` that wraps two
 production-ready backends:
 
 - **BullMQ** — Redis-backed, for long-running Bun / Node servers.
@@ -12,7 +12,7 @@ production-ready backends:
 Both share a common `QueueBackend` interface, so application code
 talks to `QueueService` and never to a specific backend directly.
 
-The queue module is **separate from `nexusjs/core`** and is added as its
+The queue module is **separate from `@kabyeon/nexusjs/core`** and is added as its
 own bundle entry point.
 
 ---
@@ -33,8 +33,8 @@ bun add nexus bullmq ioredis
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { QueueModule } from 'nexusjs/queue';
+import { Module } from '@kabyeon/nexusjs';
+import { QueueModule } from '@kabyeon/nexusjs/queue';
 
 @Module({
   imports: [
@@ -54,9 +54,9 @@ export class AppModule {}
 Enqueue from any controller or service:
 
 ```ts
-import { Inject } from 'nexusjs';
-import { QueueService } from 'nexusjs/queue';
-import { Controller, Post, Body } from 'nexusjs';
+import { Inject } from '@kabyeon/nexusjs';
+import { QueueService } from '@kabyeon/nexusjs/queue';
+import { Controller, Post, Body } from '@kabyeon/nexusjs';
 
 @Controller('/signup')
 class SignupController {
@@ -73,8 +73,8 @@ class SignupController {
 Register a worker:
 
 ```ts
-import { Inject, Injectable } from 'nexusjs';
-import { QueueService, OnQueueReady } from 'nexusjs/queue';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
+import { QueueService, OnQueueReady } from '@kabyeon/nexusjs/queue';
 
 @Injectable()
 class EmailWorker {
@@ -164,8 +164,8 @@ max_retries = 3
 
 ```ts
 // app/worker.ts
-import { Application } from 'nexusjs';
-import { QueueService, QueueModule } from 'nexusjs/queue';
+import { Application } from '@kabyeon/nexusjs';
+import { QueueService, QueueModule } from '@kabyeon/nexusjs/queue';
 
 const AppModule = QueueModule.forRoot({
   backend: 'cloudflare',

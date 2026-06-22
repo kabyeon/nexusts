@@ -32,37 +32,37 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Middleware | ✅ Class-based, ordered | ✅ Hono middleware (typed) | `app.use('*', mw)` |
 | DI | ✅ IoC container, decorators | ✅ Class-based + `@Inject()` | Both Nest-style and Adonis-style |
 | Validation | ✅ Vine (Zod-inspired) | ✅ Zod | Nexus uses Zod directly via `@Validate` |
-| ORM | ✅ Lucid (built-in) | ✅ `nexusjs/drizzle` | Drizzle is the default ORM |
+| ORM | ✅ Lucid (built-in) | ✅ `@kabyeon/@kabyeon/nexusjs/drizzle` | Drizzle is the default ORM |
 | Migrations | ✅ Built-in | ✅ `nx db:migrate` (drizzle-kit wrapper) | Same DX |
 | Seeding | ✅ Built-in factories | ⚠️ DIY | No first-party; users write factories |
-| Auth | ✅ `@adonisjs/auth` | ✅ `nexusjs/auth` (better-auth) | better-auth = many strategies |
-| Sessions | ✅ `@adonisjs/session` | ✅ `nexusjs/session` | Cookie / Memory / Drizzle backends |
-| Encryption | ✅ `@adonisjs/encryption` | ✅ `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) | Same API style |
-| Hash | ✅ `@adonisjs/hash` | ✅ `nexusjs/crypto` (HashService) | Argon2 / scrypt |
-| Shield | ✅ `@adonisjs/shield` (CSRF, headers) | ✅ `nexusjs/shield` (CSRF / HSTS / CSP) | Same naming, same purpose |
-| Throttler | ✅ `@adonisjs/throttler` | ✅ `nexusjs/limiter` (fixed / sliding / token-bucket) | |
-| Logger | ✅ `@adonisjs/logger` | ✅ `nexusjs/logger` (Pino) | |
-| Mail | ✅ `@adonisjs/mail` | ✅ `nexusjs/mail` (SMTP / File / Null) | |
-| Drive (file storage) | ✅ `@adonisjs/drive` | ✅ `nexusjs/drive` (Local / S3 / R2 / memory) | |
-| Cache | ✅ `@adonisjs/cache` | ✅ `nexusjs/cache` (memory / Drizzle) | |
-| Events | ✅ `@adonisjs/events` | ✅ `nexusjs/events` | wildcards, priorities, guards |
-| Queue | ✅ `@adonisjs/queue` | ✅ `nexusjs/queue` (BullMQ / Cloudflare / memory) | |
-| Scheduler | ✅ `@adonisjs/scheduler` | ✅ `nexusjs/schedule` (in-tree cron parser) | No external dep |
-| Static | ✅ `@adonisjs/static` | ✅ `nexusjs/static` (ETag / Range / MIME) | |
-| Health | ✅ `@adonisjs/health` | ✅ `nexusjs/health` (built-in indicators) | |
-| SSE | ❌ DIY | ✅ `nexusjs/sse` | Nexus ships SSE out of the box |
-| WebSockets | ❌ DIY | ✅ `nexusjs/ws` | Runtime auto-detected (Bun / Node) |
-| Upload | ❌ DIY | ✅ `nexusjs/upload` | `@Upload()` / `@UploadedFile()` decorators |
-| i18n | ✅ `@adonisjs/i18n` | ✅ `nexusjs/i18n` | `Intl`-based, pluralization |
-| OpenAPI | ❌ DIY | ✅ `nexusjs/openapi` | Zod → OpenAPI 3.1 + Scalar UI |
-| Tracing | ❌ DIY | ✅ `nexusjs/tracing` | OpenTelemetry with lazy SDK |
-| Metrics | ❌ DIY | ✅ `nexusjs/metrics` | Prometheus / OpenMetrics |
-| Bodyparser | ✅ Built-in | ✅ Hono's `c.req.parseBody()` + `nexusjs/upload` | |
+| Auth | ✅ `@adonisjs/auth` | ✅ `@kabyeon/@kabyeon/nexusjs/auth` (better-auth) | better-auth = many strategies |
+| Sessions | ✅ `@adonisjs/session` | ✅ `@kabyeon/@kabyeon/nexusjs/session` | Cookie / Memory / Drizzle backends |
+| Encryption | ✅ `@adonisjs/encryption` | ✅ `@kabyeon/@kabyeon/nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) | Same API style |
+| Hash | ✅ `@adonisjs/hash` | ✅ `@kabyeon/@kabyeon/nexusjs/crypto` (HashService) | Argon2 / scrypt |
+| Shield | ✅ `@adonisjs/shield` (CSRF, headers) | ✅ `@kabyeon/@kabyeon/nexusjs/shield` (CSRF / HSTS / CSP) | Same naming, same purpose |
+| Throttler | ✅ `@adonisjs/throttler` | ✅ `@kabyeon/@kabyeon/nexusjs/limiter` (fixed / sliding / token-bucket) | |
+| Logger | ✅ `@adonisjs/logger` | ✅ `@kabyeon/@kabyeon/nexusjs/logger` (Pino) | |
+| Mail | ✅ `@adonisjs/mail` | ✅ `@kabyeon/@kabyeon/nexusjs/mail` (SMTP / File / Null) | |
+| Drive (file storage) | ✅ `@adonisjs/drive` | ✅ `@kabyeon/@kabyeon/nexusjs/drive` (Local / S3 / R2 / memory) | |
+| Cache | ✅ `@adonisjs/cache` | ✅ `@kabyeon/@kabyeon/nexusjs/cache` (memory / Drizzle) | |
+| Events | ✅ `@adonisjs/events` | ✅ `@kabyeon/@kabyeon/nexusjs/events` | wildcards, priorities, guards |
+| Queue | ✅ `@adonisjs/queue` | ✅ `@kabyeon/@kabyeon/nexusjs/queue` (BullMQ / Cloudflare / memory) | |
+| Scheduler | ✅ `@adonisjs/scheduler` | ✅ `@kabyeon/@kabyeon/nexusjs/schedule` (in-tree cron parser) | No external dep |
+| Static | ✅ `@adonisjs/static` | ✅ `@kabyeon/@kabyeon/nexusjs/static` (ETag / Range / MIME) | |
+| Health | ✅ `@adonisjs/health` | ✅ `@kabyeon/@kabyeon/nexusjs/health` (built-in indicators) | |
+| SSE | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/sse` | Nexus ships SSE out of the box |
+| WebSockets | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/ws` | Runtime auto-detected (Bun / Node) |
+| Upload | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/upload` | `@Upload()` / `@UploadedFile()` decorators |
+| i18n | ✅ `@adonisjs/i18n` | ✅ `@kabyeon/@kabyeon/nexusjs/i18n` | `Intl`-based, pluralization |
+| OpenAPI | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/openapi` | Zod → OpenAPI 3.1 + Scalar UI |
+| Tracing | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/tracing` | OpenTelemetry with lazy SDK |
+| Metrics | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/metrics` | Prometheus / OpenMetrics |
+| Bodyparser | ✅ Built-in | ✅ Hono's `c.req.parseBody()` + `@kabyeon/@kabyeon/nexusjs/upload` | |
 | REPL | ✅ `node ace repl` | ✅ `nx repl` | Interactive REPL shipped in v0.5 |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ Not shipped | Debugging-only |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ Not shipped | Lower priority |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ None | Planned v0.7 |
-| gRPC | ❌ DIY | ✅ `nexusjs/grpc` | Reflection-based, unary (streaming v2) |
+| gRPC | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/grpc` | Reflection-based, unary (streaming v2) |
 | Feature flags | ❌ DIY | ❌ None | Planned v0.7 |
 | Resilience (circuit breaker) | ❌ DIY | ❌ None | Planned v0.7 |
 
@@ -80,26 +80,26 @@ The v0.3, v0.4, and v0.5 milestones together closed every
 
 | Was missing in v0.2 | Shipped | Module |
 | ------------------- | ------- | ------ |
-| Health checks | v0.3 | `nexusjs/health` |
-| Rate limiting / throttling | v0.3 | `nexusjs/limiter` |
-| Security headers (CSRF / HSTS / CSP) | v0.3 | `nexusjs/shield` |
-| Configuration management | v0.3 | `nexusjs/config` |
-| Logging | v0.3 | `nexusjs/logger` |
-| Cache | v0.3 | `nexusjs/cache` |
-| Email | v0.3 | `nexusjs/mail` |
-| File storage (S3 / R2 / Local) | v0.3 | `nexusjs/drive` |
-| Database (default ORM) | v0.3 | `nexusjs/drizzle` |
+| Health checks | v0.3 | `@kabyeon/@kabyeon/nexusjs/health` |
+| Rate limiting / throttling | v0.3 | `@kabyeon/@kabyeon/nexusjs/limiter` |
+| Security headers (CSRF / HSTS / CSP) | v0.3 | `@kabyeon/@kabyeon/nexusjs/shield` |
+| Configuration management | v0.3 | `@kabyeon/@kabyeon/nexusjs/config` |
+| Logging | v0.3 | `@kabyeon/@kabyeon/nexusjs/logger` |
+| Cache | v0.3 | `@kabyeon/@kabyeon/nexusjs/cache` |
+| Email | v0.3 | `@kabyeon/@kabyeon/nexusjs/mail` |
+| File storage (S3 / R2 / Local) | v0.3 | `@kabyeon/@kabyeon/nexusjs/drive` |
+| Database (default ORM) | v0.3 | `@kabyeon/@kabyeon/nexusjs/drizzle` |
 | Database migrations + CLI | v0.3 | `nx db:migrate` |
-| Static file serving | v0.3 | `nexusjs/static` |
-| **OpenAPI generator** | v0.4 | `nexusjs/openapi` |
-| **File upload helper** | v0.4 | `nexusjs/upload` |
+| Static file serving | v0.3 | `@kabyeon/@kabyeon/nexusjs/static` |
+| **OpenAPI generator** | v0.4 | `@kabyeon/@kabyeon/nexusjs/openapi` |
+| **File upload helper** | v0.4 | `@kabyeon/@kabyeon/nexusjs/upload` |
 | **Request-scoped DI** | v0.4 | core DI + ALS + Hono middleware |
-| **Server-Sent Events** | v0.4 | `nexusjs/sse` |
-| **Distributed tracing** | v0.4 | `nexusjs/tracing` |
-| **Prometheus metrics** | v0.4 | `nexusjs/metrics` |
-| **WebSockets** | v0.5 | `nexusjs/ws` |
-| **Encryption + password hashing** | v0.5 | `nexusjs/crypto` |
-| **i18n** | v0.5 | `nexusjs/i18n` |
+| **Server-Sent Events** | v0.4 | `@kabyeon/@kabyeon/nexusjs/sse` |
+| **Distributed tracing** | v0.4 | `@kabyeon/@kabyeon/nexusjs/tracing` |
+| **Prometheus metrics** | v0.4 | `@kabyeon/@kabyeon/nexusjs/metrics` |
+| **WebSockets** | v0.5 | `@kabyeon/@kabyeon/nexusjs/ws` |
+| **Encryption + password hashing** | v0.5 | `@kabyeon/@kabyeon/nexusjs/crypto` |
+| **i18n** | v0.5 | `@kabyeon/@kabyeon/nexusjs/i18n` |
 
 Total: **22 AdonisJS-style batteries** shipped in v0.3 + v0.4 + v0.5 + v0.6
 (10 in v0.3 + 6 in v0.4 + 4 in v0.5 + 2 in v0.6: gRPC + REPL).
@@ -119,7 +119,7 @@ trade-offs:
 | **Validation** | Vine (Zod-inspired) | Zod (de-facto standard) |
 | **Convention vs. composition** | Heavy convention (lucid → "User.find", routes → "users", etc.) | Light convention + composition (DI wins) |
 | **Bundle size** | Single ~1MB bundle | Per-module bundles (~5-50kb each) |
-| **Number of first-party packages** | 30+ `@adonisjs/*` packages | 25 first-party modules under `nexusjs/*` |
+| **Number of first-party packages** | 30+ `@adonisjs/*` packages | 25 first-party modules under `@kabyeon/@kabyeon/nexusjs/*` |
 | **Multi-runtime** | Node + Workers | Bun + Node + Workers |
 | **Build philosophy** | One large app | "Compose your own" — install only what you use |
 | **Default ORM style** | ActiveRecord (`User.find(id)`) | Drizzle's query builder + `DrizzleRepository` (Lucid-like) |
@@ -196,7 +196,7 @@ exec expression, and introspection) — shipped in v0.5.
 | Feature | AdonisJS | NexusJS |
 | ------- | -------- | ------- |
 | Multi-pod via shared DB | ✅ | ✅ (Drizzle backends) |
-| Redis-backed queue | ✅ (BullMQ) | ✅ (`nexusjs/queue`) |
+| Redis-backed queue | ✅ (BullMQ) | ✅ (`@kabyeon/@kabyeon/nexusjs/queue`) |
 | Multi-region | ❌ DIY | ❌ DIY |
 | Session sticky | ⚠️ DIY | ✅ (cookie backend is stateless; falls back to DB or memory) |
 
@@ -212,17 +212,17 @@ deployments.
 Several AdonisJS batteries don't exist (or are DIY-only). NexusJS
 ships these out of the box:
 
-- **WebSockets** (`nexusjs/ws`) — AdonisJS users write a custom
+- **WebSockets** (`@kabyeon/@kabyeon/nexusjs/ws`) — AdonisJS users write a custom
   WebSocket layer.
-- **Server-Sent Events** (`nexusjs/sse`) — same.
-- **OpenAPI / Swagger** (`nexusjs/openapi`) — AdonisJS users
+- **Server-Sent Events** (`@kabyeon/@kabyeon/nexusjs/sse`) — same.
+- **OpenAPI / Swagger** (`@kabyeon/@kabyeon/nexusjs/openapi`) — AdonisJS users
   typically hand-write a spec or use `@nestjs/swagger`-style
   decorators.
-- **Distributed tracing** (`nexusjs/tracing`) — AdonisJS users
+- **Distributed tracing** (`@kabyeon/@kabyeon/nexusjs/tracing`) — AdonisJS users
   integrate OpenTelemetry manually.
-- **Prometheus metrics** (`nexusjs/metrics`) — AdonisJS users
+- **Prometheus metrics** (`@kabyeon/@kabyeon/nexusjs/metrics`) — AdonisJS users
   integrate `prom-client` manually.
-- **File upload** (`nexusjs/upload`) — AdonisJS users
+- **File upload** (`@kabyeon/@kabyeon/nexusjs/upload`) — AdonisJS users
   hand-roll multipart handling.
 - **Bun-native runtime** — AdonisJS is Node-only.
 
@@ -236,16 +236,16 @@ A team that needs any of these gets them for free with NexusJS.
 
 Shipped in v0.5–v0.6:
 
-1. **`nexusjs/grpc`** — server + typed client (unary, reflection-based)
+1. **`@kabyeon/@kabyeon/nexusjs/grpc`** — server + typed client (unary, reflection-based)
 2. **`nx repl`** — interactive REPL
-3. **`nexusjs/view`** — view engine extracted to separate bundle
+3. **`@kabyeon/@kabyeon/nexusjs/view`** — view engine extracted to separate bundle
 4. **Auto-load viewPaths from nx.config.ts** — no explicit call needed
 
 Still planned for v0.7+:
 
-1. **`nexusjs/graphql`** — code-first schema
-2. **`nexusjs/resilience`** — circuit breaker, retry, bulkhead
-3. **`nexusjs/feature-flag`** — canary / A/B testing
+1. **`@kabyeon/@kabyeon/nexusjs/graphql`** — code-first schema
+2. **`@kabyeon/@kabyeon/nexusjs/resilience`** — circuit breaker, retry, bulkhead
+3. **`@kabyeon/@kabyeon/nexusjs/feature-flag`** — canary / A/B testing
 
 ### v0.7 — Hardening
 
@@ -272,11 +272,11 @@ find:
 - The migration from Lucid → Drizzle is mechanical (the
   `DrizzleRepository` mirrors Lucid's API).
 - The migration from Vine → Zod is mechanical.
-- The migration from `@adonisjs/auth` → `nexusjs/auth` is mostly
+- The migration from `@adonisjs/auth` → `@kabyeon/@kabyeon/nexusjs/auth` is mostly
   trivial (better-auth has a similar API).
-- The migration from `@adonisjs/session` → `nexusjs/session` is
+- The migration from `@adonisjs/session` → `@kabyeon/@kabyeon/nexusjs/session` is
   mostly trivial.
-- The migration from `@adonisjs/encryption` / `hash` → `nexusjs/crypto`
+- The migration from `@adonisjs/encryption` / `hash` → `@kabyeon/@kabyeon/nexusjs/crypto`
   is a one-line change.
 
 What's still missing for **full** AdonisJS coverage:
@@ -293,7 +293,7 @@ AdonisJS v6 vs NexusJS v0.6 differentiators:
 
 - **Bun-native** — NexusJS runs natively on Bun (faster startup,
   faster I/O, fewer dependencies). AdonisJS is Node-only.
-- **Per-module bundle entry points** — `nexusjs/ws` doesn't ship
+- **Per-module bundle entry points** — `@kabyeon/@kabyeon/nexusjs/ws` doesn't ship
   in your bundle unless you use it. AdonisJS ships everything
   in one bundle.
 - **OpenAPI / WebSockets / SSE / tracing / metrics batteries** —

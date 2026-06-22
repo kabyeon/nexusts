@@ -1,5 +1,5 @@
 {
-  "name": "nexusjs",
+  "name": "@kabyeon/nexusjs",
   "version": "0.6.5",
   "description": "Bun Native Fullstack Framework - NestJS structure + Adonis productivity + Hono edge performance",
   "type": "module",

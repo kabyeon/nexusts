@@ -25,27 +25,27 @@
 |----------|--------|--------------|-------|
 | HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS, GraphQL/gRPC 없음 | REST + functional + Nest/Adonis 스타일 |
 | DI | ✅ Request-scoped, 순환 자동 해결 | ✅ Singleton + transient + request | `AsyncLocalStorage`로 request scope; `@Injectable({ scope: 'request' })` |
-| Config | ✅ @nestjs/config, .env 검증 | ✅ `nexusjs/config` | Zod 검증, 레이어 로딩 |
-| 보안 | ✅ helmet, throttler, CSRF, CORS | ✅ `nexusjs/shield` + `nexusjs/limiter` | CSRF / HSTS / CSP / rate limit. CORS는 Hono 미들웨어 |
-| 데이터베이스 | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `nexusjs/drizzle` (5개 dialect) | Drizzle가 기본 ORM |
-| 캐시 | ✅ cache-manager (in-memory / Redis) | ✅ `nexusjs/cache` (memory / Drizzle) | tag-based invalidation; Redis는 커스텀 store |
-| 로깅 | ✅ 내장 Logger (Winston / Pino 어댑터) | ✅ `nexusjs/logger` (Pino) | dev에서 pretty, prod에서 JSON, ALS로 request-scoped |
-| 실시간 | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE | `nexusjs/ws` (Bun + Node) + `nexusjs/sse` |
-| 마이크로서비스 | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `nexusjs/queue` (BullMQ / Cloudflare) | 잡 큐만; service-mesh 전송 없음 |
-| API 문서 | ✅ @nestjs/swagger | ✅ `nexusjs/openapi` | Zod에서 OpenAPI 3.1 + Scalar UI |
-| 헬스 체크 | ✅ @nestjs/terminus | ✅ `nexusjs/health` | 내장 indicator (memory/disk/http/db) |
-| 이메일 | ✅ @nestjs/mailer | ✅ `nexusjs/mail` (SMTP / File / Null) | MJML (옵션 peer) |
-| 파일 업로드 | ✅ multer 통합 | ✅ `nexusjs/upload` | `@Upload` / `@UploadedFile` 데코레이터, 크기 + MIME 검증 |
-| 파일 스토리지 | ❌ DIY | ✅ `nexusjs/drive` (memory / Local / S3 / R2) | Nexus는 first-party `nexusjs/drive` 보유; Nest는 없음 |
-| i18n | ✅ nestjs-i18n | ✅ `nexusjs/i18n` | `Intl` 기반, pluralization, JSON 카탈로그 |
-| Tracing | ✅ OpenTelemetry 통합 | ✅ `nexusjs/tracing` | Lazy OTel SDK, W3C + B3 전파 |
-| Metrics | ✅ Prometheus 통합 | ✅ `nexusjs/metrics` | Counter / Gauge / Histogram / Summary |
-| Auth | ✅ @nestjs/passport + 다수 전략 | ✅ `nexusjs/auth` (better-auth) | better-auth가 다수 전략 지원 |
-| 암호화 | ⚠️ DIY (또는 `nestjs-crypto`) | ✅ `nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
+| Config | ✅ @nestjs/config, .env 검증 | ✅ `@kabyeon/@kabyeon/nexusjs/config` | Zod 검증, 레이어 로딩 |
+| 보안 | ✅ helmet, throttler, CSRF, CORS | ✅ `@kabyeon/@kabyeon/nexusjs/shield` + `@kabyeon/@kabyeon/nexusjs/limiter` | CSRF / HSTS / CSP / rate limit. CORS는 Hono 미들웨어 |
+| 데이터베이스 | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `@kabyeon/@kabyeon/nexusjs/drizzle` (5개 dialect) | Drizzle가 기본 ORM |
+| 캐시 | ✅ cache-manager (in-memory / Redis) | ✅ `@kabyeon/@kabyeon/nexusjs/cache` (memory / Drizzle) | tag-based invalidation; Redis는 커스텀 store |
+| 로깅 | ✅ 내장 Logger (Winston / Pino 어댑터) | ✅ `@kabyeon/@kabyeon/nexusjs/logger` (Pino) | dev에서 pretty, prod에서 JSON, ALS로 request-scoped |
+| 실시간 | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE | `@kabyeon/@kabyeon/nexusjs/ws` (Bun + Node) + `@kabyeon/@kabyeon/nexusjs/sse` |
+| 마이크로서비스 | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `@kabyeon/@kabyeon/nexusjs/queue` (BullMQ / Cloudflare) | 잡 큐만; service-mesh 전송 없음 |
+| API 문서 | ✅ @nestjs/swagger | ✅ `@kabyeon/@kabyeon/nexusjs/openapi` | Zod에서 OpenAPI 3.1 + Scalar UI |
+| 헬스 체크 | ✅ @nestjs/terminus | ✅ `@kabyeon/@kabyeon/nexusjs/health` | 내장 indicator (memory/disk/http/db) |
+| 이메일 | ✅ @nestjs/mailer | ✅ `@kabyeon/@kabyeon/nexusjs/mail` (SMTP / File / Null) | MJML (옵션 peer) |
+| 파일 업로드 | ✅ multer 통합 | ✅ `@kabyeon/@kabyeon/nexusjs/upload` | `@Upload` / `@UploadedFile` 데코레이터, 크기 + MIME 검증 |
+| 파일 스토리지 | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/drive` (memory / Local / S3 / R2) | Nexus는 first-party `@kabyeon/@kabyeon/nexusjs/drive` 보유; Nest는 없음 |
+| i18n | ✅ nestjs-i18n | ✅ `@kabyeon/@kabyeon/nexusjs/i18n` | `Intl` 기반, pluralization, JSON 카탈로그 |
+| Tracing | ✅ OpenTelemetry 통합 | ✅ `@kabyeon/@kabyeon/nexusjs/tracing` | Lazy OTel SDK, W3C + B3 전파 |
+| Metrics | ✅ Prometheus 통합 | ✅ `@kabyeon/@kabyeon/nexusjs/metrics` | Counter / Gauge / Histogram / Summary |
+| Auth | ✅ @nestjs/passport + 다수 전략 | ✅ `@kabyeon/@kabyeon/nexusjs/auth` (better-auth) | better-auth가 다수 전략 지원 |
+| 암호화 | ⚠️ DIY (또는 `nestjs-crypto`) | ✅ `@kabyeon/@kabyeon/nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
 | Feature flags | ⚠️ DIY (first-party 없음) | ⚠️ DIY | 둘 다 first-party 없음 |
 | Resilience (서킷 브레이커, 재시도) | ⚠️ nestjs-recq | ⚠️ DIY | 둘 다 first-party 없음 |
-| GraphQL | ✅ @nestjs/graphql | ✅ `nexusjs/grpc` | v0.5 출시됨 |
-| gRPC | ✅ @nestjs/microservices | ✅ `nexusjs/grpc` | v0.5 출시됨 |
+| GraphQL | ✅ @nestjs/graphql | ✅ `@kabyeon/@kabyeon/nexusjs/grpc` | v0.5 출시됨 |
+| gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/@kabyeon/nexusjs/grpc` | v0.5 출시됨 |
 
 **헤드라인**: NexusJS v0.6는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 26개 모듈 모두 first-party.
 
@@ -58,27 +58,27 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 | v0.2에서 누락 | 출시 | 모듈 |
 | ------------------- | ------- | ------ |
-| 헬스 체크 (`@nestjs/terminus` 등가) | v0.3 | `nexusjs/health` |
-| Rate limiting / throttling | v0.3 | `nexusjs/limiter` |
-| 보안 헤더 (helmet 등가) | v0.3 | `nexusjs/shield` (CSRF + HSTS + CSP) |
-| 설정 관리 (`@nestjs/config` 등가) | v0.3 | `nexusjs/config` |
-| 로깅 (Pino / Winston 통합) | v0.3 | `nexusjs/logger` |
-| 캐시 (`cache-manager` 등가) | v0.3 | `nexusjs/cache` |
-| 이메일 통합 (`@nestjs/mailer` 등가) | v0.3 | `nexusjs/mail` |
-| 파일 스토리지 추상화 | v0.3 | `nexusjs/drive` (memory / Local / S3 / R2) |
-| 데이터베이스 통합 | v0.3 | `nexusjs/drizzle` (기본 ORM) |
+| 헬스 체크 (`@nestjs/terminus` 등가) | v0.3 | `@kabyeon/@kabyeon/nexusjs/health` |
+| Rate limiting / throttling | v0.3 | `@kabyeon/@kabyeon/nexusjs/limiter` |
+| 보안 헤더 (helmet 등가) | v0.3 | `@kabyeon/@kabyeon/nexusjs/shield` (CSRF + HSTS + CSP) |
+| 설정 관리 (`@nestjs/config` 등가) | v0.3 | `@kabyeon/@kabyeon/nexusjs/config` |
+| 로깅 (Pino / Winston 통합) | v0.3 | `@kabyeon/@kabyeon/nexusjs/logger` |
+| 캐시 (`cache-manager` 등가) | v0.3 | `@kabyeon/@kabyeon/nexusjs/cache` |
+| 이메일 통합 (`@nestjs/mailer` 등가) | v0.3 | `@kabyeon/@kabyeon/nexusjs/mail` |
+| 파일 스토리지 추상화 | v0.3 | `@kabyeon/@kabyeon/nexusjs/drive` (memory / Local / S3 / R2) |
+| 데이터베이스 통합 | v0.3 | `@kabyeon/@kabyeon/nexusjs/drizzle` (기본 ORM) |
 | 데이터베이스 마이그레이션 | v0.3 | `nx db:migrate` + `nx db:migrate --generate` |
-| 정적 파일 서빙 | v0.3 | `nexusjs/static` |
-| 기본 ORM (Drizzle 스타일) | v0.3 | `nexusjs/drizzle` |
-| **OpenAPI / Swagger** | v0.4 | `nexusjs/openapi` |
-| **파일 업로드 헬퍼** | v0.4 | `nexusjs/upload` |
+| 정적 파일 서빙 | v0.3 | `@kabyeon/@kabyeon/nexusjs/static` |
+| 기본 ORM (Drizzle 스타일) | v0.3 | `@kabyeon/@kabyeon/nexusjs/drizzle` |
+| **OpenAPI / Swagger** | v0.4 | `@kabyeon/@kabyeon/nexusjs/openapi` |
+| **파일 업로드 헬퍼** | v0.4 | `@kabyeon/@kabyeon/nexusjs/upload` |
 | **Request-scoped DI** | v0.4 | 코어 DI + ALS + Hono 미들웨어 |
-| **Server-Sent Events** | v0.4 | `nexusjs/sse` |
-| **분산 추적** | v0.4 | `nexusjs/tracing` |
-| **Prometheus 메트릭** | v0.4 | `nexusjs/metrics` |
-| **WebSockets** | v0.6 | `nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
-| **암호화 + 패스워드 해싱** | v0.6 | `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
-| **i18n** | v0.6 | `nexusjs/i18n` (Intl 기반, pluralization) |
+| **Server-Sent Events** | v0.4 | `@kabyeon/@kabyeon/nexusjs/sse` |
+| **분산 추적** | v0.4 | `@kabyeon/@kabyeon/nexusjs/tracing` |
+| **Prometheus 메트릭** | v0.4 | `@kabyeon/@kabyeon/nexusjs/metrics` |
+| **WebSockets** | v0.6 | `@kabyeon/@kabyeon/nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
+| **암호화 + 패스워드 해싱** | v0.6 | `@kabyeon/@kabyeon/nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
+| **i18n** | v0.6 | `@kabyeon/@kabyeon/nexusjs/i18n` (Intl 기반, pluralization) |
 
 합계: v0.2 이후 **21개의 Tier 1+2 격차 해소** (v0.3에서 12개, v0.4에서 6개, v0.6에서 3개).
 
@@ -94,7 +94,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 4.1 WebSockets (`@nestjs/websockets` 등가)
 
-- **상태**: ✅ v0.6에서 `nexusjs/ws`로 해소.
+- **상태**: ✅ v0.6에서 `@kabyeon/@kabyeon/nexusjs/ws`로 해소.
 - **출시 내용**: `@WebSocketGateway(path)` + `@OnWebSocketMessage()`
   데코레이터. 연결 추적, rooms, broadcast를 위한 `WebSocketService`.
   `BunWsAdapter` (`hono/bun` 사용) 및 `NodeWsAdapter` (옵션 peer로
@@ -103,7 +103,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 4.2 Server-Sent Events (SSE)
 
-- **상태**: ✅ v0.4에서 `nexusjs/sse`로 해소 (Hono의 `streamSSE`를
+- **상태**: ✅ v0.4에서 `@kabyeon/@kabyeon/nexusjs/sse`로 해소 (Hono의 `streamSSE`를
   타입 안전 `SseStream`으로 래핑, 자동 직렬화, 멱등 `close()`,
   `Last-Event-ID` 재연결 지원). [`../../user-guide/sse.md`](../../user-guide/sse.md) 참조.
 
@@ -120,7 +120,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 - **용도**: 서비스 간 고성능 RPC.
 - **상태**: ❌ 아직 출시 안 됨. v0.6+ 예정.
-- **제안 모듈**: `nexusjs/grpc`
+- **제안 모듈**: `@kabyeon/@kabyeon/nexusjs/grpc`
 - **기능**:
   - `@GrpcMethod('UserService', 'findById')` 데코레이터
   - 스트리밍 (server, client, bidi)
@@ -133,7 +133,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 - **용도**: BFF 패턴, 모바일 클라이언트, 스키마 우선 개발.
 - **상태**: ❌ 아직 출시 안 됨. v0.6+ 예정.
-- **제안 모듈**: `nexusjs/graphql`
+- **제안 모듈**: `@kabyeon/@kabyeon/nexusjs/graphql`
 - **기능**:
   - `@Resolver()`, `@Query()`, `@Mutation()` 데코레이터
   - 코드 우선 스키마 생성
@@ -147,7 +147,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.1 i18n (`nestjs-i18n` 등가)
 
-- **상태**: ✅ v0.6에서 `nexusjs/i18n`로 해소. `Intl` 기반
+- **상태**: ✅ v0.6에서 `@kabyeon/@kabyeon/nexusjs/i18n`로 해소. `Intl` 기반
   pluralization, `|` 구분자, locale 감지 미들웨어 (query →
   cookie → Accept-Language → default), JSON 카탈로그,
   `formatDate` / `formatNumber` / `formatCurrency` / `compare`.
@@ -157,7 +157,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 - **용도**: 카나리 배포, A/B 테스트, 점진적 롤아웃.
 - **상태**: ❌ 아직 출시 안 됨.
-- **제안 모듈**: `nexusjs/feature-flag`
+- **제안 모듈**: `@kabyeon/@kabyeon/nexusjs/feature-flag`
 - **기능**:
   - `@FeatureFlag('new-dashboard')` 데코레이터
   - 백엔드: in-memory / LaunchDarkly / Unleash
@@ -165,13 +165,13 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.3 Tracing (OpenTelemetry)
 
-- **상태**: ✅ v0.4에서 `nexusjs/tracing`으로 해소. Lazy
+- **상태**: ✅ v0.4에서 `@kabyeon/@kabyeon/nexusjs/tracing`으로 해소. Lazy
   `@opentelemetry/sdk-node` 로드, W3C + B3 전파, Hono 자동
   계측 미들웨어, `@Trace()` 데코레이터. [`../../user-guide/tracing.md`](../../user-guide/tracing.md) 참조.
 
 ### 5.4 Metrics (Prometheus)
 
-- **상태**: ✅ v0.4에서 `nexusjs/metrics`로 해소. Counter /
+- **상태**: ✅ v0.4에서 `@kabyeon/@kabyeon/nexusjs/metrics`로 해소. Counter /
   Gauge / Histogram / Summary, `@Counted` / `@Timed` 데코레이터,
   content negotiation이 있는 `/metrics` 엔드포인트 (Prometheus
   0.0.4 / OpenMetrics 1.0.0). 기본 Node.js 프로세스 메트릭.
@@ -179,17 +179,17 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.5 암호화 + 패스워드 해싱
 
-- **상태**: ✅ v0.6에서 `nexusjs/crypto`로 해소. AES-256-GCM 인증된
+- **상태**: ✅ v0.6에서 `@kabyeon/@kabyeon/nexusjs/crypto`로 해소. AES-256-GCM 인증된
   암호화, HMAC-SHA256 sign/unsign, scrypt 패스워드 해싱 (기본,
   Node 내장), 옵션 `@node-rs/argon2` peer. `EncryptionService`는
-  `nexusjs/session` 및 `nexusjs/shield`에서 HMAC용으로 내부 사용.
+  `@kabyeon/@kabyeon/nexusjs/session` 및 `@kabyeon/@kabyeon/nexusjs/shield`에서 HMAC용으로 내부 사용.
   [`../../user-guide/crypto.md`](../../user-guide/crypto.md) 참조.
 
 ### 5.6 Resilience: 서킷 브레이커 + 재시도
 
 - **용도**: 외부 API 회복력.
 - **상태**: ❌ 아직 출시 안 됨.
-- **제안 모듈**: `nexusjs/resilience`
+- **제안 모듈**: `@kabyeon/@kabyeon/nexusjs/resilience`
 - **기능**:
   - `@Retry({ attempts: 3, backoff: 'exponential' })` 데코레이터
   - `@CircuitBreaker({ threshold: 0.5 })` 데코레이터
@@ -209,9 +209,9 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 |------|------|------|------|
 | CORS 추상화 | 낮음 | 중간 | 진행 중 (Hono의 `cors()` 동작; 얇은 래퍼가 일관된 config 제공) |
 | 다중 런타임 패리티 테스트 | 낮음 | 높음 | 진행 중 (Bun / Node / Workers) |
-| `nexusjs/cache` Redis store | 낮음 | 높음 | 진행 중 (`CacheStore` 인터페이스 구현하는 백엔드 하나 더) |
-| Multipart body parser wrapper | 낮음 | 중간 | ✅ `nexusjs/upload`으로 출시 (v0.4) |
-| `helmet()` 미들웨어 | 매우 낮음 | 높음 | 진행 중 (일부 조각은 `nexusjs/shield`에 출시) |
+| `@kabyeon/@kabyeon/nexusjs/cache` Redis store | 낮음 | 높음 | 진행 중 (`CacheStore` 인터페이스 구현하는 백엔드 하나 더) |
+| Multipart body parser wrapper | 낮음 | 중간 | ✅ `@kabyeon/@kabyeon/nexusjs/upload`으로 출시 (v0.4) |
+| `helmet()` 미들웨어 | 매우 낮음 | 높음 | 진행 중 (일부 조각은 `@kabyeon/@kabyeon/nexusjs/shield`에 출시) |
 
 남은 가장 큰 **단일** 레버리지는 **GraphQL** — BFF / 모바일 우선
 패턴을 가능하게 한다.
@@ -222,10 +222,10 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### v0.6 — Async RPC & DX ("polyglot" 마일스톤) — 예정
 
-1. **`nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`nexusjs/grpc`** — server / client / streaming
-3. **`nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
-4. **`nexusjs/feature-flag`** — 카나리 / A/B 테스팅
+1. **`@kabyeon/@kabyeon/nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
+2. **`@kabyeon/@kabyeon/nexusjs/grpc`** — server / client / streaming
+3. **`@kabyeon/@kabyeon/nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
+4. **`@kabyeon/@kabyeon/nexusjs/feature-flag`** — 카나리 / A/B 테스팅
 
 이 4개가 "누락된 인프라" 목록을 완성. v0.6 이후 NexusJS는 백엔드
 사용 사례의 ~95%에서 NestJS와 기능 패리티를 보유.

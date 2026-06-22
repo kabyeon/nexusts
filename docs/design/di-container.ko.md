@@ -180,7 +180,7 @@ class AppModule {
 | `InjectionToken`, `Provider`, `ModuleOptions` | 타입 정의 |
 | `@Module`, `@Injectable`, `@Inject`, `@Controller`, `@Repository` | 데코레이터 ([`../../src/core/decorators`](../../src/core/decorators) 참조) |
 
-위는 모두 `nexusjs` 진입점에서 다시 export됩니다.
+위는 모두 `@kabyeon/nexusjs` 진입점에서 다시 export됩니다.
 
 ---
 

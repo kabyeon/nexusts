@@ -58,5 +58,5 @@ If you're new to NexusJS, read in this order:
 - TypeScript decorators require `experimentalDecorators: true` in
   `tsconfig.json` (and `emitDecoratorMetadata: true` if you want bare-type
   constructor injection).
-- Imports use the public entry point `nexusjs` unless the example
+- Imports use the public entry point `@kabyeon/nexusjs` unless the example
   intentionally demonstrates a deep import.

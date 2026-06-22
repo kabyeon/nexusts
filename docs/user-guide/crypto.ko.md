@@ -1,16 +1,16 @@
-# 암호화 · `nexusjs/crypto` (v0.5)
+# 암호화 · `@kabyeon/nexusjs/crypto` (v0.5)
 
 > English: [`crypto.md`](./crypto.md)
 > v0.5 신규. NexusJS 앱을 위한 암호화 + 패스워드 해싱.
 > 외부 의존성 0. 모든 primitive는 Node의 내장 `crypto` 모듈에서 옴.
 
-`nexusjs/crypto`가 제공하는 것:
+`@kabyeon/nexusjs/crypto`가 제공하는 것:
 
 - **`EncryptionService`** — AES-256-GCM 대칭 암호화 + HMAC-SHA256 sign / unsign 헬퍼.
 - **`HashService`** — scrypt 패스워드 해싱 (기본), 옵션 `@node-rs/argon2` peer로 argon2.
 - **`CryptoModule.forRoot({ key })`** — DI 컨테이너에 둘 다 연결.
 
-다른 모듈(`nexusjs/session`, `nexusjs/shield`)은 이제 HMAC 작업을 위해 내부적으로 `EncryptionService`를 사용. 단일 APP_KEY로 세션, CSRF 토큰, 앱 코드에서 필요한 모든 암호화를 처리하기에 충분.
+다른 모듈(`@kabyeon/nexusjs/session`, `@kabyeon/nexusjs/shield`)은 이제 HMAC 작업을 위해 내부적으로 `EncryptionService`를 사용. 단일 APP_KEY로 세션, CSRF 토큰, 앱 코드에서 필요한 모든 암호화를 처리하기에 충분.
 
 ---
 
@@ -23,14 +23,14 @@ bun add @node-rs/argon2
 ```
 
 ```ts
-import { Module, Inject } from "nexusjs";
+import { Module, Inject } from "@kabyeon/nexusjs";
 import {
   CryptoModule,
   EncryptionService,
   HashService,
   ENCRYPTION_SERVICE_TOKEN,
   HASH_SERVICE_TOKEN,
-} from "nexusjs/crypto";
+} from "@kabyeon/nexusjs/crypto";
 
 @Module({
   imports: [CryptoModule.forRoot({ key: process.env.APP_KEY! })],
@@ -200,7 +200,7 @@ res.status(200).send("OK");
 
 ## 5. v0.4에서 마이그레이션
 
-이 모듈은 v0.5에서 신규. 쿠키 세션 백엔드(`CookieSessionStorage`)와 `nexusjs/shield`의 CSRF 가드는 이제 HMAC을 위해 `EncryptionService`를 사용. **기존 서명된 쿠키는 무효화됨** — HMAC 키가 이제 직접 secret 대신 HKDF로 유도되기 때문. 업그레이드 후 사용자는 로그아웃됨 — 재인증 필요.
+이 모듈은 v0.5에서 신규. 쿠키 세션 백엔드(`CookieSessionStorage`)와 `@kabyeon/nexusjs/shield`의 CSRF 가드는 이제 HMAC을 위해 `EncryptionService`를 사용. **기존 서명된 쿠키는 무효화됨** — HMAC 키가 이제 직접 secret 대신 HKDF로 유도되기 때문. 업그레이드 후 사용자는 로그아웃됨 — 재인증 필요.
 
 다운타임 zero 마이그레이션을 원하면 두 모듈 모두 fallback path 수용: 옛 HMAC-SHA256 포맷을 새 포맷과 함께 검증할 수 있는 `legacySecret` 옵션. (v0.5에서는 출시되지 않음 — 필요하면 이슈를 열어주세요.)
 

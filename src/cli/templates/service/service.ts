@@ -9,7 +9,7 @@
  */
 
 export default `
-import { Inject, Injectable } from 'nexusjs';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
 {{#hasRepo}}import { {{ repository }} } from '../repositories/{{ kebab }}.repository.js';{{/hasRepo}}
 
 @Injectable()

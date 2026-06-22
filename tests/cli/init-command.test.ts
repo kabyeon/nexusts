@@ -134,7 +134,7 @@ describe("nx init — fresh install", () => {
 		// package.json: merged — hono preserved, nexusjs added
 		const pkg = JSON.parse(await readFile(join(target, "package.json"), "utf8"));
 		expect(pkg.dependencies.hono).toBe("^4.6.0");
-		expect(pkg.dependencies.nexusjs).toBe("*");
+		expect(pkg.dependencies["@kabyeon/nexusjs"]).toBe("*");
 		expect(pkg.name).toBe("my-app"); // existing name preserved
 
 		// tsconfig.json: experimentalDecorators added
@@ -148,8 +148,8 @@ describe("nx init — fresh install", () => {
 	it("is a no-op merge on package.json when nexusjs is already a dep", async () => {
 		const original = JSON.stringify(
 			{
-				name: "already-had-nexus",
-				dependencies: { nexusjs: "../nexusjs/dist/nexusjs-0.6.1.tgz" },
+				name: "already-had-kabyeon",
+				dependencies: { "@kabyeon/nexusjs": "../nexusjs/dist/nexusjs-0.6.5.tgz" },
 			},
 			null,
 			2,
@@ -168,9 +168,9 @@ describe("nx init — fresh install", () => {
 
 		const expected = JSON.stringify(
 			{
-				name: "already-had-nexus",
+				name: "already-had-kabyeon",
 				dependencies: {
-					nexusjs: "../nexusjs/dist/nexusjs-0.6.1.tgz",
+					"@kabyeon/nexusjs": "../nexusjs/dist/nexusjs-0.6.5.tgz",
 					"reflect-metadata": "^0.2.2",
 					hono: "^4.6.0",
 					zod: "^3.23.8",
@@ -225,7 +225,7 @@ describe("nx init — fresh install", () => {
 			await readFile(join(target, "package.json"), "utf8"),
 		);
 		expect(pkg.dependencies.hono).toBe("^4.6.0");
-		expect(pkg.dependencies.nexusjs).toBe("*");
+		expect(pkg.dependencies["@kabyeon/nexusjs"]).toBe("*");
 		expect(pkg.scripts.dev).toBe("bun --hot app/main.ts");
 		expect(pkg.scripts.nx).toBe("nx");
 	});
@@ -259,7 +259,7 @@ describe("nx init — fresh install", () => {
 			await readFile(join(target, "package.json"), "utf8"),
 		);
 		expect(pkg.dependencies.hono).toBe("^4.6.0");
-		expect(pkg.dependencies.nexusjs).toBe("*");
+		expect(pkg.dependencies["@kabyeon/nexusjs"]).toBe("*");
 	});
 });
 

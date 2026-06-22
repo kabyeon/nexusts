@@ -29,32 +29,32 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 | 미들웨어 | ✅ 클래스 기반, 순서 지정 | ✅ Hono 미들웨어 (타입됨) | `app.use('*', mw)` |
 | DI | ✅ IoC 컨테이너, 데코레이터 | ✅ 클래스 기반 + `@Inject()` | Nest 스타일 + Adonis 스타일 모두 |
 | 검증 | ✅ Vine (Zod에서 영감) | ✅ Zod | Nexus는 `@Validate`로 직접 Zod 사용 |
-| ORM | ✅ Lucid (내장) | ✅ `nexusjs/drizzle` | Drizzle가 기본 ORM |
+| ORM | ✅ Lucid (내장) | ✅ `@kabyeon/@kabyeon/nexusjs/drizzle` | Drizzle가 기본 ORM |
 | 마이그레이션 | ✅ 내장 | ✅ `nx db:migrate` (drizzle-kit 래퍼) | 같은 DX |
 | Seeding | ✅ 내장 팩토리 | ⚠️ DIY | first-party 없음; 사용자가 팩토리 작성 |
-| Auth | ✅ `@adonisjs/auth` | ✅ `nexusjs/auth` (better-auth) | better-auth = 다수 전략 |
-| 세션 | ✅ `@adonisjs/session` | ✅ `nexusjs/session` | Cookie / Memory / Drizzle 백엔드 |
-| 암호화 | ✅ `@adonisjs/encryption` | ✅ `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) | 같은 API 스타일 |
-| Hash | ✅ `@adonisjs/hash` | ✅ `nexusjs/crypto` (HashService) | Argon2 / scrypt |
-| Shield | ✅ `@adonisjs/shield` (CSRF, headers) | ✅ `nexusjs/shield` (CSRF / HSTS / CSP) | 같은 이름, 같은 목적 |
-| Throttler | ✅ `@adonisjs/throttler` | ✅ `nexusjs/limiter` (fixed / sliding / token-bucket) | |
-| 로거 | ✅ `@adonisjs/logger` | ✅ `nexusjs/logger` (Pino) | |
-| 메일 | ✅ `@adonisjs/mail` | ✅ `nexusjs/mail` (SMTP / File / Null) | |
-| Drive (파일 스토리지) | ✅ `@adonisjs/drive` | ✅ `nexusjs/drive` (Local / S3 / R2 / memory) | |
-| 캐시 | ✅ `@adonisjs/cache` | ✅ `nexusjs/cache` (memory / Drizzle) | |
-| 이벤트 | ✅ `@adonisjs/events` | ✅ `nexusjs/events` | wildcards, priorities, guards |
-| 큐 | ✅ `@adonisjs/queue` | ✅ `nexusjs/queue` (BullMQ / Cloudflare / memory) | |
-| 스케줄러 | ✅ `@adonisjs/scheduler` | ✅ `nexusjs/schedule` (인-트리 cron 파서) | 외부 의존성 없음 |
-| Static | ✅ `@adonisjs/static` | ✅ `nexusjs/static` (ETag / Range / MIME) | |
-| Health | ✅ `@adonisjs/health` | ✅ `nexusjs/health` (내장 indicator) | |
-| SSE | ❌ DIY | ✅ `nexusjs/sse` | Nexus는 SSE를 기본 출시 |
-| WebSockets | ❌ DIY | ✅ `nexusjs/ws` | 런타임 자동 감지 (Bun / Node) |
-| 업로드 | ❌ DIY | ✅ `nexusjs/upload` | `@Upload()` / `@UploadedFile()` 데코레이터 |
-| i18n | ✅ `@adonisjs/i18n` | ✅ `nexusjs/i18n` | `Intl` 기반, pluralization |
-| OpenAPI | ❌ DIY | ✅ `nexusjs/openapi` | Zod → OpenAPI 3.1 + Scalar UI |
-| Tracing | ❌ DIY | ✅ `nexusjs/tracing` | lazy SDK를 갖춘 OpenTelemetry |
-| Metrics | ❌ DIY | ✅ `nexusjs/metrics` | Prometheus / OpenMetrics |
-| Bodyparser | ✅ 내장 | ✅ Hono의 `c.req.parseBody()` + `nexusjs/upload` | |
+| Auth | ✅ `@adonisjs/auth` | ✅ `@kabyeon/@kabyeon/nexusjs/auth` (better-auth) | better-auth = 다수 전략 |
+| 세션 | ✅ `@adonisjs/session` | ✅ `@kabyeon/@kabyeon/nexusjs/session` | Cookie / Memory / Drizzle 백엔드 |
+| 암호화 | ✅ `@adonisjs/encryption` | ✅ `@kabyeon/@kabyeon/nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) | 같은 API 스타일 |
+| Hash | ✅ `@adonisjs/hash` | ✅ `@kabyeon/@kabyeon/nexusjs/crypto` (HashService) | Argon2 / scrypt |
+| Shield | ✅ `@adonisjs/shield` (CSRF, headers) | ✅ `@kabyeon/@kabyeon/nexusjs/shield` (CSRF / HSTS / CSP) | 같은 이름, 같은 목적 |
+| Throttler | ✅ `@adonisjs/throttler` | ✅ `@kabyeon/@kabyeon/nexusjs/limiter` (fixed / sliding / token-bucket) | |
+| 로거 | ✅ `@adonisjs/logger` | ✅ `@kabyeon/@kabyeon/nexusjs/logger` (Pino) | |
+| 메일 | ✅ `@adonisjs/mail` | ✅ `@kabyeon/@kabyeon/nexusjs/mail` (SMTP / File / Null) | |
+| Drive (파일 스토리지) | ✅ `@adonisjs/drive` | ✅ `@kabyeon/@kabyeon/nexusjs/drive` (Local / S3 / R2 / memory) | |
+| 캐시 | ✅ `@adonisjs/cache` | ✅ `@kabyeon/@kabyeon/nexusjs/cache` (memory / Drizzle) | |
+| 이벤트 | ✅ `@adonisjs/events` | ✅ `@kabyeon/@kabyeon/nexusjs/events` | wildcards, priorities, guards |
+| 큐 | ✅ `@adonisjs/queue` | ✅ `@kabyeon/@kabyeon/nexusjs/queue` (BullMQ / Cloudflare / memory) | |
+| 스케줄러 | ✅ `@adonisjs/scheduler` | ✅ `@kabyeon/@kabyeon/nexusjs/schedule` (인-트리 cron 파서) | 외부 의존성 없음 |
+| Static | ✅ `@adonisjs/static` | ✅ `@kabyeon/@kabyeon/nexusjs/static` (ETag / Range / MIME) | |
+| Health | ✅ `@adonisjs/health` | ✅ `@kabyeon/@kabyeon/nexusjs/health` (내장 indicator) | |
+| SSE | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/sse` | Nexus는 SSE를 기본 출시 |
+| WebSockets | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/ws` | 런타임 자동 감지 (Bun / Node) |
+| 업로드 | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/upload` | `@Upload()` / `@UploadedFile()` 데코레이터 |
+| i18n | ✅ `@adonisjs/i18n` | ✅ `@kabyeon/@kabyeon/nexusjs/i18n` | `Intl` 기반, pluralization |
+| OpenAPI | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/openapi` | Zod → OpenAPI 3.1 + Scalar UI |
+| Tracing | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/tracing` | lazy SDK를 갖춘 OpenTelemetry |
+| Metrics | ❌ DIY | ✅ `@kabyeon/@kabyeon/nexusjs/metrics` | Prometheus / OpenMetrics |
+| Bodyparser | ✅ 내장 | ✅ Hono의 `c.req.parseBody()` + `@kabyeon/@kabyeon/nexusjs/upload` | |
 | REPL | ✅ `node ace repl` | ❌ 출시 안 됨 | v0.6에서는 낮은 우선순위 |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ 출시 안 됨 | 디버깅 전용 |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ 출시 안 됨 | 낮은 우선순위 |
@@ -77,26 +77,26 @@ v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든
 
 | v0.2에서 누락 | 출시 | 모듈 |
 | ------------------- | ------- | ------ |
-| 헬스 체크 | v0.3 | `nexusjs/health` |
-| Rate limiting / throttling | v0.3 | `nexusjs/limiter` |
-| 보안 헤더 (CSRF / HSTS / CSP) | v0.3 | `nexusjs/shield` |
-| 설정 관리 | v0.3 | `nexusjs/config` |
-| 로깅 | v0.3 | `nexusjs/logger` |
-| 캐시 | v0.3 | `nexusjs/cache` |
-| 이메일 | v0.3 | `nexusjs/mail` |
-| 파일 스토리지 (S3 / R2 / Local) | v0.3 | `nexusjs/drive` |
-| 데이터베이스 (기본 ORM) | v0.3 | `nexusjs/drizzle` |
+| 헬스 체크 | v0.3 | `@kabyeon/@kabyeon/nexusjs/health` |
+| Rate limiting / throttling | v0.3 | `@kabyeon/@kabyeon/nexusjs/limiter` |
+| 보안 헤더 (CSRF / HSTS / CSP) | v0.3 | `@kabyeon/@kabyeon/nexusjs/shield` |
+| 설정 관리 | v0.3 | `@kabyeon/@kabyeon/nexusjs/config` |
+| 로깅 | v0.3 | `@kabyeon/@kabyeon/nexusjs/logger` |
+| 캐시 | v0.3 | `@kabyeon/@kabyeon/nexusjs/cache` |
+| 이메일 | v0.3 | `@kabyeon/@kabyeon/nexusjs/mail` |
+| 파일 스토리지 (S3 / R2 / Local) | v0.3 | `@kabyeon/@kabyeon/nexusjs/drive` |
+| 데이터베이스 (기본 ORM) | v0.3 | `@kabyeon/@kabyeon/nexusjs/drizzle` |
 | 데이터베이스 마이그레이션 + CLI | v0.3 | `nx db:migrate` |
-| 정적 파일 서빙 | v0.3 | `nexusjs/static` |
-| **OpenAPI 생성기** | v0.4 | `nexusjs/openapi` |
-| **파일 업로드 헬퍼** | v0.4 | `nexusjs/upload` |
+| 정적 파일 서빙 | v0.3 | `@kabyeon/@kabyeon/nexusjs/static` |
+| **OpenAPI 생성기** | v0.4 | `@kabyeon/@kabyeon/nexusjs/openapi` |
+| **파일 업로드 헬퍼** | v0.4 | `@kabyeon/@kabyeon/nexusjs/upload` |
 | **Request-scoped DI** | v0.4 | 코어 DI + ALS + Hono 미들웨어 |
-| **Server-Sent Events** | v0.4 | `nexusjs/sse` |
-| **분산 추적** | v0.4 | `nexusjs/tracing` |
-| **Prometheus 메트릭** | v0.4 | `nexusjs/metrics` |
-| **WebSockets** | v0.6 | `nexusjs/ws` |
-| **암호화 + 패스워드 해싱** | v0.6 | `nexusjs/crypto` |
-| **i18n** | v0.6 | `nexusjs/i18n` |
+| **Server-Sent Events** | v0.4 | `@kabyeon/@kabyeon/nexusjs/sse` |
+| **분산 추적** | v0.4 | `@kabyeon/@kabyeon/nexusjs/tracing` |
+| **Prometheus 메트릭** | v0.4 | `@kabyeon/@kabyeon/nexusjs/metrics` |
+| **WebSockets** | v0.6 | `@kabyeon/@kabyeon/nexusjs/ws` |
+| **암호화 + 패스워드 해싱** | v0.6 | `@kabyeon/@kabyeon/nexusjs/crypto` |
+| **i18n** | v0.6 | `@kabyeon/@kabyeon/nexusjs/i18n` |
 
 합계: v0.3 + v0.4 + v0.6에서 **20개의 AdonisJS 스타일 배터리**
 출시 (v0.3에서 10개, v0.4에서 6개, v0.6에서 4개).
@@ -115,7 +115,7 @@ AdonisJS와 NexusJS는 비슷한 문제를 다른 trade-off로 해결:
 | **검증** | Vine (Zoid에서 영감) | Zod (사실상 표준) |
 | **관례 vs 조합** | 강한 관례 (lucid → "User.find", routes → "users" 등) | 약한 관례 + 조합 (DI 우선) |
 | **번들 크기** | 단일 ~1MB 번들 | 모듈별 번들 (각 ~5-50kb) |
-| **First-party 패키지 수** | 30+ `@adonisjs/*` 패키지 | 25개 first-party 모듈 (`nexusjs/*` 아래) |
+| **First-party 패키지 수** | 30+ `@adonisjs/*` 패키지 | 25개 first-party 모듈 (`@kabyeon/@kabyeon/nexusjs/*` 아래) |
 | **다중 런타임** | Node + Workers | Bun + Node + Workers |
 | **빌드 철학** | 하나의 큰 앱 | "스택을 직접 조합" — 필요한 것만 설치 |
 | **기본 ORM 스타일** | ActiveRecord (`User.find(id)`) | Drizzle의 쿼리 빌더 + `DrizzleRepository` (Lucid 스타일) |
@@ -191,7 +191,7 @@ AdonisJS는 라이브 코드 탐색용 `node ace repl` 보유. NexusJS는
 | 기능 | AdonisJS | NexusJS |
 | ------- | -------- | ------- |
 | 공유 DB를 통한 다중 pod | ✅ | ✅ (Drizzle 백엔드) |
-| Redis 기반 큐 | ✅ (BullMQ) | ✅ (`nexusjs/queue`) |
+| Redis 기반 큐 | ✅ (BullMQ) | ✅ (`@kabyeon/@kabyeon/nexusjs/queue`) |
 | 다중 리전 | ❌ DIY | ❌ DIY |
 | 세션 sticky | ⚠️ DIY | ✅ (쿠키 백엔드는 stateless; DB 또는 memory로 폴백) |
 
@@ -206,17 +206,17 @@ NexusJS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 여러 AdonisJS battery가 존재하지 않거나 (또는 DIY 전용). NexusJS는
 이를 기본 출시:
 
-- **WebSockets** (`nexusjs/ws`) — AdonisJS 사용자는 커스텀
+- **WebSockets** (`@kabyeon/@kabyeon/nexusjs/ws`) — AdonisJS 사용자는 커스텀
   WebSocket 레이어 작성.
-- **Server-Sent Events** (`nexusjs/sse`) — 같은.
-- **OpenAPI / Swagger** (`nexusjs/openapi`) — AdonisJS 사용자는
+- **Server-Sent Events** (`@kabyeon/@kabyeon/nexusjs/sse`) — 같은.
+- **OpenAPI / Swagger** (`@kabyeon/@kabyeon/nexusjs/openapi`) — AdonisJS 사용자는
   일반적으로 스펙을 손으로 작성하거나 `@nestjs/swagger` 스타일
   데코레이터 사용.
-- **분산 추적** (`nexusjs/tracing`) — AdonisJS 사용자는 OpenTelemetry
+- **분산 추적** (`@kabyeon/@kabyeon/nexusjs/tracing`) — AdonisJS 사용자는 OpenTelemetry
   수동 통합.
-- **Prometheus 메트릭** (`nexusjs/metrics`) — AdonisJS 사용자는
+- **Prometheus 메트릭** (`@kabyeon/@kabyeon/nexusjs/metrics`) — AdonisJS 사용자는
   `prom-client` 수동 통합.
-- **파일 업로드** (`nexusjs/upload`) — AdonisJS 사용자는
+- **파일 업로드** (`@kabyeon/@kabyeon/nexusjs/upload`) — AdonisJS 사용자는
   multipart 처리 손으로 작성.
 - **Bun 네이티브 런타임** — AdonisJS는 Node 전용.
 
@@ -228,10 +228,10 @@ NexusJS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ### v0.6 — Async RPC & DX ("polyglot" 마일스톤) — 예정
 
-1. **`nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`nexusjs/grpc`** — server / client / streaming
-3. **`nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
-4. **`nexusjs/feature-flag`** — 카나리 / A/B 테스팅
+1. **`@kabyeon/@kabyeon/nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
+2. **`@kabyeon/@kabyeon/nexusjs/grpc`** — server / client / streaming
+3. **`@kabyeon/@kabyeon/nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
+4. **`@kabyeon/@kabyeon/nexusjs/feature-flag`** — 카나리 / A/B 테스팅
 5. **`nx repl`** — interactive REPL (낮은 우선순위; 요청 시 인용)
 
 이 5개가 남은 틈새 battery를 채우고 v6와의 "battery 커버리지"를 완성.
@@ -260,10 +260,10 @@ AdonisJS에서 NexusJS v0.6로 마이그레이션하는 팀은 다음을 발견:
 - Lucid → Drizzle 마이그레이션은 기계적 (`DrizzleRepository`가
   Lucid API 미러링).
 - Vine → Zod 마이그레이션은 기계적.
-- `@adonisjs/auth` → `nexusjs/auth` 마이그레이션은 대부분 자명
+- `@adonisjs/auth` → `@kabyeon/@kabyeon/nexusjs/auth` 마이그레이션은 대부분 자명
   (better-auth가 비슷한 API).
-- `@adonisjs/session` → `nexusjs/session` 마이그레이션은 대부분 자명.
-- `@adonisjs/encryption` / `hash` → `nexusjs/crypto` 마이그레이션은
+- `@adonisjs/session` → `@kabyeon/@kabyeon/nexusjs/session` 마이그레이션은 대부분 자명.
+- `@adonisjs/encryption` / `hash` → `@kabyeon/@kabyeon/nexusjs/crypto` 마이그레이션은
   한 줄 변경.
 
 **완전한** AdonisJS 커버리지에 여전히 **부족한 것**:
@@ -279,7 +279,7 @@ AdonisJS v6 vs NexusJS v0.6 차별점:
 
 - **Bun 네이티브** — NexusJS는 Bun에서 네이티브로 실행 (더 빠른
   시작, 더 빠른 I/O, 더 적은 의존성). AdonisJS는 Node 전용.
-- **모듈별 번들 entry points** — `nexusjs/ws`는 사용하지 않으면
+- **모듈별 번들 entry points** — `@kabyeon/@kabyeon/nexusjs/ws`는 사용하지 않으면
   번들에 포함 안 됨. AdonisJS는 모든 것을 하나의 번들로 출시.
 - **OpenAPI / WebSockets / SSE / tracing / metrics batteries** —
   NexusJS는 이를 기본 출시; AdonisJS 사용자는 직접 연결.

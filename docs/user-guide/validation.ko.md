@@ -8,7 +8,7 @@
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Param, Post, Query, Validate } from 'nexusjs';
+import { Body, Controller, Param, Post, Query, Validate } from '@kabyeon/nexusjs';
 
 const CreateUserSchema = z.object({
   name: z.string().min(2),
@@ -188,7 +188,7 @@ const CreateUserDto = z.object({
 400 응답 형태를 커스터마이즈하려면 `@Validate`를 자체 데코레이터로 감싸거나 (또는 미들웨어에서 후처리하세요).
 
 ```ts
-import { Validate, type ValidationConfig } from 'nexusjs';
+import { Validate, type ValidationConfig } from '@kabyeon/nexusjs';
 import { ZodError } from 'zod';
 
 export function ValidateV2(config: ValidationConfig) {

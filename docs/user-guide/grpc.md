@@ -1,6 +1,6 @@
-# nexusjs/grpc — gRPC integration
+# @kabyeon/nexusjs/grpc — gRPC integration
 
-`nexusjs/grpc` lets you define gRPC services using TypeScript classes with
+`@kabyeon/nexusjs/grpc` lets you define gRPC services using TypeScript classes with
 decorators, and serve them alongside your Hono HTTP routes. The same
 module also exposes a typed client for calling gRPC services from
 within your app.
@@ -13,7 +13,7 @@ within your app.
   internal microservice traffic.
 - **Streaming.** Server-streaming, client-streaming, and bidirectional
   streaming are first-class in gRPC. (Streaming is a planned v2
-  addition for `nexusjs/grpc`.)
+  addition for `@kabyeon/nexusjs/grpc`.)
 
 ## Install
 
@@ -21,7 +21,7 @@ within your app.
 bun add @grpc/grpc-js @grpc/proto-loader
 ```
 
-Both are listed as **optional** peer dependencies in `nexusjs/grpc`'s
+Both are listed as **optional** peer dependencies in `@kabyeon/nexusjs/grpc`'s
 `package.json`. The framework imports them dynamically, so they're only
 needed if you actually use the gRPC module.
 
@@ -49,8 +49,8 @@ message ListResponse { repeated UserResponse users = 1; }
 
 ```ts
 // app/user/user.grpc.ts
-import { Injectable, Inject } from "@nexusjs/core";
-import { GrpcService, GrpcMethod } from "@nexusjs/grpc";
+import { Injectable, Inject } from "@@kabyeon/nexusjs/core";
+import { GrpcService, GrpcMethod } from "@@kabyeon/nexusjs/grpc";
 
 @Injectable()
 @GrpcService("UserService")
@@ -78,8 +78,8 @@ export class UserServiceImpl {
 
 ```ts
 // app/app.module.ts
-import { Module } from "@nexusjs/core";
-import { GrpcModule } from "@nexusjs/grpc";
+import { Module } from "@@kabyeon/nexusjs/core";
+import { GrpcModule } from "@@kabyeon/nexusjs/grpc";
 import { UserServiceImpl } from "./user/user.grpc";
 
 @Module({
@@ -98,8 +98,8 @@ export class AppModule {}
 
 ```ts
 // app/main.ts
-import { Application } from "@nexusjs/core";
-import { GrpcService } from "@nexusjs/grpc";
+import { Application } from "@@kabyeon/nexusjs/core";
+import { GrpcService } from "@@kabyeon/nexusjs/grpc";
 import { AppModule } from "./app.module";
 
 const app = new Application(AppModule);
@@ -110,7 +110,7 @@ await grpc.start();
 
 ## Typed client
 
-`nexusjs/grpc` also builds typed clients for the services you register.
+`@kabyeon/nexusjs/grpc` also builds typed clients for the services you register.
 This is useful when one service in your app needs to call another:
 
 ```ts

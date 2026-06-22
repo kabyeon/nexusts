@@ -5,7 +5,7 @@
 NexusJS는 [`better-auth`](https://www.better-auth.com/)를 감싸는 auth 모듈을 제공하여
 이메일/비밀번호, OAuth, JWT, Passkey를 즉시 사용할 수 있게 합니다 — 모두 NexusJS의 DI / 데코레이터 모델에 맞게 조정되었습니다.
 
-auth 모듈은 `nexusjs/auth`에 살고 **`nexusjs/core`와 분리**되어 있습니다. 별도 진입점으로 번들되므로필요 없는 소비자는 비용을 지불하지 않습니다.
+auth 모듈은 `@kabyeon/nexusjs/auth`에 살고 **`@kabyeon/nexusjs/core`와 분리**되어 있습니다. 별도 진입점으로 번들되므로필요 없는 소비자는 비용을 지불하지 않습니다.
 
 ---
 
@@ -49,8 +49,8 @@ bunx nx make:auth --provider github --jwt
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { AuthModule } from 'nexusjs/auth';
+import { Module } from '@kabyeon/nexusjs';
+import { AuthModule } from '@kabyeon/nexusjs/auth';
 
 @Module({
   imports: [
@@ -111,10 +111,10 @@ better-auth 자체의 catch-all 핸들러(`auth.handler`)도 컨트롤러가 커
 ## 4. Sessions
 
 ```ts
-import { Inject } from 'nexusjs';
-import { AuthService, CurrentUser } from 'nexusjs/auth';
-import type { AuthUser } from 'nexusjs/auth';
-import { Controller, Get, Req } from 'nexusjs';
+import { Inject } from '@kabyeon/nexusjs';
+import { AuthService, CurrentUser } from '@kabyeon/nexusjs/auth';
+import type { AuthUser } from '@kabyeon/nexusjs/auth';
+import { Controller, Get, Req } from '@kabyeon/nexusjs';
 import type { Context } from 'hono';
 
 @Controller('/me')
@@ -226,7 +226,7 @@ AuthModule.forRoot({
 
 ```ts
 import { Hono } from 'hono';
-import { authMiddleware, type AuthVariables } from 'nexusjs/auth';
+import { authMiddleware, type AuthVariables } from '@kabyeon/nexusjs/auth';
 import { auth } from './auth.js';
 
 const app = new Hono<{ Variables: AuthVariables }>();
@@ -352,7 +352,7 @@ export const auth = createAuth({
 auth 모듈은 단위 테스트 가능합니다. mock 주입:
 
 ```ts
-import { AuthService } from 'nexusjs/auth';
+import { AuthService } from '@kabyeon/nexusjs/auth';
 
 const mockAuth = {
   getSession: async () => ({ user: { id: '1' }, session: { id: 's' } }),

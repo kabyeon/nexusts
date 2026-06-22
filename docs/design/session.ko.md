@@ -8,14 +8,14 @@
 다음을 만족하는 균일한 세션 스토리지 추상화를 제공한다.
 
 1. **모든 런타임에서 동작** — Bun / Node / Cloudflare Workers / Vercel / Deno Deploy.
-2. **`nexusjs/auth`와 강제 없이 통합** — better-auth는 자체 DB 기반 세션을 관리; `SessionService`는 일시적 상태(플래시 메시지, 게스트 장바구니, OAuth 플로우 상태)를 관리.
+2. **`@kabyeon/nexusjs/auth`와 강제 없이 통합** — better-auth는 자체 DB 기반 세션을 관리; `SessionService`는 일시적 상태(플래시 메시지, 게스트 장바구니, OAuth 플로우 상태)를 관리.
 3. **바퀴를 재발명하지 않음** — 쿠키는 작은 인트리 HMAC로 인코딩/디코딩/검증; `cookie`나 `iron-session` 의존성 없음.
 
 ## 2. 왜 별도 모듈인가?
 
-`nexusjs/auth`는 better-auth의 DB 기반 세션을 통해 이미 세션 관리를 제공한다. 그렇다면 왜 `nexusjs/session`?
+`@kabyeon/nexusjs/auth`는 better-auth의 DB 기반 세션을 통해 이미 세션 관리를 제공한다. 그렇다면 왜 `@kabyeon/nexusjs/session`?
 
-| 필요 | 왜 `nexusjs/auth`만으로는 부족한가 |
+| 필요 | 왜 `@kabyeon/nexusjs/auth`만으로는 부족한가 |
 | ---- | ----------------------------------- |
 | **엣지 런타임** | Better-auth의 DB 세션은 데이터베이스 필요. Workers는 종종 도달할 수 없음. 쿠키 세션은 인프라 없이 동작. |
 | **사전 인증 상태** | 게스트 장바구니, OAuth 플로우 상태, CSRF 토큰 — 사용자가 로그인하기 *전에* 존재해야 함. Better-auth 세션은 항상 사용자에 묶임. |
@@ -23,7 +23,7 @@
 | **커스텀 TTL** | 일부 세션은 30일 TTL, 일부는 5분 TTL. 쿠키 스토리지는 세션별로 결정 가능. |
 | **공유 쿠키** | 같은 요청에 auth 쿠키 + session 쿠키 — 서로 덮어쓰지 않고 공존해야 함. |
 
-따라서 `nexusjs/auth` *옆에* 얇은 쿠키 (및 메모리, 곧 Redis) 레이어를 제공한다. 필요 없는 사용자는 비용을 지불하지 않는다 (별도 진입점). 둘 다 필요한 사용자는 `AuthService.bindSession(sessions)`로 연결한다.
+따라서 `@kabyeon/nexusjs/auth` *옆에* 얇은 쿠키 (및 메모리, 곧 Redis) 레이어를 제공한다. 필요 없는 사용자는 비용을 지불하지 않는다 (별도 진입점). 둘 다 필요한 사용자는 `AuthService.bindSession(sessions)`로 연결한다.
 
 ## 3. 아키텍처
 
@@ -36,7 +36,7 @@
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│              nexusjs/session  (별도 진입점)                    │
+│              @kabyeon/nexusjs/session  (별도 진입점)                    │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
 │  │  SessionService  │  │ @Session  │  │  cookieName  │ │
@@ -63,7 +63,7 @@
                               │
                               ▼
                    ┌──────────────────────┐
-                   │  nexusjs/auth (better-auth) │
+                   │  @kabyeon/nexusjs/auth (better-auth) │
                    │  user identity + DB 세션 │
                    └──────────────────────┘
 ```
@@ -72,7 +72,7 @@
 
 ## 4. 모듈 분리
 
-`nexusjs/session`은 별도 진입점이다.
+`@kabyeon/nexusjs/session`은 별도 진입점이다.
 
 ```json
 "exports": {

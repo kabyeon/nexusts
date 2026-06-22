@@ -149,7 +149,7 @@ async function runStatus(
 	}
 	const script = `
 import 'reflect-metadata';
-import { DrizzleService } from 'nexusjs/drizzle';
+import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
 
 const url = ${JSON.stringify(url)};
 const dialect = ${JSON.stringify(dialect)};

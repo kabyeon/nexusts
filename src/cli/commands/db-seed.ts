@@ -23,7 +23,7 @@
  * Seed file example:
  *
  *   // db/seeds/01_users.ts
- *   import type { SeedContext } from "nexusjs/cli";
+ *   import type { SeedContext } from "@kabyeon/nexusjs/cli";
  *
  *   export default async function seed(ctx: SeedContext) {
  *     await ctx.db.insert(users).values([
@@ -59,7 +59,7 @@ const SEED_TEMPLATE = `/**
  * Use ctx.db.insert(table).values([...]) etc. for inserts.
  */
 
-import type { SeedContext } from "nexusjs/cli";
+import type { SeedContext } from "@kabyeon/nexusjs/cli";
 
 export default async function seed(ctx: SeedContext): Promise<void> {
 \tctx.logger.info("Running seed: {name}");

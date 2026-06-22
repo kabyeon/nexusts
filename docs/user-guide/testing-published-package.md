@@ -87,12 +87,12 @@ mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
 bun init -y
 
 # 3. Add the dependency
-bun add file:/absolute/path/to/nexusjs/dist
+bun add file:/absolute/path/to/@kabyeon/nexusjs/dist
 # or, relative to the test app:
-bun add file:../nexusjs/dist
+bun add file:../@kabyeon/nexusjs/dist
 ```
 
-`bun install` copies `dist/` into `node_modules/nexusjs/` and resolves
+`bun install` copies `dist/` into `node_modules/@kabyeon/nexusjs/` and resolves
 the `exports` field exactly as npm would.
 
 ### Verifying the install
@@ -103,8 +103,8 @@ ls -la node_modules/nexusjs
 # → should show dist/ contents (index.js, cli/index.js, grpc/index.js, ...)
 
 # Confirm the package.json is the consumer-facing one
-cat node_modules/nexusjs/package.json
-# → { "name": "nexusjs", "version": "0.5.0", "exports": {...}, ... }
+cat node_modules/@kabyeon/nexusjs/package.json
+# → { "name": "@kabyeon/nexusjs", "version": "0.5.0", "exports": {...}, ... }
 ```
 
 ### When to use
@@ -146,7 +146,7 @@ cd ..
 # 3. Install the tarball in a test app
 mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
 bun init -y
-bun add ../nexusjs/dist/nexusjs-0.5.0.tgz
+bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
 ```
 
 ### When to use
@@ -174,15 +174,15 @@ these three things:
 
 ```ts
 // test-app/index.ts
-import { Application, Module, Controller, Get } from "nexusjs";
-import { GrpcService } from "nexusjs/grpc";
-import { EventEmitter } from "nexusjs/events";
+import { Application, Module, Controller, Get } from "@kabyeon/nexusjs";
+import { GrpcService } from "@kabyeon/nexusjs/grpc";
+import { EventEmitter } from "@kabyeon/nexusjs/events";
 
 @Controller("/")
 class AppController {
   @Get("/")
   hello() {
-    return { framework: "nexusjs", version: "0.5.0" };
+    return { framework: "@kabyeon/nexusjs", version: "0.5.0" };
   }
 }
 
@@ -195,12 +195,12 @@ const app = new Application(AppModule);
 console.assert(typeof Application === "function", "Application not exported");
 
 // 2. Subpath exports resolve (deep import test)
-console.assert(typeof GrpcService === "function", "nexusjs/grpc subpath broken");
-console.assert(typeof EventEmitter === "function", "nexusjs/events subpath broken");
+console.assert(typeof GrpcService === "function", "@kabyeon/nexusjs/grpc subpath broken");
+console.assert(typeof EventEmitter === "function", "@kabyeon/nexusjs/events subpath broken");
 
 // 3. The CLI is exposed (note: the import path differs from the runtime API)
-import cliPkg from "nexusjs/cli";
-console.assert(typeof cliPkg === "object", "nexusjs/cli subpath broken");
+import cliPkg from "@kabyeon/nexusjs/cli";
+console.assert(typeof cliPkg === "object", "@kabyeon/nexusjs/cli subpath broken");
 
 // 4. DI + HTTP work end-to-end
 const events = app.container.resolve(EventEmitter);
@@ -217,7 +217,7 @@ bun run test-app/index.ts
 
 # In another terminal:
 curl http://localhost:3000
-# → {"framework":"nexusjs","version":"0.5.0"}
+# → {"framework":"@kabyeon/nexusjs","version":"0.5.0"}
 ```
 
 If all three lines print, the `dist/` build is healthy.
@@ -248,14 +248,14 @@ Rule of thumb: **run the test suite for fast feedback, run the
 The `file:` install didn't pick up the package. Check:
 
 ```bash
-ls node_modules/nexusjs/package.json    # exists?
-cat node_modules/nexusjs/package.json | head -5
+ls node_modules/@kabyeon/nexusjs/package.json    # exists?
+cat node_modules/@kabyeon/nexusjs/package.json | head -5
 ```
 
 If the `package.json` is missing, the `file:` path was wrong. Use an
 absolute path to avoid confusion.
 
-### `Cannot find module 'nexusjs/grpc'`
+### `Cannot find module '@kabyeon/nexusjs/grpc'`
 
 The subpath export is missing or broken. Check `dist/`:
 

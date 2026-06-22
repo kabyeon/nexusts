@@ -2,15 +2,15 @@
 
 > English version: [`cross-cutting-features.md`](./cross-cutting-features.md)
 
-v0.3에서 함께 출시되는 다섯 모듈 — `nexusjs/limiter`, `nexusjs/shield`,
-`nexusjs/cache`, `nexusjs/drive`, `nexusjs/mail` — production stack을 완성한다.
+v0.3에서 함께 출시되는 다섯 모듈 — `@kabyeon/nexusjs/limiter`, `@kabyeon/nexusjs/shield`,
+`@kabyeon/nexusjs/cache`, `@kabyeon/nexusjs/drive`, `@kabyeon/nexusjs/mail` — production stack을 완성한다.
 모두 독립 번들이고, 모두 같은 `Module.forRoot({...})` DI 패턴을 사용하며,
 모두 peer dependency(Redis, AWS SDK, nodemailer 등)를 강제하지 않도록
 설계되었다 (필요 없는 프로젝트는 가볍게 유지).
 
 ---
 
-## 1. `nexusjs/limiter` — rate limiting
+## 1. `@kabyeon/nexusjs/limiter` — rate limiting
 
 세 가지 전략: `fixed-window`, `sliding-window` (기본),
 `token-bucket`. 플러그 가능한 storage backend (기본 메모리).
@@ -34,7 +34,7 @@ v0.3에서 함께 출시되는 다섯 모듈 — `nexusjs/limiter`, `nexusjs/shi
 ### 라우트별 decorator
 
 ```ts
-import { RateLimit } from 'nexusjs/limiter';
+import { RateLimit } from '@kabyeon/nexusjs/limiter';
 
 @Controller('/auth')
 class AuthController {
@@ -47,7 +47,7 @@ class AuthController {
 ### 커스텀 storage
 
 ```ts
-import { LimiterService } from 'nexusjs/limiter';
+import { LimiterService } from '@kabyeon/nexusjs/limiter';
 
 class RedisRateLimitStorage implements RateLimitStorage {
   async consume(key, points, limit, durationMs, strategy) {
@@ -81,13 +81,13 @@ LimiterModule.forRoot({ storage: new RedisRateLimitStorage(redis), rules: [...] 
 
 ---
 
-## 2. `nexusjs/shield` — 보안 미들웨어 스위트
+## 2. `@kabyeon/nexusjs/shield` — 보안 미들웨어 스위트
 
 AdonisJS-Shield 형상. CSRF, 보안 헤더 (HSTS, X-Frame-Options,
 X-Content-Type-Options, Referrer-Policy, CSP).
 
 ```ts
-import { ShieldModule } from 'nexusjs/shield';
+import { ShieldModule } from '@kabyeon/nexusjs/shield';
 
 @Module({
   imports: [
@@ -132,8 +132,8 @@ import { ShieldModule } from 'nexusjs/shield';
 ### 컨트롤러에서 직접 shield 접근
 
 ```ts
-import { Inject } from 'nexusjs';
-import { ShieldService } from 'nexusjs/shield';
+import { Inject } from '@kabyeon/nexusjs';
+import { ShieldService } from '@kabyeon/nexusjs/shield';
 
 class FormController {
   constructor(@Inject(ShieldService.TOKEN) private shield: ShieldService) {}
@@ -148,7 +148,7 @@ class FormController {
 
 ---
 
-## 3. `nexusjs/cache` — 애플리케이션 캐시
+## 3. `@kabyeon/nexusjs/cache` — 애플리케이션 캐시
 
 기본은 TTL이 있는 인메모리 LRU. 멀티 pod 배포를 위한 옵션 `RedisStore`.
 
@@ -166,7 +166,7 @@ class FormController {
 ### 직접 사용
 
 ```ts
-import { CacheService } from 'nexusjs/cache';
+import { CacheService } from '@kabyeon/nexusjs/cache';
 
 class UserService {
   constructor(@Inject(CacheService.TOKEN) private cache: CacheService) {}
@@ -184,7 +184,7 @@ class UserService {
 ### Decorator
 
 ```ts
-import { Cacheable, CacheInvalidate } from 'nexusjs/cache';
+import { Cacheable, CacheInvalidate } from '@kabyeon/nexusjs/cache';
 
 class UserService {
   @Cacheable('user', (id: string) => id, 60)
@@ -201,7 +201,7 @@ class UserService {
 ### 커스텀 store
 
 ```ts
-import { CacheService, CacheStore } from 'nexusjs/cache';
+import { CacheService, CacheStore } from '@kabyeon/nexusjs/cache';
 
 class RedisStore implements CacheStore {
   readonly kind = 'redis';
@@ -215,7 +215,7 @@ CacheModule.forRoot({ store: new RedisStore(redis) });
 
 ---
 
-## 4. `nexusjs/drive` — 파일 스토리지 추상화
+## 4. `@kabyeon/nexusjs/drive` — 파일 스토리지 추상화
 
 `LocalDriver` (파일시스템), `MemoryDriver` (인프로세스),
 `S3Driver` (AWS S3 / R2 / MinIO).
@@ -278,7 +278,7 @@ await drive.get('../etc/passwd'); // "Path traversal blocked" 예외
 
 ---
 
-## 5. `nexusjs/mail` — 발신 이메일
+## 5. `@kabyeon/nexusjs/mail` — 발신 이메일
 
 `SmtpTransport` (nodemailer), `FileTransport` (개발용 .eml 파일),
 `NullTransport` (테스트).

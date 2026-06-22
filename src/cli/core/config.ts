@@ -195,7 +195,7 @@ export async function loadConfig(
 				config = JSON.parse(raw) as Partial<NxConfig>;
 			} else {
 				// Dynamic import — works under Bun and Node (tsx).
-				// Some nx.config.ts files import from `nexusjs/cli` for
+				// Some nx.config.ts files import from `@kabyeon/nexusjs/cli` for
 				// type-safety. When nexus isn't installed yet (e.g. in
 				// a fresh project after `nx new`), swallow the import
 				// failure and fall back to defaults.

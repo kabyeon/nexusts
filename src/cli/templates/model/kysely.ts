@@ -11,7 +11,7 @@
 export default `
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 import { Kysely } from 'kysely';
-import { Inject, Injectable } from 'nexusjs';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
 
 export interface {{ name }}Table {
   id: Generated<number>;

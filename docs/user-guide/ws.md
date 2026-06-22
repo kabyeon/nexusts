@@ -1,11 +1,11 @@
-# WebSockets · `nexusjs/ws` (v0.5)
+# WebSockets · `@kabyeon/nexusjs/ws` (v0.5)
 
 > New in v0.5. Unifies Hono's runtime-specific WebSocket support
 > behind a single, ergonomic API. Works on **Bun** (primary) and
 > **Node.js** (via the `ws` package). Cloudflare Workers is out of
 > scope — see the [Cloudflare section](#8-cloudflare-workers) below.
 
-`nexusjs/ws` gives you:
+`@kabyeon/nexusjs/ws` gives you:
 
 - **`@WebSocketGateway(path)`** — class-level decorator. The
   framework installs a Hono `upgradeWebSocket` handler at `<path>`.
@@ -24,7 +24,7 @@
 ## 1. Quick start (Bun)
 
 ```ts
-import { Module, Inject } from "nexusjs";
+import { Module, Inject } from "@kabyeon/nexusjs";
 import {
   WebSocketModule,
   WebSocketService,
@@ -33,7 +33,7 @@ import {
   OnWebSocketOpen,
   OnWebSocketMessage,
   OnWebSocketClose,
-} from "nexusjs/ws";
+} from "@kabyeon/nexusjs/ws";
 
 @Injectable()
 @WebSocketGateway("/ws")
@@ -65,8 +65,8 @@ class AppModule {}
 Wiring up at boot time:
 
 ```ts
-import { Application } from "nexusjs";
-import { BunWsAdapter } from "nexusjs/ws";
+import { Application } from "@kabyeon/nexusjs";
+import { BunWsAdapter } from "@kabyeon/nexusjs/ws";
 
 const app = new Application(AppModule);
 const adapter = new BunWsAdapter(app.container.resolve(WebSocketService));
@@ -89,7 +89,7 @@ now routed through `ChatGateway`.
 ```ts
 import { createServer } from "node:http";
 import { WebSocketServer } from "ws";
-import { NodeWsAdapter } from "nexusjs/ws";
+import { NodeWsAdapter } from "@kabyeon/nexusjs/ws";
 
 const app = new Application(AppModule);
 const service = app.container.resolve(WebSocketService);
@@ -216,7 +216,7 @@ REST requests. For auth, use one of:
    ```
 
 2. **Cookie** — if your app already has session middleware
-   (`nexusjs/session`), the upgrade request carries the cookie.
+   (`@kabyeon/nexusjs/session`), the upgrade request carries the cookie.
    Use a Hono middleware on the upgrade path to verify.
 
 3. **First-message handshake** — accept all upgrades, require the
@@ -286,7 +286,7 @@ export class WebSocketDurableObject implements DurableObject {
   }
 
   handleConnection(ws: WebSocket) {
-    // Bridge WebSocketDurableObject's native WS to nexusjs/ws's lifecycle.
+    // Bridge WebSocketDurableObject's native WS to @kabyeon/nexusjs/ws's lifecycle.
     const client = new WebSocketClientImpl(adaptDurableObjectWs(ws));
     this.service.register(client);
     // ... wire @OnWebSocketMessage / @OnWebSocketClose

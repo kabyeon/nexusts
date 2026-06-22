@@ -10,8 +10,8 @@
  */
 
 export default `
-import { Injectable } from 'nexusjs';
-import { DrizzleRepository } from 'nexusjs/drizzle';
+import { Injectable } from '@kabyeon/nexusjs';
+import { DrizzleRepository } from '@kabyeon/nexusjs/drizzle';
 import { {{ tableName }} } from '../models/{{ kebab }}.model.js';
 import type { {{ name }}, New{{ name }} } from '../models/{{ kebab }}.model.js';
 

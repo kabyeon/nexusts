@@ -1,5 +1,5 @@
 /**
- * Tests for `nexusjs/i18n`.
+ * Tests for `@kabyeon/nexusjs/i18n`.
  *
  * Coverage:
  * 1. I18nService: t() with interpolation, pluralization, missing keys

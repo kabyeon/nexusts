@@ -82,7 +82,7 @@ my-app/
 
 ```ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -94,7 +94,7 @@ console.log('[nexus] http://localhost:3000 에서 수신 대기 중');
 ### `app/app.module.ts`
 
 ```ts
-import { Module } from 'nexusjs';
+import { Module } from '@kabyeon/nexusjs';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
@@ -106,7 +106,7 @@ export class AppModule {}
 ### `app/controllers/home.controller.ts`
 
 ```ts
-import { Controller, Get } from 'nexusjs';
+import { Controller, Get } from '@kabyeon/nexusjs';
 
 @Controller('/')
 export class HomeController {

@@ -1,9 +1,9 @@
-# 메트릭 · `nexusjs/metrics` (Tier 2 v0.4)
+# 메트릭 · `@kabyeon/nexusjs/metrics` (Tier 2 v0.4)
 
 > English: [`metrics.md`](./metrics.md)
 > v0.3 격차 분석의 Tier 2 격차, **v0.4**에서 해소.
 
-`nexusjs/metrics`는 Bun 네이티브 스택을 위한 Prometheus 호환 메트릭 수집 라이브러리. 네 가지 표준 메트릭 타입 (counter, gauge, histogram, summary), 라벨 지원, Prometheus / OpenMetrics 텍스트 익스포지션 포맷을 구현.
+`@kabyeon/nexusjs/metrics`는 Bun 네이티브 스택을 위한 Prometheus 호환 메트릭 수집 라이브러리. 네 가지 표준 메트릭 타입 (counter, gauge, histogram, summary), 라벨 지원, Prometheus / OpenMetrics 텍스트 익스포지션 포맷을 구현.
 
 **외부 의존성 0.** gzipped ~5kb.
 
@@ -12,8 +12,8 @@
 ## 1. 빠른 시작
 
 ```ts
-import { Module } from 'nexusjs';
-import { MetricsModule } from 'nexusjs/metrics';
+import { Module } from '@kabyeon/nexusjs';
+import { MetricsModule } from '@kabyeon/nexusjs/metrics';
 
 @Module({
   imports: [
@@ -110,7 +110,7 @@ Counter는 단조 증가. Gauge는 증감 모두 가능. Histogram과 Summary는
 관용적 사용을 위해 두 가지 메서드 데코레이터 제공:
 
 ```ts
-import { Counted, Timed } from 'nexusjs/metrics';
+import { Counted, Timed } from '@kabyeon/nexusjs/metrics';
 
 class UserController {
   @Counted('http_requests_total', { labels: () => ({ method: 'GET' }) })

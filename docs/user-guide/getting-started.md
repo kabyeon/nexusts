@@ -30,16 +30,16 @@ bun add nexus reflect-metadata zod hono
 bun add -d @types/bun typescript vitest
 
 # Pick the modules you need. v0.4 ships 22 independent modules.
-bun add nexusjs/drizzle            # the default ORM
-bun add nexusjs/auth               # if you need auth
-bun add nexusjs/queue              # if you need background jobs
+bun add @kabyeon/nexusjs/drizzle            # the default ORM
+bun add @kabyeon/nexusjs/auth               # if you need auth
+bun add @kabyeon/nexusjs/queue              # if you need background jobs
 # ... etc.
 ```
 
 > `reflect-metadata` is a peer dependency and must be imported once at
 > the application entry point. `zod` and `hono` are bundled by NexusJS
 > but installing them explicitly is recommended so type resolution works.
-> `drizzle-orm` is a required peer dep of `nexusjs/drizzle` — install
+> `drizzle-orm` is a required peer dep of `@kabyeon/nexusjs/drizzle` — install
 > the driver package (`pg`, `postgres`, `mysql2`, or `better-sqlite3`)
 > for the dialect you use.
 
@@ -101,7 +101,7 @@ my-app/
 
 ```ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -151,10 +151,10 @@ export default {
 ### `app/app.module.ts`
 
 ```ts
-import { Module } from 'nexusjs';
-import { DrizzleModule } from 'nexusjs/drizzle';
-import { LoggerModule } from 'nexusjs/logger';
-import { HealthModule } from 'nexusjs/health';
+import { Module } from '@kabyeon/nexusjs';
+import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
+import { LoggerModule } from '@kabyeon/nexusjs/logger';
+import { HealthModule } from '@kabyeon/nexusjs/health';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
@@ -174,8 +174,8 @@ export class AppModule {}
 ### `app/controllers/home.controller.ts`
 
 ```ts
-import { Controller, Get, Inject } from 'nexusjs';
-import { DrizzleService } from 'nexusjs/drizzle';
+import { Controller, Get, Inject } from '@kabyeon/nexusjs';
+import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
 import { users } from '../db/schema.js';
 
 @Controller('/')
@@ -233,11 +233,11 @@ Bun's `--hot` flag restarts the process on file change.
 - **[Drizzle ORM (default)](./drizzle.md)** — the default ORM, with
   Lucid-equivalent ergonomics, migrations, and SQL-injection-safe
   raw queries.
-- **[Production basics](./production-basics.md)** — `nexusjs/health`,
-  `nexusjs/config`, `nexusjs/logger`, `nexusjs/static`.
+- **[Production basics](./production-basics.md)** — `@kabyeon/nexusjs/health`,
+  `@kabyeon/nexusjs/config`, `@kabyeon/nexusjs/logger`, `@kabyeon/nexusjs/static`.
 - **[Cross-cutting features](./cross-cutting-features.md)** —
-  `nexusjs/limiter`, `nexusjs/shield`, `nexusjs/cache`, `nexusjs/drive`,
-  `nexusjs/mail`.
+  `@kabyeon/nexusjs/limiter`, `@kabyeon/nexusjs/shield`, `@kabyeon/nexusjs/cache`, `@kabyeon/nexusjs/drive`,
+  `@kabyeon/nexusjs/mail`.
 - **[CLI `nx` command runner](./cli.md)** — scaffold models,
   migrations, controllers, run migrations.
 

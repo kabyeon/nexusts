@@ -44,7 +44,7 @@ one that matches your deployment target.
 
 ```ts
 // app/app.module.ts
-import { DrizzleModule } from 'nexusjs/drizzle';
+import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
 
 @Module({
   imports: [
@@ -127,7 +127,7 @@ per-environment settings separate:
 ```ts
 // ConfigModule validates everything at boot
 import { z } from 'zod';
-import { ConfigModule } from 'nexusjs/config';
+import { ConfigModule } from '@kabyeon/nexusjs/config';
 
 ConfigModule.forRoot({
   schema: z.object({
@@ -286,8 +286,8 @@ If you switch to PostgreSQL or MySQL, update the `dialect` field and
 Inject `DrizzleService` into your services for type-safe queries:
 
 ```ts
-import { Inject, Injectable } from 'nexusjs';
-import { DrizzleService } from 'nexusjs/drizzle';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
+import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
 import { eq } from 'drizzle-orm';
 import { users } from '../models/user.model.js';
 

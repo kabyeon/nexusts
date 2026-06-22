@@ -1,8 +1,8 @@
-# nexusjs/drizzle — Drizzle ORM 통합 (기본 ORM)
+# @kabyeon/nexusjs/drizzle — Drizzle ORM 통합 (기본 ORM)
 
 > English version: [`drizzle.md`](./drizzle.md)
 
-`nexusjs/drizzle`는 NexusJS의 **기본 ORM**이다. Drizzle ORM을
+`@kabyeon/nexusjs/drizzle`는 NexusJS의 **기본 ORM**이다. Drizzle ORM을
 DI 친화적인 서비스, Lucid 스타일 repository 패턴, entity model
 base class, 선언적 decorator, 자동 마이그레이션, SQL 인젝션 방지
 raw query API로 감싼다.
@@ -71,8 +71,8 @@ export const users = pgTable('users', {
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { DrizzleModule } from 'nexusjs/drizzle';
+import { Module } from '@kabyeon/nexusjs';
+import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
 import { users } from './db/schema';
 
 @Module({
@@ -90,8 +90,8 @@ export class AppModule {}
 ### 사용
 
 ```ts
-import { Inject } from 'nexusjs';
-import { DrizzleService } from 'nexusjs/drizzle';
+import { Inject } from '@kabyeon/nexusjs';
+import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
 import { eq } from 'drizzle-orm';
 import { users } from './db/schema';
 
@@ -121,7 +121,7 @@ class UserService {
 Drizzle의 query builder 위에 작고 타입이 명확한 surface를 노출한다.
 
 ```ts
-import { DrizzleRepository, DrizzleService } from 'nexusjs/drizzle';
+import { DrizzleRepository, DrizzleService } from '@kabyeon/nexusjs/drizzle';
 
 @Injectable()
 class UserRepository extends DrizzleRepository<typeof users> {
@@ -160,7 +160,7 @@ entity를 선언하면 — 메타데이터가 repository에서 기본 쿼리와 
 용으로 읽힌다.
 
 ```ts
-import { DrizzleModel, Table, Column, PrimaryKey } from 'nexusjs/drizzle';
+import { DrizzleModel, Table, Column, PrimaryKey } from '@kabyeon/nexusjs/drizzle';
 
 @Table('users')
 class User extends DrizzleModel {
@@ -317,10 +317,10 @@ dialect의 native 형식으로 변환한 후 전송한다:
 
 ## 9. 다른 nexus/* 모듈과의 통합
 
-`nexusjs/drizzle`는 나머지 프레임워크의 데이터 백본이다. 세 모듈이
+`@kabyeon/nexusjs/drizzle`는 나머지 프레임워크의 데이터 백본이다. 세 모듈이
 Drizzle 백엔드를 기본 제공한다.
 
-### `nexusjs/session` — DrizzleSessionStorage
+### `@kabyeon/nexusjs/session` — DrizzleSessionStorage
 
 ```ts
 @Module({
@@ -350,10 +350,10 @@ CREATE TABLE nexus_sessions (
 읽기/쓰기. schema 컬럼명은 `database.tableName` + `columns` 맵으로
 설정 가능.
 
-### `nexusjs/health` — DrizzleHealthIndicator
+### `@kabyeon/nexusjs/health` — DrizzleHealthIndicator
 
 ```ts
-import { DrizzleHealthIndicator } from 'nexusjs/health';
+import { DrizzleHealthIndicator } from '@kabyeon/nexusjs/health';
 
 const db = ...; // DrizzleService
 new DrizzleHealthIndicator('database', db, { timeoutMs: 3000 });
@@ -362,10 +362,10 @@ new DrizzleHealthIndicator('database', db, { timeoutMs: 3000 });
 데이터베이스에 `SELECT 1` (또는 커스텀 probe)을 실행하여
 `'up'` / `'down'`을 반환하고 `latencyMs`를 data 필드에 포함.
 
-### `nexusjs/limiter` — DrizzleRateLimitStorage
+### `@kabyeon/nexusjs/limiter` — DrizzleRateLimitStorage
 
 ```ts
-import { DrizzleRateLimitStorage } from 'nexusjs/limiter';
+import { DrizzleRateLimitStorage } from '@kabyeon/nexusjs/limiter';
 
 LimiterModule.forRoot({
   storage: new DrizzleRateLimitStorage(drizzleService),

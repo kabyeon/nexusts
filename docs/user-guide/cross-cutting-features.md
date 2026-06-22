@@ -2,8 +2,8 @@
 
 > 한국어 버전: [`cross-cutting-features.ko.md`](./cross-cutting-features.ko.md)
 
-The five modules shipped together in v0.3 — `nexusjs/limiter`,
-`nexusjs/shield`, `nexusjs/cache`, `nexusjs/drive`, `nexusjs/mail` — round out
+The five modules shipped together in v0.3 — `@kabyeon/nexusjs/limiter`,
+`@kabyeon/nexusjs/shield`, `@kabyeon/nexusjs/cache`, `@kabyeon/nexusjs/drive`, `@kabyeon/nexusjs/mail` — round out
 the production stack. They are all independent bundles, all use the
 same `Module.forRoot({...})` DI pattern, and all are designed to work
 without forcing peer dependencies (Redis, AWS SDK, nodemailer, etc.)
@@ -11,7 +11,7 @@ on projects that don't need them.
 
 ---
 
-## 1. `nexusjs/limiter` — rate limiting
+## 1. `@kabyeon/nexusjs/limiter` — rate limiting
 
 Three strategies: `fixed-window`, `sliding-window` (default),
 `token-bucket`. Pluggable storage backend (memory by default).
@@ -35,7 +35,7 @@ Three strategies: `fixed-window`, `sliding-window` (default),
 ### Per-route decorator
 
 ```ts
-import { RateLimit } from 'nexusjs/limiter';
+import { RateLimit } from '@kabyeon/nexusjs/limiter';
 
 @Controller('/auth')
 class AuthController {
@@ -48,7 +48,7 @@ class AuthController {
 ### Custom storage
 
 ```ts
-import { LimiterService } from 'nexusjs/limiter';
+import { LimiterService } from '@kabyeon/nexusjs/limiter';
 
 class RedisRateLimitStorage implements RateLimitStorage {
   async consume(key, points, limit, durationMs, strategy) {
@@ -82,13 +82,13 @@ On every limited request:
 
 ---
 
-## 2. `nexusjs/shield` — security middleware suite
+## 2. `@kabyeon/nexusjs/shield` — security middleware suite
 
 AdonisJS-Shield-shaped. CSRF, security headers (HSTS, X-Frame-Options,
 X-Content-Type-Options, Referrer-Policy, CSP).
 
 ```ts
-import { ShieldModule } from 'nexusjs/shield';
+import { ShieldModule } from '@kabyeon/nexusjs/shield';
 
 @Module({
   imports: [
@@ -133,8 +133,8 @@ import { ShieldModule } from 'nexusjs/shield';
 ### Direct shield access in controllers
 
 ```ts
-import { Inject } from 'nexusjs';
-import { ShieldService } from 'nexusjs/shield';
+import { Inject } from '@kabyeon/nexusjs';
+import { ShieldService } from '@kabyeon/nexusjs/shield';
 
 class FormController {
   constructor(@Inject(ShieldService.TOKEN) private shield: ShieldService) {}
@@ -149,7 +149,7 @@ class FormController {
 
 ---
 
-## 3. `nexusjs/cache` — application cache
+## 3. `@kabyeon/nexusjs/cache` — application cache
 
 In-memory LRU with TTL by default. Optional `RedisStore` for
 multi-pod deployments.
@@ -168,7 +168,7 @@ multi-pod deployments.
 ### Direct usage
 
 ```ts
-import { CacheService } from 'nexusjs/cache';
+import { CacheService } from '@kabyeon/nexusjs/cache';
 
 class UserService {
   constructor(@Inject(CacheService.TOKEN) private cache: CacheService) {}
@@ -186,7 +186,7 @@ class UserService {
 ### Decorators
 
 ```ts
-import { Cacheable, CacheInvalidate } from 'nexusjs/cache';
+import { Cacheable, CacheInvalidate } from '@kabyeon/nexusjs/cache';
 
 class UserService {
   @Cacheable('user', (id: string) => id, 60)
@@ -203,12 +203,12 @@ class UserService {
 ### Custom store
 
 For Redis / Workers KV, use the built-in `RedisCacheStore` from
-`nexusjs/redis`. It implements `CacheStore` and supports
+`@kabyeon/nexusjs/redis`. It implements `CacheStore` and supports
 tag-based invalidation:
 
 ```ts
-import { CacheModule } from 'nexusjs/cache';
-import { RedisCacheStore, createRedisClient } from 'nexusjs/redis';
+import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { RedisCacheStore, createRedisClient } from '@kabyeon/nexusjs/redis';
 
 CacheModule.forRoot({
   store: new RedisCacheStore(
@@ -221,8 +221,8 @@ CacheModule.forRoot({
 For Cloudflare Workers, pass a `CloudflareKVAdapter`:
 
 ```ts
-import { CacheModule } from 'nexusjs/cache';
-import { CloudflareKVAdapter } from 'nexusjs/redis';
+import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { CloudflareKVAdapter } from '@kabyeon/nexusjs/redis';
 
 CacheModule.forRoot({
   store: new RedisCacheStore(
@@ -236,7 +236,7 @@ Custom stores (any non-Redis backend) implement the `CacheStore`
 interface:
 
 ```ts
-import { CacheService, CacheStore } from 'nexusjs/cache';
+import { CacheService, CacheStore } from '@kabyeon/nexusjs/cache';
 
 class MyStore implements CacheStore {
   readonly kind = 'my-store';
@@ -250,7 +250,7 @@ CacheModule.forRoot({ store: new MyStore() });
 
 ---
 
-## 4. `nexusjs/drive` — file storage abstraction
+## 4. `@kabyeon/nexusjs/drive` — file storage abstraction
 
 `LocalDriver` (filesystem), `MemoryDriver` (in-process),
 `S3Driver` (AWS S3 / R2 / MinIO).
@@ -313,7 +313,7 @@ await drive.get('../etc/passwd'); // throws "Path traversal blocked"
 
 ---
 
-## 5. `nexusjs/mail` — outbound email
+## 5. `@kabyeon/nexusjs/mail` — outbound email
 
 `SmtpTransport` (nodemailer), `FileTransport` (.eml files for dev),
 `NullTransport` (tests).

@@ -43,7 +43,7 @@ lines of security-sensitive / operationally-fragile code.
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│              nexusjs/queue  (separate entry point)             │
+│              @kabyeon/nexusjs/queue  (separate entry point)             │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
 │  │  QueueService    │  │ @OnQueueReady    │  │ invokeReady- │ │
@@ -74,7 +74,7 @@ Backends are swappable; the user can change `backend: 'bullmq'` to
 
 ## 4. Module separation
 
-`nexusjs/queue` is a separate entry point:
+`@kabyeon/nexusjs/queue` is a separate entry point:
 
 ```json
 "exports": {

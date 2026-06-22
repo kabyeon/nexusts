@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`session.ko.md`](./session.ko.md)
 
-NexusJS ships a session module under `nexusjs/session` that provides a
+NexusJS ships a session module under `@kabyeon/nexusjs/session` that provides a
 uniform `SessionStorage` interface with multiple backends:
 
 - **cookie** — HMAC-signed, stateless, edge-friendly. The entire
@@ -10,9 +10,9 @@ uniform `SessionStorage` interface with multiple backends:
 - **memory** — in-process, for tests and single-instance dev.
 - **redis** — planned for v0.2 (interface defined).
 
-The session module is **separate from `nexusjs/core`**, **separate
-from `nexusjs/auth`** (better-auth manages its own sessions), but
-**integrates with `nexusjs/auth`** via `AuthService.bindSession()`.
+The session module is **separate from `@kabyeon/nexusjs/core`**, **separate
+from `@kabyeon/nexusjs/auth`** (better-auth manages its own sessions), but
+**integrates with `@kabyeon/nexusjs/auth`** via `AuthService.bindSession()`.
 
 ---
 
@@ -20,8 +20,8 @@ from `nexusjs/auth`** (better-auth manages its own sessions), but
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { SessionModule } from 'nexusjs/session';
+import { Module } from '@kabyeon/nexusjs';
+import { SessionModule } from '@kabyeon/nexusjs/session';
 
 @Module({
   imports: [
@@ -36,8 +36,8 @@ export class AppModule {}
 
 ```ts
 // app/controllers/cart.controller.ts
-import { Controller, Post, Body } from 'nexusjs';
-import { SessionService, Session } from 'nexusjs/session';
+import { Controller, Post, Body } from '@kabyeon/nexusjs';
+import { SessionService, Session } from '@kabyeon/nexusjs/session';
 
 @Controller('/cart')
 export class CartController {
@@ -116,13 +116,13 @@ deployments. GC runs on `setInterval`.
 
 ### Redis (v0.5)
 
-Multi-pod session storage via `nexusjs/redis`. The `client` is a
-`RedisClient` from `nexusjs/redis` — same package that powers the
-`nexusjs/cache` Redis store and the Cloudflare KV backend.
+Multi-pod session storage via `@kabyeon/nexusjs/redis`. The `client` is a
+`RedisClient` from `@kabyeon/nexusjs/redis` — same package that powers the
+`@kabyeon/nexusjs/cache` Redis store and the Cloudflare KV backend.
 
 ```ts
-import { SessionModule } from 'nexusjs/session';
-import { createRedisClient } from 'nexusjs/redis';
+import { SessionModule } from '@kabyeon/nexusjs/session';
+import { createRedisClient } from '@kabyeon/nexusjs/redis';
 
 SessionModule.forRoot({
   backend: 'redis',
@@ -141,8 +141,8 @@ the framework re-uses the same storage class with a different
 underlying client.
 
 ```ts
-import { SessionModule } from 'nexusjs/session';
-import { CloudflareKVAdapter } from 'nexusjs/redis';
+import { SessionModule } from '@kabyeon/nexusjs/session';
+import { CloudflareKVAdapter } from '@kabyeon/nexusjs/redis';
 
 export default {
   async fetch(req: Request, env: Env) {
@@ -195,7 +195,7 @@ You can encode/decode session cookies without instantiating the
 service (useful in middleware):
 
 ```ts
-import { SessionService } from 'nexusjs/session';
+import { SessionService } from '@kabyeon/nexusjs/session';
 
 const cookie = SessionService.encodeCookie(record, secret);
 const record = SessionService.decodeCookie(cookieValue, secret);
@@ -230,7 +230,7 @@ a built-in middleware that decodes the cookie and populates this field:
 
 ```ts
 // main.ts
-import { SessionService, sessionMiddleware } from "nexusjs/session";
+import { SessionService, sessionMiddleware } from "@kabyeon/nexusjs/session";
 
 const sessions = app.container.resolve(SessionService.TOKEN) as SessionService;
 app.server.app.use("*", sessionMiddleware(sessions));
@@ -298,7 +298,7 @@ destroys the old one. The old id becomes invalid.
 
 ---
 
-## 8. Integration with `nexusjs/auth`
+## 8. Integration with `@kabyeon/nexusjs/auth`
 
 `AuthService.bindSession(service)` links a `SessionService` to the
 auth flow. After binding, `AuthService.getSession()` consults the

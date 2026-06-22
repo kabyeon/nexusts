@@ -13,7 +13,7 @@
  */
 
 export default `
-import { Module } from 'nexusjs';
+import { Module } from '@kabyeon/nexusjs';
 import { {{ controller }} } from '../controllers/{{ kebab }}.controller.js';
 {{#hasService}}import { {{ service }} } from '../services/{{ kebab }}.service.js';{{/hasService}}
 {{#hasRepo}}import { {{ repository }} } from '../repositories/{{ kebab }}.repository.js';{{/hasRepo}}

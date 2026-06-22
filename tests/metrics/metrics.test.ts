@@ -1,5 +1,5 @@
 /**
- * Tests for `nexusjs/metrics`.
+ * Tests for `@kabyeon/nexusjs/metrics`.
  *
  * Coverage:
  * 1. Counter: inc, incBy, labels, error cases, render

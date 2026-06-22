@@ -83,12 +83,12 @@ mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
 bun init -y
 
 # 3. 의존성 추가
-bun add file:/절대/경로/nexusjs/dist
+bun add file:/절대/경로/@kabyeon/nexusjs/dist
 # 또는 테스트 앱 기준 상대 경로:
-bun add file:../nexusjs/dist
+bun add file:../@kabyeon/nexusjs/dist
 ```
 
-`bun install`이 `dist/`를 `node_modules/nexusjs/`로 복사하고 `exports` 필드를
+`bun install`이 `dist/`를 `node_modules/@kabyeon/nexusjs/`로 복사하고 `exports` 필드를
 npm이 하는 방식 그대로 해석합니다.
 
 ### 설치 검증
@@ -99,8 +99,8 @@ ls -la node_modules/nexusjs
 # → dist/ 내용물(index.js, cli/index.js, grpc/index.js, ...)이 보여야 함
 
 # package.json이 consumer-facing 버전인지 확인
-cat node_modules/nexusjs/package.json
-# → { "name": "nexusjs", "version": "0.5.0", "exports": {...}, ... }
+cat node_modules/@kabyeon/nexusjs/package.json
+# → { "name": "@kabyeon/nexusjs", "version": "0.5.0", "exports": {...}, ... }
 ```
 
 ### 적합한 상황
@@ -139,7 +139,7 @@ cd ..
 # 3. 테스트 앱에 tarball 설치
 mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
 bun init -y
-bun add ../nexusjs/dist/nexusjs-0.5.0.tgz
+bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
 ```
 
 ### 적합한 상황
@@ -163,15 +163,15 @@ rm dist/nexusjs-0.5.0.tgz
 
 ```ts
 // test-app/index.ts
-import { Application, Module, Controller, Get } from "nexusjs";
-import { GrpcService } from "nexusjs/grpc";
-import { EventEmitter } from "nexusjs/events";
+import { Application, Module, Controller, Get } from "@kabyeon/nexusjs";
+import { GrpcService } from "@kabyeon/nexusjs/grpc";
+import { EventEmitter } from "@kabyeon/nexusjs/events";
 
 @Controller("/")
 class AppController {
   @Get("/")
   hello() {
-    return { framework: "nexusjs", version: "0.5.0" };
+    return { framework: "@kabyeon/nexusjs", version: "0.5.0" };
   }
 }
 
@@ -184,12 +184,12 @@ const app = new Application(AppModule);
 console.assert(typeof Application === "function", "Application not exported");
 
 // 2. subpath export가 resolve됨 (deep import 테스트)
-console.assert(typeof GrpcService === "function", "nexusjs/grpc subpath broken");
-console.assert(typeof EventEmitter === "function", "nexusjs/events subpath broken");
+console.assert(typeof GrpcService === "function", "@kabyeon/nexusjs/grpc subpath broken");
+console.assert(typeof EventEmitter === "function", "@kabyeon/nexusjs/events subpath broken");
 
 // 3. CLI가 노출됨 (runtime API와 import 경로가 다름에 주의)
-import cliPkg from "nexusjs/cli";
-console.assert(typeof cliPkg === "object", "nexusjs/cli subpath broken");
+import cliPkg from "@kabyeon/nexusjs/cli";
+console.assert(typeof cliPkg === "object", "@kabyeon/nexusjs/cli subpath broken");
 
 // 4. DI + HTTP가 end-to-end로 동작
 const events = app.container.resolve(EventEmitter);
@@ -206,7 +206,7 @@ bun run test-app/index.ts
 
 # 다른 터미널에서:
 curl http://localhost:3000
-# → {"framework":"nexusjs","version":"0.5.0"}
+# → {"framework":"@kabyeon/nexusjs","version":"0.5.0"}
 ```
 
 세 줄이 모두 출력되면 `dist/` 빌드는 정상입니다.
@@ -236,13 +236,13 @@ curl http://localhost:3000
 `file:` install이 패키지를 못 찾음. 확인:
 
 ```bash
-ls node_modules/nexusjs/package.json    # 존재?
-cat node_modules/nexusjs/package.json | head -5
+ls node_modules/@kabyeon/nexusjs/package.json    # 존재?
+cat node_modules/@kabyeon/nexusjs/package.json | head -5
 ```
 
 `package.json`이 없으면 `file:` 경로가 잘못된 것. 절대 경로 사용 권장.
 
-### `Cannot find module 'nexusjs/grpc'`
+### `Cannot find module '@kabyeon/nexusjs/grpc'`
 
 Subpath export가 없거나 깨짐. `dist/` 확인:
 

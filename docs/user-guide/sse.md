@@ -1,9 +1,9 @@
-# nexusjs/sse — Server-Sent Events
+# @kabyeon/nexusjs/sse — Server-Sent Events
 
 > 한국어 버전: [`sse.ko.md`](./sse.ko.md)
 > Added in **v0.4** (Tier 2 gap from the NestJS / AdonisJS analyses).
 
-`nexusjs/sse` is a thin, type-safe wrapper around Hono's `streamSSE()`
+`@kabyeon/nexusjs/sse` is a thin, type-safe wrapper around Hono's `streamSSE()`
 for one-way streaming from server to client. Useful for AI chat
 responses, build progress, live logs, notifications, dashboards.
 
@@ -30,7 +30,7 @@ with auto-reconnect.
 
 | Need | Reach for |
 | --- | --- |
-| One-way server → client, ordered, low-frequency | `nexusjs/sse` |
+| One-way server → client, ordered, low-frequency | `@kabyeon/nexusjs/sse` |
 | Bidirectional, low-latency, binary | WebSockets |
 | Short request → response streaming | Hono `c.stream()` directly |
 
@@ -39,7 +39,7 @@ with auto-reconnect.
 ## 2. The `sse()` helper
 
 ```ts
-import { sse, getLastEventId } from 'nexusjs/sse';
+import { sse, getLastEventId } from '@kabyeon/nexusjs/sse';
 
 @Get('/events')
 events(@Req() c: any) {
@@ -232,11 +232,11 @@ useEffect(() => {
 
 | Framework | SSE story | v0.4 |
 | --- | --- | --- |
-| NestJS | `@nestjs/platform-sse` (uses RxJS observables) | ✅ closed — `nexusjs/sse` |
-| AdonisJS | DIY (Hono `streamSSE` example in docs) | ✅ closed — `nexusjs/sse` |
+| NestJS | `@nestjs/platform-sse` (uses RxJS observables) | ✅ closed — `@kabyeon/nexusjs/sse` |
+| AdonisJS | DIY (Hono `streamSSE` example in docs) | ✅ closed — `@kabyeon/nexusjs/sse` |
 
 Per the v0.3 gap analyses (NestJS §3.3, AdonisJS §4.4), this was
-a Tier 2 gap. `nexusjs/sse` ships it as a 1st-party module.
+a Tier 2 gap. `@kabyeon/nexusjs/sse` ships it as a 1st-party module.
 
 ---
 

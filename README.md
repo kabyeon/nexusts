@@ -4,7 +4,7 @@
 
 > **v0.6.5 — env-aware config + db:generate.** All 27 modules ship. Tier 1 and
 > Tier 2 gaps from the NestJS / AdonisJS gap analyses are now fully
-> closed. The view engine has moved to `nexusjs/view` as its own bundle
+> closed. The view engine has moved to `@kabyeon/nexusjs/view` as its own bundle
 > entry point, with Rendu (default), Edge, and Eta adapters. See
 > [CHANGELOG.md](./CHANGELOG.md) for the full v0.6 release notes.
 
@@ -19,35 +19,35 @@ fully closed.
 
 | Module | Purpose |
 | ------ | ------- |
-| `nexusjs` (core) | MVC + DI + validation + 3 routing styles + view engines + Inertia.js |
-| `nexusjs/cli` (`nx`) | Adonis ACE-style command runner — `new`, `init`, `make:*`, `migrate`, `info` |
-| `nexusjs/auth` | better-auth integration with `@CurrentUser` and `authMiddleware` |
-| `nexusjs/queue` | BullMQ + Cloudflare Queues + memory backends. `@OnQueueReady` decorator |
-| `nexusjs/schedule` | Custom cron parser. `@Cron` / `@Interval` / `@Timeout` decorators |
-| `nexusjs/events` | `NexusEventEmitter` with wildcards, priorities, guards. `@OnEvent` decorator |
-| `nexusjs/session` | Cookie (HMAC) + memory + **Drizzle** backends. Sliding expiry, rotation |
-| `nexusjs/health` | `/health/live` · `/health/ready` · `/health/startup`. Built-in indicators |
-| `nexusjs/config` | Zod-validated configuration. Layered loading from env, `.env`, `load()` |
-| `nexusjs/logger` | Pino-backed structured logging. Pretty-print in dev, JSON in prod |
-| `nexusjs/static` | Static file serving with ETag, Range, path-traversal protection |
-| `nexusjs/limiter` | Rate limiting. 3 strategies × memory / **Drizzle** storage |
-| `nexusjs/shield` | Security suite: CSRF + HSTS + CSP + X-Frame-Options + Referrer-Policy |
-| `nexusjs/cache` | Application cache. Memory (LRU) / **Drizzle** backends. Tag invalidation |
-| `nexusjs/drive` | File storage abstraction. Memory / Local / S3 / R2 drivers |
-| `nexusjs/mail` | Outbound email. Null / File / SMTP transports. MJML rendering |
-| `nexusjs/drizzle` | **Default ORM.** 5 dialects, `DrizzleModel`, `DrizzleRepository`, migrations, raw SQL (injection-safe) |
-| `nexusjs/openapi` | OpenAPI 3.1 spec generation + Scalar UI. Auto-derives from Zod validation schemas |
-| `nexusjs/upload` | Multipart file upload. `@Upload()` / `@UploadedFile()` decorators. Size, MIME, count validation |
-| `nexusjs/sse` | Server-Sent Events. `SseStream` with pending-write tracking. `sse(c, handler)` helper |
-| `nexusjs/tracing` | OpenTelemetry distributed tracing. Lazy SDK loading. `@Trace()` decorator. W3C + B3 propagation |
-| `nexusjs/metrics` | Prometheus / OpenMetrics. Counter / Gauge / Histogram / Summary. `@Counted()` / `@Timed()` decorators |
+| `@kabyeon/nexusjs` (core) | MVC + DI + validation + 3 routing styles + view engines + Inertia.js |
+| `@kabyeon/nexusjs/cli` (`nx`) | Adonis ACE-style command runner — `new`, `init`, `make:*`, `migrate`, `info` |
+| `@kabyeon/nexusjs/auth` | better-auth integration with `@CurrentUser` and `authMiddleware` |
+| `@kabyeon/nexusjs/queue` | BullMQ + Cloudflare Queues + memory backends. `@OnQueueReady` decorator |
+| `@kabyeon/nexusjs/schedule` | Custom cron parser. `@Cron` / `@Interval` / `@Timeout` decorators |
+| `@kabyeon/nexusjs/events` | `NexusEventEmitter` with wildcards, priorities, guards. `@OnEvent` decorator |
+| `@kabyeon/nexusjs/session` | Cookie (HMAC) + memory + **Drizzle** backends. Sliding expiry, rotation |
+| `@kabyeon/nexusjs/health` | `/health/live` · `/health/ready` · `/health/startup`. Built-in indicators |
+| `@kabyeon/nexusjs/config` | Zod-validated configuration. Layered loading from env, `.env`, `load()` |
+| `@kabyeon/nexusjs/logger` | Pino-backed structured logging. Pretty-print in dev, JSON in prod |
+| `@kabyeon/nexusjs/static` | Static file serving with ETag, Range, path-traversal protection |
+| `@kabyeon/nexusjs/limiter` | Rate limiting. 3 strategies × memory / **Drizzle** storage |
+| `@kabyeon/nexusjs/shield` | Security suite: CSRF + HSTS + CSP + X-Frame-Options + Referrer-Policy |
+| `@kabyeon/nexusjs/cache` | Application cache. Memory (LRU) / **Drizzle** backends. Tag invalidation |
+| `@kabyeon/nexusjs/drive` | File storage abstraction. Memory / Local / S3 / R2 drivers |
+| `@kabyeon/nexusjs/mail` | Outbound email. Null / File / SMTP transports. MJML rendering |
+| `@kabyeon/nexusjs/drizzle` | **Default ORM.** 5 dialects, `DrizzleModel`, `DrizzleRepository`, migrations, raw SQL (injection-safe) |
+| `@kabyeon/nexusjs/openapi` | OpenAPI 3.1 spec generation + Scalar UI. Auto-derives from Zod validation schemas |
+| `@kabyeon/nexusjs/upload` | Multipart file upload. `@Upload()` / `@UploadedFile()` decorators. Size, MIME, count validation |
+| `@kabyeon/nexusjs/sse` | Server-Sent Events. `SseStream` with pending-write tracking. `sse(c, handler)` helper |
+| `@kabyeon/nexusjs/tracing` | OpenTelemetry distributed tracing. Lazy SDK loading. `@Trace()` decorator. W3C + B3 propagation |
+| `@kabyeon/nexusjs/metrics` | Prometheus / OpenMetrics. Counter / Gauge / Histogram / Summary. `@Counted()` / `@Timed()` decorators |
 | **Request-scoped DI** *(core)* | `@Injectable({ scope: 'request' })` for per-request provider lifetime via `AsyncLocalStorage` |
-| `nexusjs/ws` | WebSockets on Bun (primary) and Node (via `ws`). `@WebSocketGateway()`, `@OnWebSocketMessage()`, rooms, broadcast |
-| `nexusjs/crypto` | AES-256-GCM encryption + HMAC + scrypt/argon2 password hashing. Single APP_KEY for sessions, CSRF, encrypted data |
-| `nexusjs/i18n` | Locale-aware translations + date/number/currency formatters via `Intl`. `I18nService`, `@CurrentLocale()`, JSON message catalogs |
-| `nexusjs/redis` | Runtime-aware Redis client (Bun / Node / Workers KV). Powers `redis` / `cloudflare-kv` session & cache backends |
-| `nexusjs/grpc` | Reflection-based gRPC server + typed client. Loads `.proto` files at runtime via `@grpc/proto-loader`. Unary methods (streaming deferred to v2) |
-| **`nexusjs/view`** *(extracted in v0.6.3)* | View engine with 3 adapters: Rendu (default, every runtime), Edge (Adonis-style `.edge`), Eta (EJS-style `.eta`). Auto-detects adapter by file extension. `setViewPaths()` for file-based templates |
+| `@kabyeon/nexusjs/ws` | WebSockets on Bun (primary) and Node (via `ws`). `@WebSocketGateway()`, `@OnWebSocketMessage()`, rooms, broadcast |
+| `@kabyeon/nexusjs/crypto` | AES-256-GCM encryption + HMAC + scrypt/argon2 password hashing. Single APP_KEY for sessions, CSRF, encrypted data |
+| `@kabyeon/nexusjs/i18n` | Locale-aware translations + date/number/currency formatters via `Intl`. `I18nService`, `@CurrentLocale()`, JSON message catalogs |
+| `@kabyeon/nexusjs/redis` | Runtime-aware Redis client (Bun / Node / Workers KV). Powers `redis` / `cloudflare-kv` session & cache backends |
+| `@kabyeon/nexusjs/grpc` | Reflection-based gRPC server + typed client. Loads `.proto` files at runtime via `@grpc/proto-loader`. Unary methods (streaming deferred to v2) |
+| **`@kabyeon/nexusjs/view`** *(extracted in v0.6.3)* | View engine with 3 adapters: Rendu (default, every runtime), Edge (Adonis-style `.edge`), Eta (EJS-style `.eta`). Auto-detects adapter by file extension. `setViewPaths()` for file-based templates |
 
 See [docs/user-guide/drizzle.md](./docs/user-guide/drizzle.md) for the
 Drizzle integration guide, [docs/user-guide/tracing.md](./docs/user-guide/tracing.md)
@@ -55,7 +55,7 @@ for OpenTelemetry, [docs/user-guide/metrics.md](./docs/user-guide/metrics.md)
 for Prometheus, and [CHANGELOG.md](./CHANGELOG.md) for the detailed
 v0.4 release notes.
 
-> The module table now includes `nexusjs/grpc` and `nexusjs/view`,
+> The module table now includes `@kabyeon/nexusjs/grpc` and `@kabyeon/nexusjs/view`,
 
 ---
 
@@ -97,7 +97,7 @@ bun add nexus/auth nexus/queue nexus/drizzle
 ```
 
 Every module is its own bundle entry point — install only what you
-use. The CLI (`nx`) is shipped as the `nx` bin and the `nexusjs/cli`
+use. The CLI (`nx`) is shipped as the `nx` bin and the `@kabyeon/nexusjs/cli`
 import:
 
 ```bash
@@ -124,22 +124,22 @@ export const users = pgTable('users', {
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { DrizzleModule } from 'nexusjs/drizzle';
-import { ConfigModule } from 'nexusjs/config';
-import { LoggerModule } from 'nexusjs/logger';
-import { HealthModule } from 'nexusjs/health';
-import { LimiterModule } from 'nexusjs/limiter';
-import { SessionModule } from 'nexusjs/session';
-import { CacheModule } from 'nexusjs/cache';
-import { DriveModule } from 'nexusjs/drive';
-import { MailModule } from 'nexusjs/mail';
-import { ShieldModule } from 'nexusjs/shield';
-import { AuthModule } from 'nexusjs/auth';
-import { OpenAPIModule } from 'nexusjs/openapi';
-import { UploadModule } from 'nexusjs/upload';
-import { TracingModule } from 'nexusjs/tracing';
-import { MetricsModule } from 'nexusjs/metrics';
+import { Module } from '@kabyeon/nexusjs';
+import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
+import { ConfigModule } from '@kabyeon/nexusjs/config';
+import { LoggerModule } from '@kabyeon/nexusjs/logger';
+import { HealthModule } from '@kabyeon/nexusjs/health';
+import { LimiterModule } from '@kabyeon/nexusjs/limiter';
+import { SessionModule } from '@kabyeon/nexusjs/session';
+import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { DriveModule } from '@kabyeon/nexusjs/drive';
+import { MailModule } from '@kabyeon/nexusjs/mail';
+import { ShieldModule } from '@kabyeon/nexusjs/shield';
+import { AuthModule } from '@kabyeon/nexusjs/auth';
+import { OpenAPIModule } from '@kabyeon/nexusjs/openapi';
+import { UploadModule } from '@kabyeon/nexusjs/upload';
+import { TracingModule } from '@kabyeon/nexusjs/tracing';
+import { MetricsModule } from '@kabyeon/nexusjs/metrics';
 import { UserModule } from './modules/user.module.js';
 import { configSchema } from './config/schema.js';
 
@@ -172,7 +172,7 @@ export class AppModule {}
 ```ts
 // app/main.ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -181,7 +181,7 @@ await app.listen(3000);
 
 ```ts
 // app/modules/user/user.module.ts
-import { Module } from 'nexusjs';
+import { Module } from '@kabyeon/nexusjs';
 import { UserController } from './user.controller.js';
 import { UserService } from './user.service.js';
 import { UserRepository } from './user.repository.js';
@@ -195,8 +195,8 @@ export class UserModule {}
 
 ```ts
 // app/modules/user/user.service.ts
-import { Inject, Injectable } from 'nexusjs';
-import { DrizzleService } from 'nexusjs/drizzle';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
+import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
 import { eq } from 'drizzle-orm';
 import { users } from '../../db/schema.js';
 
@@ -215,7 +215,7 @@ export class UserService {
 ```ts
 // app/modules/user/user.controller.ts
 import { z } from 'zod';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Query, Validate } from 'nexusjs';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Query, Validate } from '@kabyeon/nexusjs';
 import { UserService } from './user.service.js';
 
 const CreateUserSchema = z.object({
@@ -552,8 +552,8 @@ is the classic **Post/Redirect/Get**:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post } from 'nexusjs';
-import { Inertia } from 'nexusjs/view/inertia';
+import { Body, Controller, Post } from '@kabyeon/nexusjs';
+import { Inertia } from '@kabyeon/nexusjs/view/inertia';
 
 const UserSchema = z.object({
   name: z.string().min(2),
@@ -620,7 +620,7 @@ and Solid. Each lazy-imports its engine — install only what you
 use:
 
 ```ts
-import { createReactAdapter, ComponentRegistry } from 'nexusjs/view/inertia/ssr';
+import { createReactAdapter, ComponentRegistry } from '@kabyeon/nexusjs/view/inertia/ssr';
 
 const components = new ComponentRegistry()
   .register('Home', HomePage)
@@ -639,7 +639,7 @@ app.inertia.setSsrAdapter(createReactAdapter({ components }));
 ### Form middleware (CSRF)
 
 ```ts
-import { inertiaFormMiddleware } from 'nexusjs/view/inertia';
+import { inertiaFormMiddleware } from '@kabyeon/nexusjs/view/inertia';
 
 app.server.app.use('*', inertiaFormMiddleware({
   validateCsrf: true,
@@ -656,9 +656,9 @@ the per-field validation flow; this is the upstream CSRF gate.
 
 ---
 
-## View engine — `nexusjs/view`
+## View engine — `@kabyeon/nexusjs/view`
 
-The view engine is available as `nexusjs/view` — its own bundle entry
+The view engine is available as `@kabyeon/nexusjs/view` — its own bundle entry
 point. It ships three adapters:
 
 | Adapter | Extension | Style | Runtime support |
@@ -710,7 +710,7 @@ app.setViewAdapter(new EdgeAdapter());
 Or implement the `ViewAdapter` interface for a custom engine:
 
 ```ts
-import type { ViewAdapter } from 'nexusjs/view';
+import type { ViewAdapter } from '@kabyeon/nexusjs/view';
 
 class MyEngine implements ViewAdapter {
   readonly name = 'my-engine';
@@ -774,21 +774,21 @@ src/
 │   ├── commands/           # new, init, make:*, migrate, info
 │   ├── templates/          # mustache-lite scaffolds
 │   └── core/               # arg parser, prompts, fs helpers
-├── auth/                   # `nexusjs/auth` (better-auth wrapper)
-├── queue/                  # `nexusjs/queue` (BullMQ / Cloudflare / memory)
-├── schedule/               # `nexusjs/schedule` (custom cron parser)
-├── events/                 # `nexusjs/events` (typed emitter)
-├── session/                # `nexusjs/session` (cookie / memory / drizzle backends)
-├── health/                 # `nexusjs/health` (live/ready/startup + indicators)
-├── config/                 # `nexusjs/config` (Zod-validated env config)
-├── logger/                 # `nexusjs/logger` (Pino transports)
-├── static/                 # `nexusjs/static` (file serving)
-├── limiter/                # `nexusjs/limiter` (rate limiting)
-├── shield/                 # `nexusjs/shield` (CSRF + security headers)
-├── cache/                  # `nexusjs/cache` (LRU + drizzle)
-├── drive/                  # `nexusjs/drive` (storage abstraction)
-├── mail/                   # `nexusjs/mail` (SMTP / File / Null)
-└── drizzle/                # `nexusjs/drizzle` (default ORM)
+├── auth/                   # `@kabyeon/nexusjs/auth` (better-auth wrapper)
+├── queue/                  # `@kabyeon/nexusjs/queue` (BullMQ / Cloudflare / memory)
+├── schedule/               # `@kabyeon/nexusjs/schedule` (custom cron parser)
+├── events/                 # `@kabyeon/nexusjs/events` (typed emitter)
+├── session/                # `@kabyeon/nexusjs/session` (cookie / memory / drizzle backends)
+├── health/                 # `@kabyeon/nexusjs/health` (live/ready/startup + indicators)
+├── config/                 # `@kabyeon/nexusjs/config` (Zod-validated env config)
+├── logger/                 # `@kabyeon/nexusjs/logger` (Pino transports)
+├── static/                 # `@kabyeon/nexusjs/static` (file serving)
+├── limiter/                # `@kabyeon/nexusjs/limiter` (rate limiting)
+├── shield/                 # `@kabyeon/nexusjs/shield` (CSRF + security headers)
+├── cache/                  # `@kabyeon/nexusjs/cache` (LRU + drizzle)
+├── drive/                  # `@kabyeon/nexusjs/drive` (storage abstraction)
+├── mail/                   # `@kabyeon/nexusjs/mail` (SMTP / File / Null)
+└── drizzle/                # `@kabyeon/nexusjs/drizzle` (default ORM)
     ├── drivers/            # postgres / mysql / sqlite / bun-sqlite / d1
     ├── repository/         # DrizzleRepository (Lucid-style)
     ├── decorators/         # @Table / @Column / @PrimaryKey
@@ -809,20 +809,20 @@ v1.0, only major bumps will.
 ### Shipped
 
 - **v0.1** (2026-04-30) — MVC core, DI, validation, Rendu / Edge / Inertia adapters, CLI bootstrap.
-- **v0.2** (2026-05-15) — `nexusjs/auth`, `nexusjs/queue`, `nexusjs/schedule`, `nexusjs/events`, `nexusjs/session`, full `nx` CLI.
-- **v0.3** (2026-06-21) — production basics, cross-cutting features, `nexusjs/drizzle` as the default ORM.
-- **v0.4** (2026-06-22) — observability + DX: `nexusjs/openapi`, `nexusjs/upload`, `nexusjs/sse`, `nexusjs/tracing`, `nexusjs/metrics`, request-scoped DI in core.
-- **v0.5** (2026-06-23) — realtime + crypto + i18n + redis: `nexusjs/ws`, `nexusjs/crypto`, `nexusjs/i18n`, `nexusjs/redis`.
-- **v0.6** (2026-06-24) — gRPC + tooling: `nexusjs/grpc` (reflection-based server + typed client) and a publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten).
-- **v0.6.1** (2026-06-25) — patch: `nexus` → `nexusjs` rename across all sources (191 files), `bin` field fix, `dist/src/*` flatten, docs in sync with the published name. No new features.
-- **v0.6.3** (2026-06-26) — view engine extracted to `nexusjs/view`, Eta adapter, file-based view paths, auto-detection by extension.
+- **v0.2** (2026-05-15) — `@kabyeon/nexusjs/auth`, `@kabyeon/nexusjs/queue`, `@kabyeon/nexusjs/schedule`, `@kabyeon/nexusjs/events`, `@kabyeon/nexusjs/session`, full `nx` CLI.
+- **v0.3** (2026-06-21) — production basics, cross-cutting features, `@kabyeon/nexusjs/drizzle` as the default ORM.
+- **v0.4** (2026-06-22) — observability + DX: `@kabyeon/nexusjs/openapi`, `@kabyeon/nexusjs/upload`, `@kabyeon/nexusjs/sse`, `@kabyeon/nexusjs/tracing`, `@kabyeon/nexusjs/metrics`, request-scoped DI in core.
+- **v0.5** (2026-06-23) — realtime + crypto + i18n + redis: `@kabyeon/nexusjs/ws`, `@kabyeon/nexusjs/crypto`, `@kabyeon/nexusjs/i18n`, `@kabyeon/nexusjs/redis`.
+- **v0.6** (2026-06-24) — gRPC + tooling: `@kabyeon/nexusjs/grpc` (reflection-based server + typed client) and a publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten).
+- **v0.6.1** (2026-06-25) — patch: `nexus` → `@kabyeon/nexusjs` rename across all sources (191 files), `bin` field fix, `dist/src/*` flatten, docs in sync with the published name. No new features.
+- **v0.6.3** (2026-06-26) — view engine extracted to `@kabyeon/nexusjs/view`, Eta adapter, file-based view paths, auto-detection by extension.
 - **v0.6.4** (2026-06-22) — default view engine to Rendu, CLI view options include eta, Application auto-loads viewPaths from nx.config.ts, static file path fix, scaffold deduplication.
 - **v0.6.5** (2026-06-22) — env-aware config, `nx db:generate`, built-in `sessionMiddleware()`, scaffold generates `.env`/`.env.local`/`.gitignore`, drizzle model import fix, `make:crud` repository fix.
 
 ### Planned
 
-- **v0.7** — `nexusjs/graphql` (code-first schema) and `nexusjs/resilience` (circuit breaker, retry, bulkhead).
-- **v0.8** — `nexusjs/feature-flag` (canary / A/B testing), runtime parity test suite, performance benchmarks across Bun / Node / Workers.
+- **v0.7** — `@kabyeon/nexusjs/graphql` (code-first schema) and `@kabyeon/nexusjs/resilience` (circuit breaker, retry, bulkhead).
+- **v0.8** — `@kabyeon/nexusjs/feature-flag` (canary / A/B testing), runtime parity test suite, performance benchmarks across Bun / Node / Workers.
 - **v1.0** — stable public API surface with semver guarantees, removal of all v0.1 deprecated aliases, long-term LTS support plan.
 
 Detailed release notes for every version live in

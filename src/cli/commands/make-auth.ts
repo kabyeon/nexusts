@@ -27,7 +27,7 @@ const AUTH_INSTANCE_TEMPLATE = `/**
  * Edit \`nx.config.ts\` (\`auth\` section) instead of this file when possible.
  */
 import 'reflect-metadata';
-import { createAuth } from 'nexusjs/auth';
+import { createAuth } from '@kabyeon/nexusjs/auth';
 
 export const auth = createAuth({
 {{^jwt}}
@@ -69,7 +69,7 @@ BETTER_AUTH_URL=http://localhost:3000
 {{/providers}}
 `;
 
-const MODULE_UPDATE_HINT = `import { AuthModule } from 'nexusjs/auth';
+const MODULE_UPDATE_HINT = `import { AuthModule } from '@kabyeon/nexusjs/auth';
 // In your AppModule.imports:
 imports: [AuthModule.forRoot({ /* ... */ })],
 `;

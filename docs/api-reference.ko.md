@@ -384,11 +384,11 @@ class DrizzleAdapter {
 
 ---
 
-## `nexusjs/openapi` (v0.4)
+## `@kabyeon/nexusjs/openapi` (v0.4)
 
 ```ts
-import { OpenAPIService, OpenAPIModule } from "nexusjs/openapi";
-import { ApiTags, ApiOperation, ApiResponse } from "nexusjs/openapi";
+import { OpenAPIService, OpenAPIModule } from "@kabyeon/nexusjs/openapi";
+import { ApiTags, ApiOperation, ApiResponse } from "@kabyeon/nexusjs/openapi";
 
 @Module({
   imports: [OpenAPIModule.forRoot({ title: "My App", version: "1.0.0", path: "/docs" })],
@@ -409,10 +409,10 @@ class UserController {
 
 ---
 
-## `nexusjs/upload` (v0.4)
+## `@kabyeon/nexusjs/upload` (v0.4)
 
 ```ts
-import { UploadModule, Upload, UploadedFile } from "nexusjs/upload";
+import { UploadModule, Upload, UploadedFile } from "@kabyeon/nexusjs/upload";
 
 @Module({
   imports: [UploadModule.forRoot({ maxFileSize: 10 * 1024 * 1024 })],
@@ -431,10 +431,10 @@ class UserController {
 
 ---
 
-## `nexusjs/sse` (v0.4)
+## `@kabyeon/nexusjs/sse` (v0.4)
 
 ```ts
-import { sse } from "nexusjs/sse";
+import { sse } from "@kabyeon/nexusjs/sse";
 
 @Controller("/events")
 class EventController {
@@ -452,10 +452,10 @@ class EventController {
 
 ---
 
-## `nexusjs/tracing` (v0.4)
+## `@kabyeon/nexusjs/tracing` (v0.4)
 
 ```ts
-import { TracingModule, Trace, withSpan } from "nexusjs/tracing";
+import { TracingModule, Trace, withSpan } from "@kabyeon/nexusjs/tracing";
 
 @Module({
   imports: [TracingModule.forRoot({
@@ -481,10 +481,10 @@ await withSpan("nightly.cleanup", async (span) => {
 
 ---
 
-## `nexusjs/metrics` (v0.4)
+## `@kabyeon/nexusjs/metrics` (v0.4)
 
 ```ts
-import { MetricsModule, Counted, Timed } from "nexusjs/metrics";
+import { MetricsModule, Counted, Timed } from "@kabyeon/nexusjs/metrics";
 
 @Module({
   imports: [MetricsModule.forRoot({ path: "/metrics", enableDefaultMetrics: true })],
@@ -505,7 +505,7 @@ class UserService {
 ## Request-scoped DI (v0.4)
 
 ```ts
-import { Inject, Injectable, REQUEST, getRequest } from "nexusjs";
+import { Inject, Injectable, REQUEST, getRequest } from "@kabyeon/nexusjs";
 
 @Injectable({ scope: "request" })
 class RequestContext {
@@ -524,11 +524,11 @@ class AuditService {
 
 ---
 
-## `nexusjs/grpc` (v0.6)
+## `@kabyeon/nexusjs/grpc` (v0.6)
 
 ```ts
-import { GrpcModule, GrpcService, GrpcService as GrpcServiceDecorator, GrpcMethod, GRPC_SERVICE_TOKEN } from "nexusjs/grpc";
-import { Inject, Injectable, Module } from "nexusjs";
+import { GrpcModule, GrpcService, GrpcService as GrpcServiceDecorator, GrpcMethod, GRPC_SERVICE_TOKEN } from "@kabyeon/nexusjs/grpc";
+import { Inject, Injectable, Module } from "@kabyeon/nexusjs";
 
 @Injectable()
 @GrpcServiceDecorator("UserService")

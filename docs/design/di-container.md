@@ -202,7 +202,7 @@ Anything not in `exports` stays private to its declaring module.
 | `InjectionToken`, `Provider`, `ModuleOptions` | Type definitions |
 | `@Module`, `@Injectable`, `@Inject`, `@Controller`, `@Repository` | Decorators (see [`../../src/core/decorators`](../../src/core/decorators)) |
 
-All of the above are re-exported from the `nexusjs` entry point.
+All of the above are re-exported from the `@kabyeon/nexusjs` entry point.
 
 ---
 

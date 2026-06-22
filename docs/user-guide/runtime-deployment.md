@@ -13,7 +13,7 @@ loads the appropriate adapter.
 ```ts
 // main.ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -67,7 +67,7 @@ Both `tsx` and `ts-node` respect `tsconfig.json` and emit
 ```ts
 // app/worker.ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -238,7 +238,7 @@ These will be first-class in v0.2.
 The framework logs to `console` by default. To replace:
 
 ```ts
-import { logger } from 'nexusjs';  // if exposed
+import { logger } from '@kabyeon/nexusjs';  // if exposed
 // or via a custom middleware:
 app.server.app.use('*', async (c, next) => {
   const start = Date.now();

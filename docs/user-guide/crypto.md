@@ -1,10 +1,10 @@
-# Crypto · `nexusjs/crypto` (v0.5)
+# Crypto · `@kabyeon/nexusjs/crypto` (v0.5)
 
 > New in v0.5. Encryption + password hashing for NexusJS apps.
 > Zero external dependencies. All primitives come from Node's
 > built-in `crypto` module.
 
-`nexusjs/crypto` provides:
+`@kabyeon/nexusjs/crypto` provides:
 
 - **`EncryptionService`** — AES-256-GCM symmetric encryption +
   HMAC-SHA256 sign / unsign helpers.
@@ -13,7 +13,7 @@
 - **`CryptoModule.forRoot({ key })`** — wires both into the DI
   container.
 
-Other modules (`nexusjs/session`, `nexusjs/shield`) now use
+Other modules (`@kabyeon/nexusjs/session`, `@kabyeon/nexusjs/shield`) now use
 `EncryptionService` internally for HMAC operations, so a single
 APP_KEY is enough for sessions, CSRF tokens, and any encryption
 you need in your app code.
@@ -29,14 +29,14 @@ bun add @node-rs/argon2
 ```
 
 ```ts
-import { Module, Inject } from "nexusjs";
+import { Module, Inject } from "@kabyeon/nexusjs";
 import {
   CryptoModule,
   EncryptionService,
   HashService,
   ENCRYPTION_SERVICE_TOKEN,
   HASH_SERVICE_TOKEN,
-} from "nexusjs/crypto";
+} from "@kabyeon/nexusjs/crypto";
 
 @Module({
   imports: [CryptoModule.forRoot({ key: process.env.APP_KEY! })],
@@ -226,7 +226,7 @@ res.status(200).send("OK");
 ## 5. Migration from v0.4
 
 This module is new in v0.5. The cookie session backend
-(`CookieSessionStorage`) and the CSRF guard in `nexusjs/shield`
+(`CookieSessionStorage`) and the CSRF guard in `@kabyeon/nexusjs/shield`
 now use `EncryptionService` for HMAC. **Existing signed cookies
 will be invalidated** because the HMAC key is now derived via
 HKDF instead of being the secret directly. Users will be signed

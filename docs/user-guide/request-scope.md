@@ -19,7 +19,7 @@ per-transaction database contexts.
 ## 1. Quick start
 
 ```ts
-import { Inject, Injectable, REQUEST } from 'nexusjs';
+import { Inject, Injectable, REQUEST } from '@kabyeon/nexusjs';
 
 @Injectable({ scope: 'request' })
 class RequestContext {
@@ -75,7 +75,7 @@ For service code that's deep in the call tree (where constructor
 injection isn't ergonomic), the framework ships three helpers:
 
 ```ts
-import { getRequest, getRequestScope, getRequestState, setRequestState } from 'nexusjs';
+import { getRequest, getRequestScope, getRequestState, setRequestState } from '@kabyeon/nexusjs';
 
 function auditDeepInTheCallTree() {
   const req = getRequest();          // Hono context
@@ -135,7 +135,7 @@ You can also install it manually on a custom Hono app:
 
 ```ts
 import { Hono } from 'hono';
-import { requestScopeMiddleware } from 'nexusjs/core';
+import { requestScopeMiddleware } from '@kabyeon/nexusjs/core';
 
 const root = new DIContainer();
 root.register(RequestContext as any);
@@ -146,10 +146,10 @@ app.use('*', requestScopeMiddleware(root));
 
 ---
 
-## 6. Transactions (companion to `nexusjs/drizzle`)
+## 6. Transactions (companion to `@kabyeon/nexusjs/drizzle`)
 
 Request-scoped DI is a natural fit for database transactions.
-`nexusjs/drizzle`'s `db.transaction(fn)` runs `fn` inside a
+`@kabyeon/nexusjs/drizzle`'s `db.transaction(fn)` runs `fn` inside a
 transaction; combine with a request-scoped `Tx` provider to make
 the same transaction available to every service in the request.
 
@@ -179,7 +179,7 @@ async createOrder(@Req() c: any) {
 ```
 
 (Tx plumbing not shipped yet — this is illustrative. The
-`nexusjs/drizzle` module is what owns the actual transaction
+`@kabyeon/nexusjs/drizzle` module is what owns the actual transaction
 boundary.)
 
 ---
@@ -188,10 +188,10 @@ boundary.)
 
 ```ts
 import { describe, it, expect } from 'vitest';
-import { DIContainer } from 'nexusjs/core';
-import { Injectable, Inject } from 'nexusjs/core';
-import { requestScopeMiddleware } from 'nexusjs/core';
-import { getRequestScope } from 'nexusjs/core';
+import { DIContainer } from '@kabyeon/nexusjs/core';
+import { Injectable, Inject } from '@kabyeon/nexusjs/core';
+import { requestScopeMiddleware } from '@kabyeon/nexusjs/core';
+import { getRequestScope } from '@kabyeon/nexusjs/core';
 
 @Injectable({ scope: 'request' })
 class Ctx { id = Math.random().toString(36).slice(2, 8); }

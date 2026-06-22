@@ -167,7 +167,7 @@ export const initCommand: Command = {
 				// If missing, create a minimal one.
 				if (exists) {
 					mergePackageJson(abs, {
-						nexusjs: "*",
+						"@kabyeon/nexusjs": "*",
 						"reflect-metadata": "^0.2.2",
 						hono: "^4.6.0",
 						zod: "^3.23.8",
@@ -190,7 +190,7 @@ export const initCommand: Command = {
 									nx: "nx",
 								},
 								dependencies: {
-									nexusjs: "*",
+									"@kabyeon/nexusjs": "*",
 									"reflect-metadata": "^0.2.2",
 									hono: "^4.6.0",
 									zod: "^3.23.8",
@@ -349,8 +349,8 @@ DATABASE_URL=app.db
 `;
 		case "app/main.ts":
 			return `import 'reflect-metadata';
-import { Application } from 'nexusjs';
-import { StaticModule } from 'nexusjs/static';
+import { Application } from '@kabyeon/nexusjs';
+import { StaticModule } from '@kabyeon/nexusjs/static';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -362,7 +362,7 @@ await app.listen(port);
 console.log("[nexusjs] Listening on http://localhost:" + port);
 `;
 		case "app/app.module.ts":
-			return `import { Module } from 'nexusjs';
+			return `import { Module } from '@kabyeon/nexusjs';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
@@ -372,7 +372,7 @@ import { HomeController } from './controllers/home.controller.js';
 export class AppModule {}
 `;
 		case "app/controllers/home.controller.ts":
-			return `import { Controller, Get } from 'nexusjs';
+			return `import { Controller, Get } from '@kabyeon/nexusjs';
 
 @Controller('/')
 export class HomeController {

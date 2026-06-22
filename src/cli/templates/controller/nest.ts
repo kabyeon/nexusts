@@ -14,7 +14,7 @@
  */
 
 export default `
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from 'nexusjs';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@kabyeon/nexusjs';
 import { {{ service }} } from '../services/{{ kebab }}.service.js';
 
 @Controller('/{{ kebab }}s')

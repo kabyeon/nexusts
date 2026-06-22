@@ -11,7 +11,7 @@ NexusJS는 단일 `Application` API를 통해 **Bun, Node.js, Cloudflare Workers
 ```ts
 // main.ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -62,7 +62,7 @@ npx tsx app/main.ts
 ```ts
 // app/worker.ts
 import 'reflect-metadata';
-import { Application } from 'nexusjs';
+import { Application } from '@kabyeon/nexusjs';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -224,7 +224,7 @@ Workers의 경우 Docker 없이 `wrangler deploy`를 직접 사용하세요.
 프레임워크는 기본적으로 `console`에 로그를 출력합니다. 교체하려면:
 
 ```ts
-import { logger } from 'nexusjs';  // 노출된 경우
+import { logger } from '@kabyeon/nexusjs';  // 노출된 경우
 // 또는 커스텀 미들웨어 사용:
 app.server.app.use('*', async (c, next) => {
   const start = Date.now();

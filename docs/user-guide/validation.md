@@ -10,7 +10,7 @@ failing request never reaches your business logic.
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Param, Post, Query, Validate } from 'nexusjs';
+import { Body, Controller, Param, Post, Query, Validate } from '@kabyeon/nexusjs';
 
 const CreateUserSchema = z.object({
   name: z.string().min(2),
@@ -199,7 +199,7 @@ To customize the 400 response shape, wrap `@Validate` in your own
 decorator (or post-process in middleware):
 
 ```ts
-import { Validate, type ValidationConfig } from 'nexusjs';
+import { Validate, type ValidationConfig } from '@kabyeon/nexusjs';
 import { ZodError } from 'zod';
 
 export function ValidateV2(config: ValidationConfig) {

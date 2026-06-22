@@ -172,7 +172,7 @@ async store(@Body() input: Record<string, any>) {
 폼 헬퍼는 **필드별 검증과 PRG**를 처리하지만 CSRF는 **업스트림** 관심사입니다. `inertiaFormMiddleware`는 모든 컨트롤러 앞에 실행되며 불일치 시 **419 Page Expired**를 반환합니다.
 
 ```ts
-import { inertiaFormMiddleware } from 'nexusjs/view/inertia';
+import { inertiaFormMiddleware } from '@kabyeon/nexusjs/view/inertia';
 
 app.server.app.use('*', inertiaFormMiddleware({
   validateCsrf: true,
@@ -293,7 +293,7 @@ interface SsrRenderResult {
 각 어댑터는 엔진을 lazy-import합니다. 사용하는 것만 설치하세요.
 
 ```ts
-import { createReactAdapter, ComponentRegistry } from 'nexusjs/view/inertia/ssr';
+import { createReactAdapter, ComponentRegistry } from '@kabyeon/nexusjs/view/inertia/ssr';
 
 const components = new ComponentRegistry()
   .register('Home', HomePage)

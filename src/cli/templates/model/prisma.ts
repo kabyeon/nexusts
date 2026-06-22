@@ -18,7 +18,7 @@ export default `
  */
 
 import { PrismaClient } from '@prisma/client';
-import { Inject, Injectable } from 'nexusjs';
+import { Inject, Injectable } from '@kabyeon/nexusjs';
 
 @Injectable()
 export class {{ name }}Repository {

@@ -1,11 +1,11 @@
-# nexusjs/upload — 파일 업로드 헬퍼
+# @kabyeon/nexusjs/upload — 파일 업로드 헬퍼
 
 > English version: [`upload.md`](./upload.md)
 > **v0.4**에서 추가됨 (NestJS / AdonisJS 분석의 Tier 1 격차).
 
-`nexusjs/upload`는 NexusJS의 **1급 파일 업로드 핸들러**다. Hono의
+`@kabyeon/nexusjs/upload`는 NexusJS의 **1급 파일 업로드 핸들러**다. Hono의
 `c.req.parseBody()`를 타입 안전 데코레이터, 크기/MIME 검증, 다중 파일
-지원, 옵션 `nexusjs/drive` 훅(클라우드 스토리지용)으로 감싼다. 외부
+지원, 옵션 `@kabyeon/nexusjs/drive` 훅(클라우드 스토리지용)으로 감싼다. 외부
 multipart 파서 없이 동작.
 
 ```
@@ -26,8 +26,8 @@ multipart 파서 없이 동작.
 
 ```ts
 // app/app.module.ts
-import { Module } from 'nexusjs';
-import { UploadModule } from 'nexusjs/upload';
+import { Module } from '@kabyeon/nexusjs';
+import { UploadModule } from '@kabyeon/nexusjs/upload';
 
 @Module({
   imports: [
@@ -44,7 +44,7 @@ export class AppModule {}
 프레임워크 라우터가 빌드된 후 multipart 미들웨어를 마운트한다:
 
 ```ts
-import { UploadService, UploadModule } from 'nexusjs/upload';
+import { UploadService, UploadModule } from '@kabyeon/nexusjs/upload';
 
 const app = new Application(AppModule);
 const upload = app.container.resolve(UploadService.TOKEN) as UploadService;
@@ -56,9 +56,9 @@ Controller에서:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post, Validate } from 'nexusjs';
-import { Upload, UploadedFile, UploadedFiles } from 'nexusjs/upload';
-import type { UploadedFile } from 'nexusjs/upload';
+import { Body, Controller, Post, Validate } from '@kabyeon/nexusjs';
+import { Upload, UploadedFile, UploadedFiles } from '@kabyeon/nexusjs/upload';
+import type { UploadedFile } from '@kabyeon/nexusjs/upload';
 
 @Controller('/uploads')
 class UploadController {
@@ -161,7 +161,7 @@ allowedMimeTypes: [
 
 ---
 
-## 5. `nexusjs/drive` 통합
+## 5. `@kabyeon/nexusjs/drive` 통합
 
 `UploadModule.forRoot(...)`에 `driveToken`을 전달하면, 서비스는
 허용된 각 파일을 설정된 `DriveService`의 `drivePrefix` 아래에
@@ -254,11 +254,11 @@ async uploadVideo(@Req() ctx: any) {
 
 | 프레임워크 | 파일 업로드 | v0.4 |
 | --- | --- | --- |
-| NestJS | `multer` + `@UploadedFile()` 데코레이터 | ✅ 해소 — `nexusjs/upload` |
-| AdonisJS | `@adonisjs/bodyparser` + `request.file('avatar')` | ✅ 해소 — `nexusjs/upload` |
+| NestJS | `multer` + `@UploadedFile()` 데코레이터 | ✅ 해소 — `@kabyeon/nexusjs/upload` |
+| AdonisJS | `@adonisjs/bodyparser` + `request.file('avatar')` | ✅ 해소 — `@kabyeon/nexusjs/upload` |
 
 v0.3 격차 분석(NestJS §3.2, AdonisJS §4.3)에 따르면, 이것이 두 번째
-Tier 1 격차였다. `nexusjs/upload`와 `nexusjs/openapi`가 모두 출시되어 모든
+Tier 1 격차였다. `@kabyeon/nexusjs/upload`와 `@kabyeon/nexusjs/openapi`가 모두 출시되어 모든
 Tier 1 기능이 이제 NexusJS에 있다.
 
 ---
