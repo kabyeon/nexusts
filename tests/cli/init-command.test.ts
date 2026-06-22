@@ -166,9 +166,21 @@ describe("nx init — fresh install", () => {
 			}),
 		);
 
-		// Should be byte-identical (merge detected no change needed)
+		const expected = JSON.stringify(
+			{
+				name: "already-had-nexus",
+				dependencies: {
+					nexusjs: "../nexusjs/dist/nexusjs-0.6.1.tgz",
+					"reflect-metadata": "^0.2.2",
+					hono: "^4.6.0",
+					zod: "^3.23.8",
+				},
+			},
+			null,
+			2,
+		) + "\n";
 		const after = await readFile(join(target, "package.json"), "utf8");
-		expect(after).toBe(original);
+		expect(after).toBe(expected);
 	});
 
 	it("handles package.json with // line comments (JSON5-style)", async () => {

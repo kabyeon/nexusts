@@ -163,7 +163,12 @@ export const initCommand: Command = {
 				// Always merge: never clobber an existing package.json.
 				// If missing, create a minimal one.
 				if (exists) {
-					mergePackageJson(abs, { nexusjs: "*" });
+					mergePackageJson(abs, {
+						nexusjs: "*",
+						"reflect-metadata": "^0.2.2",
+						hono: "^4.6.0",
+						zod: "^3.23.8",
+					});
 					merged.push(entry.path);
 				} else {
 					writeFileSync(
@@ -173,7 +178,20 @@ export const initCommand: Command = {
 								name: target.split("/").pop() ?? "nexus-app",
 								version: "0.1.0",
 								type: "module",
-								dependencies: { nexusjs: "*" },
+								private: true,
+								scripts: {
+									dev: "bun --hot app/main.ts",
+									build: "bun run build.ts",
+									start: "bun app/main.ts",
+									test: "vitest",
+									nx: "nx",
+								},
+								dependencies: {
+									nexusjs: "*",
+									"reflect-metadata": "^0.2.2",
+									hono: "^4.6.0",
+									zod: "^3.23.8",
+								},
 							},
 							null,
 							2,

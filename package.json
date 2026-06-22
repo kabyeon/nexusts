@@ -32,8 +32,8 @@
       "import": "./dist/core/validation/index.js"
     },
     "./view": {
-      "types": "./dist/core/view/index.d.ts",
-      "import": "./dist/core/view/index.js"
+      "types": "./dist/view/index.d.ts",
+      "import": "./dist/view/index.js"
     },
     "./orm": {
       "types": "./dist/core/orm/index.d.ts",

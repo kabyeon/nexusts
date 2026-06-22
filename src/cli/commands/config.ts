@@ -60,7 +60,7 @@ interface NxConfigValues {
 
 const DEFAULT_VALUES: NxConfigValues = {
 	routing: "nest",
-	view: "inertia",
+	view: "rendu",
 	viewPaths: ["resources/views"],
 	orm: "drizzle",
 	dbDriver: "bun-sqlite",
