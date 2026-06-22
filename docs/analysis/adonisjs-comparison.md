@@ -1,9 +1,9 @@
 # NexusJS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.1**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.6.4**
 
-This document compares NexusJS v0.5 against [AdonisJS v6](https://adonisjs.com)
+This document compares NexusJS v0.6 against [AdonisJS v6](https://adonisjs.com)
 to identify which AdonisJS-style "batteries" (convention-driven,
 "everything just works" features) are **present**, **partially
 present**, or **missing**. The v0.3, v0.4, and v0.5 milestones
@@ -20,11 +20,11 @@ covers essentially every battery AdonisJS ships.
 
 ---
 
-## 1. Summary table (v0.5)
+## 1. Summary table (v0.6)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | AdonisJS | NexusJS v0.5 | Notes |
+| Category | AdonisJS | NexusJS v0.6 | Notes |
 |----------|----------|--------------|-------|
 | HTTP server | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | Nexus uses Hono as the underlying server |
 | Routing | ✅ Route groups, resources, subdomains | ✅ Class decorators + functional | Three styles: Nest, Adonis, Functional |
@@ -58,17 +58,17 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Tracing | ❌ DIY | ✅ `nexusjs/tracing` | OpenTelemetry with lazy SDK |
 | Metrics | ❌ DIY | ✅ `nexusjs/metrics` | Prometheus / OpenMetrics |
 | Bodyparser | ✅ Built-in | ✅ Hono's `c.req.parseBody()` + `nexusjs/upload` | |
-| REPL | ✅ `node ace repl` | ❌ Not shipped | Lower priority for v0.5 |
+| REPL | ✅ `node ace repl` | ✅ `nx repl` | Interactive REPL shipped in v0.5 |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ Not shipped | Debugging-only |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ Not shipped | Lower priority |
-| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ None | Planned v0.6 |
-| gRPC | ❌ DIY | ❌ None | Planned v0.6 |
-| Feature flags | ❌ DIY | ❌ None | Planned v0.6 |
-| Resilence (circuit breaker) | ❌ DIY | ❌ None | Planned v0.6 |
+| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ None | Planned v0.7 |
+| gRPC | ❌ DIY | ✅ `nexusjs/grpc` | Reflection-based, unary (streaming v2) |
+| Feature flags | ❌ DIY | ❌ None | Planned v0.7 |
+| Resilience (circuit breaker) | ❌ DIY | ❌ None | Planned v0.7 |
 
-**Headline**: NexusJS v0.5 covers essentially every AdonisJS
+**Headline**: NexusJS v0.6 covers essentially every AdonisJS
 battery (v6), and exceeds it on the "modern" features
-(WebSockets, OpenAPI, SSE, tracing, metrics) that AdonisJS
+(WebSockets, OpenAPI, SSE, tracing, metrics, gRPC) that AdonisJS
 doesn't ship as batteries.
 
 ---
@@ -101,8 +101,8 @@ The v0.3, v0.4, and v0.5 milestones together closed every
 | **Encryption + password hashing** | v0.5 | `nexusjs/crypto` |
 | **i18n** | v0.5 | `nexusjs/i18n` |
 
-Total: **20 AdonisJS-style batteries** shipped in v0.3 + v0.4 + v0.5
-(10 in v0.3 + 6 in v0.4 + 4 in v0.5).
+Total: **22 AdonisJS-style batteries** shipped in v0.3 + v0.4 + v0.5 + v0.6
+(10 in v0.3 + 6 in v0.4 + 4 in v0.5 + 2 in v0.6: gRPC + REPL).
 
 ---
 
@@ -186,10 +186,8 @@ than Node's, so NexusJS wins here.
 ### REPL
 
 AdonisJS has `node ace repl` for live code exploration. NexusJS
-ships `nx info` (a one-shot environment summary) but no
-interactive REPL. **Lower priority** — a REPL is more useful in
-the early days of a project than later, and most teams use a
-notebook / scratch file instead.
+ships `nx repl` (interactive REPL with DI-resolved objects,
+exec expression, and introspection) — shipped in v0.5.
 
 ---
 
@@ -232,19 +230,22 @@ A team that needs any of these gets them for free with NexusJS.
 
 ---
 
-## 7. Recommended v0.6+ roadmap
+## 7. Recommended v0.7+ roadmap
 
-### v0.6 — Async RPC & DX (the "polyglot" milestone) — planned
+### v0.6 — Async RPC & DX (current)
 
-1. **`nexusjs/graphql`** — code-first schema, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`nexusjs/grpc`** — server / client / streaming
-3. **`nexusjs/resilience`** — circuit breaker, retry, bulkhead
-4. **`nexusjs/feature-flag`** — canary / A/B testing
-5. **`nx repl`** — interactive REPL (lower priority; cite if
-   requested)
+Shipped in v0.5–v0.6:
 
-These five fill the remaining niche batteries and complete
-"battery coverage" with AdonisJS v6.
+1. **`nexusjs/grpc`** — server + typed client (unary, reflection-based)
+2. **`nx repl`** — interactive REPL
+3. **`nexusjs/view`** — view engine extracted to separate bundle
+4. **Auto-load viewPaths from nx.config.ts** — no explicit call needed
+
+Still planned for v0.7+:
+
+1. **`nexusjs/graphql`** — code-first schema
+2. **`nexusjs/resilience`** — circuit breaker, retry, bulkhead
+3. **`nexusjs/feature-flag`** — canary / A/B testing
 
 ### v0.7 — Hardening
 
@@ -261,12 +262,13 @@ These five fill the remaining niche batteries and complete
 
 ---
 
-## 8. Honest assessment (v0.5)
+## 8. Honest assessment (v0.6)
 
-The v0.5 release **closes essentially every AdonisJS v6 battery
-gap**. A team migrating from AdonisJS to NexusJS v0.5 would find:
+The v0.6 release **closes essentially every AdonisJS v6
+battery gap**. A team migrating from AdonisJS to NexusJS v0.6 would
+find:
 
-- All first-party batteries have an equivalent in NexusJS v0.5.
+- All first-party batteries have an equivalent in NexusJS v0.6.
 - The migration from Lucid → Drizzle is mechanical (the
   `DrizzleRepository` mirrors Lucid's API).
 - The migration from Vine → Zod is mechanical.
@@ -287,7 +289,7 @@ What's still missing for **full** AdonisJS coverage:
 - **Admin panel** — lower priority; most teams use something
   custom.
 
-AdonisJS v6 vs NexusJS v0.5 differentiators:
+AdonisJS v6 vs NexusJS v0.6 differentiators:
 
 - **Bun-native** — NexusJS runs natively on Bun (faster startup,
   faster I/O, fewer dependencies). AdonisJS is Node-only.
@@ -303,8 +305,8 @@ AdonisJS v6 vs NexusJS v0.5 differentiators:
 - **Cloudflare Workers** — NexusJS is more Workers-friendly
   (Hono's edge performance).
 
-The path from v0.5 to "AdonisJS feature parity" is roughly the
-same as the path from v0.5 to "NestJS feature parity":
+The path from v0.6 to "AdonisJS feature parity" is roughly the
+same as the path from v0.6 to "NestJS feature parity":
 
 - **v0.6** (Q4 2026): Async RPC & DX — GraphQL, gRPC, resilience,
   feature flags, REPL.
@@ -322,9 +324,9 @@ that AdonisJS doesn't ship.
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.5 release notes
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6 release notes
 - [`../README.md`](../../README.md) — current status & roadmap
-- [`../../user-guide/`](../../user-guide/) — guides for the 25 modules
+- [`../../user-guide/`](../../user-guide/) — guides for the 26 modules
 - [`./nestjs-comparison.md`](./nestjs-comparison.md) — companion analysis
 - [AdonisJS documentation](https://docs.adonisjs.com) — the comparison baseline
 - [Drizzle ORM](https://orm.drizzle.team) — the default ORM NexusJS ships

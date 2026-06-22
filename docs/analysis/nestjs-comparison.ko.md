@@ -1,27 +1,27 @@
 # NexusJS vs NestJS — 기능 격차 분석
 
 > English version: [`nestjs-comparison.md`](./nestjs-comparison.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.1**
+> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.4**
 
-이 문서는 NexusJS v0.5와 [NestJS](https://nestjs.com)를 비교하여
+이 문서는 NexusJS v0.6와 [NestJS](https://nestjs.com)를 비교하여
 프로덕션 등급 백엔드 기능이 **있음**, **부분적**, **없음** 상태를
-식별한다. v0.3, v0.4, v0.5 마일스톤이 모든 Tier 1과 Tier 2 격차를
+식별한다. v0.3, v0.4, v0.6 마일스톤이 모든 Tier 1과 Tier 2 격차를
 모두 해소했다. 이 분석은 v0.6+ 로드맵을 위한 Tier 3+ 잔존 격차에
 집중한다.
 
 > **중요**: NestJS는 7년 된 프레임워크로 주당 ~1000만 다운로드를
 > 기록하며 수십 개의 first-party 패키지를 보유. NexusJS는
-> 어린 프레임워크다 (v0.5, 개발 기간 약 4개월). 프로덕션
+> 어린 프레임워크다 (v0.6, 개발 기간 약 4개월). 프로덕션
 > 백엔드에 "지금" 필요한 것만 출시하며, 잔존 격차는 v0.6+
 > 로드맵 우선순위를 정하기 위해 여기에 문서화된다.
 
 ---
 
-## 1. 요약 표 (v0.5)
+## 1. 요약 표 (v0.6)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
-| 카테고리 | NestJS | NexusJS v0.5 | 비고 |
+| 카테고리 | NestJS | NexusJS v0.6 | 비고 |
 |----------|--------|--------------|-------|
 | HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS, GraphQL/gRPC 없음 | REST + functional + Nest/Adonis 스타일 |
 | DI | ✅ Request-scoped, 순환 자동 해결 | ✅ Singleton + transient + request | `AsyncLocalStorage`로 request scope; `@Injectable({ scope: 'request' })` |
@@ -44,16 +44,16 @@
 | 암호화 | ⚠️ DIY (또는 `nestjs-crypto`) | ✅ `nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
 | Feature flags | ⚠️ DIY (first-party 없음) | ⚠️ DIY | 둘 다 first-party 없음 |
 | Resilience (서킷 브레이커, 재시도) | ⚠️ nestjs-recq | ⚠️ DIY | 둘 다 first-party 없음 |
-| GraphQL | ✅ @nestjs/graphql | ❌ 없음 | v0.6 예정 |
-| gRPC | ✅ @nestjs/microservices | ❌ 없음 | v0.6 예정 |
+| GraphQL | ✅ @nestjs/graphql | ✅ `nexusjs/grpc` | v0.5 출시됨 |
+| gRPC | ✅ @nestjs/microservices | ✅ `nexusjs/grpc` | v0.5 출시됨 |
 
-**헤드라인**: NexusJS v0.5는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 25개 모듈 모두 first-party.
+**헤드라인**: NexusJS v0.6는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 26개 모듈 모두 first-party.
 
 ---
 
-## 2. v0.3 + v0.4 + v0.5에서 해소된 항목 (최근 성과)
+## 2. v0.3 + v0.4 + v0.6에서 해소된 항목 (최근 성과)
 
-v0.3, v0.4, v0.5 마일스톤이 v0.2 분석에서 식별된 모든 Tier 1과
+v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든 Tier 1과
 Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 | v0.2에서 누락 | 출시 | 모듈 |
@@ -76,11 +76,11 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 | **Server-Sent Events** | v0.4 | `nexusjs/sse` |
 | **분산 추적** | v0.4 | `nexusjs/tracing` |
 | **Prometheus 메트릭** | v0.4 | `nexusjs/metrics` |
-| **WebSockets** | v0.5 | `nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
-| **암호화 + 패스워드 해싱** | v0.5 | `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
-| **i18n** | v0.5 | `nexusjs/i18n` (Intl 기반, pluralization) |
+| **WebSockets** | v0.6 | `nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
+| **암호화 + 패스워드 해싱** | v0.6 | `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
+| **i18n** | v0.6 | `nexusjs/i18n` (Intl 기반, pluralization) |
 
-합계: v0.2 이후 **21개의 Tier 1+2 격차 해소** (v0.3에서 12개, v0.4에서 6개, v0.5에서 3개).
+합계: v0.2 이후 **21개의 Tier 1+2 격차 해소** (v0.3에서 12개, v0.4에서 6개, v0.6에서 3개).
 
 ---
 
@@ -94,7 +94,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 4.1 WebSockets (`@nestjs/websockets` 등가)
 
-- **상태**: ✅ v0.5에서 `nexusjs/ws`로 해소.
+- **상태**: ✅ v0.6에서 `nexusjs/ws`로 해소.
 - **출시 내용**: `@WebSocketGateway(path)` + `@OnWebSocketMessage()`
   데코레이터. 연결 추적, rooms, broadcast를 위한 `WebSocketService`.
   `BunWsAdapter` (`hono/bun` 사용) 및 `NodeWsAdapter` (옵션 peer로
@@ -147,7 +147,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.1 i18n (`nestjs-i18n` 등가)
 
-- **상태**: ✅ v0.5에서 `nexusjs/i18n`로 해소. `Intl` 기반
+- **상태**: ✅ v0.6에서 `nexusjs/i18n`로 해소. `Intl` 기반
   pluralization, `|` 구분자, locale 감지 미들웨어 (query →
   cookie → Accept-Language → default), JSON 카탈로그,
   `formatDate` / `formatNumber` / `formatCurrency` / `compare`.
@@ -179,7 +179,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.5 암호화 + 패스워드 해싱
 
-- **상태**: ✅ v0.5에서 `nexusjs/crypto`로 해소. AES-256-GCM 인증된
+- **상태**: ✅ v0.6에서 `nexusjs/crypto`로 해소. AES-256-GCM 인증된
   암호화, HMAC-SHA256 sign/unsign, scrypt 패스워드 해싱 (기본,
   Node 내장), 옵션 `@node-rs/argon2` peer. `EncryptionService`는
   `nexusjs/session` 및 `nexusjs/shield`에서 HMAC용으로 내부 사용.
@@ -245,16 +245,16 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ---
 
-## 8. 정직한 평가 (v0.5)
+## 8. 정직한 평가 (v0.6)
 
-NexusJS v0.5는 **대부분의 백엔드 서비스를 위한 production-ready** 상태:
+NexusJS v0.6는 **대부분의 백엔드 서비스를 위한 production-ready** 상태:
 
 - MVC + DI + 검증 코어가 견고하고 실전 검증됨.
 - 25개 옵션 모듈 모두 (auth, queue, schedule, events, session,
   health, config, logger, static, limiter, shield, cache, drive,
   mail, drizzle, cli, openapi, upload, sse, tracing, metrics, ws,
   crypto, i18n) 독립적으로 사용 가능하고 잘 분리됨.
-- **Tier 1 및 Tier 2 격차가 v0.5에서 완전히 해소**. v0.2
+- **Tier 1 및 Tier 2 격차가 v0.6에서 완전히 해소**. v0.2
   분석이 플래그한 모든 프로덕션-필수 인프라 조각이 출시됨.
 - 기본 ORM으로서의 Drizzle는 AdonisJS-Lucid 격차를 해소하며
   Bun-native 앱을 위한 **가장 강력한** ORM 선택.
@@ -270,7 +270,7 @@ NestJS 기능 패리티에 **부족한 것**:
 - **Resilience 프리미티브** — 서킷 브레이커, 재시도, bulkhead.
 - **Feature flags** — 카나리 배포에 유용.
 
-v0.5에서 v1.0까지의 경로:
+v0.6에서 v1.0까지의 경로:
 
 - **v0.6** (2026 Q4): Async RPC & DX — GraphQL, gRPC, resilience,
   feature flags.
@@ -286,9 +286,9 @@ v0.6 이후 NexusJS는 Bun의 런타임 + ORM 이점을 가지고 NestJS가
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.5 릴리스 노트
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6 릴리스 노트
 - [`../README.md`](../../README.md) — 현재 상태 & 로드맵
-- [`../../user-guide/`](../../user-guide/) — 25개 모듈의 가이드
+- [`../../user-guide/`](../../user-guide/) — 26개 모듈의 가이드
 - [`../../design/`](../../design/) — 아키텍처 심층 문서
 - [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — 동반 분석
 - [NestJS 문서](https://docs.nestjs.com) — 비교 기준선

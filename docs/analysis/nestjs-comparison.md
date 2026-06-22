@@ -1,38 +1,37 @@
 # NexusJS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.1**
+> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.6.4**
 
-This document compares NexusJS v0.5 against [NestJS](https://nestjs.com)
+This document compares NexusJS v0.6 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
-**partially present**, or **missing**. The v0.3, v0.4, and v0.5
-milestones together closed every Tier 1 *and* Tier 2 gap; this
-analysis now focuses on the remaining Tier 3+ gaps that block
-complete feature parity.
+**partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
+has been closed; this analysis now focuses on the remaining Tier 3+
+gaps that block complete feature parity.
 
 > **Important**: NestJS is a 7-year-old framework with ~10M weekly
 > downloads and dozens of first-party packages. NexusJS is young
-> (v0.5, ~4 months of development). The framework deliberately ships
+> (v0.6, ~4 months of development). The framework deliberately ships
 > only what production backends need today; the remaining gaps are
-> documented here so the v0.6+ roadmap can be prioritized.
+> documented here so they can be prioritized.
 
 ---
 
-## 1. Summary table (v0.5)
+## 1. Summary table (v0.6)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusJS v0.5 | Notes |
+| Category | NestJS | NexusJS v0.6 | Notes |
 |----------|--------|--------------|-------|
-| HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS, no GraphQL/gRPC | REST + functional + Nest/Adonis styles |
+| HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS + gRPC, no GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
 | Config | ✅ @nestjs/config, .env validation | ✅ `nexusjs/config` | Zod-validated, layered loading |
 | Security | ✅ helmet, throttler, CSRF, CORS | ✅ `nexusjs/shield` + `nexusjs/limiter` | CSRF / HSTS / CSP / rate limit. CORS via Hono middleware |
 | Database | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `nexusjs/drizzle` (5 dialects) | Drizzle is the default ORM |
 | Cache | ✅ cache-manager (in-memory / Redis) | ✅ `nexusjs/cache` (memory / Drizzle) | Tag-based invalidation; Redis via custom store |
 | Logging | ✅ Built-in Logger (Winston / Pino adapters) | ✅ `nexusjs/logger` (Pino) | Pretty in dev, JSON in prod, request-scoped via ALS |
-| Realtime | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE | `nexusjs/ws` (Bun + Node) + `nexusjs/sse` |
-| Microservices | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `nexusjs/queue` (BullMQ / Cloudflare) | Job queue only; no service-mesh transports |
+| Realtime | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE + gRPC | `nexusjs/ws` (Bun + Node) + `nexusjs/sse` + `nexusjs/grpc` |
+| Microservices | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `nexusjs/queue` (BullMQ / Cloudflare) + gRPC | gRPC shipped; no service-mesh transports |
 | API docs | ✅ @nestjs/swagger | ✅ `nexusjs/openapi` | OpenAPI 3.1 from Zod + Scalar UI |
 | Health checks | ✅ @nestjs/terminus | ✅ `nexusjs/health` | Built-in indicators (memory/disk/http/db) |
 | Email | ✅ @nestjs/mailer | ✅ `nexusjs/mail` (SMTP / File / Null) | MJML via optional peer |
@@ -45,19 +44,15 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Encryption | ⚠️ DIY (or `nestjs-crypto`) | ✅ `nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
 | Feature flags | ⚠️ DIY (no first-party) | ⚠️ DIY | Both lack first-party |
 | Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ⚠️ DIY | Both lack first-party |
-| GraphQL | ✅ @nestjs/graphql | ❌ None | Planned v0.6 |
-| gRPC | ✅ @nestjs/microservices | ❌ None | Planned v0.6 |
+| GraphQL | ✅ @nestjs/graphql | ❌ None | Planned v0.7 |
+| gRPC | ✅ @nestjs/microservices | ✅ `nexusjs/grpc` | Reflection-based, unary methods (streaming planned v2) |
 
-**Headline**: NexusJS v0.5 closes **every Tier 1 and Tier 2 gap** from
-the v0.2 analysis. All 25 shipped modules are first-party.
+**Headline**: NexusJS v0.6 closes **every Tier 1 and Tier 2 gap** from
+the v0.2 analysis. All **26** shipped modules are first-party.
 
 ---
 
-## 2. Closed in v0.3 + v0.4 + v0.5 (recent wins)
-
-The v0.3, v0.4, and v0.5 milestones together closed every Tier 1
-*and* Tier 2 gap identified in the v0.2 analysis. This section
-documents what shipped and where.
+## 2. Closed in v0.3 → v0.6 (recent wins)
 
 | Was missing in v0.2 | Shipped | Module |
 | ------------------- | ------- | ------ |
@@ -82,8 +77,12 @@ documents what shipped and where.
 | **WebSockets** | v0.5 | `nexusjs/ws` (Bun primary, Node via `ws`) |
 | **Encryption + password hashing** | v0.5 | `nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
 | **i18n** | v0.5 | `nexusjs/i18n` (Intl-based, pluralization) |
+| **gRPC** | v0.5 | `nexusjs/grpc` (reflection-based, unary) |
+| **nx repl** | v0.5 | Interactive REPL |
+| **View engine extracted** | v0.6 | `nexusjs/view` (separate bundle) |
+| **Auto-load viewPaths from nx.config.ts** | v0.6 | Application.tryLoadNxConfig() |
 
-Total: **21 Tier 1+2 gaps closed** since v0.2 (12 in v0.3 + 6 in v0.4 + 3 in v0.5).
+Total: **24 Tier 1+2+3 gaps closed** since v0.2.
 
 ---
 
@@ -125,15 +124,17 @@ None. v0.3 closed every original Tier 1 gap.
 ### 4.4 gRPC (`@nestjs/microservices` partial)
 
 - **Use cases**: service-to-service high-perf RPC.
-- **Status**: ❌ not yet shipped. Planned v0.6+.
-- **Proposed module**: `nexusjs/grpc`
-- **Features**:
-  - `@GrpcMethod('UserService', 'findById')` decorator
-  - Streaming (server, client, bidi)
-  - Reflect-based schema
-- **Note**: Lower priority — most teams ship REST + WebSocket
-  for service-to-service communication. gRPC is required only for
-  polyglot / strict-schema environments.
+- **Status**: ✅ shipped in v0.5 as `nexusjs/grpc`.
+- **What ships**:
+  - `GrpcModule.forRoot()` — loads `.proto` files at runtime via
+    `@grpc/proto-loader` (reflection-based, no codegen).
+  - `@GrpcService()` decorator — registers unary service methods
+    from a controller class.
+  - Typed client — `grpcClient()` returns a promises-based proxy.
+  - Runtime-backend auto-detection (Bun / Node).
+- **Note**: Unary methods only for v1; streaming (server,
+  client, bidi) planned for v2.
+- See [`../../user-guide/grpc.md`](../../user-guide/grpc.md).
 
 ### 4.5 GraphQL (`@nestjs/graphql` equivalent)
 
@@ -239,14 +240,16 @@ consumer apps.
 
 ## 7. Recommended v0.6+ roadmap
 
-### v0.6 — Async RPC & DX (the "polyglot" milestone) — planned
+### v0.6 — Async RPC & DX (the "polyglot" milestone) — current
 
-1. **`nexusjs/graphql`** — code-first schema, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`nexusjs/grpc`** — server / client / streaming
-3. **`nexusjs/resilience`** — circuit breaker, retry, bulkhead
-4. **`nexusjs/feature-flag`** — canary / A/B testing
+Shipped in v0.5–v0.6:
 
-These four complete the "missing infrastructure" list. After v0.6,
+1. **`nexusjs/grpc`** — server + typed client (unary, reflection-based)
+2. **`nx repl`** — interactive REPL
+3. **`nexusjs/view`** — view engine extracted to separate bundle
+4. **Auto-load viewPaths from nx.config.ts** — no explicit call needed
+
+Still planned for v0.6+: "missing infrastructure" list. After v0.6,
 NexusJS will have feature parity with NestJS for ~95% of backend
 use-cases.
 
@@ -265,19 +268,20 @@ use-cases.
 
 ---
 
-## 8. Honest assessment (v0.5)
+## 8. Honest assessment (v0.6)
 
-NexusJS v0.5 is **production-ready for the vast majority of backend
+NexusJS v0.6 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.
-- All 25 optional modules (auth, queue, schedule, events, session,
+- All **26** optional modules (auth, queue, schedule, events, session,
   health, config, logger, static, limiter, shield, cache, drive,
   mail, drizzle, cli, openapi, upload, sse, tracing, metrics, ws,
-  crypto, i18n) are independently usable and well-scoped.
+  crypto, i18n, grpc, redis) are independently usable and well-scoped.
 - **Tier 1 and Tier 2 gaps are fully closed** as of v0.5.
-  Every production-need infrastructure piece the v0.2 analysis
-  flagged has shipped.
+  Every production-need infrastructure piece from the v0.2 analysis
+  has shipped.
+- gRPC shipped in v0.5 closes the remaining NestJS-microservices gap.
 - Drizzle as the default ORM closes the AdonisJS-Lucid gap and
   is arguably the **strongest** ORM choice for Bun-native apps.
 - The CLI is genuinely better than NestJS's `nest g` for new
@@ -286,23 +290,22 @@ services**:
 - The `EncryptionService` is now shared between the framework
   (session cookies, CSRF) and user code, with a single APP_KEY.
 
-What's missing for full "NestJS feature parity" is:
+What's still missing for full "NestJS feature parity":
 
 - **GraphQL** — important for BFF / mobile-first teams.
-- **gRPC** — important for polyglot service-mesh environments.
 - **Resilience primitives** — circuit breakers, retry, bulkhead.
 - **Feature flags** — useful for canary deploys.
 
-The path from v0.5 to v1.0 is roughly:
+The path from v0.6 to v1.0 is roughly:
 
-- **v0.6** (Q4 2026): Async RPC & DX — GraphQL, gRPC, resilience,
-  feature flags.
-- **v0.7** (Q1 2027): Production hardening — stable public API,
+- **v0.6** (current): gRPC, REPL, view engine extraction, nx.config.ts auto-load
+- **v0.7** (Q3 2026): Async RPC & DX — GraphQL, resilience, feature flags
+- **v0.8** (Q4 2026): Production hardening — stable public API,
   multi-runtime CI, performance benchmarks, LTS plan.
-- **v1.0** (Q2 2027): Production-ready LTS — frozen API surface,
+- **v1.0** (Q1 2027): Production-ready LTS — frozen API surface,
   migration guides, long-term support branch.
 
-After v0.6, NexusJS is a viable alternative for **any** backend
+After v0.7, NexusJS is a viable alternative for **any** backend
 that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 ---
@@ -311,7 +314,7 @@ that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 - [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.5 release notes
 - [`../README.md`](../../README.md) — current status & roadmap
-- [`../../user-guide/`](../../user-guide/) — guides for the 25 modules
+- [`../../user-guide/`](../../user-guide/) — guides for the 26 modules
 - [`../../design/`](../../design/) — architectural deep-dives
 - [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — companion analysis
 - [NestJS documentation](https://docs.nestjs.com) — the comparison baseline

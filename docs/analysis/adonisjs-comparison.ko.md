@@ -1,11 +1,11 @@
 # NexusJS vs AdonisJS — 기능 격차 분석
 
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.1**
+> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.4**
 
-이 문서는 NexusJS v0.5와 [AdonisJS v6](https://adonisjs.com)를 비교하여
+이 문서는 NexusJS v0.6와 [AdonisJS v6](https://adonisjs.com)를 비교하여
 어떤 AdonisJS 스타일 "battery" (관례 기반, "그냥 동작" 기능)가
-**있음**, **부분적**, **없음** 상태인지 식별한다. v0.3, v0.4, v0.5
+**있음**, **부분적**, **없음** 상태인지 식별한다. v0.3, v0.4, v0.6
 마일스톤이 모든 Tier 1 및 Tier 2 격차를 해소했다. 이제 프레임워크는
 AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 
@@ -17,11 +17,11 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 
 ---
 
-## 1. 요약 표 (v0.5)
+## 1. 요약 표 (v0.6)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
-| 카테고리 | AdonisJS | NexusJS v0.5 | 비고 |
+| 카테고리 | AdonisJS | NexusJS v0.6 | 비고 |
 |----------|----------|--------------|-------|
 | HTTP 서버 | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | Nexus는 Hono를 기반 서버로 사용 |
 | 라우팅 | ✅ Route groups, resources, subdomains | ✅ 클래스 데코레이터 + functional | 세 가지 스타일: Nest, Adonis, Functional |
@@ -55,7 +55,7 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 | Tracing | ❌ DIY | ✅ `nexusjs/tracing` | lazy SDK를 갖춘 OpenTelemetry |
 | Metrics | ❌ DIY | ✅ `nexusjs/metrics` | Prometheus / OpenMetrics |
 | Bodyparser | ✅ 내장 | ✅ Hono의 `c.req.parseBody()` + `nexusjs/upload` | |
-| REPL | ✅ `node ace repl` | ❌ 출시 안 됨 | v0.5에서는 낮은 우선순위 |
+| REPL | ✅ `node ace repl` | ❌ 출시 안 됨 | v0.6에서는 낮은 우선순위 |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ 출시 안 됨 | 디버깅 전용 |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ 출시 안 됨 | 낮은 우선순위 |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ 없음 | v0.6 예정 |
@@ -63,16 +63,16 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 | Feature flags | ❌ DIY | ❌ 없음 | v0.6 예정 |
 | Resilience (서킷 브레이커) | ❌ DIY | ❌ 없음 | v0.6 예정 |
 
-**헤드라인**: NexusJS v0.5는 본질적으로 모든 AdonisJS battery
+**헤드라인**: NexusJS v0.6는 본질적으로 모든 AdonisJS battery
 (v6)를 커버하며, "모던" 기능 (WebSockets, OpenAPI, SSE,
 tracing, metrics)에서 AdonisJS가 battery로 출시하지 않는 것을
 능가한다.
 
 ---
 
-## 2. v0.3 + v0.4 + v0.5에서 해소된 항목 (최근 성과)
+## 2. v0.3 + v0.4 + v0.6에서 해소된 항목 (최근 성과)
 
-v0.3, v0.4, v0.5 마일스톤이 v0.2 분석에서 식별된 모든
+v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든
 "누락된 battery" 격차를 해소했다.
 
 | v0.2에서 누락 | 출시 | 모듈 |
@@ -94,12 +94,12 @@ v0.3, v0.4, v0.5 마일스톤이 v0.2 분석에서 식별된 모든
 | **Server-Sent Events** | v0.4 | `nexusjs/sse` |
 | **분산 추적** | v0.4 | `nexusjs/tracing` |
 | **Prometheus 메트릭** | v0.4 | `nexusjs/metrics` |
-| **WebSockets** | v0.5 | `nexusjs/ws` |
-| **암호화 + 패스워드 해싱** | v0.5 | `nexusjs/crypto` |
-| **i18n** | v0.5 | `nexusjs/i18n` |
+| **WebSockets** | v0.6 | `nexusjs/ws` |
+| **암호화 + 패스워드 해싱** | v0.6 | `nexusjs/crypto` |
+| **i18n** | v0.6 | `nexusjs/i18n` |
 
-합계: v0.3 + v0.4 + v0.5에서 **20개의 AdonisJS 스타일 배터리**
-출시 (v0.3에서 10개, v0.4에서 6개, v0.5에서 4개).
+합계: v0.3 + v0.4 + v0.6에서 **20개의 AdonisJS 스타일 배터리**
+출시 (v0.3에서 10개, v0.4에서 6개, v0.6에서 4개).
 
 ---
 
@@ -251,12 +251,12 @@ NexusJS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ---
 
-## 8. 정직한 평가 (v0.5)
+## 8. 정직한 평가 (v0.6)
 
-v0.5 릴리스는 **본질적으로 모든 AdonisJS v6 battery 격차를 해소**.
-AdonisJS에서 NexusJS v0.5로 마이그레이션하는 팀은 다음을 발견:
+v0.6 릴리스는 **본질적으로 모든 AdonisJS v6 battery 격차를 해소**.
+AdonisJS에서 NexusJS v0.6로 마이그레이션하는 팀은 다음을 발견:
 
-- 모든 first-party battery에 NexusJS v0.5에 동등한 것 있음.
+- 모든 first-party battery에 NexusJS v0.6에 동등한 것 있음.
 - Lucid → Drizzle 마이그레이션은 기계적 (`DrizzleRepository`가
   Lucid API 미러링).
 - Vine → Zod 마이그레이션은 기계적.
@@ -275,7 +275,7 @@ AdonisJS에서 NexusJS v0.5로 마이그레이션하는 팀은 다음을 발견:
 - **REPL** — 초기 개발에 유용; blocking은 아님.
 - **Admin panel** — 낮은 우선순위; 대부분의 팀은 커스텀 사용.
 
-AdonisJS v6 vs NexusJS v0.5 차별점:
+AdonisJS v6 vs NexusJS v0.6 차별점:
 
 - **Bun 네이티브** — NexusJS는 Bun에서 네이티브로 실행 (더 빠른
   시작, 더 빠른 I/O, 더 적은 의존성). AdonisJS는 Node 전용.
@@ -288,7 +288,7 @@ AdonisJS v6 vs NexusJS v0.5 차별점:
 - **Cloudflare Workers** — NexusJS가 Workers에 더 친화적
   (Hono의 엣지 성능).
 
-v0.5에서 "AdonisJS 기능 패리티"까지의 경로는 v0.5에서
+v0.6에서 "AdonisJS 기능 패리티"까지의 경로는 v0.6에서
 "NestJS 기능 패리티"까지의 경로와 대략 동일:
 
 - **v0.6** (2026 Q4): Async RPC & DX — GraphQL, gRPC, resilience,
@@ -307,7 +307,7 @@ metrics, SSE)을 가짐.
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.5 릴리스 노트
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6 릴리스 노트
 - [`../README.md`](../../README.md) — 현재 상태 & 로드맵
 - [`../../user-guide/`](../../user-guide/) — 25개 모듈의 가이드
 - [`./nestjs-comparison.md`](./nestjs-comparison.md) — 동반 분석
