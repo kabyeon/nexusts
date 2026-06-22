@@ -169,9 +169,6 @@ export const newCommand: Command = {
 `,
 		);
 
-		const viewPathsArr = view === "none" ? "" : "resources/views";
-		const vpCall = viewPathsArr.length > 0 ? `\napp.setViewPaths("${viewPathsArr}");\n` : "";
-
 		writeFileSync(
 			resolve(target, "app/main.ts"),
 			`import 'reflect-metadata';
@@ -181,7 +178,8 @@ import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
 // Serve ./public files under /static/*
-app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));${vpCall}
+app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));
+
 await app.listen(3000);
 console.log('[nexusjs] Listening on http://localhost:3000');
 `,

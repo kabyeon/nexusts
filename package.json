@@ -203,7 +203,8 @@
     "pino": "^10.3.1",
     "reflect-metadata": "^0.2.2",
     "rendu": "^0.1.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "nexusjs": "*"
   },
   "optionalDependencies": {
     "better-auth": "^1.6.20",
@@ -258,5 +259,6 @@
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^2.1.5",
     "ws": "^8.21.0"
-  }
+  },
+  "private": true
 }

@@ -291,22 +291,23 @@ async about() {
 재정의할 수 있지만, 대부분의 프로젝트에서는 확장자별 자동 선택으로
 충분합니다.
 
-부트 시 한 번 설정:
+Application은 부트 시 nx.config.ts에서 viewPaths를 자동 감지하므로,
+별도의 호출이 필요하지 않습니다:
 
 ```ts
-// app/main.ts
-const app = new Application(AppModule);
-app.setViewPaths('resources/views');
-```
-
-또는 `nx.config.ts`에서:
-
-```ts
+// nx.config.ts — 이것만 있으면 됨
 export default {
   view: 'rendu',
   viewPaths: 'resources/views',
-  // ...
 };
+```
+
+런타임에 재정의하려면 (예: 테스트), Application 인스턴스에서
+호출:
+
+```ts
+// app/main.ts
+app.setViewPaths('other/path');
 ```
 
 그러면 컨트롤러가 파일을 직접 참조할 수 있습니다:

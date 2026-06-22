@@ -310,22 +310,23 @@ Override the globally selected adapter with
 default, but for most projects the auto-selection by extension
 is sufficient.
 
-Configure once at boot:
+The Application auto-detects viewPaths from nx.config.ts at boot, so
+usually no explicit call is needed:
 
 ```ts
-// app/main.ts
-const app = new Application(AppModule);
-app.setViewPaths('resources/views');
-```
-
-Or in `nx.config.ts`:
-
-```ts
+// nx.config.ts — all you need
 export default {
   view: 'rendu',
   viewPaths: 'resources/views',
-  // ...
 };
+```
+
+To override at runtime (e.g. for testing), call on the Application
+instance:
+
+```ts
+// app/main.ts
+app.setViewPaths('other/path');
 ```
 
 Then controllers can reference files directly:

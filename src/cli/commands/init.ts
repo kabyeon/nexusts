@@ -293,10 +293,6 @@ function renderContent(path: string, ctx: RenderCtx): string {
 		case "resources/views/welcome.html":
 			return `<h1>Welcome to ${ctx.targetName}</h1>\n<p>This is a sample Rendu template.</p>\n<p>Founded <?= year ?>.</p>\n`;
 		case "app/main.ts":
-			const vp = ctx.viewPaths ?? "";
-			const vpCall = vp.length > 0
-				? `\napp.setViewPaths("${vp}");\n`
-				: "";
 			return `import 'reflect-metadata';
 import { Application } from 'nexusjs';
 import { StaticModule } from 'nexusjs/static';
@@ -304,7 +300,8 @@ import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
 // Serve ./public files under /static/*
-app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));${vpCall}
+app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));
+
 await app.listen(3000);
 console.log('[nexusjs] Listening on http://localhost:3000');
 `;

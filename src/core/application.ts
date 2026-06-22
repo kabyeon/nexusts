@@ -71,6 +71,10 @@ export class Application {
 			this.inertia = null;
 		}
 
+		// Auto-load nx.config.ts at boot so viewPaths (and future config)
+		// take effect without an explicit app.setViewPaths() call.
+		this.tryLoadNxConfig();
+
 		// Surface debug info in dev.
 		if (process.env["NEXUS_DEBUG"] === "1") {
 			console.log("[nexus] Modules:", modules.length);
@@ -80,6 +84,24 @@ export class Application {
 			);
 			console.log("[nexus] Providers (root):", this.container.list());
 			console.log("[nexus] Inertia:", this.inertia ? "enabled" : "disabled");
+		}
+	}
+
+	/** Try to load nx.config.ts and apply runtime-relevant settings. */
+	private tryLoadNxConfig(): void {
+		// Bun provides require() even in ESM. On other runtimes (Node,
+		// Cloudflare Workers) nx.config.ts may not be loadable — that's
+		// fine, the user can set viewPaths explicitly via
+		// app.setViewPaths().
+		if (typeof require === "undefined") return;
+		try {
+			const mod = require(process.cwd() + "/nx.config.ts");
+			const cfg = mod.default ?? mod;
+			if (cfg && typeof cfg.viewPaths === "string" && cfg.viewPaths.length > 0) {
+				setViewPathsModule(cfg.viewPaths);
+			}
+		} catch {
+			// nx.config.ts not found or unparseable — that's fine.
 		}
 	}
 
@@ -94,12 +116,11 @@ export class Application {
 	 * `{ view: 'about.html' }`. Defaults to `[]` (no file-based
 	 * views; controllers must pass inline template source).
 	 *
-	 * Typical setup:
+	 * The Application auto-loads nx.config.ts at construction time, so if
+	 * you already set viewPaths there, no explicit call is needed.
+	 * This method exists to override the config-file value at runtime.
 	 *
-	 *   const app = new Application(AppModule);
-	 *   app.setViewPaths('resources/views');
-	 *
-	 * or in `nx.config.ts`:
+	 * Typical setup in nx.config.ts (auto-detected):
 	 *
 	 *   export default {
 	 *     view: 'rendu',

@@ -3,13 +3,22 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@app/*": ["app/*"],
-      "@/*": ["src/*"]
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@app/*": [
+        "app/*"
+      ],
+      "@/*": [
+        "src/*"
+      ]
     },
     "strict": true,
     "noImplicitAny": true,
@@ -35,11 +44,15 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-    "types": ["bun-types"]
+    "types": [
+      "bun-types"
+    ]
   },
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts"
+    "tests/**/*.ts",
+    "app/**/*.ts",
+    "nx.config.ts"
   ],
   "exclude": [
     "node_modules",
