@@ -159,7 +159,7 @@ max_retries = 3
 ```
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 import { Application } from 'nexusjs';
 import { QueueService, QueueModule } from 'nexusjs/queue';
 
@@ -348,8 +348,8 @@ nx make:queue notify --no-job
 
 생성 파일:
 
-- `src/queue/workers/<name>.worker.ts` — `@OnQueueReady` 핸들러 클래스
-- `src/queue/jobs/<name>.job.ts` — 호출자를 위한 `enqueue*` 헬퍼
+- `app/queue/workers/<name>.worker.ts` — `@OnQueueReady` 핸들러 클래스
+- `app/queue/jobs/<name>.job.ts` — 호출자를 위한 `enqueue*` 헬퍼
 
 플래그:
 

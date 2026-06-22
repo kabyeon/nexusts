@@ -29,7 +29,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/schedule/tasks/cleanup.task.ts
+// app/schedule/tasks/cleanup.task.ts
 import { Inject, Injectable } from 'nexusjs';
 import { Cron, Interval, ScheduleService } from 'nexusjs/schedule';
 
@@ -173,7 +173,7 @@ cron = "*/15 * * * *"
 ```
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 const app = new Application(AppModule);
 const schedule = app.container.resolve(ScheduleService);
 const cf = schedule.getCloudflareBackend();
@@ -241,7 +241,7 @@ nx make:schedule HourlyCleanup
 nx make:schedule DailyDigest
 ```
 
-`@Cron` / `@Interval` / `@Timeout` 핸들러를 받을 준비가 된 스켈레톤 클래스와 함께 `src/schedule/tasks/<name>.task.ts`를 생성한다.
+`@Cron` / `@Interval` / `@Timeout` 핸들러를 받을 준비가 된 스켈레톤 클래스와 함께 `app/schedule/tasks/<name>.task.ts`를 생성한다.
 
 ---
 

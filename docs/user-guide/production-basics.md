@@ -100,7 +100,7 @@ misconfigured deploys fail fast.
 ### Quick start
 
 ```ts
-// src/config/schema.ts
+// app/config/schema.ts
 import { z } from 'zod';
 export const configSchema = z.object({
   DATABASE_URL: z.string().url(),

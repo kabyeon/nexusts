@@ -48,7 +48,7 @@ message ListResponse { repeated UserResponse users = 1; }
 ### 2. Implement the service
 
 ```ts
-// src/user/user.grpc.ts
+// app/user/user.grpc.ts
 import { Injectable, Inject } from "@nexusjs/core";
 import { GrpcService, GrpcMethod } from "@nexusjs/grpc";
 
@@ -97,7 +97,7 @@ export class AppModule {}
 ### 4. Start the server
 
 ```ts
-// src/main.ts
+// app/main.ts
 import { Application } from "@nexusjs/core";
 import { GrpcService } from "@nexusjs/grpc";
 import { AppModule } from "./app.module";

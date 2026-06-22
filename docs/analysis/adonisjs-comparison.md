@@ -180,7 +180,7 @@ const posts = await this.db.select().from(posts).where(eq(posts.userId, user.id)
 ### Hot-reload
 
 Both frameworks support hot-reload. AdonisJS uses `node ace serve --watch`;
-NexusJS uses `bun --watch src/main.ts`. Bun's hot-reload is faster
+NexusJS uses `bun --hot app/main.ts`. Bun's hot-reload is faster
 than Node's, so NexusJS wins here.
 
 ### REPL

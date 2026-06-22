@@ -62,7 +62,7 @@ bun add nexusjs/queue              # if you need background jobs
     "skipLibCheck": true,
     "types": ["bun-types"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["app/**/*.ts", "nx.config.ts"]
 }
 ```
 
@@ -79,14 +79,18 @@ bun add nexusjs/queue              # if you need background jobs
 
 ```
 my-app/
-├── src/
-│   └── app/
-│       ├── main.ts
-│       ├── app.module.ts
-│       ├── db/
-│       │   └── schema.ts
-│       └── controllers/
-│           └── home.controller.ts
+├── app/
+│   ├── main.ts
+│   ├── app.module.ts
+│   ├── controllers/
+│   │   └── home.controller.ts
+│   └── db/
+│       └── schema.ts
+├── resources/
+│   └── views/
+│       └── welcome.html
+├── public/
+│   └── favicon.ico
 ├── nx.config.ts
 ├── drizzle.config.ts
 ├── package.json
@@ -258,19 +262,21 @@ The framework source lives under `src/core/`. A typical user app:
 
 ```
 my-app/
-├── src/
-│   └── app/
-│       ├── main.ts                # entry point
-│       ├── app.module.ts          # root module
-│       ├── modules/               # feature modules
-│       │   └── user/
-│       │       ├── user.module.ts
-│       │       ├── user.controller.ts
-│       │       ├── user.service.ts
-│       │       └── user.repository.ts
-│       └── shared/                # cross-cutting concerns
-│           ├── interceptors/
-│           └── filters/
+├── app/
+│   ├── main.ts                    # entry point
+│   ├── app.module.ts              # root module
+│   ├── modules/                   # feature modules
+│   │   └── user/
+│   │       ├── user.module.ts
+│   │       ├── user.controller.ts
+│   │       ├── user.service.ts
+│   │       └── user.repository.ts
+│   └── shared/                    # cross-cutting concerns
+│       ├── interceptors/
+│       └── filters/
+├── resources/
+│   └── views/                     # view templates
+├── public/                        # static assets (served at /static)
 ├── tests/
 ├── package.json
 └── tsconfig.json

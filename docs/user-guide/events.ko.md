@@ -30,7 +30,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/events/listeners/email.listeners.ts
+// app/events/listeners/email.listeners.ts
 import { Inject, Injectable } from 'nexusjs';
 import { EventService, OnEvent } from 'nexusjs/events';
 
@@ -208,7 +208,7 @@ nx make:listener UserEvents
 nx make:listener OrderEvents
 ```
 
-`src/events/listeners/<name>.listener.ts`를 `@OnEvent` 핸들러를 받을 준비가 된 스켈레톤 클래스와 함께 생성한다.
+`app/events/listeners/<name>.listener.ts`를 `@OnEvent` 핸들러를 받을 준비가 된 스켈레톤 클래스와 함께 생성한다.
 
 ---
 

@@ -2,7 +2,7 @@
  * `nx make:session <Name>` — scaffold a session helper class.
  *
  * Generates:
- *   - src/session/services/<name>.session.ts
+ *   - app/session/services/<name>.session.ts
  *     — an @Injectable class with example session helpers
  *
  * Usage:
@@ -64,7 +64,7 @@ export const makeSessionCommand: Command = {
 	aliases: ["msess", "make-session"],
 	summary: "Scaffold a session helper class",
 	description:
-		"Generates an @Injectable session helper under src/session/services/.",
+		"Generates an @Injectable session helper under app/session/services/.",
 	examples: ["nx make:session Cart", "nx make:session Flash"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -80,7 +80,7 @@ export const makeSessionCommand: Command = {
 		});
 		const out = resolve(
 			ctx.cwd,
-			"src/session/services",
+			"app/session/services",
 			`${variants.kebab}.session.ts`,
 		);
 

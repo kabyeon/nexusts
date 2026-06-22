@@ -60,7 +60,7 @@ npx tsx app/main.ts
 ## 3. Cloudflare Workers
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 import 'reflect-metadata';
 import { Application } from 'nexusjs';
 import { AppModule } from './app.module.js';
@@ -76,7 +76,7 @@ export default {
 
 ```toml
 name = "nexus-app"
-main = "src/worker.ts"
+main = "app/worker.ts"
 compatibility_date = "2024-12-01"
 
 [vars]
@@ -135,7 +135,7 @@ class ConfigModule {}
 import { build } from 'bun';
 
 const result = await build({
-  entrypoints: ['src/index.ts'],
+  entrypoints: ['app/index.ts'],
   outdir: 'dist',
   target: 'bun',
   format: 'esm',
@@ -155,7 +155,7 @@ if (!result.success) {
 ```ts
 entrypoints: [
   'app/main.ts',         // Bun / Node 진입점
-  'src/worker.ts',           // Cloudflare 진입점
+  'app/worker.ts',           // Cloudflare 진입점
 ],
 ```
 

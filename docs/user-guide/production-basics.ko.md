@@ -98,7 +98,7 @@ env 변수와 `.env` 파일에서 로드되고 Zod 스키마로 검증되는 타
 ### 빠른 시작
 
 ```ts
-// src/config/schema.ts
+// app/config/schema.ts
 import { z } from 'zod';
 export const configSchema = z.object({
   DATABASE_URL: z.string().url(),

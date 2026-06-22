@@ -45,7 +45,7 @@ bunx nx make:auth --provider github --jwt
 
 This generates:
 
-- `src/auth/auth.ts` — better-auth instance with the providers you asked for
+- `app/auth/auth.ts` — better-auth instance with the providers you asked for
 - `.env.example` — every env var you need (with provider entries)
 
 Then wire it up:
@@ -397,7 +397,7 @@ Flags:
 | `--rp-name <name>` | Passkey RP display name |
 | `--origin <url>` | Passkey origin |
 
-Generates `src/auth/auth.ts` and `.env.example`, then prints wiring
+Generates `app/auth/auth.ts` and `.env.example`, then prints wiring
 instructions.
 
 ---

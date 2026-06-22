@@ -65,7 +65,7 @@ Both `tsx` and `ts-node` respect `tsconfig.json` and emit
 ## 3. Cloudflare Workers
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 import 'reflect-metadata';
 import { Application } from 'nexusjs';
 import { AppModule } from './app.module.js';
@@ -81,7 +81,7 @@ export default {
 
 ```toml
 name = "nexus-app"
-main = "src/worker.ts"
+main = "app/worker.ts"
 compatibility_date = "2024-12-01"
 
 [vars]
@@ -147,7 +147,7 @@ class ConfigModule {}
 import { build } from 'bun';
 
 const result = await build({
-  entrypoints: ['src/index.ts'],
+  entrypoints: ['app/index.ts'],
   outdir: 'dist',
   target: 'bun',
   format: 'esm',
@@ -168,7 +168,7 @@ For multi-target builds (Bun + Node + Workers), add entries to
 ```ts
 entrypoints: [
   'app/main.ts',         // Bun / Node entry
-  'src/worker.ts',           // Cloudflare entry
+  'app/worker.ts',           // Cloudflare entry
 ],
 ```
 

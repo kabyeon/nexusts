@@ -2,8 +2,8 @@
  * `nx make:queue <Name>` — scaffold a queue worker.
  *
  * Generates:
- *   - src/queue/workers/<name>.worker.ts  — @OnQueueReady handler class
- *   - src/queue/jobs/<name>.job.ts         — a `enqueue*` helper for callers
+ *   - app/queue/workers/<name>.worker.ts  — @OnQueueReady handler class
+ *   - app/queue/jobs/<name>.job.ts         — a `enqueue*` helper for callers
  *   - prints wiring instructions
  *
  * Usage:
@@ -115,7 +115,7 @@ export const makeQueueCommand: Command = {
 	aliases: ["mq", "make-queue"],
 	summary: "Scaffold a queue worker",
 	description:
-		"Generates a worker class + enqueue helper under src/queue/. The backend is read from nx.config.ts (or --backend).",
+		"Generates a worker class + enqueue helper under app/queue/. The backend is read from nx.config.ts (or --backend).",
 	examples: [
 		"nx make:queue send-welcome-email",
 		"nx make:queue process-image --backend cloudflare",
@@ -165,7 +165,7 @@ export const makeQueueCommand: Command = {
 			});
 			const out = resolve(
 				ctx.cwd,
-				"src/queue/workers",
+				"app/queue/workers",
 				`${variants.kebab}.worker.ts`,
 			);
 			if (writeFile(out, code, { skipIfExists: true })) {
@@ -183,7 +183,7 @@ export const makeQueueCommand: Command = {
 			});
 			const out = resolve(
 				ctx.cwd,
-				"src/queue/jobs",
+				"app/queue/jobs",
 				`${variants.kebab}.job.ts`,
 			);
 			if (writeFile(out, code, { skipIfExists: true })) {

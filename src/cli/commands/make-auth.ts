@@ -2,9 +2,9 @@
  * `nx make:auth` — scaffold an auth module.
  *
  * Generates:
- *   - src/auth/auth.ts            — better-auth instance
- *   - src/auth/auth.module.ts     — NexusJS module (or copy if exists)
- *   - src/auth/.env.example       — BETTER_AUTH_SECRET / URL placeholders
+ *   - app/auth/auth.ts            — better-auth instance
+ *   - app/auth/auth.module.ts     — NexusJS module (or copy if exists)
+ *   - app/auth/.env.example       — BETTER_AUTH_SECRET / URL placeholders
  *   - patches nx.config.ts to include the `auth` section (with --update-config)
  *
  * Usage:
@@ -15,7 +15,6 @@
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
 import {
-	flagBool,
 	flagList,
 	logger,
 	render,
@@ -94,7 +93,7 @@ export const makeAuthCommand: Command = {
 	aliases: ["auth", "auth-install"],
 	summary: "Scaffold the auth module",
 	description:
-		"Generates src/auth/auth.ts, .env.example, and an auth-ready module skeleton using better-auth.",
+		"Generates app/auth/auth.ts, .env.example, and an auth-ready module skeleton using better-auth.",
 	examples: [
 		"nx make:auth",
 		"nx make:auth --provider github --jwt",
@@ -147,7 +146,7 @@ export const makeAuthCommand: Command = {
 			passkeyRpId: rpId,
 			passkeyOrigin: Array.isArray(origin) ? origin.join(",") : origin,
 		});
-		const authOut = resolve(ctx.cwd, "src/auth/auth.ts");
+		const authOut = resolve(ctx.cwd, "app/auth/auth.ts");
 		if (writeFile(authOut, authCode)) {
 			logger.success(`created ${authOut}`);
 		} else {

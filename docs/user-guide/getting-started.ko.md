@@ -47,7 +47,7 @@ bun add -d @types/bun typescript vitest
     "skipLibCheck": true,
     "types": ["bun-types"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["app/**/*.ts", "nx.config.ts"]
 }
 ```
 
@@ -64,12 +64,16 @@ bun add -d @types/bun typescript vitest
 
 ```
 my-app/
-├── src/
-│   └── app/
-│       ├── main.ts
-│       ├── app.module.ts
-│       └── controllers/
-│           └── home.controller.ts
+├── app/
+│   ├── main.ts
+│   ├── app.module.ts
+│   └── controllers/
+│       └── home.controller.ts
+├── resources/
+│   └── views/
+│       └── welcome.html
+├── public/
+│   └── favicon.ico
 ├── package.json
 └── tsconfig.json
 ```
@@ -177,19 +181,21 @@ Bun의 `--hot` 플래그는 파일 변경 시 프로세스를 재시작합니다
 
 ```
 my-app/
-├── src/
-│   └── app/
-│       ├── main.ts                # 진입점
-│       ├── app.module.ts          # 루트 모듈
-│       ├── modules/               # 기능 모듈
-│       │   └── user/
-│       │       ├── user.module.ts
+├── app/
+│   ├── main.ts                    # 진입점
+│   ├── app.module.ts              # 루트 모듈
+│   ├── modules/                   # 기능 모듈
+│   │   └── user/
+│       ├── user.module.ts
 │       │       ├── user.controller.ts
 │       │       ├── user.service.ts
 │       │       └── user.repository.ts
-│       └── shared/                # 횡단 관심사
-│           ├── interceptors/
-│           └── filters/
+│   └── shared/                    # 횡단 관심사
+│       ├── interceptors/
+│       └── filters/
+├── resources/
+│   └── views/                     # 뷰 템플릿
+├── public/                        # 정적 자산 (/static으로 서빙)
 ├── tests/
 ├── package.json
 └── tsconfig.json

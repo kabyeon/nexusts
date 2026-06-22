@@ -174,7 +174,7 @@ const posts = await this.db.select().from(posts).where(eq(posts.userId, user.id)
 ### Hot-reload
 
 두 프레임워크 모두 hot-reload 지원. AdonisJS는 `node ace serve --watch`;
-NexusJS는 `bun --watch src/main.ts` 사용. Bun의 hot-reload가 Node보다
+NexusJS는 `bun --hot app/main.ts` 사용. Bun의 hot-reload가 Node보다
 빠르므로 NexusJS가 여기서 우세.
 
 ### REPL

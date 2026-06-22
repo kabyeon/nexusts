@@ -32,7 +32,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/events/listeners/email.listeners.ts
+// app/events/listeners/email.listeners.ts
 import { Inject, Injectable } from 'nexusjs';
 import { EventService, OnEvent } from 'nexusjs/events';
 
@@ -224,7 +224,7 @@ nx make:listener UserEvents
 nx make:listener OrderEvents
 ```
 
-Generates `src/events/listeners/<name>.listener.ts` with a skeleton
+Generates `app/events/listeners/<name>.listener.ts` with a skeleton
 class ready to receive `@OnEvent` handlers.
 
 ---

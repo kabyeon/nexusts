@@ -44,7 +44,7 @@ constructor(@Inject(UserRepository) private repo: UserRepository) {}
 constructor(private repo: UserRepository) {}
 ```
 
-> `tsc`로 먼저 빌드하고 `node` 또는 `bun dist/`로 실행하면 bare-type 형태가 동작합니다. `bun src/...`(기본값)에서는 `@Inject(...)`를 사용하세요.
+> `tsc`로 먼저 빌드하고 `node` 또는 `bun dist/`로 실행하면 bare-type 형태가 동작합니다. `bun app/...`(기본값)에서는 `@Inject(...)`를 사용하세요.
 
 ---
 

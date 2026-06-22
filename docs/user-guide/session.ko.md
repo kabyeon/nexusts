@@ -31,7 +31,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/controllers/cart.controller.ts
+// app/controllers/cart.controller.ts
 import { Controller, Post, Body } from 'nexusjs';
 import { SessionService, Session } from 'nexusjs/session';
 
@@ -343,7 +343,7 @@ nx make:session Cart
 nx make:session Flash
 ```
 
-`src/session/services/<name>.session.ts`를 생성한다 — 타입이 지정된 접근자 메서드가 있는 `@Injectable` 스켈레톤.
+`app/session/services/<name>.session.ts`를 생성한다 — 타입이 지정된 접근자 메서드가 있는 `@Injectable` 스켈레톤.
 
 ---
 

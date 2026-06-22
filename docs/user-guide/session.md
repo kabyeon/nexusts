@@ -35,7 +35,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/controllers/cart.controller.ts
+// app/controllers/cart.controller.ts
 import { Controller, Post, Body } from 'nexusjs';
 import { SessionService, Session } from 'nexusjs/session';
 
@@ -367,7 +367,7 @@ nx make:session Cart
 nx make:session Flash
 ```
 
-Generates `src/session/services/<name>.session.ts` — an `@Injectable`
+Generates `app/session/services/<name>.session.ts` — an `@Injectable`
 skeleton with typed accessor methods.
 
 ---

@@ -59,7 +59,7 @@ bun add better-sqlite3
 ### Configure
 
 ```ts
-// src/db/schema.ts
+// app/db/schema.ts
 import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {

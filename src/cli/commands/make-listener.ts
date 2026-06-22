@@ -2,7 +2,7 @@
  * `nx make:listener <Name>` — scaffold an event listener class.
  *
  * Generates:
- *   - src/events/listeners/<name>.listener.ts
+ *   - app/events/listeners/<name>.listener.ts
  *     — an @Injectable class with example @OnEvent handlers
  *
  * Usage:
@@ -53,7 +53,7 @@ export const makeListenerCommand: Command = {
 	aliases: ["ml", "make-listener"],
 	summary: "Scaffold an event listener class",
 	description:
-		"Generates an @Injectable listener class with example @OnEvent handlers under src/events/listeners/.",
+		"Generates an @Injectable listener class with example @OnEvent handlers under app/events/listeners/.",
 	examples: ["nx make:listener UserEvents", "nx make:listener OrderEvents"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -69,7 +69,7 @@ export const makeListenerCommand: Command = {
 		});
 		const out = resolve(
 			ctx.cwd,
-			"src/events/listeners",
+			"app/events/listeners",
 			`${variants.kebab}.listener.ts`,
 		);
 

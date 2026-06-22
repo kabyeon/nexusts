@@ -53,7 +53,7 @@ constructor(private repo: UserRepository) {}
 ```
 
 > If you build with `tsc` first and run with `node` or `bun dist/`,
-> the bare-type form works. Under `bun src/...` (the default), use
+> the bare-type form works. Under `bun app/...` (the default), use
 > `@Inject(...)`.
 
 ---

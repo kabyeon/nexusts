@@ -49,7 +49,7 @@ message ListResponse { repeated UserResponse users = 1; }
 ### 2. 서비스 구현
 
 ```ts
-// src/user/user.grpc.ts
+// app/user/user.grpc.ts
 import { Injectable, Inject } from "nexusjs";
 import { GrpcService, GrpcMethod } from "nexusjs/grpc";
 
@@ -98,7 +98,7 @@ export class AppModule {}
 ### 4. 서버 시작
 
 ```ts
-// src/main.ts
+// app/main.ts
 import { Application } from "nexusjs";
 import { GrpcService } from "nexusjs/grpc";
 import { AppModule } from "./app.module";

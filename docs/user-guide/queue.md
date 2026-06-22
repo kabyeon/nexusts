@@ -163,7 +163,7 @@ max_retries = 3
 ```
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 import { Application } from 'nexusjs';
 import { QueueService, QueueModule } from 'nexusjs/queue';
 
@@ -365,8 +365,8 @@ nx make:queue notify --no-job
 
 Generates:
 
-- `src/queue/workers/<name>.worker.ts` — `@OnQueueReady` handler class
-- `src/queue/jobs/<name>.job.ts` — `enqueue*` helper for callers
+- `app/queue/workers/<name>.worker.ts` — `@OnQueueReady` handler class
+- `app/queue/jobs/<name>.job.ts` — `enqueue*` helper for callers
 
 Flags:
 

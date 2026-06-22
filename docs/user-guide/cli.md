@@ -439,7 +439,7 @@ export default {
       logger.error('Usage: nx make:feature <Name>');
       return 1;
     }
-    writeFile(`src/feature-flags/${name.toLowerCase()}.ts`, `// TODO`);
+    writeFile(`app/feature-flags/${name.toLowerCase()}.ts`, `// TODO`);
     logger.success(`created ${name}`);
     return 0;
   },

@@ -32,7 +32,7 @@ export class AppModule {}
 ```
 
 ```ts
-// src/schedule/tasks/cleanup.task.ts
+// app/schedule/tasks/cleanup.task.ts
 import { Inject, Injectable } from 'nexusjs';
 import { Cron, Interval, ScheduleService } from 'nexusjs/schedule';
 
@@ -179,7 +179,7 @@ cron = "*/15 * * * *"
 ```
 
 ```ts
-// src/worker.ts
+// app/worker.ts
 const app = new Application(AppModule);
 const schedule = app.container.resolve(ScheduleService);
 const cf = schedule.getCloudflareBackend();
@@ -253,7 +253,7 @@ nx make:schedule HourlyCleanup
 nx make:schedule DailyDigest
 ```
 
-Generates `src/schedule/tasks/<name>.task.ts` with a skeleton class
+Generates `app/schedule/tasks/<name>.task.ts` with a skeleton class
 ready for `@Cron` / `@Interval` / `@Timeout` handlers.
 
 ---

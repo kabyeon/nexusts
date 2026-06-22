@@ -42,7 +42,7 @@ bunx nx make:auth --provider github --jwt
 
 이 명령은 다음을 생성합니다.
 
-- `src/auth/auth.ts` — 요청한 프로바이더가 포함된 better-auth 인스턴스
+- `app/auth/auth.ts` — 요청한 프로바이더가 포함된 better-auth 인스턴스
 - `.env.example` — 필요한 모든 env 변수 (프로바이더 항목 포함)
 
 그 다음 연결:
@@ -389,7 +389,7 @@ nx make:auth --provider github,google,discord --jwt --passkey --rp-id example.co
 | `--rp-name <name>` | Passkey RP 표시 이름 |
 | `--origin <url>` | Passkey origin |
 
-`src/auth/auth.ts`와 `.env.example`을 생성한 다음 연결 지침을 출력합니다.
+`app/auth/auth.ts`와 `.env.example`을 생성한 다음 연결 지침을 출력합니다.
 
 ---
 

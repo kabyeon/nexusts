@@ -2,7 +2,7 @@
  * `nx make:schedule <Name>` — scaffold a scheduled task class.
  *
  * Generates:
- *   - src/schedule/tasks/<name>.task.ts
+ *   - app/schedule/tasks/<name>.task.ts
  *     — an @Injectable class with example @Cron / @Interval /
  *       @Timeout handlers
  *
@@ -60,7 +60,7 @@ export const makeScheduleCommand: Command = {
 	aliases: ["msk", "make-schedule"],
 	summary: "Scaffold a scheduled task class",
 	description:
-		"Generates an @Injectable task class with example @Cron / @Interval / @Timeout handlers under src/schedule/tasks/.",
+		"Generates an @Injectable task class with example @Cron / @Interval / @Timeout handlers under app/schedule/tasks/.",
 	examples: ["nx make:schedule HourlyCleanup", "nx make:schedule DailyDigest"],
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
@@ -76,7 +76,7 @@ export const makeScheduleCommand: Command = {
 		});
 		const out = resolve(
 			ctx.cwd,
-			"src/schedule/tasks",
+			"app/schedule/tasks",
 			`${variants.kebab}.task.ts`,
 		);
 
