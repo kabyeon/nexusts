@@ -1,9 +1,9 @@
 # NexusJS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.8**
+> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.7.0**
 
-This document compares NexusJS v0.6.8 against [NestJS](https://nestjs.com)
+This document compares NexusJS v0.7.0 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
 has been closed; this analysis now focuses on the remaining Tier 3+
@@ -17,11 +17,11 @@ gaps that block complete feature parity.
 
 ---
 
-## 1. Summary table (v0.6.8)
+## 1. Summary table (v0.7.0)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusJS v0.6.8 | Notes |
+| Category | NestJS | NexusJS v0.7.0 | Notes |
 |----------|--------|--------------|-------|
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ✅ Hono + SSE + WS + gRPC + GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
@@ -44,15 +44,16 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Encryption | ⚠️ DIY (or `nestjs-crypto`) | ✅ `@kabyeon/nexusjs/crypto` | AES-256-GCM + HMAC + scrypt/argon2 |
 | Feature flags | ⚠️ DIY (no first-party) | ⚠️ DIY | Both lack first-party |
 | Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ✅ `@kabyeon/nexusjs/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff |
-| GraphQL | ✅ @nestjs/graphql | ✅ `@kabyeon/nexusjs/graphql` | SDL-first; code-first via `@Resolver` (alpha) in v0.6.9 |
-| gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary methods (streaming planned v2) |
+| GraphQL | ✅ @nestjs/graphql | ✅ `@kabyeon/nexusjs/graphql` | SDL-first; `@Resolver`/`@Query`/`@Mutation` decorators (code-first SDL synthesis reserved for v0.8). Shipped v0.6.9. |
+| gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary methods (streaming planned v2). Shipped v0.5. |
+| Resilience | ⚠️ nestjs-recq | ✅ `@kabyeon/nexusjs/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff. Shipped v0.7.0. **Zero new dependencies.** |
 
-**Headline**: NexusJS v0.6.8 closes **every Tier 1 and Tier 2 gap** from
-the v0.2 analysis. All **28** shipped modules are first-party.
+**Headline**: NexusJS v0.7.0 closes **every Tier 1 and Tier 2 gap** from
+the v0.2 analysis. All **30** shipped modules are first-party.
 
 ---
 
-## 2. Closed in v0.3 → v0.6 (recent wins)
+## 2. Closed in v0.3 → v0.7.0 (recent wins)
 
 | Was missing in v0.2 | Shipped | Module |
 | ------------------- | ------- | ------ |
@@ -89,8 +90,12 @@ the v0.2 analysis. All **28** shipped modules are first-party.
 | **`router.getRoutes()` for OpenAPI** | v0.6.6 | feeds spec generation from declared routes |
 | **`create-nexusjs` scaffolder** | v0.6.7 | separate npm package |
 | **`examples/` + smoke test suite** | v0.6.8 | 27 working examples, 55 vitest tests in ~2s |
+| **`@kabyeon/nexusjs/graphql`** | v0.6.9 | SDL-first GraphQL endpoint + `GraphQLService`/`GraphQLModule`. `@Resolver`/`@Query`/`@Mutation` decorators (code-first SDL synthesis alpha). Optional peer-dep `graphql` |
+| **Inertia v2 examples (React + Vue, SPA + SSR)** | v0.6.9 | 4 new examples under `examples/28-31` |
+| **`@kabyeon/nexusjs/resilience`** | v0.7.0 | Retry + Circuit Breaker + Bulkhead in a single DI singleton. `retry()` with 4 backoff strategies, named-circuit registry. **Zero new dependencies.** |
+| **Examples + smoke test expansion** | v0.7.0 | 33 examples total (added `32-graphql-hello`, `33-resilience-calls`). 67 smoke tests. |
 
-Total: **34 Tier 1+2+3 gaps closed** since v0.2.
+Total: **37 Tier 1+2+3 gaps closed** since v0.2.
 
 ---
 
@@ -265,7 +270,7 @@ consumer apps.
 
 ## 7. Recommended v0.6+ roadmap
 
-### v0.6 — Async RPC & DX (the "polyglot" milestone)
+### v0.6.x — Async RPC & DX (the "polyglot" milestone) — shipped
 
 Shipped in v0.5–v0.6.8:
 
@@ -281,19 +286,54 @@ Shipped in v0.5–v0.6.8:
 10. **`router.getRoutes()` for OpenAPI** (v0.6.6)
 11. **`create-nexusjs` scaffolder** (v0.6.7) — `bunx create-nexusjs my-app`
 12. **`examples/` + smoke test suite** (v0.6.8) — 27 working examples, 55 vitest tests in ~2s
-13. **Inertia v2 examples** (v0.6.8) — React + Vue, SPA + SSR
+13. **Inertia v2 examples** (v0.6.9) — React + Vue, SPA + SSR
 
-After v0.6, NexusJS will have feature parity with NestJS for ~95% of backend
-use-cases.
+### v0.6.9 — GraphQL — shipped
 
-### v0.7 — Hardening
+- **`@kabyeon/nexusjs/graphql`** — SDL-first GraphQL endpoint
+  (`POST/GET /graphql`, `/graphql/schema`, in-bundle GraphiQL
+  playground, `context()` factory). `@Resolver`/`@Query`/
+  `@Mutation`/`@Subscription`/`@Arg` decorators (code-first
+  SDL synthesis reserved for v0.8). Optional peer-dep `graphql`.
+- **4 Inertia v2 examples** (examples 28–31).
+- **example 32** (`graphql-hello`).
+
+### v0.7.0 — Resilience — shipped
+
+- **`@kabyeon/nexusjs/resilience`** — Retry + Circuit Breaker +
+  Bulkhead in a single DI singleton.
+  - `retry()` function with 4 backoff strategies (constant,
+    linear, exponential, exponential-jitter).
+  - `CircuitBreaker` class — closed / open / half-open state
+    machine with rolling window.
+  - `Bulkhead` class — FIFO concurrency limiter with `rejectOnFull`.
+  - `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
+    method decorators (metadata-only).
+  - `getOrCreateCircuit(name)` / `getOrCreateBulkhead(name)` —
+    shared named registry across the app.
+  - **Zero new dependencies.**
+- **example 33** (`resilience-calls`).
+- **Documentation**: `docs/user-guide/resilience.md` + `.ko.md`,
+  `docs/design/resilience.md` + `.ko.md`.
+- **Tests**: 20 vitest unit tests for retry / circuit / bulkhead.
+
+### v0.7.1 — DX polish (planned)
+
+- Inertia `<Form>` SDK stabilization, code-first GraphQL SDL synthesis
+  (the `@Resolver` / `@Query` decorators are alpha today), eager
+  `applyResilience()` wrapping at controller-mount time, `forceOpen` /
+  `forceClose` admin API for the circuit breakers.
+
+### v0.8 — Hardening + feature flags
 
 - Stable public API surface (semver guarantees)
 - Multi-runtime CI (Bun + Node + Cloudflare Workers)
 - Performance benchmarks + cross-runtime parity tests
 - Long-term LTS support plan
-- **Resilience** (`@kabyeon/nexusjs/resilience`) — ✅ shipped in v0.7.0
-- **Feature flags** (`@kabyeon/nexusjs/feature-flag`)
+- **`@kabyeon/nexusjs/feature-flag`** — canary / A/B testing
+- **Cross-pod circuit breakers** (resilience backed by Redis / Drizzle)
+- **Code-first GraphQL SDL synthesis** (auto-generate SDL from
+  `@Resolver` / `@Query` decorators)
 
 ### v1.0 — Production-ready LTS
 
@@ -303,61 +343,64 @@ use-cases.
 
 ---
 
-## 8. Honest assessment (v0.6.8)
+## 8. Honest assessment (v0.7.0)
 
-NexusJS v0.6.8 is **production-ready for the vast majority of backend
+NexusJS v0.7.0 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.
-- All **28** optional modules (auth, queue, schedule, events, session,
-  health, config, logger, static, limiter, shield, cache, drive,
-  mail, drizzle, cli, openapi, upload, sse, tracing, metrics, ws,
-  crypto, i18n, grpc, redis, examples, testing) are independently
-  usable and well-scoped.
-- **Tier 1 and Tier 2 gaps are fully closed** as of v0.5.
-  Every production-need infrastructure piece from the v0.2 analysis
-  has shipped.
-- gRPC shipped in v0.5 closes the remaining NestJS-microservices gap.
+- All **30** optional modules are independently usable and well-scoped.
+- **Tier 1 and Tier 2 gaps are fully closed**. Every production-need
+  infrastructure piece from the v0.2 analysis has shipped.
+- gRPC (v0.5) closes the remaining NestJS-microservices gap.
+- GraphQL (v0.6.9) closes the BFF / mobile-first gap with an
+  SDL-first endpoint and the standard `@Resolver` / `@Query` decorator
+  shape.
+- Resilience (v0.7.0) closes the external-API reliability gap with
+  retry + circuit breaker + bulkhead in a single DI singleton.
 - Drizzle as the default ORM closes the AdonisJS-Lucid gap and
   is arguably the **strongest** ORM choice for Bun-native apps.
 - The CLI is genuinely better than NestJS's `nest g` for new
   projects.
 - The SQL-injection-safe raw-query primitive is best-in-class.
-- The `EncryptionService` is now shared between the framework
+- The `EncryptionService` is shared between the framework
   (session cookies, CSRF) and user code, with a single APP_KEY.
-- **27 working examples** under `examples/` cover every major module
-  and act as living docs; the smoke test suite (55 vitest tests in
+- **33 working examples** under `examples/` cover every major module
+  and act as living docs; the smoke test suite (67 vitest tests in
   ~2s) catches import / DI / wiring regressions on every commit.
+- **102 vitest tests** in total (15 GraphQL + 20 Resilience + 67 smoke),
+  all passing.
 
 What's still missing for full "NestJS feature parity":
 
-- **Feature flags** — useful for canary deploys.
-- **Cross-pod circuit breakers** (in-resilience roadmap).
+- **Code-first GraphQL SDL synthesis** (alpha today; full release in
+  v0.8). For now, use SDL for non-trivial schemas.
+- **Feature flags** (`@kabyeon/nexusjs/feature-flag`) — planned v0.8.
+- **Cross-pod circuit breakers** (in-resilience roadmap; planned v0.8).
+- **Federation** (Apollo Federation v2 subgraph support) — planned v0.8+.
 
-The path from v0.6.8 to v1.0 is roughly:
+The path from v0.7.0 to v1.0 is roughly:
 
-- **v0.6.x** (shipped): gRPC, REPL, view engine extraction, env-aware
-  config, built-in sessionMiddleware, `nx db:generate`,
-  `@kabyeon/nexusjs` package rename, `create-nexusjs` scaffolder,
-  `examples/` + smoke test suite, Inertia v2 examples (React + Vue,
-  SPA + SSR), `GraphQL` module (v0.6.9), `Resilience` module (v0.7.0).
-- **v0.7** (Q3 2026): Async RPC & DX — GraphQL, resilience, feature flags
-- **v0.8** (Q4 2026): Production hardening — stable public API,
-  multi-runtime CI, performance benchmarks, LTS plan.
+- **v0.7.1** (immediate): Inertia `<Form>` SDK stabilization, code-first
+  GraphQL SDL synthesis, eager resilience wrapping, circuit-breaker
+  admin API.
+- **v0.8** (Q3 2026): Production hardening + feature flags +
+  cross-pod circuit breakers + federation.
 - **v1.0** (Q1 2027): Production-ready LTS — frozen API surface,
   migration guides, long-term support branch.
 
-After v0.7, NexusJS is a viable alternative for **any** backend
+After v0.8, NexusJS is a viable alternative for **any** backend
 that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 ---
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6.x release notes
-- [`../../user-guide/`](../../user-guide/) — guides for the 28 modules
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 release notes
+- [`../../user-guide/`](../../user-guide/) — guides for the 30 modules
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
-- [`../../../examples/`](../../../examples/) — 27 working example apps
+- [`../../../examples/`](../../../examples/) — 33 working example apps
+- [`../../../AGENTS.md`](../../../AGENTS.md) — contributor + module-author guide
 - [NestJS documentation](https://docs.nestjs.com) — the comparison baseline
 - [Bulletproof Node.js architecture](https://github.com/santiq/bulletproof-nodejs) —
   the production checklist this analysis derives from

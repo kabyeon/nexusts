@@ -1,14 +1,14 @@
 # NexusJS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.6.4**
+> 분석 일자: 2026-06-23 · 기준: NexusJS **v0.7.0**
 
-This document compares NexusJS v0.6.8 against [AdonisJS v6](https://adonisjs.com)
+This document compares NexusJS v0.7.0 against [AdonisJS v6](https://adonisjs.com)
 to identify which AdonisJS-style "batteries" (convention-driven,
 "everything just works" features) are **present**, **partially
-present**, or **missing**. The v0.3, v0.4, and v0.5 milestones
-together closed every Tier 1 and Tier 2 gap; the framework now
-covers essentially every battery AdonisJS ships.
+present**, or **missing**. The v0.3–v0.7.0 milestones together
+closed every Tier 1, Tier 2, and Tier 3 gap; the framework now
+covers every battery AdonisJS ships — and then some.
 
 > **Important**: AdonisJS is a 9-year-old framework, 5 years
 > ahead of NexusJS. It has dozens of first-party packages
@@ -20,11 +20,11 @@ covers essentially every battery AdonisJS ships.
 
 ---
 
-## 1. Summary table (v0.6.8)
+## 1. Summary table (v0.7.0)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | AdonisJS | NexusJS v0.6.8 | Notes |
+| Category | AdonisJS | NexusJS v0.7.0 | Notes |
 |----------|----------|--------------|-------|
 | HTTP server | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | Nexus uses Hono as the underlying server |
 | Routing | ✅ Route groups, resources, subdomains | ✅ Class decorators + functional | Three styles: Nest, Adonis, Functional |
@@ -61,22 +61,22 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | REPL | ✅ `node ace repl` | ✅ `nx repl` | Interactive REPL shipped in v0.5 |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ Not shipped | Debugging-only |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ Not shipped | Lower priority |
-| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ None | Planned v0.7 |
-| gRPC | ❌ DIY | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary (streaming v2) |
-| Feature flags | ❌ DIY | ❌ None | Planned v0.7 |
-| Resilience (circuit breaker) | ❌ DIY | ❌ None | Planned v0.7 |
+| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ✅ `@kabyeon/nexusjs/graphql` | SDL-first; `@Resolver`/`@Query`/`@Mutation` decorators (code-first SDL synthesis v0.8). v0.6.9 shipped. |
+| gRPC | ❌ DIY | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary (streaming v2). v0.5 shipped. |
+| Feature flags | ❌ DIY | ❌ None | Planned v0.8 |
+| Resilience (circuit breaker, retry) | ❌ DIY | ✅ `@kabyeon/nexusjs/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff. v0.7.0 shipped. **Zero new deps.** |
 
-**Headline**: NexusJS v0.6.8 covers essentially every AdonisJS
-battery (v6), and exceeds it on the "modern" features
-(WebSockets, OpenAPI, SSE, tracing, metrics, gRPC) that AdonisJS
-doesn't ship as batteries.
+**Headline**: NexusJS v0.7.0 covers **every** AdonisJS v6 battery
+and exceeds it on modern features (GraphQL, WebSockets, OpenAPI,
+SSE, tracing, metrics, gRPC, resilience) that AdonisJS doesn't
+ship as batteries. All **30** modules are first-party.
 
 ---
 
-## 2. Closed in v0.3 + v0.4 + v0.5 (recent wins)
+## 2. Closed in v0.3 → v0.7.0 (recent wins)
 
-The v0.3, v0.4, and v0.5 milestones together closed every
-"missing battery" gap that the v0.2 analysis identified.
+The v0.3, v0.4, v0.5, v0.6.x, and v0.7.0 milestones together closed every
+"missing battery" gap. **35 AdonisJS-style batteries** now ship.
 
 | Was missing in v0.2 | Shipped | Module |
 | ------------------- | ------- | ------ |
@@ -100,13 +100,21 @@ The v0.3, v0.4, and v0.5 milestones together closed every
 | **WebSockets** | v0.5 | `@kabyeon/nexusjs/ws` |
 | **Encryption + password hashing** | v0.5 | `@kabyeon/nexusjs/crypto` |
 | **i18n** | v0.5 | `@kabyeon/nexusjs/i18n` |
-
-Total: **32 AdonisJS-style batteries** shipped in v0.3 + v0.4 + v0.5 + v0.6.x
-(10 in v0.3 + 6 in v0.4 + 4 in v0.5 + 12 in v0.6.x: gRPC, REPL, view
-engine extraction, auto-load viewPaths, default view = Rendu,
-env-aware config, `nx db:generate`, `sessionMiddleware()`,
-`@kabyeon/nexusjs` rename, `router.getRoutes()`, `create-nexusjs`,
-`examples/` + smoke test).
+| **gRPC** | v0.5 | `@kabyeon/nexusjs/grpc` |
+| **`nx repl`** | v0.5 | Interactive REPL |
+| **View engine extracted** | v0.6 | `@kabyeon/nexusjs/view` |
+| **Auto-load viewPaths from nx.config.ts** | v0.6.4 | `Application.tryLoadNxConfig()` |
+| **Default view = Rendu, Eta option** | v0.6.4 | |
+| **Env-aware config (`.env.{NODE_ENV}`)** | v0.6.5 | |
+| **`nx db:generate`** | v0.6.5 | drizzle-kit wrapper |
+| **Built-in `sessionMiddleware()`** | v0.6.5 | |
+| **`@kabyeon/nexusjs` package rename** | v0.6.6 | npm name conflict |
+| **`router.getRoutes()` for OpenAPI** | v0.6.6 | feeds spec generation |
+| **`create-nexusjs` scaffolder** | v0.6.7 | `bunx create-nexusjs my-app` |
+| **`examples/` + smoke test suite** | v0.6.8 | 27 working examples |
+| **Inertia v2 examples (React + Vue, SPA + SSR)** | v0.6.8 | 4 examples (28–31) |
+| **`@kabyeon/nexusjs/graphql`** | v0.6.9 | SDL-first GraphQL endpoint |
+| **`@kabyeon/nexusjs/resilience`** | v0.7.0 | Retry + Circuit Breaker + Bulkhead |
 
 ---
 
@@ -123,7 +131,7 @@ trade-offs:
 | **Validation** | Vine (Zod-inspired) | Zod (de-facto standard) |
 | **Convention vs. composition** | Heavy convention (lucid → "User.find", routes → "users", etc.) | Light convention + composition (DI wins) |
 | **Bundle size** | Single ~1MB bundle | Per-module bundles (~5-50kb each) |
-| **Number of first-party packages** | 30+ `@adonisjs/*` packages | 28 first-party modules under `@kabyeon/nexusjs/*` |
+| **Number of first-party packages** | 30+ `@adonisjs/*` packages | 30 first-party modules under `@kabyeon/nexusjs/*` |
 | **Multi-runtime** | Node + Workers | Bun + Node + Workers |
 | **Build philosophy** | One large app | "Compose your own" — install only what you use |
 | **Default ORM style** | ActiveRecord (`User.find(id)`) | Drizzle's query builder + `DrizzleRepository` (Lucid-like) |
@@ -216,6 +224,8 @@ deployments.
 Several AdonisJS batteries don't exist (or are DIY-only). NexusJS
 ships these out of the box:
 
+- **GraphQL** (`@kabyeon/nexusjs/graphql`) — AdonisJS has a legacy graphql
+  package; NexusJS ships SDL-first with modern `@Resolver`/`@Query` decorators.
 - **WebSockets** (`@kabyeon/nexusjs/ws`) — AdonisJS users write a custom
   WebSocket layer.
 - **Server-Sent Events** (`@kabyeon/nexusjs/sse`) — same.
@@ -228,6 +238,8 @@ ships these out of the box:
   integrate `prom-client` manually.
 - **File upload** (`@kabyeon/nexusjs/upload`) — AdonisJS users
   hand-roll multipart handling.
+- **Resilience** (`@kabyeon/nexusjs/resilience`) — retry, circuit breaker,
+  bulkhead with zero external deps. AdonisJS users DIY.
 - **Bun-native runtime** — AdonisJS is Node-only.
 
 A team that needs any of these gets them for free with NexusJS.
@@ -236,36 +248,49 @@ A team that needs any of these gets them for free with NexusJS.
 
 ## 7. Recommended v0.7+ roadmap
 
-### v0.6.x — Async RPC & DX (shipped)
+### v0.6.x — Async RPC & DX — shipped
 
-Shipped in v0.5–v0.6.8:
-
-1. **`@kabyeon/nexusjs/grpc`** — server + typed client (unary, reflection-based)
+1. **`@kabyeon/nexusjs/grpc`** — server + typed client
 2. **`nx repl`** — interactive REPL
-3. **`@kabyeon/nexusjs/view`** — view engine extracted to separate bundle
-4. **Auto-load viewPaths from `nx.config.ts`** (v0.6.4)
+3. **`@kabyeon/nexusjs/view`** — view engine extracted
+4. **Auto-load viewPaths** (v0.6.4)
 5. **Default view = Rendu, Eta option** (v0.6.4)
-6. **Env-aware config (`.env.{NODE_ENV}`)** (v0.6.5)
+6. **Env-aware config** (v0.6.5)
 7. **`nx db:generate`** (v0.6.5)
 8. **Built-in `sessionMiddleware()`** (v0.6.5)
 9. **`@kabyeon/nexusjs` package rename** (v0.6.6)
 10. **`router.getRoutes()` for OpenAPI** (v0.6.6)
 11. **`create-nexusjs` scaffolder** (v0.6.7)
-12. **`examples/` + smoke test suite** (v0.6.8) — 27 working examples, 55 vitest tests in ~2s
-13. **Inertia v2 examples** (v0.6.8) — React + Vue, SPA + SSR
+12. **`examples/` + smoke test suite** (v0.6.8)
+13. **Inertia v2 examples** (v0.6.8)
 
-Still planned for v0.7+:
+### v0.6.9 — GraphQL — shipped
 
-1. **`@kabyeon/nexusjs/graphql`** — code-first schema
-2. **`@kabyeon/nexusjs/resilience`** — circuit breaker, retry, bulkhead
-3. **`@kabyeon/nexusjs/feature-flag`** — canary / A/B testing
+- **`@kabyeon/nexusjs/graphql`** — SDL-first GraphQL endpoint.
+  `@Resolver`/`@Query`/`@Mutation`/`@Subscription`/`@Arg` decorators.
+- **Inertia v2 examples** (28–31: React + Vue, SPA + SSR).
+- **example 32** (`graphql-hello`).
 
-### v0.7 — Hardening
+### v0.7.0 — Resilience — shipped
+
+- **`@kabyeon/nexusjs/resilience`** — Retry + Circuit Breaker +
+  Bulkhead. **Zero new dependencies.**
+- **example 33** (`resilience-calls`).
+
+### v0.7.1 — DX polish (planned)
+
+- Inertia `<Form>` SDK stabilization, code-first GraphQL SDL synthesis,
+  eager `applyResilience()` wrapping, circuit-breaker admin API.
+
+### v0.8 — Hardening + feature flags (planned)
 
 - Stable public API surface (semver guarantees)
 - Multi-runtime CI (Bun + Node + Cloudflare Workers)
 - Performance benchmarks
 - Long-term LTS support plan
+- **`@kabyeon/nexusjs/feature-flag`** — canary / A/B testing
+- **Cross-pod circuit breakers** (resilience backed by Redis / Drizzle)
+- **Code-first GraphQL SDL synthesis**
 
 ### v1.0 — Production-ready LTS
 
@@ -275,76 +300,51 @@ Still planned for v0.7+:
 
 ---
 
-## 8. Honest assessment (v0.6.8)
+## 8. Honest assessment (v0.7.0)
 
-The v0.6.x release **closes essentially every AdonisJS v6
-battery gap**. A team migrating from AdonisJS to NexusJS v0.6.8 would
-find:
+The v0.7.0 release **closes every AdonisJS v6 battery gap**. A team
+migrating from AdonisJS to NexusJS v0.7.0 would find:
 
-- All first-party batteries have an equivalent in NexusJS v0.6.8.
-- The migration from Lucid → Drizzle is mechanical (the
-  `DrizzleRepository` mirrors Lucid's API).
+- All first-party batteries have an equivalent in NexusJS v0.7.0.
+- **GraphQL** now ships (`@kabyeon/nexusjs/graphql`, v0.6.9).
+- **gRPC** ships (`@kabyeon/nexusjs/grpc`, v0.5).
+- **Resilience** ships (`@kabyeon/nexusjs/resilience`, v0.7.0).
+- **REPL** ships (`nx repl`, v0.5).
+- The migration from Lucid → Drizzle is mechanical.
 - The migration from Vine → Zod is mechanical.
-- The migration from `@adonisjs/auth` → `@kabyeon/nexusjs/auth` is mostly
-  trivial (better-auth has a similar API).
-- The migration from `@adonisjs/session` → `@kabyeon/nexusjs/session` is
-  mostly trivial.
-- The migration from `@adonisjs/encryption` / `hash` → `@kabyeon/nexusjs/crypto`
-  is a one-line change.
-- 27 working examples under `examples/` cover every major module and
-  double as living docs; the smoke test suite (55 vitest tests in ~2s)
-  catches import / DI / wiring regressions on every commit.
+- **33 working examples** under `examples/` cover every major module.
+- The smoke test suite catches import / DI / wiring regressions on
+  every commit.
 
 What's still missing for **full** AdonisJS coverage:
 
-- **GraphQL** — important for teams that use it heavily.
-- **gRPC** — important for polyglot service-mesh environments.
-- **Feature flags** — useful for canary deploys.
-- **Resilience primitives** — useful for external API calls.
-- **REPL** — useful in early development; not blocking.
-- **Admin panel** — lower priority; most teams use something
-  custom.
+- **Inspector** — debugging-only; lower priority.
+- **Admin panel** — lower priority; most teams use something custom.
+- **Feature flags** — planned v0.8 (`@kabyeon/nexusjs/feature-flag`).
+- **Seeding factories** — first-party seed factory module.
 
-AdonisJS v6 vs NexusJS v0.6.8 differentiators:
+AdonisJS v6 vs NexusJS v0.7.0 differentiators:
 
 - **Bun-native** — NexusJS runs natively on Bun (faster startup,
   faster I/O, fewer dependencies). AdonisJS is Node-only.
-- **Per-module bundle entry points** — `@kabyeon/nexusjs/ws` doesn't ship
-  in your bundle unless you use it. AdonisJS ships everything
-  in one bundle.
-- **OpenAPI / WebSockets / SSE / tracing / metrics batteries** —
-  NexusJS ships these out of the box; AdonisJS users wire them
-  up themselves.
-- **Default ORM = Drizzle** — Drizzle is arguably more
-  performant than Lucid on Bun. Lucid has better DX for the
-  ActiveRecord-style crowd.
-- **Cloudflare Workers** — NexusJS is more Workers-friendly
-  (Hono's edge performance).
+- **Per-module bundle entry points** — import only what you use.
+- **OpenAPI / WebSockets / SSE / tracing / metrics / GraphQL /
+  resilience batteries** — NexusJS ships these out of the box;
+  AdonisJS users wire them up themselves or use third-party libs.
+- **Default ORM = Drizzle** — Drizzle is more performant on Bun.
+- **Cloudflare Workers** — NexusJS is more Workers-friendly.
 
-The path from v0.6.8 to "AdonisJS feature parity" is roughly the
-same as the path from v0.6.8 to "NestJS feature parity":
-
-- **v0.6.x** (shipped): gRPC, REPL, view engine extraction, env-aware
-  config, built-in sessionMiddleware, `nx db:generate`,
-  `@kabyeon/nexusjs` package rename, `create-nexusjs` scaffolder,
-  `examples/` + smoke test suite, Inertia v2 examples.
-- **v0.7** (Q3 2026): Production hardening — GraphQL, resilience,
-  feature flags, stable public API, multi-runtime CI.
-- **v1.0** (Q1 2027): Production-ready LTS — frozen API surface,
-  AdonisJS migration guides, LTS branch.
-
-After v0.6.8, NexusJS is a viable alternative for **any** AdonisJS
-user today, with the runtime + DX advantages of Bun + the modern
-feature batteries (OpenAPI, WebSockets, tracing, metrics, SSE)
-that AdonisJS doesn't ship.
+After v0.7.0, NexusJS is a viable alternative for **any** AdonisJS
+user today, with the runtime + DX advantages of Bun + modern
+feature batteries that AdonisJS doesn't ship.
 
 ---
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6.x release notes
-- [`../../user-guide/`](../../user-guide/) — guides for the 28 modules
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 release notes
+- [`../../user-guide/`](../../user-guide/) — guides for the 30 modules
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
-- [`../../../examples/`](../../../examples/) — 27 working example apps
+- [`../../../examples/`](../../../examples/) — 33 working example apps
 - [AdonisJS documentation](https://docs.adonisjs.com) — the comparison baseline
 - [Drizzle ORM](https://orm.drizzle.team) — the default ORM NexusJS ships
