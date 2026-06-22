@@ -3,11 +3,11 @@
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
 > 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.4**
 
-이 문서는 NexusJS v0.6와 [AdonisJS v6](https://adonisjs.com)를 비교하여
+이 문서는 NexusJS v0.6.8와 [AdonisJS v6](https://adonisjs.com)를 비교하여
 어떤 AdonisJS 스타일 "battery" (관례 기반, "그냥 동작" 기능)가
-**있음**, **부분적**, **없음** 상태인지 식별한다. v0.3, v0.4, v0.6
-마일스톤이 모든 Tier 1 및 Tier 2 격차를 해소했다. 이제 프레임워크는
-AdonisJS가 출시하는 거의 모든 battery를 다룬다.
+**있음**, **부분적**, **없음** 상태인지 식별한다. v0.3, v0.4, v0.5,
+v0.6.x 마일스톤이 모든 Tier 1 및 Tier 2 격차를 해소했다. 이제
+프레임워크는 AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 
 > **중요**: AdonisJS는 9년 된 프레임워크로 NexusJS보다 5년 앞서 있다.
 > 매우 관용적인 수십 개의 first-party 패키지 (`@adonisjs/*`)를
@@ -17,11 +17,11 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 
 ---
 
-## 1. 요약 표 (v0.6)
+## 1. 요약 표 (v0.6.8)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
-| 카테고리 | AdonisJS | NexusJS v0.6 | 비고 |
+| 카테고리 | AdonisJS | NexusJS v0.6.8 | 비고 |
 |----------|----------|--------------|-------|
 | HTTP 서버 | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | Nexus는 Hono를 기반 서버로 사용 |
 | 라우팅 | ✅ Route groups, resources, subdomains | ✅ 클래스 데코레이터 + functional | 세 가지 스타일: Nest, Adonis, Functional |
@@ -55,24 +55,24 @@ AdonisJS가 출시하는 거의 모든 battery를 다룬다.
 | Tracing | ❌ DIY | ✅ `@kabyeon/nexusjs/tracing` | lazy SDK를 갖춘 OpenTelemetry |
 | Metrics | ❌ DIY | ✅ `@kabyeon/nexusjs/metrics` | Prometheus / OpenMetrics |
 | Bodyparser | ✅ 내장 | ✅ Hono의 `c.req.parseBody()` + `@kabyeon/nexusjs/upload` | |
-| REPL | ✅ `node ace repl` | ❌ 출시 안 됨 | v0.6에서는 낮은 우선순위 |
+| REPL | ✅ `node ace repl` | ✅ `nx repl` | v0.5에 출시됨 (DI-resolved 객체, exec expression, introspection) |
 | Inspector | ✅ `@adonisjs/inspector` | ❌ 출시 안 됨 | 디버깅 전용 |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ 출시 안 됨 | 낮은 우선순위 |
-| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ 없음 | v0.6 예정 |
-| gRPC | ❌ DIY | ❌ 없음 | v0.6 예정 |
-| Feature flags | ❌ DIY | ❌ 없음 | v0.6 예정 |
-| Resilience (서킷 브레이커) | ❌ DIY | ❌ 없음 | v0.6 예정 |
+| GraphQL | ✅ `@adonisjs/graphql` (legacy) | ❌ 없음 | v0.7 예정 |
+| gRPC | ❌ DIY | ✅ `@kabyeon/nexusjs/grpc` | v0.5에 출시됨 (reflection-based, unary / streaming v2) |
+| Feature flags | ❌ DIY | ❌ 없음 | v0.7 예정 |
+| Resilience (서킷 브레이커) | ❌ DIY | ❌ 없음 | v0.7 예정 |
 
-**헤드라인**: NexusJS v0.6는 본질적으로 모든 AdonisJS battery
+**헤드라인**: NexusJS v0.6.8는 본질적으로 모든 AdonisJS battery
 (v6)를 커버하며, "모던" 기능 (WebSockets, OpenAPI, SSE,
 tracing, metrics)에서 AdonisJS가 battery로 출시하지 않는 것을
 능가한다.
 
 ---
 
-## 2. v0.3 + v0.4 + v0.6에서 해소된 항목 (최근 성과)
+## 2. v0.3 → v0.6.8에서 해소된 항목 (최근 성과)
 
-v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든
+v0.3, v0.4, v0.5, v0.6.x 마일스톤이 v0.2 분석에서 식별된 모든
 "누락된 battery" 격차를 해소했다.
 
 | v0.2에서 누락 | 출시 | 모듈 |
@@ -94,12 +94,24 @@ v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든
 | **Server-Sent Events** | v0.4 | `@kabyeon/nexusjs/sse` |
 | **분산 추적** | v0.4 | `@kabyeon/nexusjs/tracing` |
 | **Prometheus 메트릭** | v0.4 | `@kabyeon/nexusjs/metrics` |
-| **WebSockets** | v0.6 | `@kabyeon/nexusjs/ws` |
-| **암호화 + 패스워드 해싱** | v0.6 | `@kabyeon/nexusjs/crypto` |
-| **i18n** | v0.6 | `@kabyeon/nexusjs/i18n` |
+| **WebSockets** | v0.5 | `@kabyeon/nexusjs/ws` |
+| **암호화 + 패스워드 해싱** | v0.5 | `@kabyeon/nexusjs/crypto` |
+| **i18n** | v0.5 | `@kabyeon/nexusjs/i18n` |
+| **gRPC** | v0.5 | `@kabyeon/nexusjs/grpc` (reflection-based, unary) |
+| **`nx repl`** | v0.5 | 인터랙티브 REPL |
+| **View engine 분할** | v0.6 | `@kabyeon/nexusjs/view` (별도 번들) |
+| **`nx.config.ts`에서 viewPaths 자동 로드** | v0.6.4 | `Application.tryLoadNxConfig()` |
+| **Default view = Rendu, Eta 옵션** | v0.6.4 | `.eta` opt-in |
+| **Env-aware config (`.env.{NODE_ENV}`)** | v0.6.5 | 우선순위: process.env > `.env.NODE` > `.env.local` > `.env` |
+| **`nx db:generate` 명령** | v0.6.5 | drizzle-kit wrapper |
+| **내장 `sessionMiddleware()`** | v0.6.5 | `@Inject(SessionService.TOKEN)`에 커스텀 미들웨어 불필요 |
+| **패키지명 변경 `@kabyeon/nexusjs`** | v0.6.6 | 다른 프로젝트와 npm 이름 충돌 |
+| **OpenAPI용 `router.getRoutes()`** | v0.6.6 | 선언된 라우트에서 spec 생성 |
+| **`create-nexusjs` 스캐폴더** | v0.6.7 | 별도 npm 패키지 |
+| **`examples/` + smoke test 슈트** | v0.6.8 | 27개 동작 예제, 55 vitest 테스트 (~2초) |
 
-합계: v0.3 + v0.4 + v0.6에서 **20개의 AdonisJS 스타일 배터리**
-출시 (v0.3에서 10개, v0.4에서 6개, v0.6에서 4개).
+합계: v0.3 이후 **32개의 AdonisJS 스타일 배터리** 출시
+(v0.3에서 10개, v0.4에서 6개, v0.5에서 4개, v0.6.x에서 12개).
 
 ---
 
@@ -226,18 +238,29 @@ NexusJS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ## 7. 권장 v0.6+ 로드맵
 
-### v0.6 — Async RPC & DX ("polyglot" 마일스톤) — 예정
+### v0.6.x — Async RPC & DX ("polyglot" 마일스톤) — 출시됨
 
-1. **`@kabyeon/nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`@kabyeon/nexusjs/grpc`** — server / client / streaming
-3. **`@kabyeon/nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
-4. **`@kabyeon/nexusjs/feature-flag`** — 카나리 / A/B 테스팅
-5. **`nx repl`** — interactive REPL (낮은 우선순위; 요청 시 인용)
+v0.5–v0.6.8에서 출시:
 
-이 5개가 남은 틈새 battery를 채우고 v6와의 "battery 커버리지"를 완성.
+1. **`@kabyeon/nexusjs/grpc`** — server + typed client (unary, reflection-based)
+2. **`nx repl`** — interactive REPL
+3. **`@kabyeon/nexusjs/view`** — view engine 분할 (별도 번들)
+4. **`nx.config.ts`에서 viewPaths 자동 로드** (v0.6.4)
+5. **Default view = Rendu, Eta 옵션** (v0.6.4)
+6. **Env-aware config (`.env.{NODE_ENV}`)** (v0.6.5)
+7. **`nx db:generate`** (v0.6.5)
+8. **내장 `sessionMiddleware()`** (v0.6.5)
+9. **`@kabyeon/nexusjs` 패키지명 변경** (v0.6.6)
+10. **OpenAPI용 `router.getRoutes()`** (v0.6.6)
+11. **`create-nexusjs` 스캐폴더** (v0.6.7)
+12. **`examples/` + smoke test 슈트** (v0.6.8) — 27개 동작 예제, 55 vitest 테스트 (~2초)
+13. **Inertia v2 예제** (v0.6.8) — React + Vue, SPA + SSR
 
-### v0.7 — 강화
+### v0.7 — 강화 (남은 battery)
 
+- **`@kabyeon/nexusjs/graphql`** — 코드 우선 스키마
+- **`@kabyeon/nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
+- **`@kabyeon/nexusjs/feature-flag`** — 카나리 / A/B 테스팅
 - 안정 public API surface (semver 보장)
 - 다중 런타임 CI (Bun + Node + Cloudflare Workers)
 - 성능 벤치마크
@@ -251,12 +274,12 @@ NexusJS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ---
 
-## 8. 정직한 평가 (v0.6)
+## 8. 정직한 평가 (v0.6.8)
 
-v0.6 릴리스는 **본질적으로 모든 AdonisJS v6 battery 격차를 해소**.
-AdonisJS에서 NexusJS v0.6로 마이그레이션하는 팀은 다음을 발견:
+v0.6.x 릴리스는 **본질적으로 모든 AdonisJS v6 battery 격차를 해소**.
+AdonisJS에서 NexusJS v0.6.8로 마이그레이션하는 팀은 다음을 발견:
 
-- 모든 first-party battery에 NexusJS v0.6에 동등한 것 있음.
+- 모든 first-party battery에 NexusJS v0.6.8에 동등한 것 있음.
 - Lucid → Drizzle 마이그레이션은 기계적 (`DrizzleRepository`가
   Lucid API 미러링).
 - Vine → Zod 마이그레이션은 기계적.
@@ -265,17 +288,17 @@ AdonisJS에서 NexusJS v0.6로 마이그레이션하는 팀은 다음을 발견:
 - `@adonisjs/session` → `@kabyeon/nexusjs/session` 마이그레이션은 대부분 자명.
 - `@adonisjs/encryption` / `hash` → `@kabyeon/nexusjs/crypto` 마이그레이션은
   한 줄 변경.
+- **`examples/` 27개 동작 예제**가 모든 주요 모듈을 다루며 살아있는 문서 역할;
+  smoke test 슈트 (55 vitest 테스트, ~2초) 가 매 커밋마다 import / DI / wiring 회귀를 잡는다.
 
 **완전한** AdonisJS 커버리지에 여전히 **부족한 것**:
 
 - **GraphQL** — 무겁게 사용하는 팀에 중요.
-- **gRPC** — 폴리글랏 service-mesh 환경에 중요.
 - **Feature flags** — 카나리 배포에 유용.
 - **Resilience 프리미티브** — 외부 API 호출에 유용.
-- **REPL** — 초기 개발에 유용; blocking은 아님.
 - **Admin panel** — 낮은 우선순위; 대부분의 팀은 커스텀 사용.
 
-AdonisJS v6 vs NexusJS v0.6 차별점:
+AdonisJS v6 vs NexusJS v0.6.8 차별점:
 
 - **Bun 네이티브** — NexusJS는 Bun에서 네이티브로 실행 (더 빠른
   시작, 더 빠른 I/O, 더 적은 의존성). AdonisJS는 Node 전용.
@@ -288,17 +311,18 @@ AdonisJS v6 vs NexusJS v0.6 차별점:
 - **Cloudflare Workers** — NexusJS가 Workers에 더 친화적
   (Hono의 엣지 성능).
 
-v0.6에서 "AdonisJS 기능 패리티"까지의 경로는 v0.6에서
-"NestJS 기능 패리티"까지의 경로와 대략 동일:
+v0.6.8에서 "AdonisJS 기능 패리티"까지의 경로는 대략:
 
-- **v0.6** (2026 Q4): Async RPC & DX — GraphQL, gRPC, resilience,
-  feature flags, REPL.
-- **v0.7** (2027 Q1): Production hardening — 안정 public API,
-  다중 런타임 CI, 성능 벤치마크.
-- **v1.0** (2027 Q2): Production-ready LTS — 동결 API surface,
+- **v0.6.x** (현재): gRPC, REPL, view engine 분할, env-aware config,
+  내장 sessionMiddleware, `nx db:generate`, `@kabyeon/nexusjs` 패키지명 변경,
+  `create-nexusjs` 스캐폴더, `examples/` + smoke test 슈트,
+  Inertia v2 예제.
+- **v0.7** (2026 Q3): Production hardening — 안정 public API,
+  다중 런타임 CI, 성능 벤치마크, GraphQL, resilience, feature flags.
+- **v1.0** (2027 Q1): Production-ready LTS — 동결 API surface,
   AdonisJS 마이그레이션 가이드, LTS 브랜치.
 
-v0.6 이후 NexusJS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에 대한
+v0.7 이후 NexusJS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에 대한
 **실현 가능한 대안**이며, Bun의 런타임 + DX 이점 + AdonisJS가
 battery로 출시하지 않는 모던 기능 (OpenAPI, WebSockets, tracing,
 metrics, SSE)을 가짐.
@@ -307,9 +331,10 @@ metrics, SSE)을 가짐.
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6 릴리스 노트
-- [`../README.md`](../../README.md) — 현재 상태 & 로드맵
-- [`../../user-guide/`](../../user-guide/) — 25개 모듈의 가이드
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6.x 릴리스 노트
+- [`../../user-guide/`](../../user-guide/) — 28개 모듈의 가이드
+- [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner 가이드
+- [`../../../examples/`](../../../examples/) — 27개 동작 예제 앱
 - [`./nestjs-comparison.md`](./nestjs-comparison.md) — 동반 분석
 - [AdonisJS 문서](https://docs.adonisjs.com) — 비교 기준선
 - [Drizzle ORM](https://orm.drizzle.team) — NexusJS가 출시하는 기본 ORM

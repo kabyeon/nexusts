@@ -1,9 +1,9 @@
 # NexusJS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-22 · 기준: NexusJS **v0.6.4**
+> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.8**
 
-This document compares NexusJS v0.6 against [NestJS](https://nestjs.com)
+This document compares NexusJS v0.6.8 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
 has been closed; this analysis now focuses on the remaining Tier 3+
@@ -11,17 +11,17 @@ gaps that block complete feature parity.
 
 > **Important**: NestJS is a 7-year-old framework with ~10M weekly
 > downloads and dozens of first-party packages. NexusJS is young
-> (v0.6, ~4 months of development). The framework deliberately ships
+> (v0.6.x, ~4 months of development). The framework deliberately ships
 > only what production backends need today; the remaining gaps are
 > documented here so they can be prioritized.
 
 ---
 
-## 1. Summary table (v0.6)
+## 1. Summary table (v0.6.8)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusJS v0.6 | Notes |
+| Category | NestJS | NexusJS v0.6.8 | Notes |
 |----------|--------|--------------|-------|
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS + gRPC, no GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
@@ -47,8 +47,8 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | GraphQL | ✅ @nestjs/graphql | ❌ None | Planned v0.7 |
 | gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/nexusjs/grpc` | Reflection-based, unary methods (streaming planned v2) |
 
-**Headline**: NexusJS v0.6 closes **every Tier 1 and Tier 2 gap** from
-the v0.2 analysis. All **26** shipped modules are first-party.
+**Headline**: NexusJS v0.6.8 closes **every Tier 1 and Tier 2 gap** from
+the v0.2 analysis. All **28** shipped modules are first-party.
 
 ---
 
@@ -80,9 +80,17 @@ the v0.2 analysis. All **26** shipped modules are first-party.
 | **gRPC** | v0.5 | `@kabyeon/nexusjs/grpc` (reflection-based, unary) |
 | **nx repl** | v0.5 | Interactive REPL |
 | **View engine extracted** | v0.6 | `@kabyeon/nexusjs/view` (separate bundle) |
-| **Auto-load viewPaths from nx.config.ts** | v0.6 | Application.tryLoadNxConfig() |
+| **Auto-load viewPaths from nx.config.ts** | v0.6.4 | `Application.tryLoadNxConfig()` |
+| **Default view = Rendu, Eta option** | v0.6.4 | `view` defaults to Rendu, `.eta` opt-in |
+| **Env-aware config (`.env.{NODE_ENV}`)** | v0.6.5 | `ConfigModule.forRoot({ schema })` |
+| **`nx db:generate` command** | v0.6.5 | drizzle-kit wrapper |
+| **Built-in `sessionMiddleware()`** | v0.6.5 | `@Inject(SessionService.TOKEN)` no longer needs custom middleware |
+| **Package rename `@kabyeon/nexusjs`** | v0.6.6 | npm name conflict with another project |
+| **`router.getRoutes()` for OpenAPI** | v0.6.6 | feeds spec generation from declared routes |
+| **`create-nexusjs` scaffolder** | v0.6.7 | separate npm package |
+| **`examples/` + smoke test suite** | v0.6.8 | 27 working examples, 55 vitest tests in ~2s |
 
-Total: **24 Tier 1+2+3 gaps closed** since v0.2.
+Total: **34 Tier 1+2+3 gaps closed** since v0.2.
 
 ---
 
@@ -240,17 +248,25 @@ consumer apps.
 
 ## 7. Recommended v0.6+ roadmap
 
-### v0.6 — Async RPC & DX (the "polyglot" milestone) — current
+### v0.6 — Async RPC & DX (the "polyglot" milestone)
 
-Shipped in v0.5–v0.6:
+Shipped in v0.5–v0.6.8:
 
 1. **`@kabyeon/nexusjs/grpc`** — server + typed client (unary, reflection-based)
 2. **`nx repl`** — interactive REPL
 3. **`@kabyeon/nexusjs/view`** — view engine extracted to separate bundle
-4. **Auto-load viewPaths from nx.config.ts** — no explicit call needed
+4. **Auto-load viewPaths from `nx.config.ts`** (v0.6.4) — no explicit call needed
+5. **Default view = Rendu, Eta option** (v0.6.4)
+6. **Env-aware config (`.env.{NODE_ENV}`)** (v0.6.5) — priority: process.env > `.env.NODE` > `.env.local` > `.env`
+7. **`nx db:generate`** (v0.6.5) — drizzle-kit wrapper
+8. **Built-in `sessionMiddleware()`** (v0.6.5) — `@Inject(SessionService.TOKEN)` no longer needs custom middleware
+9. **`@kabyeon/nexusjs` package rename** (v0.6.6) — npm name conflict
+10. **`router.getRoutes()` for OpenAPI** (v0.6.6)
+11. **`create-nexusjs` scaffolder** (v0.6.7) — `bunx create-nexusjs my-app`
+12. **`examples/` + smoke test suite** (v0.6.8) — 27 working examples, 55 vitest tests in ~2s
+13. **Inertia v2 examples** (v0.6.8) — React + Vue, SPA + SSR
 
-Still planned for v0.6+: "missing infrastructure" list. After v0.6,
-NexusJS will have feature parity with NestJS for ~95% of backend
+After v0.6, NexusJS will have feature parity with NestJS for ~95% of backend
 use-cases.
 
 ### v0.7 — Hardening
@@ -259,6 +275,9 @@ use-cases.
 - Multi-runtime CI (Bun + Node + Cloudflare Workers)
 - Performance benchmarks + cross-runtime parity tests
 - Long-term LTS support plan
+- **GraphQL** (`@kabyeon/nexusjs/graphql`) — code-first schema
+- **Resilience** (`@kabyeon/nexusjs/resilience`) — circuit breaker / retry / bulkhead
+- **Feature flags** (`@kabyeon/nexusjs/feature-flag`)
 
 ### v1.0 — Production-ready LTS
 
@@ -268,16 +287,17 @@ use-cases.
 
 ---
 
-## 8. Honest assessment (v0.6)
+## 8. Honest assessment (v0.6.8)
 
-NexusJS v0.6 is **production-ready for the vast majority of backend
+NexusJS v0.6.8 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.
-- All **26** optional modules (auth, queue, schedule, events, session,
+- All **28** optional modules (auth, queue, schedule, events, session,
   health, config, logger, static, limiter, shield, cache, drive,
   mail, drizzle, cli, openapi, upload, sse, tracing, metrics, ws,
-  crypto, i18n, grpc, redis) are independently usable and well-scoped.
+  crypto, i18n, grpc, redis, examples, testing) are independently
+  usable and well-scoped.
 - **Tier 1 and Tier 2 gaps are fully closed** as of v0.5.
   Every production-need infrastructure piece from the v0.2 analysis
   has shipped.
@@ -289,6 +309,9 @@ services**:
 - The SQL-injection-safe raw-query primitive is best-in-class.
 - The `EncryptionService` is now shared between the framework
   (session cookies, CSRF) and user code, with a single APP_KEY.
+- **27 working examples** under `examples/` cover every major module
+  and act as living docs; the smoke test suite (55 vitest tests in
+  ~2s) catches import / DI / wiring regressions on every commit.
 
 What's still missing for full "NestJS feature parity":
 
@@ -296,9 +319,13 @@ What's still missing for full "NestJS feature parity":
 - **Resilience primitives** — circuit breakers, retry, bulkhead.
 - **Feature flags** — useful for canary deploys.
 
-The path from v0.6 to v1.0 is roughly:
+The path from v0.6.8 to v1.0 is roughly:
 
-- **v0.6** (current): gRPC, REPL, view engine extraction, nx.config.ts auto-load
+- **v0.6.x** (current): gRPC, REPL, view engine extraction, env-aware
+  config, built-in sessionMiddleware, `nx db:generate`,
+  `@kabyeon/nexusjs` package rename, `create-nexusjs` scaffolder,
+  `examples/` + smoke test suite, Inertia v2 examples (React + Vue,
+  SPA + SSR).
 - **v0.7** (Q3 2026): Async RPC & DX — GraphQL, resilience, feature flags
 - **v0.8** (Q4 2026): Production hardening — stable public API,
   multi-runtime CI, performance benchmarks, LTS plan.
@@ -312,11 +339,10 @@ that NestJS supports today, with the runtime + ORM advantages of Bun.
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.5 release notes
-- [`../README.md`](../../README.md) — current status & roadmap
-- [`../../user-guide/`](../../user-guide/) — guides for the 26 modules
-- [`../../design/`](../../design/) — architectural deep-dives
-- [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — companion analysis
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6.x release notes
+- [`../../user-guide/`](../../user-guide/) — guides for the 28 modules
+- [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
+- [`../../../examples/`](../../../examples/) — 27 working example apps
 - [NestJS documentation](https://docs.nestjs.com) — the comparison baseline
 - [Bulletproof Node.js architecture](https://github.com/santiq/bulletproof-nodejs) —
   the production checklist this analysis derives from

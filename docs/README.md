@@ -18,7 +18,7 @@ provided in `*.ko.md` files.
 
 ---
 
-## 目录 / 목차
+## Index / 목차
 
 | Section | English | 한국어 |
 | ------- | ------- | ------ |

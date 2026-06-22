@@ -1,27 +1,27 @@
 # NexusJS vs NestJS — 기능 격차 분석
 
 > English version: [`nestjs-comparison.md`](./nestjs-comparison.md)
-> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.4**
+> 분석 일자: 2026-06-25 · 기준: NexusJS **v0.6.8**
 
-이 문서는 NexusJS v0.6와 [NestJS](https://nestjs.com)를 비교하여
+이 문서는 NexusJS v0.6.8와 [NestJS](https://nestjs.com)를 비교하여
 프로덕션 등급 백엔드 기능이 **있음**, **부분적**, **없음** 상태를
-식별한다. v0.3, v0.4, v0.6 마일스톤이 모든 Tier 1과 Tier 2 격차를
-모두 해소했다. 이 분석은 v0.6+ 로드맵을 위한 Tier 3+ 잔존 격차에
-집중한다.
+식별한다. v0.3, v0.4, v0.5, v0.6.x 마일스톤이 모든 Tier 1과
+Tier 2 격차를 모두 해소했다. 이 분석은 v0.7+ 로드맵을 위한
+Tier 3+ 잔존 격차에 집중한다.
 
 > **중요**: NestJS는 7년 된 프레임워크로 주당 ~1000만 다운로드를
 > 기록하며 수십 개의 first-party 패키지를 보유. NexusJS는
-> 어린 프레임워크다 (v0.6, 개발 기간 약 4개월). 프로덕션
-> 백엔드에 "지금" 필요한 것만 출시하며, 잔존 격차는 v0.6+
+> 어린 프레임워크다 (v0.6.x, 개발 기간 약 4개월). 프로덕션
+> 백엔드에 "지금" 필요한 것만 출시하며, 잔존 격차는 v0.7+
 > 로드맵 우선순위를 정하기 위해 여기에 문서화된다.
 
 ---
 
-## 1. 요약 표 (v0.6)
+## 1. 요약 표 (v0.6.8)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
-| 카테고리 | NestJS | NexusJS v0.6 | 비고 |
+| 카테고리 | NestJS | NexusJS v0.6.8 | 비고 |
 |----------|--------|--------------|-------|
 | HTTP / 라우팅 | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ⚠️ Hono + SSE + WS, GraphQL/gRPC 없음 | REST + functional + Nest/Adonis 스타일 |
 | DI | ✅ Request-scoped, 순환 자동 해결 | ✅ Singleton + transient + request | `AsyncLocalStorage`로 request scope; `@Injectable({ scope: 'request' })` |
@@ -30,7 +30,7 @@
 | 데이터베이스 | ✅ TypeORM, Prisma, Mongoose, Sequelize | ✅ `@kabyeon/nexusjs/drizzle` (5개 dialect) | Drizzle가 기본 ORM |
 | 캐시 | ✅ cache-manager (in-memory / Redis) | ✅ `@kabyeon/nexusjs/cache` (memory / Drizzle) | tag-based invalidation; Redis는 커스텀 store |
 | 로깅 | ✅ 내장 Logger (Winston / Pino 어댑터) | ✅ `@kabyeon/nexusjs/logger` (Pino) | dev에서 pretty, prod에서 JSON, ALS로 request-scoped |
-| 실시간 | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE | `@kabyeon/nexusjs/ws` (Bun + Node) + `@kabyeon/nexusjs/sse` |
+| 실시간 | ✅ WebSocket, SSE, gRPC streaming | ✅ WebSocket + SSE + gRPC | `@kabyeon/nexusjs/ws` (Bun + Node) + `@kabyeon/nexusjs/sse` + `@kabyeon/nexusjs/grpc` |
 | 마이크로서비스 | ✅ TCP, Redis, NATS, Kafka, MQTT | ⚠️ `@kabyeon/nexusjs/queue` (BullMQ / Cloudflare) | 잡 큐만; service-mesh 전송 없음 |
 | API 문서 | ✅ @nestjs/swagger | ✅ `@kabyeon/nexusjs/openapi` | Zod에서 OpenAPI 3.1 + Scalar UI |
 | 헬스 체크 | ✅ @nestjs/terminus | ✅ `@kabyeon/nexusjs/health` | 내장 indicator (memory/disk/http/db) |
@@ -47,13 +47,13 @@
 | GraphQL | ✅ @nestjs/graphql | ✅ `@kabyeon/nexusjs/grpc` | v0.5 출시됨 |
 | gRPC | ✅ @nestjs/microservices | ✅ `@kabyeon/nexusjs/grpc` | v0.5 출시됨 |
 
-**헤드라인**: NexusJS v0.6는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 26개 모듈 모두 first-party.
+**헤드라인**: NexusJS v0.6.8는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 28개 모듈 모두 first-party.
 
 ---
 
-## 2. v0.3 + v0.4 + v0.6에서 해소된 항목 (최근 성과)
+## 2. v0.3 → v0.6.8에서 해소된 항목 (최근 성과)
 
-v0.3, v0.4, v0.6 마일스톤이 v0.2 분석에서 식별된 모든 Tier 1과
+v0.3, v0.4, v0.5, v0.6 마일스톤이 v0.2 분석에서 식별된 모든 Tier 1과
 Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 | v0.2에서 누락 | 출시 | 모듈 |
@@ -76,11 +76,23 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 | **Server-Sent Events** | v0.4 | `@kabyeon/nexusjs/sse` |
 | **분산 추적** | v0.4 | `@kabyeon/nexusjs/tracing` |
 | **Prometheus 메트릭** | v0.4 | `@kabyeon/nexusjs/metrics` |
-| **WebSockets** | v0.6 | `@kabyeon/nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
-| **암호화 + 패스워드 해싱** | v0.6 | `@kabyeon/nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
-| **i18n** | v0.6 | `@kabyeon/nexusjs/i18n` (Intl 기반, pluralization) |
+| **WebSockets** | v0.5 | `@kabyeon/nexusjs/ws` (Bun 기본, Node는 `ws` 경유) |
+| **암호화 + 패스워드 해싱** | v0.5 | `@kabyeon/nexusjs/crypto` (AES-256-GCM + HMAC + scrypt) |
+| **i18n** | v0.5 | `@kabyeon/nexusjs/i18n` (Intl 기반, pluralization) |
+| **gRPC** | v0.5 | `@kabyeon/nexusjs/grpc` (reflection-based, unary) |
+| **`nx repl`** | v0.5 | 인터랙티브 REPL |
+| **View engine 분할** | v0.6 | `@kabyeon/nexusjs/view` (별도 번들) |
+| **`nx.config.ts`에서 viewPaths 자동 로드** | v0.6.4 | `Application.tryLoadNxConfig()` |
+| **Default view = Rendu, Eta 옵션** | v0.6.4 | `.eta` opt-in |
+| **Env-aware config (`.env.{NODE_ENV}`)** | v0.6.5 | 우선순위: process.env > `.env.NODE` > `.env.local` > `.env` |
+| **`nx db:generate` 명령** | v0.6.5 | drizzle-kit wrapper |
+| **내장 `sessionMiddleware()`** | v0.6.5 | `@Inject(SessionService.TOKEN)`에 커스텀 미들웨어 불필요 |
+| **패키지명 변경 `@kabyeon/nexusjs`** | v0.6.6 | 다른 프로젝트와 npm 이름 충돌 |
+| **OpenAPI용 `router.getRoutes()`** | v0.6.6 | 선언된 라우트에서 spec 생성 |
+| **`create-nexusjs` 스캐폴더** | v0.6.7 | 별도 npm 패키지 |
+| **`examples/` + smoke test 슈트** | v0.6.8 | 27개 동작 예제, 55 vitest 테스트 (~2초) |
 
-합계: v0.2 이후 **21개의 Tier 1+2 격차 해소** (v0.3에서 12개, v0.4에서 6개, v0.6에서 3개).
+합계: v0.2 이후 **34개의 Tier 1+2+3 격차 해소**.
 
 ---
 
@@ -94,7 +106,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 4.1 WebSockets (`@nestjs/websockets` 등가)
 
-- **상태**: ✅ v0.6에서 `@kabyeon/nexusjs/ws`로 해소.
+- **상태**: ✅ v0.5에서 `@kabyeon/nexusjs/ws`로 해소.
 - **출시 내용**: `@WebSocketGateway(path)` + `@OnWebSocketMessage()`
   데코레이터. 연결 추적, rooms, broadcast를 위한 `WebSocketService`.
   `BunWsAdapter` (`hono/bun` 사용) 및 `NodeWsAdapter` (옵션 peer로
@@ -119,15 +131,14 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 ### 4.4 gRPC (`@nestjs/microservices` 부분)
 
 - **용도**: 서비스 간 고성능 RPC.
-- **상태**: ❌ 아직 출시 안 됨. v0.6+ 예정.
-- **제안 모듈**: `@kabyeon/nexusjs/grpc`
-- **기능**:
-  - `@GrpcMethod('UserService', 'findById')` 데코레이터
-  - 스트리밍 (server, client, bidi)
-  - Reflect 기반 스키마
-- **비고**: 우선순위 낮음 — 대부분의 팀이 서비스 간 통신에
-  REST + WebSocket을 출시. gRPC는 폴리글랏 / 엄격 스키마
-  환경에서만 필요.
+- **상태**: ✅ v0.5에서 `@kabyeon/nexusjs/grpc`로 출시됨.
+- **출시 내용**:
+  - `GrpcModule.forRoot()` — `@grpc/proto-loader`로 런타임에 `.proto` 로드 (reflection-based, codegen 없음).
+  - `@GrpcService()` 데코레이터 — 컨트롤러 클래스에서 unary 서비스 메소드 등록.
+  - 타입 안전 클라이언트 — `grpcClient()`가 프록시 반환.
+  - 런타임 백엔드 자동 감지 (Bun / Node).
+- **비고**: v1은 unary만, 스트리밍 (server / client / bidi) 은 v2 예정.
+- [`../../user-guide/grpc.md`](../../user-guide/grpc.md) 참조.
 
 ### 4.5 GraphQL (`@nestjs/graphql` 등가)
 
@@ -147,7 +158,7 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ### 5.1 i18n (`nestjs-i18n` 등가)
 
-- **상태**: ✅ v0.6에서 `@kabyeon/nexusjs/i18n`로 해소. `Intl` 기반
+- **상태**: ✅ v0.5에서 `@kabyeon/nexusjs/i18n`로 해소. `Intl` 기반
   pluralization, `|` 구분자, locale 감지 미들웨어 (query →
   cookie → Accept-Language → default), JSON 카탈로그,
   `formatDate` / `formatNumber` / `formatCurrency` / `compare`.
@@ -218,17 +229,27 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ---
 
-## 7. 권장 v0.6+ 로드맵
+## 7. 권장 v0.7+ 로드맵
 
-### v0.6 — Async RPC & DX ("polyglot" 마일스톤) — 예정
+### v0.6.x — Async RPC & DX ("polyglot" 마일스톤) — 출시됨
 
-1. **`@kabyeon/nexusjs/graphql`** — 코드 우선 스키마, `@Resolver()` / `@Query()` / `@Mutation()`
-2. **`@kabyeon/nexusjs/grpc`** — server / client / streaming
-3. **`@kabyeon/nexusjs/resilience`** — 서킷 브레이커, 재시도, bulkhead
-4. **`@kabyeon/nexusjs/feature-flag`** — 카나리 / A/B 테스팅
+v0.5–v0.6.8에서 출시:
 
-이 4개가 "누락된 인프라" 목록을 완성. v0.6 이후 NexusJS는 백엔드
-사용 사례의 ~95%에서 NestJS와 기능 패리티를 보유.
+1. **`@kabyeon/nexusjs/grpc`** — server + typed client (unary, reflection-based)
+2. **`nx repl`** — 인터랙티브 REPL
+3. **`@kabyeon/nexusjs/view`** — view engine 분할 (별도 번들)
+4. **`nx.config.ts`에서 viewPaths 자동 로드** (v0.6.4) — 명시적 호출 불필요
+5. **Default view = Rendu, Eta 옵션** (v0.6.4)
+6. **Env-aware config (`.env.{NODE_ENV}`)** (v0.6.5) — 우선순위: process.env > `.env.NODE` > `.env.local` > `.env`
+7. **`nx db:generate`** (v0.6.5) — drizzle-kit wrapper
+8. **내장 `sessionMiddleware()`** (v0.6.5) — `@Inject(SessionService.TOKEN)`에 커스텀 미들웨어 불필요
+9. **`@kabyeon/nexusjs` 패키지명 변경** (v0.6.6) — npm 이름 충돌
+10. **OpenAPI용 `router.getRoutes()`** (v0.6.6)
+11. **`create-nexusjs` 스캐폴더** (v0.6.7) — `bunx create-nexusjs my-app`
+12. **`examples/` + smoke test 슈트** (v0.6.8) — 27개 동작 예제, 55 vitest 테스트 (~2초)
+13. **Inertia v2 예제** (v0.6.8) — React + Vue, SPA + SSR
+
+v0.6 이후 NexusJS는 백엔드 사용 사례의 ~95%에서 NestJS와 기능 패리티를 보유.
 
 ### v0.7 — 강화
 
@@ -236,6 +257,9 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 - 다중 런타임 CI (Bun + Node + Cloudflare Workers)
 - 성능 벤치마크 + 크로스-런타임 패리티 테스트
 - 장기 LTS 지원 계획
+- **GraphQL** (`@kabyeon/nexusjs/graphql`) — 코드 우선 스키마
+- **Resilience** (`@kabyeon/nexusjs/resilience`) — 서킷 브레이커 / 재시도 / bulkhead
+- **Feature flags** (`@kabyeon/nexusjs/feature-flag`)
 
 ### v1.0 — Production-ready LTS
 
@@ -245,16 +269,16 @@ Tier 2 격차를 해소했다. 출시된 것을 문서화한다.
 
 ---
 
-## 8. 정직한 평가 (v0.6)
+## 8. 정직한 평가 (v0.6.8)
 
-NexusJS v0.6는 **대부분의 백엔드 서비스를 위한 production-ready** 상태:
+NexusJS v0.6.8는 **대부분의 백엔드 서비스를 위한 production-ready** 상태:
 
 - MVC + DI + 검증 코어가 견고하고 실전 검증됨.
-- 25개 옵션 모듈 모두 (auth, queue, schedule, events, session,
+- 모든 **28개** 옵션 모듈 (auth, queue, schedule, events, session,
   health, config, logger, static, limiter, shield, cache, drive,
   mail, drizzle, cli, openapi, upload, sse, tracing, metrics, ws,
-  crypto, i18n) 독립적으로 사용 가능하고 잘 분리됨.
-- **Tier 1 및 Tier 2 격차가 v0.6에서 완전히 해소**. v0.2
+  crypto, i18n, grpc, redis, examples, testing) 독립적으로 사용 가능하고 잘 분리됨.
+- **Tier 1 및 Tier 2 격차가 v0.5에서 완전히 해소**. v0.2
   분석이 플래그한 모든 프로덕션-필수 인프라 조각이 출시됨.
 - 기본 ORM으로서의 Drizzle는 AdonisJS-Lucid 격차를 해소하며
   Bun-native 앱을 위한 **가장 강력한** ORM 선택.
@@ -262,35 +286,38 @@ NexusJS v0.6는 **대부분의 백엔드 서비스를 위한 production-ready** 
 - SQL injection 안전 raw-query 프리미티브는 best-in-class.
 - `EncryptionService`는 이제 프레임워크 (세션 쿠키, CSRF)와
   사용자 코드 간에 공유되며, 단일 APP_KEY.
+- **`examples/` 27개 동작 예제**가 모든 주요 모듈을 다루며 살아있는 문서 역할;
+  smoke test 슈트 (55 vitest 테스트, ~2초) 가 매 커밋마다 import / DI / wiring 회귀를 잡는다.
 
 NestJS 기능 패리티에 **부족한 것**:
 
 - **GraphQL** — BFF / 모바일 우선 팀에 중요.
-- **gRPC** — 폴리글랏 service-mesh 환경에 중요.
 - **Resilience 프리미티브** — 서킷 브레이커, 재시도, bulkhead.
 - **Feature flags** — 카나리 배포에 유용.
 
-v0.6에서 v1.0까지의 경로:
+v0.6.8에서 v1.0까지의 경로:
 
-- **v0.6** (2026 Q4): Async RPC & DX — GraphQL, gRPC, resilience,
-  feature flags.
-- **v0.7** (2027 Q1): Production hardening — 안정 public API,
+- **v0.6.x** (현재): gRPC, REPL, view engine 분할, env-aware config,
+  내장 sessionMiddleware, `nx db:generate`, `@kabyeon/nexusjs` 패키지명 변경,
+  `create-nexusjs` 스캐폴더, `examples/` + smoke test 슈트,
+  Inertia v2 예제 (React + Vue, SPA + SSR).
+- **v0.7** (2026 Q3): Async RPC & DX — GraphQL, resilience, feature flags.
+- **v0.8** (2026 Q4): Production hardening — 안정 public API,
   다중 런타임 CI, 성능 벤치마크, LTS 계획.
-- **v1.0** (2027 Q2): Production-ready LTS — 동결 API surface,
+- **v1.0** (2027 Q1): Production-ready LTS — 동결 API surface,
   마이그레이션 가이드, 장기 지원 브랜치.
 
-v0.6 이후 NexusJS는 Bun의 런타임 + ORM 이점을 가지고 NestJS가
+v0.7 이후 NexusJS는 Bun의 런타임 + ORM 이점을 가지고 NestJS가
 오늘 지원하는 모든 백엔드의 **실현 가능한 대안**.
 
 ---
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6 릴리스 노트
-- [`../README.md`](../../README.md) — 현재 상태 & 로드맵
-- [`../../user-guide/`](../../user-guide/) — 26개 모듈의 가이드
-- [`../../design/`](../../design/) — 아키텍처 심층 문서
-- [`./adonisjs-comparison.md`](./adonisjs-comparison.md) — 동반 분석
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.6.x 릴리스 노트
+- [`../../user-guide/`](../../user-guide/) — 28개 모듈의 가이드
+- [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner 가이드
+- [`../../../examples/`](../../../examples/) — 27개 동작 예제 앱
 - [NestJS 문서](https://docs.nestjs.com) — 비교 기준선
 - [Bulletproof Node.js 아키텍처](https://github.com/santiq/bulletproof-nodejs) —
   이 분석이 파생된 프로덕션 체크리스트
