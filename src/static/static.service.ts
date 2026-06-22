@@ -66,7 +66,10 @@ export class StaticService {
 			if (!pathname.startsWith(this.#prefix)) {
 				return next();
 			}
-			const rel = pathname.slice(this.#prefix.length);
+			// pathname e.g. "/static/test.html", prefix e.g. "/static"
+			// → slice gives "/test.html". Strip leading "/" so
+			// #safeResolve doesn't reject it as an absolute path.
+			const rel = pathname.slice(this.#prefix.length).replace(/^\//, "");
 			const safe = this.#safeResolve(rel);
 			if (!safe) return next();
 
