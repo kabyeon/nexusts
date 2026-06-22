@@ -142,7 +142,7 @@ The successful `SIGTERM` send is followed by a 1.5-second grace before
 
    ```
    examples/28-my-feature/
-   ├── main.ts        # imports from "@kabyeon/nexusjs" (no local path aliases)
+   ├── main.ts        # imports from "@nexusts/core" (no local path aliases)
    ├── README.md      # English, with "How to run" / `bun main.ts` block
    └── (optional) views/, public/, proto/, …
    ```

@@ -5,7 +5,7 @@
 
 ## 1. 목적
 
-DI 컨테이너는 NexusJS의 핵심입니다. 다음을 담당합니다.
+DI 컨테이너는 NexusTS의 핵심입니다. 다음을 담당합니다.
 
 - 프로바이더 등록 (클래스, 값, 팩토리, 별칭)
 - `reflect-metadata`를 통한 의존성 재귀 해석
@@ -119,7 +119,7 @@ resolve(token):
 1. 각 파라미터의 명시적 `@Inject(Token)` (항상 사용 가능).
 2. `design:paramtypes` 메타데이터 (`tsc`로 빌드하고 `emitDecoratorMetadata` 플래그를 켠 경우에만 사용 가능).
 
-Bun의 네이티브 TypeScript transformer는 `design:paramtypes`를 **emit하지 않으므로**, NexusJS는 명시적 `@Inject(...)` 파라미터 데코레이터를 표준으로 채택했습니다. bare-type 형태(`constructor(private svc: UserService)`)는 `tsc` 컴파일 출력으로 실행할 때 지원됩니다.
+Bun의 네이티브 TypeScript transformer는 `design:paramtypes`를 **emit하지 않으므로**, NexusTS는 명시적 `@Inject(...)` 파라미터 데코레이터를 표준으로 채택했습니다. bare-type 형태(`constructor(private svc: UserService)`)는 `tsc` 컴파일 출력으로 실행할 때 지원됩니다.
 
 ### 순환 의존성 감지
 
@@ -180,7 +180,7 @@ class AppModule {
 | `InjectionToken`, `Provider`, `ModuleOptions` | 타입 정의 |
 | `@Module`, `@Injectable`, `@Inject`, `@Controller`, `@Repository` | 데코레이터 ([`../../src/core/decorators`](../../src/core/decorators) 참조) |
 
-위는 모두 `@kabyeon/nexusjs` 진입점에서 다시 export됩니다.
+위는 모두 `@nexusts/core` 진입점에서 다시 export됩니다.
 
 ---
 

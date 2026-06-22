@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`events.ko.md`](./events.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/events`:
+This document explains the architecture of `@nexusts/events`:
 the in-process emitter, wildcard matching, priority-ordered dispatch,
 guards, one-shot listeners, and the `@OnEvent` decorator integration.
 

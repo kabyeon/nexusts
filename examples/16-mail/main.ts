@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { MailService, MailModule, FileTransport } from "@kabyeon/nexusjs/mail";
+import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@nexusts/core";
+import { MailService, MailModule, FileTransport } from "@nexusts/mail";
 
 /**
  * 16-mail — send emails via the file transport (writes to ./outbox).

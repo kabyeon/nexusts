@@ -40,9 +40,9 @@ bun link
 cd ..
 
 # 테스트 앱에서
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
-bun link nexusjs
+bun link nexusts
 ```
 
 ### 일상적인 사용
@@ -62,7 +62,7 @@ bun run dev
 
 - **모듈 개발** — 가장 빠른 피드백 루프
 - **멀티 런타임 테스트** — 같은 `dist/`를 Bun, Node 등에서 소비
-- **유저가 신고한 버그 재현** — 유저의 install은 `npm install nexusjs`이고,
+- **유저가 신고한 버그 재현** — 유저의 install은 `npm install nexusts`이고,
   `bun link`는 monorepo 내부에서 가장 가까운 등가물
 
 ---
@@ -79,40 +79,40 @@ bun run dev
 bun run build
 
 # 2. framework 저장소 밖에 테스트 앱 생성
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
 
 # 3. 의존성 추가
-bun add file:/절대/경로/@kabyeon/nexusjs/dist
+bun add file:/절대/경로/@nexusts/dist
 # 또는 테스트 앱 기준 상대 경로:
-bun add file:../@kabyeon/nexusjs/dist
+bun add file:../@nexusts/dist
 ```
 
-`bun install`이 `dist/`를 `node_modules/@kabyeon/nexusjs/`로 복사하고 `exports` 필드를
+`bun install`이 `dist/`를 `node_modules/@nexusts/`로 복사하고 `exports` 필드를
 npm이 하는 방식 그대로 해석합니다.
 
 ### 설치 검증
 
 ```bash
 # 패키지가 로컬 dist에서 설치됐는지 확인
-ls -la node_modules/nexusjs
+ls -la node_modules/nexusts
 # → dist/ 내용물(index.js, cli/index.js, grpc/index.js, ...)이 보여야 함
 
 # package.json이 consumer-facing 버전인지 확인
-cat node_modules/@kabyeon/nexusjs/package.json
-# → { "name": "@kabyeon/nexusjs", "version": "0.5.0", "exports": {...}, ... }
+cat node_modules/@nexusts/package.json
+# → { "name": "@nexusts/core", "version": "0.5.0", "exports": {...}, ... }
 ```
 
 ### 적합한 상황
 
 - **PR 전 점검** — 수정이 publish layout을 깨지 않았는지 확인
 - **CI 통합** — 빠르고, hermetic, 네트워크 불필요
-- **fresh install 재현** — `file:`는 publish 없이 `npm install nexusjs`에 가장 근접
+- **fresh install 재현** — `file:`는 publish 없이 `npm install nexusts`에 가장 근접
 
 ### 정리
 
 ```bash
-rm -rf ~/nexusjs-sandbox
+rm -rf ~/nexusts-sandbox
 ```
 
 `file:` install은 테스트 앱의 `node_modules`에 self-contained.
@@ -122,7 +122,7 @@ rm -rf ~/nexusjs-sandbox
 ## 방법 3 — `npm pack` (가장 엄격, `npm publish`와 동일)
 
 `npm pack`이 실제 `.tgz` tarball을 만듭니다. 그 tarball을 install하는 것은
-registry에서 `npm install nexusjs`하는 것과 바이트 단위로 동일합니다.
+registry에서 `npm install nexusts`하는 것과 바이트 단위로 동일합니다.
 
 ### 단계
 
@@ -133,13 +133,13 @@ bun run build
 # 2. pack
 cd dist
 npm pack
-# → nexusjs-0.5.0.tgz
+# → nexusts-0.5.0.tgz
 cd ..
 
 # 3. 테스트 앱에 tarball 설치
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
-bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
+bun add ../@nexusts/dist/nexusts-0.5.0.tgz
 ```
 
 ### 적합한 상황
@@ -151,8 +151,8 @@ bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
 ### 정리
 
 ```bash
-rm -rf ~/nexusjs-sandbox
-rm dist/nexusjs-0.5.0.tgz
+rm -rf ~/nexusts-sandbox
+rm dist/nexusts-0.5.0.tgz
 ```
 
 ---
@@ -163,15 +163,15 @@ rm dist/nexusjs-0.5.0.tgz
 
 ```ts
 // test-app/index.ts
-import { Application, Module, Controller, Get } from "@kabyeon/nexusjs";
-import { GrpcService } from "@kabyeon/nexusjs/grpc";
-import { EventEmitter } from "@kabyeon/nexusjs/events";
+import { Application, Module, Controller, Get } from "@nexusts/core";
+import { GrpcService } from "@nexusts/grpc";
+import { EventEmitter } from "@nexusts/events";
 
 @Controller("/")
 class AppController {
   @Get("/")
   hello() {
-    return { framework: "@kabyeon/nexusjs", version: "0.5.0" };
+    return { framework: "@nexusts/core", version: "0.5.0" };
   }
 }
 
@@ -184,12 +184,12 @@ const app = new Application(AppModule);
 console.assert(typeof Application === "function", "Application not exported");
 
 // 2. subpath export가 resolve됨 (deep import 테스트)
-console.assert(typeof GrpcService === "function", "@kabyeon/nexusjs/grpc subpath broken");
-console.assert(typeof EventEmitter === "function", "@kabyeon/nexusjs/events subpath broken");
+console.assert(typeof GrpcService === "function", "@nexusts/grpc subpath broken");
+console.assert(typeof EventEmitter === "function", "@nexusts/events subpath broken");
 
 // 3. CLI가 노출됨 (runtime API와 import 경로가 다름에 주의)
-import cliPkg from "@kabyeon/nexusjs/cli";
-console.assert(typeof cliPkg === "object", "@kabyeon/nexusjs/cli subpath broken");
+import cliPkg from "@nexusts/cli";
+console.assert(typeof cliPkg === "object", "@nexusts/cli subpath broken");
 
 // 4. DI + HTTP가 end-to-end로 동작
 const events = app.container.resolve(EventEmitter);
@@ -206,7 +206,7 @@ bun run test-app/index.ts
 
 # 다른 터미널에서:
 curl http://localhost:3000
-# → {"framework":"@kabyeon/nexusjs","version":"0.5.0"}
+# → {"framework":"@nexusts/core","version":"0.5.0"}
 ```
 
 세 줄이 모두 출력되면 `dist/` 빌드는 정상입니다.
@@ -231,18 +231,18 @@ curl http://localhost:3000
 
 ## 트러블슈팅
 
-### `Cannot find module 'nexusjs'`
+### `Cannot find module 'nexusts'`
 
 `file:` install이 패키지를 못 찾음. 확인:
 
 ```bash
-ls node_modules/@kabyeon/nexusjs/package.json    # 존재?
-cat node_modules/@kabyeon/nexusjs/package.json | head -5
+ls node_modules/@nexusts/package.json    # 존재?
+cat node_modules/@nexusts/package.json | head -5
 ```
 
 `package.json`이 없으면 `file:` 경로가 잘못된 것. 절대 경로 사용 권장.
 
-### `Cannot find module '@kabyeon/nexusjs/grpc'`
+### `Cannot find module '@nexusts/grpc'`
 
 Subpath export가 없거나 깨짐. `dist/` 확인:
 

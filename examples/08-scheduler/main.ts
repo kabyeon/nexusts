@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Injectable, Controller, Get } from "@kabyeon/nexusjs";
-import { Cron, Interval, Timeout, ScheduleService, ScheduleModule } from "@kabyeon/nexusjs/schedule";
+import { Application, Module, Injectable, Controller, Get } from "@nexusts/core";
+import { Cron, Interval, Timeout, ScheduleService, ScheduleModule } from "@nexusts/schedule";
 
 /**
  * 08-scheduler — cron-style scheduled tasks.

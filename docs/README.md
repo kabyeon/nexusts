@@ -1,6 +1,6 @@
-# NexusJS Documentation
+# NexusTS Documentation
 
-Welcome to the NexusJS documentation. NexusJS is a **Bun-native fullstack
+Welcome to the NexusTS documentation. NexusTS is a **Bun-native fullstack
 framework** that combines the structure of NestJS, the productivity of
 AdonisJS, and the edge performance of Hono.
 
@@ -36,34 +36,34 @@ Every module is its own bundle entry point. Install only what you use.
 
 | Module | Import path | Bundle subpath | Doc |
 | ------ | ----------- | --------------- | --- |
-| Core | `@kabyeon/nexusjs` | `@kabyeon/nexusjs` | (this folder) |
-| CLI | `@kabyeon/nexusjs/cli` | `nx` | [`user-guide/cli.md`](./user-guide/cli.md) |
-| Auth | `@kabyeon/nexusjs/auth` | `@kabyeon/nexusjs/auth` | [`user-guide/auth.md`](./user-guide/auth.md) |
-| Queue | `@kabyeon/nexusjs/queue` | `@kabyeon/nexusjs/queue` | [`user-guide/queue.md`](./user-guide/queue.md) |
-| Schedule | `@kabyeon/nexusjs/schedule` | `@kabyeon/nexusjs/schedule` | [`user-guide/schedule.md`](./user-guide/schedule.md) |
-| Events | `@kabyeon/nexusjs/events` | `@kabyeon/nexusjs/events` | [`user-guide/events.md`](./user-guide/events.md) |
-| Session | `@kabyeon/nexusjs/session` | `@kabyeon/nexusjs/session` | [`user-guide/session.md`](./user-guide/session.md) |
-| **Health** | `@kabyeon/nexusjs/health` | `@kabyeon/nexusjs/health` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
-| **Config** | `@kabyeon/nexusjs/config` | `@kabyeon/nexusjs/config` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
-| **Logger** | `@kabyeon/nexusjs/logger` | `@kabyeon/nexusjs/logger` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
-| **Static** | `@kabyeon/nexusjs/static` | `@kabyeon/nexusjs/static` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
-| **Limiter** | `@kabyeon/nexusjs/limiter` | `@kabyeon/nexusjs/limiter` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
-| **Shield** | `@kabyeon/nexusjs/shield` | `@kabyeon/nexusjs/shield` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
-| **Cache** | `@kabyeon/nexusjs/cache` | `@kabyeon/nexusjs/cache` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
-| **Drive** | `@kabyeon/nexusjs/drive` | `@kabyeon/nexusjs/drive` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
-| **Mail** | `@kabyeon/nexusjs/mail` | `@kabyeon/nexusjs/mail` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
-| **Drizzle** | `@kabyeon/nexusjs/drizzle` | `@kabyeon/nexusjs/drizzle` | [`user-guide/drizzle.md`](./user-guide/drizzle.md) |
-| **OpenAPI** *(v0.4)* | `@kabyeon/nexusjs/openapi` | `@kabyeon/nexusjs/openapi` | [`user-guide/openapi.md`](./user-guide/openapi.md) |
-| **Upload** *(v0.4)* | `@kabyeon/nexusjs/upload` | `@kabyeon/nexusjs/upload` | [`user-guide/upload.md`](./user-guide/upload.md) |
-| **SSE** *(v0.4)* | `@kabyeon/nexusjs/sse` | `@kabyeon/nexusjs/sse` | [`user-guide/sse.md`](./user-guide/sse.md) |
-| **Tracing** *(v0.4)* | `@kabyeon/nexusjs/tracing` | `@kabyeon/nexusjs/tracing` | [`user-guide/tracing.md`](./user-guide/tracing.md) |
-| **Metrics** *(v0.4)* | `@kabyeon/nexusjs/metrics` | `@kabyeon/nexusjs/metrics` | [`user-guide/metrics.md`](./user-guide/metrics.md) |
-| **Request-scoped DI** *(v0.4)* | `@kabyeon/nexusjs` (core) | `@kabyeon/nexusjs/core` | [`user-guide/request-scope.md`](./user-guide/request-scope.md) |
-| **WebSockets** *(v0.5)* | `@kabyeon/nexusjs/ws` | `@kabyeon/nexusjs/ws` | [`user-guide/ws.md`](./user-guide/ws.md) |
-| **Crypto** *(v0.5)* | `@kabyeon/nexusjs/crypto` | `@kabyeon/nexusjs/crypto` | [`user-guide/crypto.md`](./user-guide/crypto.md) |
-| **i18n** *(v0.5)* | `@kabyeon/nexusjs/i18n` | `@kabyeon/nexusjs/i18n` | [`user-guide/i18n.md`](./user-guide/i18n.md) |
-| **Redis client** *(v0.5)* | `@kabyeon/nexusjs/redis` | `@kabyeon/nexusjs/redis` | [`user-guide/redis.md`](./user-guide/redis.md) |
-| **gRPC** *(v0.6)* | `@kabyeon/nexusjs/grpc` | `@kabyeon/nexusjs/grpc` | [`user-guide/grpc.md`](./user-guide/grpc.md) |
+| Core | `@nexusts/core` | `@nexusts/core` | (this folder) |
+| CLI | `@nexusts/cli` | `nx` | [`user-guide/cli.md`](./user-guide/cli.md) |
+| Auth | `@nexusts/auth` | `@nexusts/auth` | [`user-guide/auth.md`](./user-guide/auth.md) |
+| Queue | `@nexusts/queue` | `@nexusts/queue` | [`user-guide/queue.md`](./user-guide/queue.md) |
+| Schedule | `@nexusts/schedule` | `@nexusts/schedule` | [`user-guide/schedule.md`](./user-guide/schedule.md) |
+| Events | `@nexusts/events` | `@nexusts/events` | [`user-guide/events.md`](./user-guide/events.md) |
+| Session | `@nexusts/session` | `@nexusts/session` | [`user-guide/session.md`](./user-guide/session.md) |
+| **Health** | `@nexusts/health` | `@nexusts/health` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
+| **Config** | `@nexusts/config` | `@nexusts/config` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
+| **Logger** | `@nexusts/logger` | `@nexusts/logger` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
+| **Static** | `@nexusts/static` | `@nexusts/static` | [`user-guide/production-basics.md`](./user-guide/production-basics.md) |
+| **Limiter** | `@nexusts/limiter` | `@nexusts/limiter` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
+| **Shield** | `@nexusts/shield` | `@nexusts/shield` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
+| **Cache** | `@nexusts/cache` | `@nexusts/cache` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
+| **Drive** | `@nexusts/drive` | `@nexusts/drive` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
+| **Mail** | `@nexusts/mail` | `@nexusts/mail` | [`user-guide/cross-cutting-features.md`](./user-guide/cross-cutting-features.md) |
+| **Drizzle** | `@nexusts/drizzle` | `@nexusts/drizzle` | [`user-guide/drizzle.md`](./user-guide/drizzle.md) |
+| **OpenAPI** *(v0.4)* | `@nexusts/openapi` | `@nexusts/openapi` | [`user-guide/openapi.md`](./user-guide/openapi.md) |
+| **Upload** *(v0.4)* | `@nexusts/upload` | `@nexusts/upload` | [`user-guide/upload.md`](./user-guide/upload.md) |
+| **SSE** *(v0.4)* | `@nexusts/sse` | `@nexusts/sse` | [`user-guide/sse.md`](./user-guide/sse.md) |
+| **Tracing** *(v0.4)* | `@nexusts/tracing` | `@nexusts/tracing` | [`user-guide/tracing.md`](./user-guide/tracing.md) |
+| **Metrics** *(v0.4)* | `@nexusts/metrics` | `@nexusts/metrics` | [`user-guide/metrics.md`](./user-guide/metrics.md) |
+| **Request-scoped DI** *(v0.4)* | `@nexusts/core` (core) | `@nexusts/core` | [`user-guide/request-scope.md`](./user-guide/request-scope.md) |
+| **WebSockets** *(v0.5)* | `@nexusts/ws` | `@nexusts/ws` | [`user-guide/ws.md`](./user-guide/ws.md) |
+| **Crypto** *(v0.5)* | `@nexusts/crypto` | `@nexusts/crypto` | [`user-guide/crypto.md`](./user-guide/crypto.md) |
+| **i18n** *(v0.5)* | `@nexusts/i18n` | `@nexusts/i18n` | [`user-guide/i18n.md`](./user-guide/i18n.md) |
+| **Redis client** *(v0.5)* | `@nexusts/redis` | `@nexusts/redis` | [`user-guide/redis.md`](./user-guide/redis.md) |
+| **gRPC** *(v0.6)* | `@nexusts/grpc` | `@nexusts/grpc` | [`user-guide/grpc.md`](./user-guide/grpc.md) |
 
 ---
 
@@ -146,8 +146,8 @@ Architectural deep-dives for contributors and advanced users.
   called out explicitly when relevant.
 - TypeScript is the only supported language. Decorators require
   `experimentalDecorators: true` in `tsconfig.json`.
-- All examples import from the public entry point (`@kabyeon/nexusjs`,
-  `@kabyeon/nexusjs/drizzle`, `@kabyeon/nexusjs/cache`, etc.) unless they intentionally
+- All examples import from the public entry point (`@nexusts/core`,
+  `@nexusts/drizzle`, `@nexusts/cache`, etc.) unless they intentionally
   demonstrate a deep-import.
 
 ---
@@ -160,9 +160,9 @@ Architectural deep-dives for contributors and advanced users.
 | **v0.2** | ✅ Shipped 2026-05-15 | Session auth, BullMQ queue, event system, scheduler, CLI |
 | **v0.3** | ✅ Shipped 2026-06-21 | Production basics, cross-cutting, Drizzle ORM (default) |
 | **v0.4** | ✅ Shipped 2026-06-22 | Observability (openapi, upload, sse, tracing, metrics) + request-scoped DI |
-| **v0.5** | ✅ Shipped 2026-06-23 | `@kabyeon/nexusjs/ws` (Hono WebSocket integration, Bun + Node) + `@kabyeon/nexusjs/crypto` (encryption + hashing) |
-| **v0.6** | ✅ Shipped 2026-06-24 | `@kabyeon/nexusjs/grpc` (reflection-based gRPC server + typed client) + publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten) |
-| **v0.6.1** | ✅ Shipped 2026-06-25 | Patch: `nexus` → `@kabyeon/nexusjs` rename (191 files), `bin` field fix, `dist/src/*` flatten; no new features |
+| **v0.5** | ✅ Shipped 2026-06-23 | `@nexusts/ws` (Hono WebSocket integration, Bun + Node) + `@nexusts/crypto` (encryption + hashing) |
+| **v0.6** | ✅ Shipped 2026-06-24 | `@nexusts/grpc` (reflection-based gRPC server + typed client) + publishable `dist/` pipeline (`bin` field, `dist/src/*` flatten) |
+| **v0.6.1** | ✅ Shipped 2026-06-25 | Patch: `nexus` → `@nexusts/core` rename (191 files), `bin` field fix, `dist/src/*` flatten; no new features |
 | **v0.6.2** | ✅ **Current** 2026-06-26 | Patch: `nx init` (non-destructive scaffold) + `nx config` (idempotent nx.config.ts / drizzle.config.ts updater) + `LICENSE` and publish metadata. No API changes. |
 | v1.0 | Planned | Stable public API surface (semver guarantees), multi-runtime CI, performance benchmarks, long-term LTS |
 

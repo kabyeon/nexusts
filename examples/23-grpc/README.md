@@ -1,7 +1,7 @@
 # 23 · gRPC
 
 gRPC server + typed client with reflection-based service discovery
-(`@kabyeon/nexusjs/grpc`).
+(`@nexusts/grpc`).
 
 ## What it shows
 
@@ -40,11 +40,11 @@ message HelloReply { string message = 1; }
 ```ts
 import "reflect-metadata";
 import path from "node:path";
-import { Module, Injectable, Inject } from "@kabyeon/nexusjs";
+import { Module, Injectable, Inject } from "@nexusts/core";
 import {
   GrpcModule, GrpcService, GRPC_SERVICE_TOKEN,
   GrpcServiceDecorator, GrpcMethod,
-} from "@kabyeon/nexusjs/grpc";
+} from "@nexusts/grpc";
 
 // Server side
 @Injectable()

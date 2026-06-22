@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { LimiterModule } from "@kabyeon/nexusjs/limiter";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { LimiterModule } from "@nexusts/limiter";
 
 /**
  * 12-rate-limit — protect endpoints from abuse.

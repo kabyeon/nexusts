@@ -306,13 +306,13 @@ function createSolidAdapter(opts: { components: ComponentRegistry }): SsrAdapter
 
 ---
 
-## `@kabyeon/nexusjs/auth` (`better-auth`)
+## `@nexusts/auth` (`better-auth`)
 
 ```ts
 import {
   AuthModule, AuthService, AuthController,
   CurrentUser, authMiddleware,
-} from '@kabyeon/nexusjs/auth';
+} from '@nexusts/auth';
 
 class AuthModule {
   static forRoot(config: AuthConfig): Type;
@@ -333,14 +333,14 @@ function authMiddleware(options?: { required?: boolean }): HonoMiddleware;
 
 ---
 
-## `@kabyeon/nexusjs/queue`
+## `@nexusts/queue`
 
 ```ts
 import {
   QueueModule, QueueService,
   MemoryQueueBackend, BullMQBackend, CloudflareQueueBackend,
   OnQueueReady,
-} from '@kabyeon/nexusjs/queue';
+} from '@nexusts/queue';
 
 class QueueModule { static forRoot(config: QueueConfig): Type; }
 class QueueService {
@@ -358,14 +358,14 @@ function OnQueueReady(name: string): MethodDecorator;
 
 ---
 
-## `@kabyeon/nexusjs/schedule`
+## `@nexusts/schedule`
 
 ```ts
 import {
   ScheduleModule, ScheduleService,
   Cron, Interval, Timeout,
   durationToMs, // '1s' | '1m' | '1h' | '1d' | number -> ms
-} from '@kabyeon/nexusjs/schedule';
+} from '@nexusts/schedule';
 
 class ScheduleModule { static forRoot(config?: ScheduleConfig): Type; }
 class ScheduleService {
@@ -383,13 +383,13 @@ function Timeout(ms: number): MethodDecorator;
 
 ---
 
-## `@kabyeon/nexusjs/events`
+## `@nexusts/events`
 
 ```ts
 import {
   EventsModule, EventsService,
   NexusEventEmitter, OnEvent,
-} from '@kabyeon/nexusjs/events';
+} from '@nexusts/events';
 
 class EventsModule { static forRoot(): Type; }
 class EventsService extends NexusEventEmitter {
@@ -404,7 +404,7 @@ function OnEvent(pattern: string, opts?: { priority?: number; guard?: (payload: 
 
 ---
 
-## `@kabyeon/nexusjs/session`
+## `@nexusts/session`
 
 ```ts
 import {
@@ -413,7 +413,7 @@ import {
   RedisSessionStorage, CloudflareKVSessionStorage,
   type RedisSessionStorageConfig,
   Session,
-} from '@kabyeon/nexusjs/session';
+} from '@nexusts/session';
 
 class SessionModule { static forRoot(config: SessionConfig): Type; }
 class SessionService {
@@ -433,14 +433,14 @@ function Session(options?: { required?: boolean }): ParameterDecorator;
 
 ---
 
-## `@kabyeon/nexusjs/health`
+## `@nexusts/health`
 
 ```ts
 import {
   HealthModule, HealthCheckService, HealthController,
   MemoryHealthIndicator, DiskHealthIndicator, HttpHealthIndicator,
   DrizzleHealthIndicator, CustomPingIndicator,
-} from '@kabyeon/nexusjs/health';
+} from '@nexusts/health';
 
 class HealthModule { static forRoot(config?: HealthConfig): Type; }
 class HealthCheckService {
@@ -454,10 +454,10 @@ class HealthCheckService {
 
 ---
 
-## `@kabyeon/nexusjs/config`
+## `@nexusts/config`
 
 ```ts
-import { ConfigModule, ConfigService } from '@kabyeon/nexusjs/config';
+import { ConfigModule, ConfigService } from '@nexusts/config';
 
 class ConfigModule { static forRoot(config: ConfigConfig): Type; }
 class ConfigService<S extends ZodSchema> {
@@ -472,10 +472,10 @@ class ConfigService<S extends ZodSchema> {
 
 ---
 
-## `@kabyeon/nexusjs/logger`
+## `@nexusts/logger`
 
 ```ts
-import { LoggerModule, Logger, NullTransport, PrettyTransport, PinoTransport } from '@kabyeon/nexusjs/logger';
+import { LoggerModule, Logger, NullTransport, PrettyTransport, PinoTransport } from '@nexusts/logger';
 
 class LoggerModule { static forRoot(options?: LoggerOptions): Type; }
 class Logger {
@@ -494,10 +494,10 @@ class Logger {
 
 ---
 
-## `@kabyeon/nexusjs/static`
+## `@nexusts/static`
 
 ```ts
-import { StaticModule, StaticService, ServeStaticOptions } from '@kabyeon/nexusjs/static';
+import { StaticModule, StaticService, ServeStaticOptions } from '@nexusts/static';
 
 class StaticModule { static forRoot(config: ServeStaticOptions): Type; }
 class StaticService {
@@ -508,14 +508,14 @@ class StaticService {
 
 ---
 
-## `@kabyeon/nexusjs/limiter`
+## `@nexusts/limiter`
 
 ```ts
 import {
   LimiterModule, LimiterService, LimiterMiddleware,
   MemoryRateLimitStorage, DrizzleRateLimitStorage,
   RateLimit, durationToMs,
-} from '@kabyeon/nexusjs/limiter';
+} from '@nexusts/limiter';
 
 class LimiterModule { static forRoot(config?: LimiterConfig): Type; }
 class LimiterService {
@@ -530,10 +530,10 @@ function RateLimit(rule: RateLimitRule): MethodDecorator;
 
 ---
 
-## `@kabyeon/nexusjs/shield`
+## `@nexusts/shield`
 
 ```ts
-import { ShieldModule, ShieldService, CsrfGuard, HeadersGuard } from '@kabyeon/nexusjs/shield';
+import { ShieldModule, ShieldService, CsrfGuard, HeadersGuard } from '@nexusts/shield';
 
 class ShieldModule { static forRoot(config?: ShieldConfig): Type; }
 class ShieldService {
@@ -545,14 +545,14 @@ class ShieldService {
 
 ---
 
-## `@kabyeon/nexusjs/cache`
+## `@nexusts/cache`
 
 ```ts
 import {
   CacheModule, CacheService,
   MemoryStore, DrizzleCacheStore,
   Cacheable, CacheInvalidate,
-} from '@kabyeon/nexusjs/cache';
+} from '@nexusts/cache';
 
 class CacheModule { static forRoot(config?: CacheConfig): Type; }
 class CacheService {
@@ -573,13 +573,13 @@ function CacheInvalidate(prefix: string, keyFn: (...args: any[]) => string): Met
 
 ---
 
-## `@kabyeon/nexusjs/drive`
+## `@nexusts/drive`
 
 ```ts
 import {
   DriveModule, DriveService,
   MemoryDriver, LocalDriver, S3Driver,
-} from '@kabyeon/nexusjs/drive';
+} from '@nexusts/drive';
 
 class DriveModule { static forRoot(config?: DriveConfig): Type; }
 class DriveService {
@@ -599,13 +599,13 @@ class DriveService {
 
 ---
 
-## `@kabyeon/nexusjs/mail`
+## `@nexusts/mail`
 
 ```ts
 import {
   MailModule, MailService,
   NullTransport, FileTransport, SmtpTransport,
-} from '@kabyeon/nexusjs/mail';
+} from '@nexusts/mail';
 
 class MailModule { static forRoot(config?: MailConfig): Type; }
 class MailService {
@@ -618,7 +618,7 @@ class MailService {
 
 ---
 
-## `@kabyeon/nexusjs/drizzle` (default ORM)
+## `@nexusts/drizzle` (default ORM)
 
 ```ts
 import {
@@ -627,7 +627,7 @@ import {
   Table, Column, PrimaryKey,
   resolveDriver, postgresDriver, mysqlDriver, sqliteDriver, bunSqliteDriver, d1Driver,
   RawQuery,
-} from '@kabyeon/nexusjs/drizzle';
+} from '@nexusts/drizzle';
 
 class DrizzleModule { static forRoot(config: DrizzleConfig): Type; }
 class DrizzleService {
@@ -689,11 +689,11 @@ See [user-guide/drizzle.md](./user-guide/drizzle.md) for the full guide.
 
 ---
 
-## `@kabyeon/nexusjs/openapi` (v0.4)
+## `@nexusts/openapi` (v0.4)
 
 ```ts
-import { OpenAPIService, OpenAPIModule } from "@kabyeon/nexusjs/openapi";
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiProperty, ApiSchema } from "@kabyeon/nexusjs/openapi";
+import { OpenAPIService, OpenAPIModule } from "@nexusts/openapi";
+import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiProperty, ApiSchema } from "@nexusts/openapi";
 
 @Module({
   imports: [OpenAPIModule.forRoot({ title: "My App", version: "1.0.0", path: "/docs" })],
@@ -718,10 +718,10 @@ See [user-guide/openapi.md](./user-guide/openapi.md).
 
 ---
 
-## `@kabyeon/nexusjs/upload` (v0.4)
+## `@nexusts/upload` (v0.4)
 
 ```ts
-import { UploadService, UploadModule, Upload, UploadedFile, UploadedFiles } from "@kabyeon/nexusjs/upload";
+import { UploadService, UploadModule, Upload, UploadedFile, UploadedFiles } from "@nexusts/upload";
 
 @Module({
   imports: [UploadModule.forRoot({ maxFileSize: 10 * 1024 * 1024, allowedMimeTypes: ["image/*"] })],
@@ -742,10 +742,10 @@ See [user-guide/upload.md](./user-guide/upload.md).
 
 ---
 
-## `@kabyeon/nexusjs/sse` (v0.4)
+## `@nexusts/sse` (v0.4)
 
 ```ts
-import { sse, SseStream, getLastEventId } from "@kabyeon/nexusjs/sse";
+import { sse, SseStream, getLastEventId } from "@nexusts/sse";
 
 @Controller("/events")
 class EventController {
@@ -766,10 +766,10 @@ See [user-guide/sse.md](./user-guide/sse.md).
 
 ---
 
-## `@kabyeon/nexusjs/tracing` (v0.4)
+## `@nexusts/tracing` (v0.4)
 
 ```ts
-import { TracingService, TracingModule, Trace, withSpan } from "@kabyeon/nexusjs/tracing";
+import { TracingService, TracingModule, Trace, withSpan } from "@nexusts/tracing";
 
 @Module({
   imports: [TracingModule.forRoot({
@@ -802,10 +802,10 @@ See [user-guide/tracing.md](./user-guide/tracing.md).
 
 ---
 
-## `@kabyeon/nexusjs/metrics` (v0.4)
+## `@nexusts/metrics` (v0.4)
 
 ```ts
-import { MetricsService, MetricsModule, Counted, Timed } from "@kabyeon/nexusjs/metrics";
+import { MetricsService, MetricsModule, Counted, Timed } from "@nexusts/metrics";
 
 @Module({
   imports: [MetricsModule.forRoot({ path: "/metrics", enableDefaultMetrics: true })],
@@ -839,10 +839,10 @@ See [user-guide/metrics.md](./user-guide/metrics.md).
 
 ---
 
-## `@kabyeon/nexusjs/redis` (v0.5)
+## `@nexusts/redis` (v0.5)
 
 ```ts
-import { createRedisClient, RedisModule, REDIS_CLIENT_TOKEN } from "@kabyeon/nexusjs/redis";
+import { createRedisClient, RedisModule, REDIS_CLIENT_TOKEN } from "@nexusts/redis";
 
 // Auto-detect runtime adapter
 const redis = createRedisClient({ url: "redis://localhost:6379" });
@@ -864,10 +864,10 @@ See [user-guide/redis.md](./user-guide/redis.md).
 
 ---
 
-## `@kabyeon/nexusjs/i18n` (v0.5)
+## `@nexusts/i18n` (v0.5)
 
 ```ts
-import { I18nModule, I18nService, I18N_SERVICE_TOKEN, i18nMiddleware, CurrentLocale } from "@kabyeon/nexusjs/i18n";
+import { I18nModule, I18nService, I18N_SERVICE_TOKEN, i18nMiddleware, CurrentLocale } from "@nexusts/i18n";
 
 @Module({
   imports: [I18nModule.forRoot({
@@ -901,10 +901,10 @@ See [user-guide/i18n.md](./user-guide/i18n.md).
 
 ---
 
-## `@kabyeon/nexusjs/crypto` (v0.5)
+## `@nexusts/crypto` (v0.5)
 
 ```ts
-import { CryptoModule, EncryptionService, HashService } from "@kabyeon/nexusjs/crypto";
+import { CryptoModule, EncryptionService, HashService } from "@nexusts/crypto";
 
 @Module({ imports: [CryptoModule.forRoot({ key: process.env.APP_KEY! })] })
 class AppModule {}
@@ -933,10 +933,10 @@ See [user-guide/crypto.md](./user-guide/crypto.md).
 
 ---
 
-## `@kabyeon/nexusjs/ws` (v0.5)
+## `@nexusts/ws` (v0.5)
 
 ```ts
-import { WebSocketModule, WebSocketService, WebSocketGateway, OnWebSocketOpen, OnWebSocketMessage, OnWebSocketClose, WEBSOCKET_SERVICE_TOKEN, BunWsAdapter, NodeWsAdapter } from "@kabyeon/nexusjs/ws";
+import { WebSocketModule, WebSocketService, WebSocketGateway, OnWebSocketOpen, OnWebSocketMessage, OnWebSocketClose, WEBSOCKET_SERVICE_TOKEN, BunWsAdapter, NodeWsAdapter } from "@nexusts/ws";
 
 @Injectable()
 @WebSocketGateway("/ws")
@@ -972,11 +972,11 @@ See [user-guide/ws.md](./user-guide/ws.md).
 
 ---
 
-## `@kabyeon/nexusjs/grpc` (v0.6)
+## `@nexusts/grpc` (v0.6)
 
 ```ts
-import { GrpcModule, GrpcService, GrpcService as GrpcServiceDecorator, GrpcMethod, GRPC_SERVICE_TOKEN } from "@kabyeon/nexusjs/grpc";
-import { Inject, Injectable, Module } from "@kabyeon/nexusjs";
+import { GrpcModule, GrpcService, GrpcService as GrpcServiceDecorator, GrpcMethod, GRPC_SERVICE_TOKEN } from "@nexusts/grpc";
+import { Inject, Injectable, Module } from "@nexusts/core";
 
 @Injectable()
 @GrpcServiceDecorator("UserService")
@@ -1017,7 +1017,7 @@ See [user-guide/grpc.md](./user-guide/grpc.md).
 ## Request-scoped DI (v0.4)
 
 ```ts
-import { Inject, Injectable, REQUEST, getRequest, getRequestScope } from "@kabyeon/nexusjs";
+import { Inject, Injectable, REQUEST, getRequest, getRequestScope } from "@nexusts/core";
 
 @Injectable({ scope: "request" })
 class RequestContext {
@@ -1050,17 +1050,17 @@ See [user-guide/request-scope.md](./user-guide/request-scope.md).
 
 ---
 
-## `@kabyeon/nexusjs/cli` (`nx`)
+## `@nexusts/cli` (`nx`)
 
 ```ts
-import { commands, findCommand } from "@kabyeon/nexusjs/cli";
+import { commands, findCommand } from "@nexusts/cli";
 
 // 18 commands (v0.3, unchanged in v0.4):
   // (unchanged in v0.4)
 
 
 ```ts
-import { commands, findCommand } from '@kabyeon/nexusjs/cli';
+import { commands, findCommand } from '@nexusts/cli';
 
 // 20 commands (v0.4 + v0.5):
 //   new, init, make:crud, make:controller, make:service, make:module,
@@ -1138,7 +1138,7 @@ class CloudflareRuntime{ fetch: (req: Request, env?: any, ctx?: any) => Promise<
 
 ## ORM (Drizzle)
 
-The full Drizzle integration lives in `@kabyeon/nexusjs/drizzle`. See the
+The full Drizzle integration lives in `@nexusts/drizzle`. See the
 [user guide](./user-guide/drizzle.md) and the [Drizzle section
 above](#nexusdrizzle-default-orm).
 
@@ -1147,7 +1147,7 @@ import {
   DrizzleModule, DrizzleService,
   DrizzleRepository, DrizzleModel,
   Table, Column, PrimaryKey,
-} from '@kabyeon/nexusjs/drizzle';
+} from '@nexusts/drizzle';
 
 class DrizzleModule { static forRoot(config: DrizzleConfig): Type; }
 // ... see full API above

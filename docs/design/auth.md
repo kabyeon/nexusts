@@ -6,10 +6,10 @@
 
 Provide session, JWT, OAuth, and passkey authentication out of the box
 **without** rolling our own crypto, password hashing, OAuth dance, or
-WebAuthn ceremony. The `@kabyeon/nexusjs/auth` module wraps
+WebAuthn ceremony. The `@nexusts/auth` module wraps
 [`better-auth`](https://www.better-auth.com/) — a TypeScript-native
 auth library with first-class Hono integration — and adapts it to
-NexusJS's DI / decorator model.
+NexusTS's DI / decorator model.
 
 ## 2. Why better-auth (not roll-your-own)?
 
@@ -38,7 +38,7 @@ maintain.
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│            @kabyeon/nexusjs/auth  (separate entry point)                │
+│            @nexusts/auth  (separate entry point)                │
 │                                                              │
 │  ┌────────────────┐  ┌────────────────┐  ┌───────────────┐  │
 │  │ AuthService    │  │ AuthController │  │ authMiddleware│  │
@@ -71,7 +71,7 @@ maintain.
 
 The auth module sits **between** user code and better-auth. It:
 
-1. Translates the user's `AuthConfig` (NexusJS-shaped) into
+1. Translates the user's `AuthConfig` (NexusTS-shaped) into
    better-auth's option object.
 2. Provides a DI-friendly `AuthService` so controllers can call
    `signUp` / `signIn` / `issueJwt` without knowing better-auth's API.
@@ -83,7 +83,7 @@ The auth module sits **between** user code and better-auth. It:
 
 ## 4. Module separation
 
-`@kabyeon/nexusjs/auth` is a **separate entry point** in `package.json`:
+`@nexusts/auth` is a **separate entry point** in `package.json`:
 
 ```json
 "exports": {
@@ -227,7 +227,7 @@ For a SPA on a different origin:
 
 ```ts
 import { cors } from 'hono/cors';
-import { authMiddleware } from '@kabyeon/nexusjs/auth';
+import { authMiddleware } from '@nexusts/auth';
 
 // 1. CORS first
 app.use('/api/auth/*', cors({
@@ -259,7 +259,7 @@ write `app.on(['POST', 'GET'], ...)` boilerplate.
 `c.var.user` and `c.var.session` are typed via `AuthVariables`:
 
 ```ts
-import type { AuthVariables } from '@kabyeon/nexusjs/auth';
+import type { AuthVariables } from '@nexusts/auth';
 const app = new Hono<{ Variables: AuthVariables }>();
 ```
 
@@ -309,10 +309,10 @@ separately.
 - **Magic links** — better-auth supports this; just needs a CLI flag.
 - **Two-factor auth** — better-auth has a 2FA plugin.
 - **Account linking UI** — better-auth exposes endpoints; we wrap them
-  in NexusJS controllers.
+  in NexusTS controllers.
 - **Rate limiting** — wrap better-auth's hooks.
 - **Audit log** — better-auth emits events; we surface them to
-  NexusJS's event system (v0.2).
+  NexusTS's event system (v0.2).
 
 ## 16. See also
 

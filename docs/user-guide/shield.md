@@ -1,8 +1,8 @@
-# Security Middleware · `@kabyeon/nexusjs/shield`
+# Security Middleware · `@nexusts/shield`
 
 > 한국어 버전: [`shield.ko.md`](./shield.ko.md)
 
-`@kabyeon/nexusjs/shield` provides CSRF protection, security headers (HSTS,
+`@nexusts/shield` provides CSRF protection, security headers (HSTS,
 X-Frame-Options, X-Content-Type-Options, Referrer-Policy), and Content
 Security Policy. Inspired by AdonisJS Shield.
 
@@ -10,11 +10,11 @@ Security Policy. Inspired by AdonisJS Shield.
 
 ## Installation
 
-The shield module ships **inside** `@kabyeon/nexusjs` — no extra install
+The shield module ships **inside** `@nexusts/core` — no extra install
 is needed.
 
 ```ts
-import { ShieldModule } from '@kabyeon/nexusjs/shield';
+import { ShieldModule } from '@nexusts/shield';
 ```
 
 ---
@@ -22,8 +22,8 @@ import { ShieldModule } from '@kabyeon/nexusjs/shield';
 ## Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { ShieldModule } from '@kabyeon/nexusjs/shield';
+import { Module } from '@nexusts/core';
+import { ShieldModule } from '@nexusts/shield';
 
 @Module({
   imports: [
@@ -179,8 +179,8 @@ ShieldModule.forRoot({
 ## Direct service access
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { ShieldService } from '@kabyeon/nexusjs/shield';
+import { Inject } from '@nexusts/core';
+import { ShieldService } from '@nexusts/shield';
 
 class FormController {
   constructor(@Inject(ShieldService.TOKEN) private shield: ShieldService) {}

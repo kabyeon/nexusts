@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { sse } from "@kabyeon/nexusjs/sse";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { sse } from "@nexusts/sse";
 
 /**
  * 11-sse — Server-Sent Events with type-safe streaming.

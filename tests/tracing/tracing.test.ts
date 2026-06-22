@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/tracing`.
+ * Tests for `@nexusts/tracing`.
  *
  * Coverage:
  * 1. InMemorySpanRecorder basic ops

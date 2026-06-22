@@ -1,10 +1,10 @@
-# Redis · `@kabyeon/nexusjs/redis` (v0.5)
+# Redis · `@nexusts/redis` (v0.5)
 
 > New in v0.5. Runtime-aware Redis-compatible key/value client
 > that powers the new `redis` / `cloudflare-kv` session and
 > cache backends.
 
-`@kabyeon/nexusjs/redis` provides:
+`@nexusts/redis` provides:
 
 - **`createRedisClient(config)`** — auto-detects the runtime
   when `config.adapter` is omitted.
@@ -22,8 +22,8 @@
 - **`RedisModule.forRoot(config)`** — wires the client into the
   DI container.
 
-Used internally by `@kabyeon/nexusjs/session` (Redis + Cloudflare KV
-session backends) and `@kabyeon/nexusjs/cache` (Redis cache store). You
+Used internally by `@nexusts/session` (Redis + Cloudflare KV
+session backends) and `@nexusts/cache` (Redis cache store). You
 can also use the client directly for any other use case
 (limiter storage, queue inspection, pub/sub, etc.).
 
@@ -32,8 +32,8 @@ can also use the client directly for any other use case
 ## 1. Quick start
 
 ```ts
-import { Module, Inject } from "@kabyeon/nexusjs";
-import { createRedisClient, RedisClient, REDIS_CLIENT_TOKEN, RedisModule } from "@kabyeon/nexusjs/redis";
+import { Module, Inject } from "@nexusts/core";
+import { createRedisClient, RedisClient, REDIS_CLIENT_TOKEN, RedisModule } from "@nexusts/redis";
 
 @Module({
   imports: [RedisModule.forRoot({ url: "redis://localhost:6379" })],
@@ -86,8 +86,8 @@ const redis = createRedisClient({ adapter: "node" });   // force Node
 
 ## 3. `RedisClient` API
 
-The interface is intentionally minimal — just what `@kabyeon/nexusjs/session`
-and `@kabyeon/nexusjs/cache` need. Future modules (limiter, queue) can adopt
+The interface is intentionally minimal — just what `@nexusts/session`
+and `@nexusts/cache` need. Future modules (limiter, queue) can adopt
 it without re-defining their own client shape.
 
 ```ts
@@ -142,15 +142,15 @@ const res = await redis.scan({ match: "myapp:prod:user:*" });
 
 ---
 
-## 4. `@kabyeon/nexusjs/session` integration
+## 4. `@nexusts/session` integration
 
 `SessionModule.forRoot({ backend: "redis", redis: { client, keyPrefix } })`
 uses `RedisSessionStorage` under the hood. The same code path works
 on Bun, Node, or any other runtime that has a `RedisClient`.
 
 ```ts
-import { SessionModule } from "@kabyeon/nexusjs/session";
-import { createRedisClient } from "@kabyeon/nexusjs/redis";
+import { SessionModule } from "@nexusts/session";
+import { createRedisClient } from "@nexusts/redis";
 
 @Module({
   imports: [
@@ -172,8 +172,8 @@ For Cloudflare Workers, pass a `CloudflareKVAdapter` instead of
 a Redis adapter. The `SessionService` will use the same code path.
 
 ```ts
-import { SessionModule } from "@kabyeon/nexusjs/session";
-import { CloudflareKVAdapter } from "@kabyeon/nexusjs/redis";
+import { SessionModule } from "@nexusts/session";
+import { CloudflareKVAdapter } from "@nexusts/redis";
 
 export default {
   async fetch(req: Request, env: Env) {
@@ -189,14 +189,14 @@ don't pass it explicitly.
 
 ---
 
-## 5. `@kabyeon/nexusjs/cache` integration
+## 5. `@nexusts/cache` integration
 
 `RedisCacheStore` is a `CacheStore` implementation that uses a
 `RedisClient` underneath. Tag-based invalidation is supported.
 
 ```ts
-import { CacheService } from "@kabyeon/nexusjs/cache";
-import { RedisCacheStore, createRedisClient } from "@kabyeon/nexusjs/redis";
+import { CacheService } from "@nexusts/cache";
+import { RedisCacheStore, createRedisClient } from "@nexusts/redis";
 
 const cache = new CacheService({
   store: new RedisCacheStore(createRedisClient({ url: process.env.REDIS_URL! })),

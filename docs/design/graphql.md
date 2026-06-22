@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`graphql.ko.md`](./graphql.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/graphql`:
+This document explains the architecture of `@nexusts/graphql`:
 why it's SDL-first, why `graphql` is a peer-dep, how resolvers are
 attached to a `buildSchema()` result, and how the Hono route is
 wired.
@@ -49,13 +49,13 @@ NestJS-style crowd, but the SDL synthesis isn't wired up yet (see
 ## Why `graphql` as a peer-dep?
 
 A GraphQL executor is ~50KB minified. That's not free. Most apps
-that pull in `@kabyeon/nexusjs` don't need GraphQL — they need
+that pull in `@nexusts/core` don't need GraphQL — they need
 REST, an admin panel, a CLI, etc. Bundling `graphql` everywhere
 would penalize those users for a feature they don't use.
 
 By making it an optional peer-dep:
 
-- **The framework bundle stays small.** `@kabyeon/nexusjs/graphql`
+- **The framework bundle stays small.** `@nexusts/graphql`
   itself is just the wiring (mount points, decorator metadata,
   service lifecycle). It does not include the parser or executor.
 - **Users opt in.** `bun add graphql` once, then `forRoot({...})`

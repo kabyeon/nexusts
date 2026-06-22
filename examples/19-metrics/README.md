@@ -1,6 +1,6 @@
 # 19 · Metrics
 
-Prometheus-compatible counters, gauges, and histograms with `@kabyeon/nexusjs/metrics`.
+Prometheus-compatible counters, gauges, and histograms with `@nexusts/metrics`.
 
 ## What it shows
 
@@ -28,8 +28,8 @@ curl http://localhost:3000/metrics
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { Counter, MetricsModule, MetricsService } from "@kabyeon/nexusjs/metrics";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { Counter, MetricsModule, MetricsService } from "@nexusts/metrics";
 
 @Injectable()
 class OrderService {
@@ -79,7 +79,7 @@ Visit `http://localhost:3000/metrics` for OpenMetrics output.
 ## Decorator pattern
 
 ```ts
-import { Timed, Counted } from "@kabyeon/nexusjs/metrics";
+import { Timed, Counted } from "@nexusts/metrics";
 
 @Injectable()
 class UserService {

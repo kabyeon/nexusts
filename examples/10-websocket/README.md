@@ -1,6 +1,6 @@
 # 10 · WebSocket
 
-Real-time bidirectional communication with `@kabyeon/nexusjs/ws`.
+Real-time bidirectional communication with `@nexusts/ws`.
 
 ## What it shows
 
@@ -23,8 +23,8 @@ Open `examples/10-websocket/client.html` in a browser to test.
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable, Inject } from "@kabyeon/nexusjs";
-import { WebSocketService, WebSocketGateway, OnWebSocketMessage, OnWebSocketOpen, OnWebSocketClose } from "@kabyeon/nexusjs/ws";
+import { Application, Module, Controller, Get, Injectable, Inject } from "@nexusts/core";
+import { WebSocketService, WebSocketGateway, OnWebSocketMessage, OnWebSocketOpen, OnWebSocketClose } from "@nexusts/ws";
 
 @Injectable()
 @Controller("/")

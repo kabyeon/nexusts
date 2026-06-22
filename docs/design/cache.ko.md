@@ -2,7 +2,7 @@
 
 > English version: [`cache.md`](./cache.md)
 
-이 문서는 `@kabyeon/nexusjs/cache`의 아키텍처를 설명한다:
+이 문서는 `@nexusts/cache`의 아키텍처를 설명한다:
 `CacheStore` 인터페이스, 세 가지 내장 백엔드, `wrap` 패턴,
 데코레이터 통합, 태그 기반 무효화.
 
@@ -44,7 +44,7 @@
              CacheStore
           ┌──────────────────────┐
           │ MemoryStore          │  ← 기본
-          │ RedisCacheStore      │  ← @kabyeon/nexusjs/redis 필요
+          │ RedisCacheStore      │  ← @nexusts/redis 필요
           │ DrizzleCacheStore    │  ← DrizzleService 인스턴스 필요
           │ CustomStore          │  ← CacheStore 인터페이스 구현
           └──────────────────────┘
@@ -84,7 +84,7 @@ interface CacheEntry<T> {
 
 ### RedisCacheStore
 
-- `@kabyeon/nexusjs/redis`의 통합 `RedisClient` 인터페이스 사용.
+- `@nexusts/redis`의 통합 `RedisClient` 인터페이스 사용.
 - 값은 `CacheEntry<T>` envelope로 JSON 직렬화.
 - 태그 인덱스는 태그당 별도 Redis 키 (키 충돌 방지를 위해 CRC32-hashed 태그 이름).
 - TTL은 Redis의 네이티브 `SET`의 `EX` 옵션 사용.

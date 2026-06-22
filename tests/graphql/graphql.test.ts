@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/graphql`.
+ * Tests for `@nexusts/graphql`.
  *
  * Covers:
  *  - Module construction and `mount()` to a Hono-compatible app.
@@ -17,7 +17,7 @@ let GraphQLService: any;
 let GraphQLModule: any;
 
 beforeAll(async () => {
-	const mod = await import("@kabyeon/nexusjs/graphql");
+	const mod = await import("@nexusts/graphql");
 	GraphQLService = mod.GraphQLService;
 	GraphQLModule = mod.GraphQLModule;
 });
@@ -212,7 +212,7 @@ describe("GraphQLService — context factory", () => {
 
 describe("loadGraphQLJs — lazy load", () => {
 	it("returns the graphql module's parse()", async () => {
-		const { loadGraphQLJs } = await import("@kabyeon/nexusjs/graphql");
+		const { loadGraphQLJs } = await import("@nexusts/graphql");
 		const g = await loadGraphQLJs();
 		const doc = g.parse(`{ x }`);
 		expect(doc).toBeDefined();

@@ -15,7 +15,7 @@
  * WebSocket, raw HTTP, etc.). A clean boot is the contract.
  *
  * Note: examples use a local tsconfig.json in this folder to map
- * `@kabyeon/nexusjs` to the framework's `src/` so the build doesn't
+ * `@nexusts/core` to the framework's `src/` so the build doesn't
  * need a published package. This lets us test against the in-tree
  * code we're about to release.
  */
@@ -75,7 +75,7 @@ const EXAMPLE_TSCONFIG = {
 		jsx: "react-jsx",
 		types: ["bun-types"],
 	},
-	include: ["./**/*.ts", "./*.tsx", "./**/*.tsx", "../../src/**/*.ts"],
+	include: ["./**/*.ts", "./*.tsx", "./**/*.tsx", "../../packages/*/src/**/*.ts"],
 };
 async function ensureExampleTsconfig(exampleDir: string): Promise<void> {
 	const target = path.join(exampleDir, "tsconfig.json");
@@ -172,7 +172,7 @@ describe("examples/ — smoke tests", () => {
 		const stats = await stat(EXAMPLES_DIR);
 		expect(stats.isDirectory()).toBe(true);
 		// Drop a tsconfig.json into every example so bun can resolve
-		// `@kabyeon/nexusjs` to the in-tree source.
+		// `@nexusts/core` to the in-tree source.
 		for (const spec of allExamples) {
 			await ensureExampleTsconfig(path.dirname(spec.mainTs));
 		}

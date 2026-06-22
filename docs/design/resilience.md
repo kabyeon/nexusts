@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`resilience.ko.md`](./resilience.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/resilience`:
+This document explains the architecture of `@nexusts/resilience`:
 why three primitives in one module, how the circuit-breaker
 state machine works, why decorators are metadata-only, and what
 the framework integration looks like.
@@ -233,7 +233,7 @@ method. Users who want it can call it from their own framework
 hook:
 
 ```ts
-import { applyResilience } from "@kabyeon/nexusjs/resilience";
+import { applyResilience } from "@nexusts/resilience";
 
 class MyController {
   @Retry({ attempts: 3 })
@@ -306,11 +306,11 @@ breakers are a v0.8+ roadmap item — they need a shared store.)
 
 ## What we did NOT include
 
-- **Token-bucket rate limiting.** That's `@kabyeon/nexusjs/limiter`.
+- **Token-bucket rate limiting.** That's `@nexusts/limiter`.
   We considered folding it into resilience, but rate limiting has
   a different shape (request budget, not failure detection) and a
   different storage backend (Redis, Drizzle).
-- **Health checks.** That's `@kabyeon/nexusjs/health`.
+- **Health checks.** That's `@nexusts/health`.
 - **Adaptive retry.** Some libraries (Cockatiel) support
   "backoff proportional to upstream latency". We don't, because
   it's complex and the simple `exponential-jitter` is good enough

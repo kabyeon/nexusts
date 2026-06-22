@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import path from "node:path";
-import { Application, Module, Injectable, Controller, Get, Inject } from "@kabyeon/nexusjs";
+import { Application, Module, Injectable, Controller, Get, Inject } from "@nexusts/core";
 import {
   GrpcModule, GrpcService, GRPC_SERVICE_TOKEN,
   GrpcServiceDecorator, GrpcMethod,
-} from "@kabyeon/nexusjs/grpc";
+} from "@nexusts/grpc";
 
 /**
  * 23-grpc — gRPC server with reflection-based discovery.

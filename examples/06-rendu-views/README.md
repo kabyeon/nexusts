@@ -55,13 +55,13 @@ Then open `http://localhost:3000/` — you'll see a rendered HTML page.
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Module, Injectable, StaticModule } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Module, Injectable, StaticModule } from "@nexusts/core";
 
 @Controller("/")
 class PageController {
   @Get("/")
   home() {
-    return { view: "home.html", data: { name: "NexusJS", items: ["alpha", "beta"] } };
+    return { view: "home.html", data: { name: "NexusTS", items: ["alpha", "beta"] } };
   }
 
   @Get("/users/:id")
@@ -93,7 +93,7 @@ export default {
 
 ## Auto-detection by extension
 
-`@kabyeon/nexusjs/view` picks the adapter based on the file extension:
+`@nexusts/view` picks the adapter based on the file extension:
 
 - `.html` / `.rendu` → RenduAdapter
 - `.edge` → EdgeAdapter

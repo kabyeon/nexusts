@@ -27,8 +27,8 @@ curl -X POST http://localhost:3000/transfer -d 'amount=100'
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Injectable } from "@kabyeon/nexusjs";
-import { ShieldModule } from "@kabyeon/nexusjs/shield";
+import { Application, Module, Controller, Post, Body, Injectable } from "@nexusts/core";
+import { ShieldModule } from "@nexusts/shield";
 
 @Injectable()
 @Controller("/transfer")

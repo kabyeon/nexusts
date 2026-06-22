@@ -1,6 +1,6 @@
 # 22 · Crypto
 
-Encryption and password hashing with `@kabyeon/nexusjs/crypto`.
+Encryption and password hashing with `@nexusts/crypto`.
 
 ## What it shows
 
@@ -29,8 +29,8 @@ curl -X POST http://localhost:3000/verify -H "Content-Type: application/json" -d
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { EncryptionService, HashService, CryptoModule } from "@kabyeon/nexusjs/crypto";
+import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@nexusts/core";
+import { EncryptionService, HashService, CryptoModule } from "@nexusts/crypto";
 
 @Injectable()
 @Controller("/")

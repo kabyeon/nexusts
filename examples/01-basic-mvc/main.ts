@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { Application, Controller, Get, Module, Param } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Module, Param } from "@nexusts/core";
 
 /**
- * 01-basic-mvc — minimal NexusJS application with a single
+ * 01-basic-mvc — minimal NexusTS application with a single
  * Nest-style controller. Run with: bun main.ts
  */
 
@@ -10,12 +10,12 @@ import { Application, Controller, Get, Module, Param } from "@kabyeon/nexusjs";
 class HelloController {
   @Get("/")
   index() {
-    return "Hello from NexusJS!";
+    return "Hello from NexusTS!";
   }
 
   @Get("/json")
   json() {
-    return { message: "Hello", framework: "NexusJS" };
+    return { message: "Hello", framework: "NexusTS" };
   }
 
   @Get("/users/:id")

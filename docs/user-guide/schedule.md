@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`schedule.ko.md`](./schedule.ko.md)
 
-NexusJS ships a schedule module under `@kabyeon/nexusjs/schedule` that mirrors
+NexusTS ships a schedule module under `@nexusts/schedule` that mirrors
 `@nestjs/schedule`:
 
 - `@Cron(expression)` decorator — runs a method on a cron schedule.
@@ -13,7 +13,7 @@ NexusJS ships a schedule module under `@kabyeon/nexusjs/schedule` that mirrors
 - **Two backends** — in-process (Bun / Node) and Cloudflare Cron
   Triggers.
 
-The schedule module is **separate from `@kabyeon/nexusjs/core`** and ships as
+The schedule module is **separate from `@nexusts/core`** and ships as
 its own bundle entry point.
 
 ---
@@ -22,8 +22,8 @@ its own bundle entry point.
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { ScheduleModule } from '@kabyeon/nexusjs/schedule';
+import { Module } from '@nexusts/core';
+import { ScheduleModule } from '@nexusts/schedule';
 
 @Module({
   imports: [ScheduleModule.forRoot({ backend: 'memory' })],
@@ -33,8 +33,8 @@ export class AppModule {}
 
 ```ts
 // app/schedule/tasks/cleanup.task.ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { Cron, Interval, ScheduleService } from '@kabyeon/nexusjs/schedule';
+import { Inject, Injectable } from '@nexusts/core';
+import { Cron, Interval, ScheduleService } from '@nexusts/schedule';
 
 @Injectable()
 export class CleanupTask {
@@ -54,8 +54,8 @@ export class CleanupTask {
 
 ```ts
 // app/main.ts
-import { Application } from '@kabyeon/nexusjs';
-import { ScheduleService, scanForSchedulers } from '@kabyeon/nexusjs/schedule';
+import { Application } from '@nexusts/core';
+import { ScheduleService, scanForSchedulers } from '@nexusts/schedule';
 import { AppModule } from './app.module.js';
 import { CleanupTask } from './schedule/tasks/cleanup.task.js';
 

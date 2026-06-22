@@ -1,19 +1,19 @@
-# Rate Limiting · `@kabyeon/nexusjs/limiter`
+# Rate Limiting · `@nexusts/limiter`
 
 > 한국어 버전: [`limiter.ko.md`](./limiter.ko.md)
 
-`@kabyeon/nexusjs/limiter` provides rate limiting with three strategies,
+`@nexusts/limiter` provides rate limiting with three strategies,
 pluggable storage backends, and decorator-based per-route configuration.
 
 ---
 
 ## Installation
 
-The limiter module ships **inside** `@kabyeon/nexusjs` — no extra install
+The limiter module ships **inside** `@nexusts/core` — no extra install
 is needed. Import from the `./limiter` entry point:
 
 ```ts
-import { LimiterModule } from '@kabyeon/nexusjs/limiter';
+import { LimiterModule } from '@nexusts/limiter';
 ```
 
 ---
@@ -21,8 +21,8 @@ import { LimiterModule } from '@kabyeon/nexusjs/limiter';
 ## Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { LimiterModule } from '@kabyeon/nexusjs/limiter';
+import { Module } from '@nexusts/core';
+import { LimiterModule } from '@nexusts/limiter';
 
 @Module({
   imports: [
@@ -106,8 +106,8 @@ LimiterModule.forRoot({
 Use `@RateLimit` on controller methods for route-specific limits:
 
 ```ts
-import { Controller, Post } from '@kabyeon/nexusjs';
-import { RateLimit } from '@kabyeon/nexusjs/limiter';
+import { Controller, Post } from '@nexusts/core';
+import { RateLimit } from '@nexusts/limiter';
 
 @Controller('/auth')
 class AuthController {
@@ -143,8 +143,8 @@ Single-process only. Not cluster-safe.
 For multi-process or persistent rate-limit state:
 
 ```ts
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
-import { DrizzleRateLimitStorage } from '@kabyeon/nexusjs/limiter';
+import { DrizzleService } from '@nexusts/drizzle';
+import { DrizzleRateLimitStorage } from '@nexusts/limiter';
 
 const db = new DrizzleService({
   dialect: 'postgres',
@@ -178,7 +178,7 @@ CREATE TABLE rate_limits (
 Implement the `RateLimitStorage` interface:
 
 ```ts
-import { RateLimitStorage, RateLimitResult } from '@kabyeon/nexusjs/limiter';
+import { RateLimitStorage, RateLimitResult } from '@nexusts/limiter';
 
 class RedisRateLimitStorage implements RateLimitStorage {
   readonly kind = 'redis';

@@ -1,6 +1,6 @@
 # 01 · Basic MVC
 
-The minimal NexusJS application — a single `HelloController` with
+The minimal NexusTS application — a single `HelloController` with
 Nest-style class decorators.
 
 ## What it shows
@@ -19,8 +19,8 @@ bun --hot main.ts
 Then:
 
 ```bash
-curl http://localhost:3000/        # → "Hello from NexusJS!"
-curl http://localhost:3000/json    # → {"message":"Hello","framework":"NexusJS"}
+curl http://localhost:3000/        # → "Hello from NexusTS!"
+curl http://localhost:3000/json    # → {"message":"Hello","framework":"NexusTS"}
 curl http://localhost:3000/users/42 # → {"id":42,"name":"User #42"}
 ```
 
@@ -29,18 +29,18 @@ curl http://localhost:3000/users/42 # → {"id":42,"name":"User #42"}
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Param } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Param } from "@nexusts/core";
 
 @Controller("/")
 class HelloController {
   @Get("/")
   index() {
-    return "Hello from NexusJS!";
+    return "Hello from NexusTS!";
   }
 
   @Get("/json")
   json() {
-    return { message: "Hello", framework: "NexusJS" };
+    return { message: "Hello", framework: "NexusTS" };
   }
 
   @Get("/users/:id")

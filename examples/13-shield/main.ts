@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Injectable } from "@kabyeon/nexusjs";
-import { ShieldModule } from "@kabyeon/nexusjs/shield";
+import { Application, Module, Controller, Post, Body, Injectable } from "@nexusts/core";
+import { ShieldModule } from "@nexusts/shield";
 
 /**
  * 13-shield — security headers + CSRF protection.

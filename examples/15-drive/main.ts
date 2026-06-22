@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { DriveService, DriveModule } from "@kabyeon/nexusjs/drive";
+import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@nexusts/core";
+import { DriveService, DriveModule } from "@nexusts/drive";
 
 /**
  * 15-drive — local disk file storage.

@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import {
   Application, Controller, Get, Module, Param,
-} from "@kabyeon/nexusjs";
-import { StaticModule } from "@kabyeon/nexusjs/static";
-import { setViewPaths } from "@kabyeon/nexusjs/view";
+} from "@nexusts/core";
+import { StaticModule } from "@nexusts/static";
+import { setViewPaths } from "@nexusts/view";
 
 /**
  * 06-rendu-views — server-rendered HTML with the Rendu template engine.
@@ -27,7 +27,7 @@ class PageController {
     return {
       view: "home.html",
       data: {
-        title: "Welcome to NexusJS",
+        title: "Welcome to NexusTS",
         items: ["Hono speed", "Drizzle ORM", "Type-safe DI"],
       },
     };

@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`grpc.ko.md`](./grpc.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/grpc`:
+This document explains the architecture of `@nexusts/grpc`:
 why `@grpc/grpc-js` is a peer-dep, how `.proto` files are loaded,
 how decorators wire service implementations to gRPC handlers, and
 how the typed client factory works.
@@ -52,18 +52,18 @@ is paid only by users who import the gRPC module.
 ## Why `@grpc/grpc-js` and `@grpc/proto-loader` as peer-deps?
 
 A gRPC server runtime is ~300KB minified. Most apps that pull in
-`@kabyeon/nexusjs` don't need gRPC — they need REST, an admin panel,
+`@nexusts/core` don't need gRPC — they need REST, an admin panel,
 a CLI, etc. Bundling `@grpc/grpc-js` everywhere would penalize those
 users for a feature they don't use.
 
 By making it an optional peer-dep:
 
-- **The framework bundle stays small.** `@kabyeon/nexusjs/grpc`
+- **The framework bundle stays small.** `@nexusts/grpc`
   itself is just the wiring (decorators, module, service wrapper).
   It does not include the gRPC runtime.
 - **Users opt in.** `bun add @grpc/grpc-js @grpc/proto-loader` once,
   then `forRoot({...})` works.
-- **Clear error on missing dep.** The first import from `nexusjs/grpc`
+- **Clear error on missing dep.** The first import from `nexusts/grpc`
   does not throw (the decorators and types are pure TypeScript), but
   calling `prepare()` or `client()` before the runtime is installed
   propagates a natural `Cannot find module` error from Node's
@@ -80,7 +80,7 @@ By making it an optional peer-dep:
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│            @kabyeon/nexusjs/grpc  (separate entry point)              │
+│            @nexusts/grpc  (separate entry point)              │
 │                                                              │
 │  ┌────────────────┐  ┌────────────────┐  ┌───────────────┐  │
 │  │ GrpcService    │  │ GrpcModule     │  │ Decorators    │  │
@@ -121,7 +121,7 @@ The gRPC module sits **between** user code and `@grpc/grpc-js`. It:
 
 ## Module separation
 
-`@kabyeon/nexusjs/grpc` is a **separate entry point** in `package.json`:
+`@nexusts/grpc` is a **separate entry point** in `package.json`:
 
 ```json
 "exports": {

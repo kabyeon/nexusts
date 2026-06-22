@@ -1,6 +1,6 @@
 # 09 · Queue
 
-Background job processing with `@kabyeon/nexusjs/queue`. Uses the
+Background job processing with `@nexusts/queue`. Uses the
 in-memory backend for this example (no Redis required).
 
 ## What it shows
@@ -31,8 +31,8 @@ curl -X POST http://localhost:3000/jobs/email \
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Post, Body, Module, Inject, Injectable } from "@kabyeon/nexusjs";
-import { QueueService, QueueModule, OnQueueReady } from "@kabyeon/nexusjs/queue";
+import { Application, Controller, Get, Post, Body, Module, Inject, Injectable } from "@nexusts/core";
+import { QueueService, QueueModule, OnQueueReady } from "@nexusts/queue";
 
 @Injectable()
 class EmailWorker {

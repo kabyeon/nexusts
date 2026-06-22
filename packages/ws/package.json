@@ -1,0 +1,26 @@
+{
+  "name": "@nexusts/ws",
+  "version": "0.7.0",
+  "description": "WebSockets (Bun native, Node fallback via ws)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "bun run ../../build.ts"
+  },
+  "keywords": ["nexusts", "framework", "bun"],
+  "license": "MIT",
+  "peerDependencies": { "ws": "^8.18.0" },
+  "peerDependenciesMeta": { "ws": { "optional": true } },
+  "dependencies": {
+    "@nexusts/core": "workspace:*"
+  }
+}

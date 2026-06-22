@@ -45,9 +45,9 @@ bun main.ts
 ```ts
 import "reflect-metadata";
 import path from "node:path";
-import { Application, Module, Controller, Get, Post, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { StaticModule } from "@kabyeon/nexusjs/static";
-import { Inertia, createReactAdapter } from "@kabyeon/nexusjs/view";
+import { Application, Module, Controller, Get, Post, Body, Inject, Injectable } from "@nexusts/core";
+import { StaticModule } from "@nexusts/static";
+import { Inertia, createReactAdapter } from "@nexusts/view";
 import { HomePage } from "./frontend/home.tsx";
 
 @Injectable()

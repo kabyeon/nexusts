@@ -1,8 +1,8 @@
-# 보안 미들웨어 · `@kabyeon/nexusjs/shield`
+# 보안 미들웨어 · `@nexusts/shield`
 
 > English version: [`shield.md`](./shield.md)
 
-`@kabyeon/nexusjs/shield`는 CSRF 보호, 보안 헤더(HSTS, X-Frame-Options,
+`@nexusts/shield`는 CSRF 보호, 보안 헤더(HSTS, X-Frame-Options,
 X-Content-Type-Options, Referrer-Policy), Content Security Policy를
 제공합니다. AdonisJS Shield에서 영감을 받았습니다.
 
@@ -10,11 +10,11 @@ X-Content-Type-Options, Referrer-Policy), Content Security Policy를
 
 ## 설치
 
-shield 모듈은 `@kabyeon/nexusjs` **내부**에 포함되어 있습니다 — 추가 설치가
+shield 모듈은 `@nexusts/core` **내부**에 포함되어 있습니다 — 추가 설치가
 필요 없습니다.
 
 ```ts
-import { ShieldModule } from '@kabyeon/nexusjs/shield';
+import { ShieldModule } from '@nexusts/shield';
 ```
 
 ---
@@ -22,8 +22,8 @@ import { ShieldModule } from '@kabyeon/nexusjs/shield';
 ## 빠른 시작
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { ShieldModule } from '@kabyeon/nexusjs/shield';
+import { Module } from '@nexusts/core';
+import { ShieldModule } from '@nexusts/shield';
 
 @Module({
   imports: [
@@ -178,8 +178,8 @@ ShieldModule.forRoot({
 ## 서비스 직접 접근
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { ShieldService } from '@kabyeon/nexusjs/shield';
+import { Inject } from '@nexusts/core';
+import { ShieldService } from '@nexusts/shield';
 
 class FormController {
   constructor(@Inject(ShieldService.TOKEN) private shield: ShieldService) {}

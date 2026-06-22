@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`shield.ko.md`](./shield.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/shield`:
+This document explains the architecture of `@nexusts/shield`:
 CSRF protection, security headers, how guards compose, and the
 middleware pipeline.
 

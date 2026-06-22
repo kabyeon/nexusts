@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`redis.ko.md`](./redis.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/redis`:
+This document explains the architecture of `@nexusts/redis`:
 the unified `RedisClient` interface, runtime-aware adapter selection,
 and how session/cache/queue modules depend on it.
 
@@ -16,8 +16,8 @@ and how session/cache/queue modules depend on it.
    and returns the matching implementation.
 3. **Optional peer dependencies.** `ioredis` is only required on Node.
    Bun and Workers adapters use built-in APIs (zero deps).
-4. **Shared foundation.** `nexusjs/session`, `nexusjs/cache`, and
-   `nexusjs/queue` all depend on `RedisClient`, so a single config
+4. **Shared foundation.** `nexusts/session`, `nexusts/cache`, and
+   `nexusts/queue` all depend on `RedisClient`, so a single config
    switch chooses the backend for all three.
 
 ## Architecture

@@ -1,6 +1,6 @@
 # 08 · Scheduler
 
-Cron-style scheduled tasks using `@kabyeon/nexusjs/schedule`.
+Cron-style scheduled tasks using `@nexusts/schedule`.
 
 ## What it shows
 
@@ -30,8 +30,8 @@ Watch the console:
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Module, Injectable, Controller, Get } from "@kabyeon/nexusjs";
-import { Cron, Interval, Timeout, ScheduleService } from "@kabyeon/nexusjs/schedule";
+import { Application, Module, Injectable, Controller, Get } from "@nexusts/core";
+import { Cron, Interval, Timeout, ScheduleService } from "@nexusts/schedule";
 
 @Injectable()
 class Tasks {

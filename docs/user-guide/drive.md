@@ -1,8 +1,8 @@
-# File Storage · `@kabyeon/nexusjs/drive`
+# File Storage · `@nexusts/drive`
 
 > 한국어 버전: [`drive.ko.md`](./drive.ko.md)
 
-`@kabyeon/nexusjs/drive` provides a unified file storage abstraction
+`@nexusts/drive` provides a unified file storage abstraction
 across local filesystem, in-memory, and S3-compatible backends (AWS S3,
 Cloudflare R2, MinIO).
 
@@ -10,11 +10,11 @@ Cloudflare R2, MinIO).
 
 ## Installation
 
-The drive module ships **inside** `@kabyeon/nexusjs` — no extra install
+The drive module ships **inside** `@nexusts/core` — no extra install
 is needed for local or memory drivers.
 
 ```ts
-import { DriveModule } from '@kabyeon/nexusjs/drive';
+import { DriveModule } from '@nexusts/drive';
 ```
 
 Optional peer dependency for S3:
@@ -30,8 +30,8 @@ bun add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 ### Local filesystem
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { DriveModule, LocalDriver } from '@kabyeon/nexusjs/drive';
+import { Module } from '@nexusts/core';
+import { DriveModule, LocalDriver } from '@nexusts/drive';
 
 @Module({
   imports: [
@@ -55,7 +55,7 @@ export class AppModule {}
 Stores files on the local filesystem. Path traversal is blocked.
 
 ```ts
-import { LocalDriver } from '@kabyeon/nexusjs/drive';
+import { LocalDriver } from '@nexusts/drive';
 
 new LocalDriver({
   root: '/var/data',                       // Storage root directory
@@ -68,7 +68,7 @@ new LocalDriver({
 In-memory store. Useful for tests and ephemeral state.
 
 ```ts
-import { MemoryDriver } from '@kabyeon/nexusjs/drive';
+import { MemoryDriver } from '@nexusts/drive';
 
 DriveModule.forRoot({
   driver: new MemoryDriver(),
@@ -80,7 +80,7 @@ DriveModule.forRoot({
 Works with AWS S3, Cloudflare R2, MinIO, and any S3-compatible API.
 
 ```ts
-import { S3Driver } from '@kabyeon/nexusjs/drive';
+import { S3Driver } from '@nexusts/drive';
 
 DriveModule.forRoot({
   driver: new S3Driver({

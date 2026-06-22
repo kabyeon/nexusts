@@ -2,11 +2,11 @@
 
 > 한국어 버전: [`auth.ko.md`](./auth.ko.md)
 
-NexusJS ships an auth module that wraps [`better-auth`](https://www.better-auth.com/),
+NexusTS ships an auth module that wraps [`better-auth`](https://www.better-auth.com/),
 giving you email/password, OAuth, JWT, and Passkey out of the box — all
-adapted to NexusJS's DI / decorator model.
+adapted to NexusTS's DI / decorator model.
 
-The auth module lives at `@kabyeon/nexusjs/auth` and is **separate from `@kabyeon/nexusjs/core`**.
+The auth module lives at `@nexusts/auth` and is **separate from `@nexusts/core`**.
 It is added to the bundle as a separate entry point so consumers who don't
 need it pay no cost.
 
@@ -52,8 +52,8 @@ Then wire it up:
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { AuthModule } from '@kabyeon/nexusjs/auth';
+import { Module } from '@nexusts/core';
+import { AuthModule } from '@nexusts/auth';
 
 @Module({
   imports: [
@@ -115,10 +115,10 @@ for any endpoints not covered by the controller.
 ## 4. Sessions
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { AuthService, CurrentUser } from '@kabyeon/nexusjs/auth';
-import type { AuthUser } from '@kabyeon/nexusjs/auth';
-import { Controller, Get, Req } from '@kabyeon/nexusjs';
+import { Inject } from '@nexusts/core';
+import { AuthService, CurrentUser } from '@nexusts/auth';
+import type { AuthUser } from '@nexusts/auth';
+import { Controller, Get, Req } from '@nexusts/core';
 import type { Context } from 'hono';
 
 @Controller('/me')
@@ -231,7 +231,7 @@ The `authMiddleware` populates `c.var.user` and `c.var.session`:
 
 ```ts
 import { Hono } from 'hono';
-import { authMiddleware, type AuthVariables } from '@kabyeon/nexusjs/auth';
+import { authMiddleware, type AuthVariables } from '@nexusts/auth';
 import { auth } from './auth.js';
 
 const app = new Hono<{ Variables: AuthVariables }>();
@@ -360,7 +360,7 @@ For a full list of adapters, see
 The auth module is unit-testable. Inject a mock:
 
 ```ts
-import { AuthService } from '@kabyeon/nexusjs/auth';
+import { AuthService } from '@nexusts/auth';
 
 const mockAuth = {
   getSession: async () => ({ user: { id: '1' }, session: { id: 's' } }),
@@ -402,14 +402,14 @@ instructions.
 
 ---
 
-## 14. Integration with `@kabyeon/nexusjs/session`
+## 14. Integration with `@nexusts/session`
 
 `AuthService.bindSession(service)` links a `SessionService` so
 non-better-auth state (flash messages, guest carts, OAuth flow
 state) can coexist with better-auth's DB-backed sessions.
 
 ```ts
-import { SessionModule } from '@kabyeon/nexusjs/session';
+import { SessionModule } from '@nexusts/session';
 
 @Module({
   imports: [

@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { MetricsService, MetricsModule } from "@kabyeon/nexusjs/metrics";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { MetricsService, MetricsModule } from "@nexusts/metrics";
 
 /**
  * 19-metrics — Prometheus / OpenMetrics output at /metrics.

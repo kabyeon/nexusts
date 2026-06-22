@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { ResilienceModule, ResilienceService } from "@kabyeon/nexusjs/resilience";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { ResilienceModule, ResilienceService } from "@nexusts/resilience";
 
 let n = 0;
 @Injectable()

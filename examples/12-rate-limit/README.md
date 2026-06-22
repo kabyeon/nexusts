@@ -1,6 +1,6 @@
 # 12 · Rate Limit
 
-Protect endpoints from abuse with `@kabyeon/nexusjs/limiter`.
+Protect endpoints from abuse with `@nexusts/limiter`.
 
 ## What it shows
 
@@ -32,8 +32,8 @@ You should see the 6th call return `429 Too Many Requests`.
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { LimiterModule } from "@kabyeon/nexusjs/limiter";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { LimiterModule } from "@nexusts/limiter";
 
 @Injectable()
 @Controller("/api")

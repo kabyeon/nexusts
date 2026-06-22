@@ -2,15 +2,15 @@
 
 > 한국어 버전: [`production-basics.ko.md`](./production-basics.ko.md)
 
-The four modules shipped in v0.3 — `@kabyeon/nexusjs/health`, `@kabyeon/nexusjs/config`,
-`@kabyeon/nexusjs/logger`, `@kabyeon/nexusjs/static` — are the **production basics** that
+The four modules shipped in v0.3 — `@nexusts/health`, `@nexusts/config`,
+`@nexusts/logger`, `@nexusts/static` — are the **production basics** that
 every NestJS / AdonisJS backend takes for granted. They share the
 same package boundary (separate entry point in the bundle) and the
 same DI pattern (`Module.forRoot({...})`).
 
 ---
 
-## 1. `@kabyeon/nexusjs/health` — health checks
+## 1. `@nexusts/health` — health checks
 
 Liveness / readiness / startup endpoints for Kubernetes, load
 balancers, and ops dashboards. Backed by a uniform `HealthIndicator`
@@ -20,8 +20,8 @@ interface.
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { HealthModule } from '@kabyeon/nexusjs/health';
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
 
 @Module({
   imports: [
@@ -70,9 +70,9 @@ Response body:
 ### Custom indicators
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { HealthCheckService, HealthIndicator } from '@kabyeon/nexusjs/health';
-import type { HealthIndicatorResult } from '@kabyeon/nexusjs/health';
+import { Inject, Injectable } from '@nexusts/core';
+import { HealthCheckService, HealthIndicator } from '@nexusts/health';
+import type { HealthIndicatorResult } from '@nexusts/health';
 
 @Injectable()
 export class DatabaseHealthIndicator implements HealthIndicator {
@@ -91,7 +91,7 @@ svc.register(new DatabaseHealthIndicator(db));
 
 ---
 
-## 2. `@kabyeon/nexusjs/config` — configuration with Zod validation
+## 2. `@nexusts/config` — configuration with Zod validation
 
 Type-safe, schema-validated configuration loaded from env vars and
 `.env` files. Throws (or `process.exit(1)`) on validation failure so
@@ -109,8 +109,8 @@ export const configSchema = z.object({
 });
 
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { ConfigModule } from '@kabyeon/nexusjs/config';
+import { Module } from '@nexusts/core';
+import { ConfigModule } from '@nexusts/config';
 import { configSchema } from './config/schema.js';
 
 @Module({
@@ -127,8 +127,8 @@ export class AppModule {}
 ### Usage in services
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { ConfigService } from '@kabyeon/nexusjs/config';
+import { Inject, Injectable } from '@nexusts/core';
+import { ConfigService } from '@nexusts/config';
 import { configSchema } from '../config/schema.js';
 
 @Injectable()
@@ -209,7 +209,7 @@ ConfigModule.forRoot({
 
 ---
 
-## 3. `@kabyeon/nexusjs/logger` — structured logging with Pino
+## 3. `@nexusts/logger` — structured logging with Pino
 
 Built-in Pino integration. Pretty-prints in dev, JSON in prod.
 Request-scoped via `AsyncLocalStorage` so every log inside a request
@@ -218,8 +218,8 @@ auto-includes `requestId` / `userId`.
 ### Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { LoggerModule } from '@kabyeon/nexusjs/logger';
+import { Module } from '@nexusts/core';
+import { LoggerModule } from '@nexusts/logger';
 
 @Module({
   imports: [
@@ -236,8 +236,8 @@ export class AppModule {}
 ### Usage in services
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { Logger } from '@kabyeon/nexusjs/logger';
+import { Inject, Injectable } from '@nexusts/core';
+import { Logger } from '@nexusts/logger';
 
 @Injectable()
 class UserService {
@@ -258,7 +258,7 @@ class UserService {
 ### Request-scoped context
 
 ```ts
-import { logger } from '@kabyeon/nexusjs/logger';
+import { logger } from '@nexusts/logger';
 
 async function handle(request: Request) {
   await logger.with({ requestId: crypto.randomUUID() }, async () => {
@@ -288,7 +288,7 @@ class OrderService {
 
 ---
 
-## 4. `@kabyeon/nexusjs/static` — static file serving
+## 4. `@nexusts/static` — static file serving
 
 Serve files from a directory with proper `Content-Type`, ETag,
 `Cache-Control`, and range-request support. Path-traversal safe.
@@ -296,8 +296,8 @@ Serve files from a directory with proper `Content-Type`, ETag,
 ### Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { StaticModule } from '@kabyeon/nexusjs/static';
+import { Module } from '@nexusts/core';
+import { StaticModule } from '@nexusts/static';
 import { resolve } from 'node:path';
 
 @Module({
@@ -319,8 +319,8 @@ For SPA fallback (serve `index.html` for any unmatched route), mount
 the middleware yourself:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { StaticService } from '@kabyeon/nexusjs/static';
+import { Inject, Injectable } from '@nexusts/core';
+import { StaticService } from '@nexusts/static';
 import { Hono } from 'hono';
 
 @Injectable()
@@ -351,16 +351,16 @@ class WebServer {
 A typical v0.3 app module:
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { HealthModule } from '@kabyeon/nexusjs/health';
-import { ConfigModule } from '@kabyeon/nexusjs/config';
-import { LoggerModule } from '@kabyeon/nexusjs/logger';
-import { StaticModule } from '@kabyeon/nexusjs/static';
-import { AuthModule } from '@kabyeon/nexusjs/auth';
-import { SessionModule } from '@kabyeon/nexusjs/session';
-import { QueueModule } from '@kabyeon/nexusjs/queue';
-import { ScheduleModule } from '@kabyeon/nexusjs/schedule';
-import { EventsModule } from '@kabyeon/nexusjs/events';
+import { Module } from '@nexusts/core';
+import { HealthModule } from '@nexusts/health';
+import { ConfigModule } from '@nexusts/config';
+import { LoggerModule } from '@nexusts/logger';
+import { StaticModule } from '@nexusts/static';
+import { AuthModule } from '@nexusts/auth';
+import { SessionModule } from '@nexusts/session';
+import { QueueModule } from '@nexusts/queue';
+import { ScheduleModule } from '@nexusts/schedule';
+import { EventsModule } from '@nexusts/events';
 import { configSchema } from './config/schema.js';
 
 @Module({

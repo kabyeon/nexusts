@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { TracingModule, TracingService } from "@kabyeon/nexusjs/tracing";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { TracingModule, TracingService } from "@nexusts/tracing";
 
 /**
  * 20-tracing — distributed tracing with OpenTelemetry.

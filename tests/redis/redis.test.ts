@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/redis`.
+ * Tests for `@nexusts/redis`.
  *
  * Coverage:
  * 1. createRedisClient dispatches to the right adapter

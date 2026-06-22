@@ -37,7 +37,7 @@ bun main.ts
 ### Server — `main.ts`
 
 ```ts
-import { Inertia, createVueAdapter } from "@kabyeon/nexusjs/view";
+import { Inertia, createVueAdapter } from "@nexusts/view";
 import { HomePage } from "./frontend/home.js";
 
 @Module({

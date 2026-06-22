@@ -25,7 +25,7 @@ curl http://localhost:3000/counter
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable, Inject, Ctx } from "@kabyeon/nexusjs";
+import { Application, Module, Controller, Get, Injectable, Inject, Ctx } from "@nexusts/core";
 
 @Injectable({ scope: "request" })
 class RequestContext {

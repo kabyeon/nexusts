@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`drive.ko.md`](./drive.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/drive`:
+This document explains the architecture of `@nexusts/drive`:
 the `StorageDriver` interface, the three built-in drivers, the
 signed URL abstraction, and path safety.
 

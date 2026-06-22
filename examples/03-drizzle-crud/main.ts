@@ -2,8 +2,8 @@ import "reflect-metadata";
 import { sql } from "drizzle-orm";
 import {
   Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable,
-} from "@kabyeon/nexusjs";
-import { DrizzleModule, DrizzleRepository, DrizzleService } from "@kabyeon/nexusjs/drizzle";
+} from "@nexusts/core";
+import { DrizzleModule, DrizzleRepository, DrizzleService } from "@nexusts/drizzle";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 /**

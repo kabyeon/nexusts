@@ -34,8 +34,8 @@ curl http://localhost:3000/users/1
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { OpenAPIModule, OpenAPIService, ApiTags, ApiOperation, ApiResponse, ApiParam } from "@kabyeon/nexusjs/openapi";
+import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@nexusts/core";
+import { OpenAPIModule, OpenAPIService, ApiTags, ApiOperation, ApiResponse, ApiParam } from "@nexusts/openapi";
 import { z } from "zod";
 
 const CreateUser = z.object({ name: z.string(), email: z.string().email() });
@@ -94,7 +94,7 @@ await app.listen(3000);
 ## Adding request bodies
 
 ```ts
-import { ApiBody, ApiParam } from "@kabyeon/nexusjs/openapi";
+import { ApiBody, ApiParam } from "@nexusts/openapi";
 
 @Post("/")
 @ApiBody({ schema: CreateUser })

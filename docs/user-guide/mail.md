@@ -1,8 +1,8 @@
-# Email · `@kabyeon/nexusjs/mail`
+# Email · `@nexusts/mail`
 
 > 한국어 버전: [`mail.ko.md`](./mail.ko.md)
 
-`@kabyeon/nexusjs/mail` provides outbound email delivery with pluggable
+`@nexusts/mail` provides outbound email delivery with pluggable
 transports: SMTP (via nodemailer), file-based `.eml` output for
 development, and a null transport for tests.
 
@@ -10,11 +10,11 @@ development, and a null transport for tests.
 
 ## Installation
 
-The mail module ships **inside** `@kabyeon/nexusjs` — no extra install
+The mail module ships **inside** `@nexusts/core` — no extra install
 is needed for the file or null transports.
 
 ```ts
-import { MailModule } from '@kabyeon/nexusjs/mail';
+import { MailModule } from '@nexusts/mail';
 ```
 
 Optional peer dependencies:
@@ -29,8 +29,8 @@ bun add mjml                    # for renderMjml()
 ## Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { MailModule, NullTransport } from '@kabyeon/nexusjs/mail';
+import { Module } from '@nexusts/core';
+import { MailModule, NullTransport } from '@nexusts/mail';
 
 @Module({
   imports: [
@@ -50,7 +50,7 @@ export class AppModule {}
 ### SMTP (production)
 
 ```ts
-import { SmtpTransport } from '@kabyeon/nexusjs/mail';
+import { SmtpTransport } from '@nexusts/mail';
 
 MailModule.forRoot({
   transport: new SmtpTransport({
@@ -73,7 +73,7 @@ MailModule.forRoot({
 Writes every outgoing message as a `.eml` file:
 
 ```ts
-import { FileTransport } from '@kabyeon/nexusjs/mail';
+import { FileTransport } from '@nexusts/mail';
 
 MailModule.forRoot({
   transport: new FileTransport({
@@ -92,7 +92,7 @@ text.
 Drops every message. Captures sent messages for inspection:
 
 ```ts
-import { NullTransport } from '@kabyeon/nexusjs/mail';
+import { NullTransport } from '@nexusts/mail';
 
 const transport = new NullTransport();
 

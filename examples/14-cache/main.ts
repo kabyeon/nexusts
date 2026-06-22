@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { CacheService, CacheModule } from "@kabyeon/nexusjs/cache";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { CacheService, CacheModule } from "@nexusts/cache";
 
 /**
  * 14-cache — get/set/invalidate pattern with the memory backend.

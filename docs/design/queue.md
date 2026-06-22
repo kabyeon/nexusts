@@ -43,7 +43,7 @@ lines of security-sensitive / operationally-fragile code.
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│              @kabyeon/nexusjs/queue  (separate entry point)             │
+│              @nexusts/queue  (separate entry point)             │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
 │  │  QueueService    │  │ @OnQueueReady    │  │ invokeReady- │ │
@@ -74,7 +74,7 @@ Backends are swappable; the user can change `backend: 'bullmq'` to
 
 ## 4. Module separation
 
-`@kabyeon/nexusjs/queue` is a separate entry point:
+`@nexusts/queue` is a separate entry point:
 
 ```json
 "exports": {
@@ -264,7 +264,7 @@ The backend emits a `QueueEvent` on every state change:
 | `worker:stopped` | When `close()` is called |
 
 Listeners subscribe via `queue.on(listener)`. This is the integration
-point for the NexusJS event system (v0.2) and for metrics
+point for the NexusTS event system (v0.2) and for metrics
 exporters.
 
 ## 11. DI integration
@@ -337,7 +337,7 @@ in `nx.config.ts` if `--backend` isn't passed.
 
 BullMQ- and Cloudflare-specific behavior is tested at the
 underlying library's level (we don't re-test what we wrap). The
-tests focus on the **NexusJS integration points**.
+tests focus on the **NexusTS integration points**.
 
 ## 15. Known issues
 

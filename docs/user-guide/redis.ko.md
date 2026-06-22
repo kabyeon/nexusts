@@ -1,10 +1,10 @@
-# Redis · `@kabyeon/nexusjs/redis` (v0.5)
+# Redis · `@nexusts/redis` (v0.5)
 
 > English: [`redis.md`](./redis.md)
 > v0.5 신규. 새로운 `redis` / `cloudflare-kv` 세션 및 캐시 백엔드를
 > 구동하는 런타임 인식 Redis 호환 키/값 클라이언트.
 
-`@kabyeon/nexusjs/redis`가 제공하는 것:
+`@nexusts/redis`가 제공하는 것:
 
 - **`createRedisClient(config)`** — `config.adapter`가 생략되면
   런타임 자동 감지.
@@ -20,8 +20,8 @@
 
 - **`RedisModule.forRoot(config)`** — DI 컨테이너에 클라이언트 연결.
 
-`@kabyeon/nexusjs/session` (Redis + Cloudflare KV 세션 백엔드) 및
-`@kabyeon/nexusjs/cache` (Redis 캐시 스토어)가 내부적으로 사용. 다른
+`@nexusts/session` (Redis + Cloudflare KV 세션 백엔드) 및
+`@nexusts/cache` (Redis 캐시 스토어)가 내부적으로 사용. 다른
 용도(rate limiter, queue 검사, pub/sub 등)로도 직접 사용 가능.
 
 ---
@@ -29,8 +29,8 @@
 ## 1. 빠른 시작
 
 ```ts
-import { Module, Inject } from "@kabyeon/nexusjs";
-import { createRedisClient, RedisClient, REDIS_CLIENT_TOKEN, RedisModule } from "@kabyeon/nexusjs/redis";
+import { Module, Inject } from "@nexusts/core";
+import { createRedisClient, RedisClient, REDIS_CLIENT_TOKEN, RedisModule } from "@nexusts/redis";
 
 @Module({
   imports: [RedisModule.forRoot({ url: "redis://localhost:6379" })],
@@ -82,7 +82,7 @@ const redis = createRedisClient({ adapter: "node" });   // Node 강제
 
 ## 3. `RedisClient` API
 
-인터페이스는 의도적으로 최소 — `@kabyeon/nexusjs/session`과 `@kabyeon/nexusjs/cache`가
+인터페이스는 의도적으로 최소 — `@nexusts/session`과 `@nexusts/cache`가
 필요로 하는 것만. 미래 모듈(limiter, queue)도 자체 클라이언트
 셰이프를 다시 정의하지 않고 채택 가능.
 
@@ -136,15 +136,15 @@ const res = await redis.scan({ match: "myapp:prod:user:*" });
 
 ---
 
-## 4. `@kabyeon/nexusjs/session` 통합
+## 4. `@nexusts/session` 통합
 
 `SessionModule.forRoot({ backend: "redis", redis: { client, keyPrefix } })`가
 내부적으로 `RedisSessionStorage` 사용. Bun, Node 또는 `RedisClient`가
 있는 모든 런타임에서 같은 코드 경로가 작동.
 
 ```ts
-import { SessionModule } from "@kabyeon/nexusjs/session";
-import { createRedisClient } from "@kabyeon/nexusjs/redis";
+import { SessionModule } from "@nexusts/session";
+import { createRedisClient } from "@nexusts/redis";
 
 @Module({
   imports: [
@@ -166,8 +166,8 @@ Cloudflare Workers에서는 `CloudflareKVAdapter`를 Redis 어댑터 대신
 전달. `SessionService`는 같은 코드 경로 사용.
 
 ```ts
-import { SessionModule } from "@kabyeon/nexusjs/session";
-import { CloudflareKVAdapter } from "@kabyeon/nexusjs/redis";
+import { SessionModule } from "@nexusts/session";
+import { CloudflareKVAdapter } from "@nexusts/redis";
 
 export default {
   async fetch(req: Request, env: Env) {
@@ -182,14 +182,14 @@ export default {
 
 ---
 
-## 5. `@kabyeon/nexusjs/cache` 통합
+## 5. `@nexusts/cache` 통합
 
 `RedisCacheStore`는 `RedisClient`를 사용하는 `CacheStore` 구현.
 태그 기반 무효화 지원.
 
 ```ts
-import { CacheService } from "@kabyeon/nexusjs/cache";
-import { RedisCacheStore, createRedisClient } from "@kabyeon/nexusjs/redis";
+import { CacheService } from "@nexusts/cache";
+import { RedisCacheStore, createRedisClient } from "@nexusts/redis";
 
 const cache = new CacheService({
   store: new RedisCacheStore(createRedisClient({ url: process.env.REDIS_URL! })),

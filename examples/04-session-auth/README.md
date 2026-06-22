@@ -1,6 +1,6 @@
 # 04 · Session Auth
 
-Cookie-based session login using `@kabyeon/nexusjs/session`. No
+Cookie-based session login using `@nexusts/session`. No
 better-auth, no third-party — just a session ID in a signed cookie.
 
 ## What it shows
@@ -35,8 +35,8 @@ curl -i http://localhost:3000/logout -b cookies.txt
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Post, Session, Body, Module, Inject } from "@kabyeon/nexusjs";
-import { SessionModule, SessionService, sessionMiddleware } from "@kabyeon/nexusjs/session";
+import { Application, Controller, Get, Post, Session, Body, Module, Inject } from "@nexusts/core";
+import { SessionModule, SessionService, sessionMiddleware } from "@nexusts/session";
 
 @Injectable()
 class AuthService {

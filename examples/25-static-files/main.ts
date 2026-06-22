@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { StaticModule } from "@kabyeon/nexusjs/static";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { StaticModule } from "@nexusts/static";
 import path from "node:path";
 
 /**

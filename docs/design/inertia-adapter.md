@@ -191,7 +191,7 @@ The form helper handles **per-field validation and PRG**, but CSRF is an
 controller and returns **419 Page Expired** on mismatch.
 
 ```ts
-import { inertiaFormMiddleware } from '@kabyeon/nexusjs/view/inertia';
+import { inertiaFormMiddleware } from '@nexusts/view/inertia';
 
 app.server.app.use('*', inertiaFormMiddleware({
   validateCsrf: true,
@@ -320,7 +320,7 @@ starting point for most apps.
 Each lazy-imports its engine; install only what you use:
 
 ```ts
-import { createReactAdapter, ComponentRegistry } from '@kabyeon/nexusjs/view/inertia/ssr';
+import { createReactAdapter, ComponentRegistry } from '@nexusts/view/inertia/ssr';
 
 const components = new ComponentRegistry()
   .register('Home', HomePage)

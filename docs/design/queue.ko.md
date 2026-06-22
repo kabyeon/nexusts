@@ -40,7 +40,7 @@
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│              @kabyeon/nexusjs/queue  (별도 진입점)                       │
+│              @nexusts/queue  (별도 진입점)                       │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
 │  │  QueueService    │  │ @OnQueueReady    │  │ invokeReady- │ │
@@ -69,7 +69,7 @@
 
 ## 4. 모듈 분리
 
-`@kabyeon/nexusjs/queue`는 별도 진입점이다.
+`@nexusts/queue`는 별도 진입점이다.
 
 ```json
 "exports": {
@@ -233,7 +233,7 @@ class EmailWorker {
 | `worker:started` | `process()` 성공 시 |
 | `worker:stopped` | `close()` 호출 시 |
 
-리스너는 `queue.on(listener)`로 구독한다. NexusJS 이벤트 시스템(v0.2) 및 메트릭 익스포터의 통합 지점이다.
+리스너는 `queue.on(listener)`로 구독한다. NexusTS 이벤트 시스템(v0.2) 및 메트릭 익스포터의 통합 지점이다.
 
 ## 11. DI 통합
 
@@ -291,7 +291,7 @@ CLI의 `make:queue --backend bullmq`는 `--backend`가 전달되지 않으면 `n
 - **@OnQueueReady 테스트** — 인스턴스에서 훅을 호출하고 부수 효과 검증.
 - **검증 테스트** — 연결 없는 `forRoot({ backend: 'bullmq' })`가 resolve 시 throw.
 
-BullMQ와 Cloudflare별 동작은 기본 라이브러리 레벨에서 테스트된다(우리가 래핑하는 것을 다시 테스트하지 않음). 테스트는 **NexusJS 통합 지점**에 집중한다.
+BullMQ와 Cloudflare별 동작은 기본 라이브러리 레벨에서 테스트된다(우리가 래핑하는 것을 다시 테스트하지 않음). 테스트는 **NexusTS 통합 지점**에 집중한다.
 
 ## 15. 알려진 이슈
 

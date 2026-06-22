@@ -34,8 +34,8 @@ curl http://localhost:3000/listeners
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Post, Body, Module, Inject, Injectable } from "@kabyeon/nexusjs";
-import { EventService, OnEvent } from "@kabyeon/nexusjs/events";
+import { Application, Controller, Get, Post, Body, Module, Inject, Injectable } from "@nexusts/core";
+import { EventService, OnEvent } from "@nexusts/events";
 
 @Injectable()
 class UserListener {

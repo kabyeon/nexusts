@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Injectable, Controller, Get } from "@kabyeon/nexusjs";
-import { GraphQLModule, GraphQLService } from "@kabyeon/nexusjs/graphql";
+import { Application, Module, Injectable, Controller, Get } from "@nexusts/core";
+import { GraphQLModule, GraphQLService } from "@nexusts/graphql";
 
 /**
  * 32-graphql-hello — minimal GraphQL endpoint.

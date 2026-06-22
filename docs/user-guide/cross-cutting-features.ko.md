@@ -5,9 +5,9 @@
 > **이 문서는 이제 개요입니다.** 각 기능마다 전용 사용자 가이드와
 > 디자인 문서가 있습니다. 아래 링크를 사용하세요.
 
-v0.3에서 함께 출시되는 다섯 모듈 — `@kabyeon/nexusjs/limiter`,
-`@kabyeon/nexusjs/shield`, `@kabyeon/nexusjs/cache`, `@kabyeon/nexusjs/drive`,
-`@kabyeon/nexusjs/mail` — production stack을 완성한다.
+v0.3에서 함께 출시되는 다섯 모듈 — `@nexusts/limiter`,
+`@nexusts/shield`, `@nexusts/cache`, `@nexusts/drive`,
+`@nexusts/mail` — production stack을 완성한다.
 모두 독립 번들이고, 모두 같은 `Module.forRoot({...})` DI 패턴을 사용하며,
 모두 peer dependency(Redis, AWS SDK, nodemailer 등)를 강제하지 않도록
 설계되었다 (필요 없는 프로젝트는 가볍게 유지).
@@ -18,11 +18,11 @@ v0.3에서 함께 출시되는 다섯 모듈 — `@kabyeon/nexusjs/limiter`,
 
 | 모듈 | 사용자 가이드 | 디자인 문서 | 진입점 |
 | ---- | ------------ | ---------- | ------ |
-| Rate limiter | [`limiter.ko.md`](./limiter.ko.md) | [`../design/limiter.ko.md`](../design/limiter.ko.md) | `@kabyeon/nexusjs/limiter` |
-| 보안 (Shield) | [`shield.ko.md`](./shield.ko.md) | [`../design/shield.ko.md`](../design/shield.ko.md) | `@kabyeon/nexusjs/shield` |
-| 애플리케이션 캐시 | [`cache.ko.md`](./cache.ko.md) | [`../design/cache.ko.md`](../design/cache.ko.md) | `@kabyeon/nexusjs/cache` |
-| 파일 스토리지 (Drive) | [`drive.ko.md`](./drive.ko.md) | [`../design/drive.ko.md`](../design/drive.ko.md) | `@kabyeon/nexusjs/drive` |
-| 이메일 (Mail) | [`mail.ko.md`](./mail.ko.md) | [`../design/mail.ko.md`](../design/mail.ko.md) | `@kabyeon/nexusjs/mail` |
+| Rate limiter | [`limiter.ko.md`](./limiter.ko.md) | [`../design/limiter.ko.md`](../design/limiter.ko.md) | `@nexusts/limiter` |
+| 보안 (Shield) | [`shield.ko.md`](./shield.ko.md) | [`../design/shield.ko.md`](../design/shield.ko.md) | `@nexusts/shield` |
+| 애플리케이션 캐시 | [`cache.ko.md`](./cache.ko.md) | [`../design/cache.ko.md`](../design/cache.ko.md) | `@nexusts/cache` |
+| 파일 스토리지 (Drive) | [`drive.ko.md`](./drive.ko.md) | [`../design/drive.ko.md`](../design/drive.ko.md) | `@nexusts/drive` |
+| 이메일 (Mail) | [`mail.ko.md`](./mail.ko.md) | [`../design/mail.ko.md`](../design/mail.ko.md) | `@nexusts/mail` |
 
 ---
 

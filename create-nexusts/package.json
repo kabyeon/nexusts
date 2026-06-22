@@ -1,0 +1,19 @@
+{
+  "name": "create-nexusts",
+  "version": "0.7.0",
+  "description": "Scaffold a new NexusTS project — bunx create-nexusts my-app",
+  "bin": "index.js",
+  "type": "module",
+  "files": ["index.js", "package.json", "README.md"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kabyeon/nexusts.git"
+  },
+  "homepage": "https://github.com/kabyeon/nexusts#readme",
+  "engines": {
+    "node": ">=18",
+    "bun": ">=1.0"
+  },
+  "keywords": ["nexusts", "framework", "bun", "fullstack", "scaffold"]
+}

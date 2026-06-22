@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`limiter.ko.md`](./limiter.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/limiter`:
+This document explains the architecture of `@nexusts/limiter`:
 the three strategies, the backend storage interface, how global rules
 and decorators interact, and the middleware pipeline.
 

@@ -2,7 +2,7 @@
 
 > English version: [`mail.md`](./mail.md)
 
-이 문서는 `@kabyeon/nexusjs/mail`의 아키텍처를 설명한다: `MailTransport`
+이 문서는 `@nexusts/mail`의 아키텍처를 설명한다: `MailTransport`
 인터페이스, 세 가지 내장 transport, MJML 통합, zero 의존성 설계.
 
 ## 목표
@@ -136,7 +136,7 @@ type MailAddress = string | { name?: string; address: string };
 
 - **템플릿 엔진 통합** — 발송 전 view engine에서 Handlebars/Mustache/
   Vento 템플릿 resolve.
-- **이메일 큐** — 신뢰성과 rate limiting을 위해 `nexusjs/queue` 모듈을
+- **이메일 큐** — 신뢰성과 rate limiting을 위해 `nexusts/queue` 모듈을
   통한 발송 defer.
 - **Open/track** — transparent pixel + click tracking (opt-in).
 - **Mailgun / SES / SendGrid transport** — 해당 API를 직접 wrap하는

@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`events.ko.md`](./events.ko.md)
 
-NexusJS ships an event system under `@kabyeon/nexusjs/events` that mirrors
+NexusTS ships an event system under `@nexusts/events` that mirrors
 `@nestjs/event-emitter` and AdonisJS's emitter.
 
 - `events.emit(name, payload)` to dispatch
@@ -13,7 +13,7 @@ NexusJS ships an event system under `@kabyeon/nexusjs/events` that mirrors
 - **One-shot listeners** — auto-removed after the first match
 - **Error collection** — one failing listener does not stop the rest
 
-The events module is **separate from `@kabyeon/nexusjs/core`** and ships as its
+The events module is **separate from `@nexusts/core`** and ships as its
 own bundle entry point.
 
 ---
@@ -22,8 +22,8 @@ own bundle entry point.
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { EventsModule } from '@kabyeon/nexusjs/events';
+import { Module } from '@nexusts/core';
+import { EventsModule } from '@nexusts/events';
 
 @Module({
   imports: [EventsModule.forRoot()],
@@ -33,8 +33,8 @@ export class AppModule {}
 
 ```ts
 // app/events/listeners/email.listeners.ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { EventService, OnEvent } from '@kabyeon/nexusjs/events';
+import { Inject, Injectable } from '@nexusts/core';
+import { EventService, OnEvent } from '@nexusts/events';
 
 @Injectable()
 export class EmailListeners {
@@ -54,8 +54,8 @@ export class EmailListeners {
 
 ```ts
 // app/main.ts
-import { Application } from '@kabyeon/nexusjs';
-import { EventService, scanForListeners } from '@kabyeon/nexusjs/events';
+import { Application } from '@nexusts/core';
+import { EventService, scanForListeners } from '@nexusts/events';
 import { AppModule } from './app.module.js';
 import { EmailListeners } from './events/listeners/email.listeners.js';
 

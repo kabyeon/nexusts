@@ -6,13 +6,13 @@
 
 ## 1. 세 가지 라우팅 스타일
 
-NexusJS는 **세 가지** 스타일을 나란히 지원합니다 — 각 라우트에 맞는 것을 선택하세요.
+NexusTS는 **세 가지** 스타일을 나란히 지원합니다 — 각 라우트에 맞는 것을 선택하세요.
 
 ### 1.1 Nest 스타일 (클래스 데코레이터)
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Validate } from '@kabyeon/nexusjs';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Validate } from '@nexusts/core';
 import { UserService } from '../services/user.service.js';
 
 const CreateUserSchema = z.object({
@@ -97,7 +97,7 @@ Functional 스타일은 **이스케이프 해치**입니다 — Hono가 할 수 
 | `@Repository()` | class | `@Injectable()`과 동일, 리포지토리에 적합한 이름 |
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { UserController } from './controllers/user.controller.js';
 import { UserService } from './services/user.service.js';
 import { UserRepository } from './repositories/user.repository.js';
@@ -312,7 +312,7 @@ DI, 검증, 에러 처리를 갖춘 완전한 컨트롤러:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Get, Inject, Param, Post, Validate } from '@kabyeon/nexusjs';
+import { Body, Controller, Get, Inject, Param, Post, Validate } from '@nexusts/core';
 import { UserService } from '../services/user.service.js';
 
 const CreateUserSchema = z.object({
@@ -347,7 +347,7 @@ export class UserController {
 
 ```ts
 // user.module.ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { UserController } from '../controllers/user.controller.js';
 import { UserService } from '../services/user.service.js';
 

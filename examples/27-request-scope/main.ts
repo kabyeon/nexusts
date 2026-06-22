@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable, Inject, Ctx } from "@kabyeon/nexusjs";
+import { Application, Module, Controller, Get, Injectable, Inject, Ctx } from "@nexusts/core";
 
 /**
  * 27-request-scope — per-request provider instances.

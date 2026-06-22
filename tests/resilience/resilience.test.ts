@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/resilience`.
+ * Tests for `@nexusts/resilience`.
  *
  * Covers:
  *  - `retry()` function: backoff strategies, retry-on, abort, timeout.
@@ -11,17 +11,17 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import "reflect-metadata";
 
-let retry: typeof import("@kabyeon/nexusjs/resilience").retry;
-let computeBackoff: typeof import("@kabyeon/nexusjs/resilience").computeBackoff;
-let CircuitBreaker: typeof import("@kabyeon/nexusjs/resilience").CircuitBreaker;
-let CircuitOpenError: typeof import("@kabyeon/nexusjs/resilience").CircuitOpenError;
-let Bulkhead: typeof import("@kabyeon/nexusjs/resilience").Bulkhead;
-let BulkheadFullError: typeof import("@kabyeon/nexusjs/resilience").BulkheadFullError;
-let ResilienceService: typeof import("@kabyeon/nexusjs/resilience").ResilienceService;
-let ResilienceModule: typeof import("@kabyeon/nexusjs/resilience").ResilienceModule;
+let retry: typeof import("@nexusts/resilience").retry;
+let computeBackoff: typeof import("@nexusts/resilience").computeBackoff;
+let CircuitBreaker: typeof import("@nexusts/resilience").CircuitBreaker;
+let CircuitOpenError: typeof import("@nexusts/resilience").CircuitOpenError;
+let Bulkhead: typeof import("@nexusts/resilience").Bulkhead;
+let BulkheadFullError: typeof import("@nexusts/resilience").BulkheadFullError;
+let ResilienceService: typeof import("@nexusts/resilience").ResilienceService;
+let ResilienceModule: typeof import("@nexusts/resilience").ResilienceModule;
 
 beforeAll(async () => {
-	const mod = await import("@kabyeon/nexusjs/resilience");
+	const mod = await import("@nexusts/resilience");
 	retry = mod.retry;
 	computeBackoff = mod.computeBackoff;
 	CircuitBreaker = mod.CircuitBreaker;

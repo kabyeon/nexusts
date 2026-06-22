@@ -1,6 +1,6 @@
 # 03 · Drizzle CRUD
 
-Type-safe SQLite CRUD with `@kabyeon/nexusjs/drizzle`. Uses the
+Type-safe SQLite CRUD with `@nexusts/drizzle`. Uses the
 recommended **DrizzleService** + **DrizzleRepository** pattern.
 
 ## What it shows
@@ -43,8 +43,8 @@ export const users = sqliteTable("users", {
 
 ```ts
 // user.repository.ts — Lucid-style typed repository
-import { Injectable } from "@kabyeon/nexusjs";
-import { DrizzleRepository } from "@kabyeon/nexusjs/drizzle";
+import { Injectable } from "@nexusts/core";
+import { DrizzleRepository } from "@nexusts/drizzle";
 import { users } from "./schema";
 
 @Injectable()
@@ -55,8 +55,8 @@ export class UserRepository extends DrizzleRepository<typeof users> {
 
 ```ts
 // main.ts — wire it all together
-import { Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { DrizzleModule, DrizzleService } from "@kabyeon/nexusjs/drizzle";
+import { Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@nexusts/core";
+import { DrizzleModule, DrizzleService } from "@nexusts/drizzle";
 import { eq } from "drizzle-orm";
 import { users } from "./schema";
 import { UserRepository } from "./user.repository";

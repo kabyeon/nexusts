@@ -2,7 +2,7 @@
 
 > English version: [`redis.md`](./redis.md)
 
-이 문서는 `@kabyeon/nexusjs/redis`의 아키텍처를 설명한다: 통합
+이 문서는 `@nexusts/redis`의 아키텍처를 설명한다: 통합
 `RedisClient` 인터페이스, 런타임 인식 adapter 선택, 그리고
 session/cache/queue 모듈이 어떻게 의존하는지.
 
@@ -16,7 +16,7 @@ session/cache/queue 모듈이 어떻게 의존하는지.
    반환.
 3. **옵션 peer dependency.** `ioredis`는 Node에서만 필요. Bun과
    Workers adapter는 내장 API 사용 (zero deps).
-4. **공유 기반.** `nexusjs/session`, `nexusjs/cache`, `nexusjs/queue`
+4. **공유 기반.** `nexusts/session`, `nexusts/cache`, `nexusts/queue`
    모두 `RedisClient`에 의존하므로 단일 config switch가 세 모듈 모두의
    백엔드를 선택.
 

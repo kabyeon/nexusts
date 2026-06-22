@@ -1,6 +1,6 @@
 # 17 · Config
 
-Type-safe env/config access with `@kabyeon/nexusjs/config`.
+Type-safe env/config access with `@nexusts/config`.
 
 ## What it shows
 
@@ -21,8 +21,8 @@ bun main.ts
 // main.ts
 import "reflect-metadata";
 import { z } from "zod";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { ConfigService, ConfigModule } from "@kabyeon/nexusjs/config";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { ConfigService, ConfigModule } from "@nexusts/config";
 
 const schema = z.object({
   PORT: z.coerce.number().default(3000),

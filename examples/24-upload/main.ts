@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Injectable } from "@kabyeon/nexusjs";
-import { UploadModule, UploadedFile } from "@kabyeon/nexusjs/upload";
+import { Application, Module, Controller, Post, Injectable } from "@nexusts/core";
+import { UploadModule, UploadedFile } from "@nexusts/upload";
 
 /**
  * 24-upload — file upload via multipart form data.

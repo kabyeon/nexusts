@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`view-engines.ko.md`](./view-engines.ko.md)
 
-NexusJS ships with three view-engine integrations and a pluggable
+NexusTS ships with three view-engine integrations and a pluggable
 adapter interface for your own.
 
 | Engine | Style | Best for | File extension |
@@ -23,7 +23,7 @@ Rendu compiles templates to render functions, so it's fast on every
 runtime and works in Cloudflare Workers without filesystem access.
 
 ```ts
-import { RenduAdapter } from '@kabyeon/nexusjs/view';
+import { RenduAdapter } from '@nexusts/view';
 
 const rendu = new RenduAdapter();
 const html = await rendu.render(
@@ -66,7 +66,7 @@ Edge is AdonisJS's official template engine — `{{ ... }}` for output,
 `{{{ ... }}}` for raw output, and `@if` / `@each` directives.
 
 ```ts
-import { EdgeAdapter } from '@kabyeon/nexusjs/view';
+import { EdgeAdapter } from '@nexusts/view';
 
 const edge = new EdgeAdapter();
 const html = await edge.render(
@@ -105,7 +105,7 @@ bun add eta
 ```
 
 ```ts
-import { EtaAdapter } from '@kabyeon/nexusjs/view';
+import { EtaAdapter } from '@nexusts/view';
 
 const eta = new EtaAdapter();
 
@@ -153,7 +153,7 @@ setViewPaths(['views']);
 
 @Get('/about')
 async about() {
-  return { view: 'about.eta', data: { title: 'NexusJS', year: 2026 } };
+  return { view: 'about.eta', data: { title: 'NexusTS', year: 2026 } };
 }
 ```
 
@@ -189,7 +189,7 @@ index(@Inject(Inertia.TOKEN) inertia: Inertia) {
 Implement the `ViewAdapter` interface and install it:
 
 ```ts
-import type { ViewAdapter } from '@kabyeon/nexusjs/view';
+import type { ViewAdapter } from '@nexusts/view';
 
 class MyEngine implements ViewAdapter {
   readonly name = 'my-engine';

@@ -1,9 +1,9 @@
-# 분산 추적 · `@kabyeon/nexusjs/tracing` (Tier 2 v0.4)
+# 분산 추적 · `@nexusts/tracing` (Tier 2 v0.4)
 
 > English: [`tracing.md`](./tracing.md)
 > v0.3 격차 분석의 Tier 2 격차, **v0.4**에서 해소.
 
-`@kabyeon/nexusjs/tracing`은 [OpenTelemetry](https://opentelemetry.io/) API의 얇고 관용적인 래퍼:
+`@nexusts/tracing`은 [OpenTelemetry](https://opentelemetry.io/) API의 얇고 관용적인 래퍼:
 
 - **`TracingService`** — `startSpan()`, `withSpan()`, 컨텍스트 전파 헬퍼를 노출하는 DI 친화적 서비스
 - **`TracingModule.forRoot(config)`** — 선택한 exporter, sampler, resource 속성으로 OTel SDK 시작
@@ -27,8 +27,8 @@ bun add @opentelemetry/sdk-node \\
 
 ```ts
 // app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { TracingModule } from '@kabyeon/nexusjs/tracing';
+import { Module } from '@nexusts/core';
+import { TracingModule } from '@nexusts/tracing';
 
 @Module({
   imports: [
@@ -51,7 +51,7 @@ export class AppModule {}
 ## 2. `@Trace()` 데코레이터
 
 ```ts
-import { Trace } from '@kabyeon/nexusjs/tracing';
+import { Trace } from '@nexusts/tracing';
 
 class UserService {
   @Trace()                        // span name = "UserService.findById"
@@ -79,7 +79,7 @@ class UserService {
 클래스 메서드가 아닌 코드 (최상위 유틸리티, 큐 핸들러, 크론 작업 등):
 
 ```ts
-import { withSpan } from '@kabyeon/nexusjs/tracing';
+import { withSpan } from '@nexusts/tracing';
 
 await withSpan('nightly.cleanup', async (span) => {
   span.setAttribute('cleanup.target', 'sessions');
@@ -110,7 +110,7 @@ const result = service.withSpanSync('compute', (span) => {
 ### 현재 trace 읽기
 
 ```ts
-import { getTracingService } from '@kabyeon/nexusjs/tracing';
+import { getTracingService } from '@nexusts/tracing';
 
 const svc = ...; // TracingService instance
 console.log(svc.getCurrentTraceId());  // 요청 외부에서는 undefined
@@ -158,7 +158,7 @@ const res = await fetch('<https://other-service/path>', { headers });
 
 ```ts
 import { Hono } from 'hono';
-import { tracingMiddleware, TracingService } from '@kabyeon/nexusjs/tracing';
+import { tracingMiddleware, TracingService } from '@nexusts/tracing';
 
 const service = new TracingService();
 const app = new Hono();
@@ -171,14 +171,14 @@ app.use('*', tracingMiddleware(service));
 
 ```ts
 interface TracingConfig {
-  serviceName?: string;          // default: "@kabyeon/nexusjs"
+  serviceName?: string;          // default: "@nexusts/core"
   serviceVersion?: string;       // default: "0.0.0"
   environment?: string;          // default: process.env.NODE_ENV
   exporter?: 'otlp-http' | 'otlp-grpc' | 'console' | 'memory';
   endpoint?: string;             // default: <http://localhost:4318>
   sampleRatio?: number;          // 0..1, default 1.0
   enableHttpInstrumentation?: boolean;  // default true
-  enableDbInstrumentation?: boolean;    // default true (@kabyeon/nexusjs/drizzle hook)
+  enableDbInstrumentation?: boolean;    // default true (@nexusts/drizzle hook)
   resourceAttributes?: Record<string, string>;
   throwOnError?: boolean;        // default false
 }
@@ -195,7 +195,7 @@ interface TracingConfig {
 
 ## 7. 번들링 / peer 의존성
 
-OTel SDK 패키지는 (~5MB) 클 수 있으므로, \`nexusjs\`의 **optional peer dep**임. \`@kabyeon/nexusjs/tracing\`을 사용하지 않는 앱은 비용을 지불하지 않음.
+OTel SDK 패키지는 (~5MB) 클 수 있으므로, \`nexusts\`의 **optional peer dep**임. \`@nexusts/tracing\`을 사용하지 않는 앱은 비용을 지불하지 않음.
 
 API만 설치 시:
 
@@ -211,7 +211,7 @@ bun add @opentelemetry/api
 
 ```ts
 import { describe, it, expect } from 'vitest';
-import { TracingService, withSpan } from '@kabyeon/nexusjs/tracing';
+import { TracingService, withSpan } from '@nexusts/tracing';
 
 describe('tracing', () => {
   it('exposes a tracer', () => {

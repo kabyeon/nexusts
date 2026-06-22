@@ -5,7 +5,7 @@
 
 ## 1. Purpose
 
-The DI container is the heart of NexusJS. It:
+The DI container is the heart of NexusTS. It:
 
 - **Registers** providers (classes, values, factories, aliases)
 - **Resolves** dependencies recursively through `reflect-metadata`
@@ -133,7 +133,7 @@ The container uses two strategies to read constructor parameter types:
    `tsc` and the `emitDecoratorMetadata` flag).
 
 Because Bun's native TypeScript transformer does **not** emit
-`design:paramtypes`, NexusJS standardizes on explicit `@Inject(...)`
+`design:paramtypes`, NexusTS standardizes on explicit `@Inject(...)`
 parameter decorators. The bare-type form (`constructor(private svc: UserService)`)
 is supported when running with `tsc`-compiled output.
 
@@ -202,7 +202,7 @@ Anything not in `exports` stays private to its declaring module.
 | `InjectionToken`, `Provider`, `ModuleOptions` | Type definitions |
 | `@Module`, `@Injectable`, `@Inject`, `@Controller`, `@Repository` | Decorators (see [`../../src/core/decorators`](../../src/core/decorators)) |
 
-All of the above are re-exported from the `@kabyeon/nexusjs` entry point.
+All of the above are re-exported from the `@nexusts/core` entry point.
 
 ---
 

@@ -1,6 +1,6 @@
 # 24 · File Upload
 
-Multipart file upload with `@kabyeon/nexusjs/upload`.
+Multipart file upload with `@nexusts/upload`.
 
 ## What it shows
 
@@ -31,8 +31,8 @@ curl -X POST http://localhost:3000/upload/multi \
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Injectable } from "@kabyeon/nexusjs";
-import { UploadModule, UploadedFile } from "@kabyeon/nexusjs/upload";
+import { Application, Module, Controller, Post, Injectable } from "@nexusts/core";
+import { UploadModule, UploadedFile } from "@nexusts/upload";
 
 @Injectable()
 @Controller("/upload")

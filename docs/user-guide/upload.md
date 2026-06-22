@@ -1,11 +1,11 @@
-# @kabyeon/nexusjs/upload — file upload helper
+# @nexusts/upload — file upload helper
 
 > 한국어 버전: [`upload.ko.md`](./upload.ko.md)
 > Added in **v0.4** (Tier 1 gap from the NestJS / AdonisJS analyses).
 
-`@kabyeon/nexusjs/upload` is a **first-party file-upload handler** for NexusJS.
+`@nexusts/upload` is a **first-party file-upload handler** for NexusTS.
 It wraps Hono's `c.req.parseBody()` with type-safe decorators, size /
-MIME validation, multi-file support, and an optional `@kabyeon/nexusjs/drive`
+MIME validation, multi-file support, and an optional `@nexusts/drive`
 hook for cloud storage. No third-party multipart parser required.
 
 ```
@@ -26,8 +26,8 @@ hook for cloud storage. No third-party multipart parser required.
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { UploadModule } from '@kabyeon/nexusjs/upload';
+import { Module } from '@nexusts/core';
+import { UploadModule } from '@nexusts/upload';
 
 @Module({
   imports: [
@@ -44,7 +44,7 @@ export class AppModule {}
 After the framework router is built, mount the multipart middleware:
 
 ```ts
-import { UploadService, UploadModule } from '@kabyeon/nexusjs/upload';
+import { UploadService, UploadModule } from '@nexusts/upload';
 
 const app = new Application(AppModule);
 const upload = app.container.resolve(UploadService.TOKEN) as UploadService;
@@ -56,9 +56,9 @@ Then in a controller:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post, Validate } from '@kabyeon/nexusjs';
-import { Upload, UploadedFile, UploadedFiles } from '@kabyeon/nexusjs/upload';
-import type { UploadedFile } from '@kabyeon/nexusjs/upload';
+import { Body, Controller, Post, Validate } from '@nexusts/core';
+import { Upload, UploadedFile, UploadedFiles } from '@nexusts/upload';
+import type { UploadedFile } from '@nexusts/upload';
 
 @Controller('/uploads')
 class UploadController {
@@ -166,7 +166,7 @@ Mismatched types return 400 with `code: 'MIME_NOT_ALLOWED'`.
 
 ---
 
-## 5. Integration with `@kabyeon/nexusjs/drive`
+## 5. Integration with `@nexusts/drive`
 
 When you pass `driveToken` to `UploadModule.forRoot(...)`, the
 service also writes each accepted file to the configured `DriveService`
@@ -260,12 +260,12 @@ reach for streaming only when memory is a real concern.
 
 | Framework | File upload story | v0.4 |
 | --- | --- | --- |
-| NestJS | `multer` + `@UploadedFile()` decorator | ✅ closed — `@kabyeon/nexusjs/upload` |
-| AdonisJS | `@adonisjs/bodyparser` + `request.file('avatar')` | ✅ closed — `@kabyeon/nexusjs/upload` |
+| NestJS | `multer` + `@UploadedFile()` decorator | ✅ closed — `@nexusts/upload` |
+| AdonisJS | `@adonisjs/bodyparser` + `request.file('avatar')` | ✅ closed — `@nexusts/upload` |
 
 Per the v0.3 gap analyses (NestJS §3.2, AdonisJS §4.3), this was
-the second Tier 1 gap. With `@kabyeon/nexusjs/upload` and `@kabyeon/nexusjs/openapi` both
-shipped, every Tier 1 feature is now in NexusJS.
+the second Tier 1 gap. With `@nexusts/upload` and `@nexusts/openapi` both
+shipped, every Tier 1 feature is now in NexusTS.
 
 ---
 

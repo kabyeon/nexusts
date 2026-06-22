@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`queue.ko.md`](./queue.ko.md)
 
-NexusJS ships a queue module under `@kabyeon/nexusjs/queue` that wraps two
+NexusTS ships a queue module under `@nexusts/queue` that wraps two
 production-ready backends:
 
 - **BullMQ** — Redis-backed, for long-running Bun / Node servers.
@@ -12,7 +12,7 @@ production-ready backends:
 Both share a common `QueueBackend` interface, so application code
 talks to `QueueService` and never to a specific backend directly.
 
-The queue module is **separate from `@kabyeon/nexusjs/core`** and is added as its
+The queue module is **separate from `@nexusts/core`** and is added as its
 own bundle entry point.
 
 ---
@@ -33,8 +33,8 @@ bun add nexus bullmq ioredis
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { QueueModule } from '@kabyeon/nexusjs/queue';
+import { Module } from '@nexusts/core';
+import { QueueModule } from '@nexusts/queue';
 
 @Module({
   imports: [
@@ -42,7 +42,7 @@ import { QueueModule } from '@kabyeon/nexusjs/queue';
       backend: 'bullmq',
       bullmq: {
         connection: process.env.REDIS_URL ?? 'redis://localhost:6379',
-        prefix: 'nexusjs',
+        prefix: 'nexusts',
       },
       defaults: { attempts: 3, backoff: { type: 'exponential', delayMs: 1000 } },
     }),
@@ -54,9 +54,9 @@ export class AppModule {}
 Enqueue from any controller or service:
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { QueueService } from '@kabyeon/nexusjs/queue';
-import { Controller, Post, Body } from '@kabyeon/nexusjs';
+import { Inject } from '@nexusts/core';
+import { QueueService } from '@nexusts/queue';
+import { Controller, Post, Body } from '@nexusts/core';
 
 @Controller('/signup')
 class SignupController {
@@ -73,8 +73,8 @@ class SignupController {
 Register a worker:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { QueueService, OnQueueReady } from '@kabyeon/nexusjs/queue';
+import { Inject, Injectable } from '@nexusts/core';
+import { QueueService, OnQueueReady } from '@nexusts/queue';
 
 @Injectable()
 class EmailWorker {
@@ -118,7 +118,7 @@ QueueModule.forRoot({
   bullmq: {
     connection: 'redis://localhost:6379',
     // or: { host: '...', port: 6379, password: '...' }
-    prefix: 'nexusjs',
+    prefix: 'nexusts',
   },
   defaults: {
     attempts: 5,
@@ -164,8 +164,8 @@ max_retries = 3
 
 ```ts
 // app/worker.ts
-import { Application } from '@kabyeon/nexusjs';
-import { QueueService, QueueModule } from '@kabyeon/nexusjs/queue';
+import { Application } from '@nexusts/core';
+import { QueueService, QueueModule } from '@nexusts/queue';
 
 const AppModule = QueueModule.forRoot({
   backend: 'cloudflare',
@@ -300,7 +300,7 @@ const unsub = queue.on((event) => {
 });
 ```
 
-Handy for logging, metrics, or wiring into the NexusJS event system
+Handy for logging, metrics, or wiring into the NexusTS event system
 (v0.2).
 
 ---

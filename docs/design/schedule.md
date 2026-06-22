@@ -36,7 +36,7 @@ either backend directly.
                               │
                               ▼
 ┌──────────────────────────────────────────────────────────────┐
-│              @kabyeon/nexusjs/schedule  (separate entry point)          │
+│              @nexusts/schedule  (separate entry point)          │
 │                                                              │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
 │  │ ScheduleService  │  │ @Cron            │  │ scanFor-     │ │
@@ -66,7 +66,7 @@ Backends are swappable; changing `backend: 'memory'` to
 
 ## 4. Module separation
 
-`@kabyeon/nexusjs/schedule` is a separate entry point:
+`@nexusts/schedule` is a separate entry point:
 
 ```json
 "exports": {

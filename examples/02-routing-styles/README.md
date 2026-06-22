@@ -1,6 +1,6 @@
 # 02 · Three Routing Styles
 
-NexusJS supports three ways to define routes, mirroring NestJS,
+NexusTS supports three ways to define routes, mirroring NestJS,
 AdonisJS, and Hono.
 
 ## Styles
@@ -31,7 +31,7 @@ curl http://localhost:3000/hello/bob    # → Functional
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Controller, Get, Param } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Param } from "@nexusts/core";
 
 // ---------- Style 1: Nest-style ----------
 @Controller("/")

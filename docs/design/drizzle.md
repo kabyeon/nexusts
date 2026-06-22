@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`drizzle.ko.md`](./drizzle.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/drizzle`:
+This document explains the architecture of `@nexusts/drizzle`:
 the service wrapper, driver abstraction, model/repository pattern,
 and decorator-based table definitions.
 
@@ -195,8 +195,8 @@ the repository's DI-managed db instance.
 2. Passes it to `driver.execute(sql, params)`.
 3. Returns typed results as `T[]`.
 
-Used by modules like `nexusjs/cache` (DrizzleCacheStore),
-`nexusjs/limiter` (DrizzleRateLimitStorage), and `nexusjs/session`
+Used by modules like `nexusts/cache` (DrizzleCacheStore),
+`nexusts/limiter` (DrizzleRateLimitStorage), and `nexusts/session`
 for their database-backed storage.
 
 ## DI integration
@@ -227,7 +227,7 @@ manage their schema via:
 - The CLI's `nx make:migration` command for generating migration
   files (requires `drizzle-kit` installed).
 
-The module provides migration helpers in `@kabyeon/nexusjs/drizzle/migrate`
+The module provides migration helpers in `@nexusts/drizzle/migrate`
 that wrap `drizzle-orm/migrator` for programmatic migration.
 
 ## Future work

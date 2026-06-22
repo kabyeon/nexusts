@@ -1,6 +1,6 @@
 # 18 · Logger
 
-Structured JSON logs and pretty terminal output with `@kabyeon/nexusjs/logger`.
+Structured JSON logs and pretty terminal output with `@nexusts/logger`.
 
 ## What it shows
 
@@ -19,8 +19,8 @@ bun main.ts
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { Logger, LoggerModule } from "@kabyeon/nexusjs/logger";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { Logger, LoggerModule } from "@nexusts/logger";
 
 @Injectable()
 @Controller("/")
@@ -63,7 +63,7 @@ await app.listen(3000);
 ## Transport customization
 
 ```ts
-import { PinoTransport, FileTransport } from "@kabyeon/nexusjs/logger";
+import { PinoTransport, FileTransport } from "@nexusts/logger";
 
 LoggerModule.forRoot({
   level: "info",

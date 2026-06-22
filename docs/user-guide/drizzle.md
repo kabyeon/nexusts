@@ -1,8 +1,8 @@
-# @kabyeon/nexusjs/drizzle — Drizzle ORM integration (default ORM)
+# @nexusts/drizzle — Drizzle ORM integration (default ORM)
 
 > 한국어 버전: [`drizzle.ko.md`](./drizzle.ko.md)
 
-`@kabyeon/nexusjs/drizzle` is the **default ORM** for NexusJS. It wraps Drizzle
+`@nexusts/drizzle` is the **default ORM** for NexusTS. It wraps Drizzle
 ORM with a DI-friendly service, a Lucid-style repository pattern, an
 entity-model base class, declarative decorators, automatic migrations,
 and a SQL-injection-safe raw-query API.
@@ -71,8 +71,8 @@ export const users = pgTable('users', {
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
+import { Module } from '@nexusts/core';
+import { DrizzleModule } from '@nexusts/drizzle';
 import { users } from './db/schema';
 
 @Module({
@@ -90,8 +90,8 @@ export class AppModule {}
 ### Use
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
+import { Inject } from '@nexusts/core';
+import { DrizzleService } from '@nexusts/drizzle';
 import { eq } from 'drizzle-orm';
 import { users } from './db/schema';
 
@@ -122,7 +122,7 @@ repository. It exposes a small, typed surface on top of Drizzle's
 query builder.
 
 ```ts
-import { DrizzleRepository, DrizzleService } from '@kabyeon/nexusjs/drizzle';
+import { DrizzleRepository, DrizzleService } from '@nexusts/drizzle';
 
 @Injectable()
 class UserRepository extends DrizzleRepository<typeof users> {
@@ -161,7 +161,7 @@ transaction handle. Rolls back automatically if the callback throws.
 repository for default queries and reflection.
 
 ```ts
-import { DrizzleModel, Table, Column, PrimaryKey } from '@kabyeon/nexusjs/drizzle';
+import { DrizzleModel, Table, Column, PrimaryKey } from '@nexusts/drizzle';
 
 @Table('users')
 class User extends DrizzleModel {
@@ -319,10 +319,10 @@ You can write portable code without thinking about it.
 
 ## 9. Integration with other nexus/* modules
 
-`@kabyeon/nexusjs/drizzle` is the data backbone for the rest of the framework.
+`@nexusts/drizzle` is the data backbone for the rest of the framework.
 Three modules ship a Drizzle backend out of the box.
 
-### `@kabyeon/nexusjs/session` — DrizzleSessionStorage
+### `@nexusts/session` — DrizzleSessionStorage
 
 ```ts
 @Module({
@@ -352,10 +352,10 @@ The `DrizzleSessionStorage` backend reads / writes session records
 through the Drizzle service. The schema column names are configurable
 via `database.tableName` + the `columns` map.
 
-### `@kabyeon/nexusjs/health` — DrizzleHealthIndicator
+### `@nexusts/health` — DrizzleHealthIndicator
 
 ```ts
-import { DrizzleHealthIndicator } from '@kabyeon/nexusjs/health';
+import { DrizzleHealthIndicator } from '@nexusts/health';
 
 const db = ...; // DrizzleService
 new DrizzleHealthIndicator('database', db, { timeoutMs: 3000 });
@@ -364,10 +364,10 @@ new DrizzleHealthIndicator('database', db, { timeoutMs: 3000 });
 Runs `SELECT 1` (or a custom probe) against the database, returns
 `'up'` / `'down'` with `latencyMs` in the data field.
 
-### `@kabyeon/nexusjs/cache` — DrizzleCacheStore
+### `@nexusts/cache` — DrizzleCacheStore
 
 ```ts
-import { DrizzleCacheStore } from '@kabyeon/nexusjs/cache';
+import { DrizzleCacheStore } from '@nexusts/cache';
 
 CacheModule.forRoot({
   store: new DrizzleCacheStore(drizzleService, {
@@ -401,10 +401,10 @@ shared across pods.
 
 The store also implements `gc()` for sweeping expired entries.
 
-### `@kabyeon/nexusjs/limiter` — DrizzleRateLimitStorage
+### `@nexusts/limiter` — DrizzleRateLimitStorage
 
 ```ts
-import { DrizzleRateLimitStorage } from '@kabyeon/nexusjs/limiter';
+import { DrizzleRateLimitStorage } from '@nexusts/limiter';
 
 LimiterModule.forRoot({
   storage: new DrizzleRateLimitStorage(drizzleService),
@@ -475,7 +475,7 @@ class DrizzleService {
 
 ## 11. Closing gap with AdonisJS Lucid
 
-| AdonisJS Lucid | NexusJS drizzle equivalent |
+| AdonisJS Lucid | NexusTS drizzle equivalent |
 | -------------- | --------------------------- |
 | `Model` base class | `DrizzleModel` |
 | `@column`, `@column.dateTime`, etc. | `@Column`, `@PrimaryKey` |

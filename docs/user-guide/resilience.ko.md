@@ -1,4 +1,4 @@
-# Resilience · `@kabyeon/nexusjs/resilience`
+# Resilience · `@nexusts/resilience`
 
 > English version: [`resilience.md`](./resilience.md)
 
@@ -16,7 +16,7 @@
 import {
   ResilienceModule, ResilienceService, retry,
   CircuitBreaker, Bulkhead, CircuitOpenError, BulkheadFullError,
-} from "@kabyeon/nexusjs/resilience";
+} from "@nexusts/resilience";
 
 @Module({
   imports: [ResilienceModule.forRoot()],
@@ -87,7 +87,7 @@ Bulkhead (동시성 캡)
 ## Retry
 
 ```ts
-import { retry } from "@kabyeon/nexusjs/resilience";
+import { retry } from "@nexusts/resilience";
 
 const user = await retry(
   () => fetch("https://api.example.com/users/42").then(r => r.json()),

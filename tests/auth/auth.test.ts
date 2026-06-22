@@ -1,7 +1,7 @@
 /**
  * Auth module tests.
  *
- * Exercises the NexusJS auth integration end-to-end:
+ * Exercises the NexusTS auth integration end-to-end:
  *   - createAuth() builds a better-auth instance
  *   - AuthService.getSession returns null for unauthenticated requests
  *   - authMiddleware populates c.var.user / c.var.session
@@ -41,7 +41,7 @@ describe("createAuth", () => {
 		process.env["BETTER_AUTH_URL"] = "http://localhost:3000";
 	});
 
-	it("builds a better-auth instance with NexusJS defaults", () => {
+	it("builds a better-auth instance with NexusTS defaults", () => {
 		const auth = createAuth(AUTH_CONFIG);
 		expect(auth).toBeDefined();
 		expect(typeof auth.handler).toBe("function");

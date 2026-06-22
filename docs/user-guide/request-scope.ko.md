@@ -19,7 +19,7 @@
 ## 1. 빠른 시작
 
 \`\`\`ts
-import { Inject, Injectable, REQUEST } from '@kabyeon/nexusjs';
+import { Inject, Injectable, REQUEST } from '@nexusts/core';
 
 @Injectable({ scope: 'request' })
 class RequestContext {
@@ -69,7 +69,7 @@ class RequestContext {
 생성자 주입이 어색한 깊은 호출 트리의 서비스 코드를 위해 세 가지 헬퍼 제공:
 
 \`\`\`ts
-import { getRequest, getRequestScope, getRequestState, setRequestState } from '@kabyeon/nexusjs';
+import { getRequest, getRequestScope, getRequestState, setRequestState } from '@nexusts/core';
 
 function auditDeepInTheCallTree() {
   const req = getRequest();          // Hono context
@@ -107,7 +107,7 @@ await app.listen(3000);
 
 \`\`\`ts
 import { Hono } from 'hono';
-import { requestScopeMiddleware } from '@kabyeon/nexusjs/core';
+import { requestScopeMiddleware } from '@nexusts/core';
 
 const root = new DIContainer();
 root.register(RequestContext as any);
@@ -118,11 +118,11 @@ app.use('*', requestScopeMiddleware(root));
 
 ---
 
-## 6. 트랜잭션 (\`@kabyeon/nexusjs/drizzle\` 동반)
+## 6. 트랜잭션 (\`@nexusts/drizzle\` 동반)
 
-요청 스코프 DI는 DB 트랜잭션과 자연스럽게 맞물린다. \`@kabyeon/nexusjs/drizzle\`의 \`db.transaction(fn)\`은 트랜잭션 내부에서 \`fn\` 실행; 요청 스코프 \`Tx\` provider와 결합해 같은 트랜잭션을 요청의 모든 서비스에 공유.
+요청 스코프 DI는 DB 트랜잭션과 자연스럽게 맞물린다. \`@nexusts/drizzle\`의 \`db.transaction(fn)\`은 트랜잭션 내부에서 \`fn\` 실행; 요청 스코프 \`Tx\` provider와 결합해 같은 트랜잭션을 요청의 모든 서비스에 공유.
 
-(실제 Tx plumbing은 아직 출시되지 않음 — 예시. \`@kabyeon/nexusjs/drizzle\`이 실제 트랜잭션 경계를 소유.)
+(실제 Tx plumbing은 아직 출시되지 않음 — 예시. \`@nexusts/drizzle\`이 실제 트랜잭션 경계를 소유.)
 
 ---
 
@@ -130,10 +130,10 @@ app.use('*', requestScopeMiddleware(root));
 
 \`\`\`ts
 import { describe, it, expect } from 'vitest';
-import { DIContainer } from '@kabyeon/nexusjs/core';
-import { Injectable, Inject } from '@kabyeon/nexusjs/core';
-import { requestScopeMiddleware } from '@kabyeon/nexusjs/core';
-import { getRequestScope } from '@kabyeon/nexusjs/core';
+import { DIContainer } from '@nexusts/core';
+import { Injectable, Inject } from '@nexusts/core';
+import { requestScopeMiddleware } from '@nexusts/core';
+import { getRequestScope } from '@nexusts/core';
 
 @Injectable({ scope: 'request' })
 class Ctx { id = Math.random().toString(36).slice(2, 8); }

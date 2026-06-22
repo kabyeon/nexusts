@@ -2,7 +2,7 @@
 
 > English version: [`events.md`](./events.md)
 
-이 문서는 `@kabyeon/nexusjs/events`의 아키텍처를 설명한다: 인-프로세스
+이 문서는 `@nexusts/events`의 아키텍처를 설명한다: 인-프로세스
 이미터, 와일드카드 매칭, 우선순위 정렬 dispatch, 가드, one-shot
 리스너, `@OnEvent` 데코레이터 통합.
 

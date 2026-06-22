@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import path from "node:path";
-import { Application, Module, Controller, Get, Post, Body, Inject, Ctx, Injectable } from "@kabyeon/nexusjs";
-import { StaticModule } from "@kabyeon/nexusjs/static";
-import { Inertia } from "@kabyeon/nexusjs/view";
+import { Application, Module, Controller, Get, Post, Body, Inject, Ctx, Injectable } from "@nexusts/core";
+import { StaticModule } from "@nexusts/static";
+import { Inertia } from "@nexusts/view";
 
 /**
  * 28-inertia-react-spa — Inertia.js v2 with React (client-side only).

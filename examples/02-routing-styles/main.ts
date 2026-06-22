@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Application, Controller, Get, Module, Injectable, Inject } from "@kabyeon/nexusjs";
+import { Application, Controller, Get, Module, Injectable, Inject } from "@nexusts/core";
 
 /**
  * 02-routing-styles — three ways to register routes in the same app.

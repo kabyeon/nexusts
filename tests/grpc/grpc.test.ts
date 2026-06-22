@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/grpc`.
+ * Tests for `@nexusts/grpc`.
  *
  * Coverage:
  * 1. Decorators: @GrpcService + @GrpcMethod store metadata correctly

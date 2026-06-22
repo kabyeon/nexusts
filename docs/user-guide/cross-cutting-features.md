@@ -5,9 +5,9 @@
 > **This document is now an overview.** Each feature has its own
 > dedicated user guide and design document. Use the links below.
 
-The five modules shipped together in v0.3 — `@kabyeon/nexusjs/limiter`,
-`@kabyeon/nexusjs/shield`, `@kabyeon/nexusjs/cache`, `@kabyeon/nexusjs/drive`,
-`@kabyeon/nexusjs/mail` — round out the production stack. They are all
+The five modules shipped together in v0.3 — `@nexusts/limiter`,
+`@nexusts/shield`, `@nexusts/cache`, `@nexusts/drive`,
+`@nexusts/mail` — round out the production stack. They are all
 independent bundles, all use the same `Module.forRoot({...})` DI pattern,
 and all are designed to work without forcing peer dependencies (Redis,
 AWS SDK, nodemailer, etc.) on projects that don't need them.
@@ -18,11 +18,11 @@ AWS SDK, nodemailer, etc.) on projects that don't need them.
 
 | Module | User guide | Design doc | Entry point |
 | ------ | ---------- | ---------- | ----------- |
-| Rate limiter | [`limiter.md`](./limiter.md) | [`../design/limiter.md`](../design/limiter.md) | `@kabyeon/nexusjs/limiter` |
-| Security (Shield) | [`shield.md`](./shield.md) | [`../design/shield.md`](../design/shield.md) | `@kabyeon/nexusjs/shield` |
-| Application cache | [`cache.md`](./cache.md) | [`../design/cache.md`](../design/cache.md) | `@kabyeon/nexusjs/cache` |
-| File storage (Drive) | [`drive.md`](./drive.md) | [`../design/drive.md`](../design/drive.md) | `@kabyeon/nexusjs/drive` |
-| Email (Mail) | [`mail.md`](./mail.md) | [`../design/mail.md`](../design/mail.md) | `@kabyeon/nexusjs/mail` |
+| Rate limiter | [`limiter.md`](./limiter.md) | [`../design/limiter.md`](../design/limiter.md) | `@nexusts/limiter` |
+| Security (Shield) | [`shield.md`](./shield.md) | [`../design/shield.md`](../design/shield.md) | `@nexusts/shield` |
+| Application cache | [`cache.md`](./cache.md) | [`../design/cache.md`](../design/cache.md) | `@nexusts/cache` |
+| File storage (Drive) | [`drive.md`](./drive.md) | [`../design/drive.md`](../design/drive.md) | `@nexusts/drive` |
+| Email (Mail) | [`mail.md`](./mail.md) | [`../design/mail.md`](../design/mail.md) | `@nexusts/mail` |
 
 ---
 

@@ -43,9 +43,9 @@ bun link
 cd ..
 
 # From your test app
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
-bun link nexusjs
+bun link nexusts
 ```
 
 ### Day-to-day usage
@@ -66,7 +66,7 @@ effect immediately. No `bun install` between cycles.
 - **Module development** — fastest feedback loop
 - **Multi-runtime testing** — same `dist/` consumed by Bun, Node, etc.
 - **Reproducing user-reported bugs** — the user's install is
-  `npm install nexusjs`, and `bun link` is the closest equivalent
+  `npm install nexusts`, and `bun link` is the closest equivalent
   inside the monorepo
 
 ---
@@ -83,28 +83,28 @@ into `node_modules`, so it's a true "fresh install" test.
 bun run build
 
 # 2. Create a test app somewhere outside the framework repo
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
 
 # 3. Add the dependency
-bun add file:/absolute/path/to/@kabyeon/nexusjs/dist
+bun add file:/absolute/path/to/@nexusts/dist
 # or, relative to the test app:
-bun add file:../@kabyeon/nexusjs/dist
+bun add file:../@nexusts/dist
 ```
 
-`bun install` copies `dist/` into `node_modules/@kabyeon/nexusjs/` and resolves
+`bun install` copies `dist/` into `node_modules/@nexusts/` and resolves
 the `exports` field exactly as npm would.
 
 ### Verifying the install
 
 ```bash
 # Confirm the package is installed from the local dist
-ls -la node_modules/nexusjs
+ls -la node_modules/nexusts
 # → should show dist/ contents (index.js, cli/index.js, grpc/index.js, ...)
 
 # Confirm the package.json is the consumer-facing one
-cat node_modules/@kabyeon/nexusjs/package.json
-# → { "name": "@kabyeon/nexusjs", "version": "0.5.0", "exports": {...}, ... }
+cat node_modules/@nexusts/package.json
+# → { "name": "@nexusts/core", "version": "0.5.0", "exports": {...}, ... }
 ```
 
 ### When to use
@@ -113,12 +113,12 @@ cat node_modules/@kabyeon/nexusjs/package.json
   layout
 - **CI integration** — fast, hermetic, no network
 - **Reproducing a fresh install** — `file:` is the closest thing to
-  `npm install nexusjs` without actually publishing
+  `npm install nexusts` without actually publishing
 
 ### Cleanup
 
 ```bash
-rm -rf ~/nexusjs-sandbox
+rm -rf ~/nexusts-sandbox
 ```
 
 The `file:` install is self-contained in the test app's `node_modules`.
@@ -128,7 +128,7 @@ The `file:` install is self-contained in the test app's `node_modules`.
 ## Method 3 — `npm pack` (most thorough, matches `npm publish`)
 
 `npm pack` creates a real `.tgz` tarball of the package. Installing
-that tarball is byte-for-byte identical to what `npm install nexusjs`
+that tarball is byte-for-byte identical to what `npm install nexusts`
 does on the registry.
 
 ### Steps
@@ -140,13 +140,13 @@ bun run build
 # 2. Pack it
 cd dist
 npm pack
-# → nexusjs-0.5.0.tgz
+# → nexusts-0.5.0.tgz
 cd ..
 
 # 3. Install the tarball in a test app
-mkdir ~/nexusjs-sandbox && cd ~/nexusjs-sandbox
+mkdir ~/nexusts-sandbox && cd ~/nexusts-sandbox
 bun init -y
-bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
+bun add ../@nexusts/dist/nexusts-0.5.0.tgz
 ```
 
 ### When to use
@@ -161,8 +161,8 @@ bun add ../@kabyeon/nexusjs/dist/nexusjs-0.5.0.tgz
 ### Cleanup
 
 ```bash
-rm -rf ~/nexusjs-sandbox
-rm dist/nexusjs-0.5.0.tgz
+rm -rf ~/nexusts-sandbox
+rm dist/nexusts-0.5.0.tgz
 ```
 
 ---
@@ -174,15 +174,15 @@ these three things:
 
 ```ts
 // test-app/index.ts
-import { Application, Module, Controller, Get } from "@kabyeon/nexusjs";
-import { GrpcService } from "@kabyeon/nexusjs/grpc";
-import { EventEmitter } from "@kabyeon/nexusjs/events";
+import { Application, Module, Controller, Get } from "@nexusts/core";
+import { GrpcService } from "@nexusts/grpc";
+import { EventEmitter } from "@nexusts/events";
 
 @Controller("/")
 class AppController {
   @Get("/")
   hello() {
-    return { framework: "@kabyeon/nexusjs", version: "0.5.0" };
+    return { framework: "@nexusts/core", version: "0.5.0" };
   }
 }
 
@@ -195,12 +195,12 @@ const app = new Application(AppModule);
 console.assert(typeof Application === "function", "Application not exported");
 
 // 2. Subpath exports resolve (deep import test)
-console.assert(typeof GrpcService === "function", "@kabyeon/nexusjs/grpc subpath broken");
-console.assert(typeof EventEmitter === "function", "@kabyeon/nexusjs/events subpath broken");
+console.assert(typeof GrpcService === "function", "@nexusts/grpc subpath broken");
+console.assert(typeof EventEmitter === "function", "@nexusts/events subpath broken");
 
 // 3. The CLI is exposed (note: the import path differs from the runtime API)
-import cliPkg from "@kabyeon/nexusjs/cli";
-console.assert(typeof cliPkg === "object", "@kabyeon/nexusjs/cli subpath broken");
+import cliPkg from "@nexusts/cli";
+console.assert(typeof cliPkg === "object", "@nexusts/cli subpath broken");
 
 // 4. DI + HTTP work end-to-end
 const events = app.container.resolve(EventEmitter);
@@ -217,7 +217,7 @@ bun run test-app/index.ts
 
 # In another terminal:
 curl http://localhost:3000
-# → {"framework":"@kabyeon/nexusjs","version":"0.5.0"}
+# → {"framework":"@nexusts/core","version":"0.5.0"}
 ```
 
 If all three lines print, the `dist/` build is healthy.
@@ -243,19 +243,19 @@ Rule of thumb: **run the test suite for fast feedback, run the
 
 ## Troubleshooting
 
-### `Cannot find module 'nexusjs'`
+### `Cannot find module 'nexusts'`
 
 The `file:` install didn't pick up the package. Check:
 
 ```bash
-ls node_modules/@kabyeon/nexusjs/package.json    # exists?
-cat node_modules/@kabyeon/nexusjs/package.json | head -5
+ls node_modules/@nexusts/package.json    # exists?
+cat node_modules/@nexusts/package.json | head -5
 ```
 
 If the `package.json` is missing, the `file:` path was wrong. Use an
 absolute path to avoid confusion.
 
-### `Cannot find module '@kabyeon/nexusjs/grpc'`
+### `Cannot find module '@nexusts/grpc'`
 
 The subpath export is missing or broken. Check `dist/`:
 

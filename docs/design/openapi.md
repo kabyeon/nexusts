@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`openapi.ko.md`](./openapi.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/openapi`:
+This document explains the architecture of `@nexusts/openapi`:
 Zod-to-JSON-Schema transformation, decorator-based operation metadata,
 Scalar UI integration, and the auto-generation pipeline.
 
@@ -149,7 +149,7 @@ and writes it to disk. Useful for CI checks and publishing API docs.
 ```yaml
 openapi: "3.1.0"
 info:
-  title: "NexusJS API"
+  title: "NexusTS API"
   version: "1.0.0"
 paths:
   /users/{id}:

@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`dependency-injection.ko.md`](./dependency-injection.ko.md)
 
-NexusJS uses NestJS-style dependency injection. Services, repositories,
+NexusTS uses NestJS-style dependency injection. Services, repositories,
 and adapters are wired together through `@Module({ providers, exports })`
 and resolved automatically at construction time.
 
@@ -12,7 +12,7 @@ A service is just a class with `@Injectable()`:
 
 ```ts
 // app/services/user.service.ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
+import { Inject, Injectable } from '@nexusts/core';
 import type { UserRepository } from '../repositories/user.repository.js';
 
 @Injectable()
@@ -40,7 +40,7 @@ TypeScript can read constructor parameter types from
 and `emitDecoratorMetadata: true`. Bun's native TypeScript transformer
 does **not** emit that metadata.
 
-NexusJS therefore standardizes on **explicit `@Inject(Token)`** on each
+NexusTS therefore standardizes on **explicit `@Inject(Token)`** on each
 parameter. This makes the framework portable across `tsc`, `ts-node`,
 Bun, and Deno.
 
@@ -257,7 +257,7 @@ class B {
 Replace a provider in tests by creating a child container manually:
 
 ```ts
-import { DIContainer } from '@kabyeon/nexusjs';
+import { DIContainer } from '@nexusts/core';
 
 const container = new DIContainer();
 container.register({ provide: 'DB', useValue: mockDb });

@@ -1,4 +1,4 @@
-# Resilience · `@kabyeon/nexusjs/resilience`
+# Resilience · `@nexusts/resilience`
 
 > 한국어 버전: [`resilience.ko.md`](./resilience.ko.md)
 
@@ -16,7 +16,7 @@ single, decorator-friendly API.
 import {
   ResilienceModule, ResilienceService, retry,
   CircuitBreaker, Bulkhead, CircuitOpenError, BulkheadFullError,
-} from "@kabyeon/nexusjs/resilience";
+} from "@nexusts/resilience";
 
 @Module({
   imports: [ResilienceModule.forRoot()],
@@ -88,7 +88,7 @@ order.
 ## Retry
 
 ```ts
-import { retry } from "@kabyeon/nexusjs/resilience";
+import { retry } from "@nexusts/resilience";
 
 const user = await retry(
   () => fetch("https://api.example.com/users/42").then(r => r.json()),

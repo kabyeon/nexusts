@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Controller, Post, Body, Module, Inject, Injectable } from "@kabyeon/nexusjs";
-import { QueueService, QueueModule, OnQueueReady } from "@kabyeon/nexusjs/queue";
+import { Application, Controller, Post, Body, Module, Inject, Injectable } from "@nexusts/core";
+import { QueueService, QueueModule, OnQueueReady } from "@nexusts/queue";
 
 /**
  * 09-queue — background jobs with the in-memory backend.

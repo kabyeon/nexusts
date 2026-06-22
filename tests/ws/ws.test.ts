@@ -1,5 +1,5 @@
 /**
- * Tests for `@kabyeon/nexusjs/ws`.
+ * Tests for `@nexusts/ws`.
  *
  * Coverage:
  * 1. WebSocketService: register, unregister, rooms, broadcast

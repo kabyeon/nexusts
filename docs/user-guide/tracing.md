@@ -1,8 +1,8 @@
-# Distributed tracing · `@kabyeon/nexusjs/tracing` (Tier 2 v0.4)
+# Distributed tracing · `@nexusts/tracing` (Tier 2 v0.4)
 
 > Tier 2 gap from the v0.3 gap analyses, closed in **v0.4**.
 
-`@kabyeon/nexusjs/tracing` is a thin, ergonomic wrapper around the
+`@nexusts/tracing` is a thin, ergonomic wrapper around the
 [OpenTelemetry](https://opentelemetry.io/) API. It provides:
 
 - **`TracingService`** — a DI-friendly service that exposes
@@ -36,8 +36,8 @@ bun add @opentelemetry/sdk-node \
 
 ```ts
 // app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { TracingModule } from '@kabyeon/nexusjs/tracing';
+import { Module } from '@nexusts/core';
+import { TracingModule } from '@nexusts/tracing';
 
 @Module({
   imports: [
@@ -62,7 +62,7 @@ spans are batched and shipped to the configured OTLP endpoint.
 ## 2. The `@Trace()` decorator
 
 ```ts
-import { Trace } from '@kabyeon/nexusjs/tracing';
+import { Trace } from '@nexusts/tracing';
 
 class UserService {
   @Trace()                        // span name = "UserService.findById"
@@ -95,7 +95,7 @@ For code that isn't a class method (top-level utilities, queue
 handlers, cron tasks, etc.):
 
 ```ts
-import { withSpan } from '@kabyeon/nexusjs/tracing';
+import { withSpan } from '@nexusts/tracing';
 
 await withSpan('nightly.cleanup', async (span) => {
   span.setAttribute('cleanup.target', 'sessions');
@@ -127,7 +127,7 @@ Both forms:
 ### Reading the current trace
 
 ```ts
-import { getTracingService } from '@kabyeon/nexusjs/tracing';
+import { getTracingService } from '@nexusts/tracing';
 
 const svc = ...; // TracingService instance
 console.log(svc.getCurrentTraceId());  // undefined outside a request
@@ -181,7 +181,7 @@ framework's HTTP server):
 
 ```ts
 import { Hono } from 'hono';
-import { tracingMiddleware, TracingService } from '@kabyeon/nexusjs/tracing';
+import { tracingMiddleware, TracingService } from '@nexusts/tracing';
 
 const service = new TracingService();
 const app = new Hono();
@@ -194,14 +194,14 @@ app.use('*', tracingMiddleware(service));
 
 ```ts
 interface TracingConfig {
-  serviceName?: string;          // default: "@kabyeon/nexusjs"
+  serviceName?: string;          // default: "@nexusts/core"
   serviceVersion?: string;       // default: "0.0.0"
   environment?: string;          // default: process.env.NODE_ENV
   exporter?: 'otlp-http' | 'otlp-grpc' | 'console' | 'memory';
   endpoint?: string;             // default: http://localhost:4318
   sampleRatio?: number;          // 0..1, default 1.0
   enableHttpInstrumentation?: boolean;  // default true
-  enableDbInstrumentation?: boolean;    // default true (@kabyeon/nexusjs/drizzle hook)
+  enableDbInstrumentation?: boolean;    // default true (@nexusts/drizzle hook)
   resourceAttributes?: Record<string, string>;
   throwOnError?: boolean;        // default false
 }
@@ -221,8 +221,8 @@ The `exporter` field controls the destination:
 ## 7. Bundling / peer dependencies
 
 Because the OTel SDK packages can be large (~5MB combined), they
-are **optional peer dependencies** of `@kabyeon/nexusjs`. Apps that don't
-use `@kabyeon/nexusjs/tracing` don't pay the cost.
+are **optional peer dependencies** of `@nexusts/core`. Apps that don't
+use `@nexusts/tracing` don't pay the cost.
 
 When you install only the API:
 
@@ -243,7 +243,7 @@ SDK packages.
 
 ```ts
 import { describe, it, expect } from 'vitest';
-import { TracingService, withSpan } from '@kabyeon/nexusjs/tracing';
+import { TracingService, withSpan } from '@nexusts/tracing';
 
 describe('tracing', () => {
   it('exposes a tracer', () => {

@@ -3,7 +3,7 @@
 > 한국어 버전: [`database.ko.md`](./database.ko.md)
 
 This guide covers database configuration, migrations, seeding, and the
-day-to-day workflow for NexusJS projects using the **default ORM
+day-to-day workflow for NexusTS projects using the **default ORM
 (Drizzle)**.
 
 ---
@@ -31,7 +31,7 @@ nx db:seed
 
 ## 2. Three database drivers
 
-NexusJS + Drizzle supports three SQL drivers out of the box. Pick the
+NexusTS + Drizzle supports three SQL drivers out of the box. Pick the
 one that matches your deployment target.
 
 | Driver | Package | Dev setup | Production | Best for |
@@ -44,7 +44,7 @@ one that matches your deployment target.
 
 ```ts
 // app/app.module.ts
-import { DrizzleModule } from '@kabyeon/nexusjs/drizzle';
+import { DrizzleModule } from '@nexusts/drizzle';
 
 @Module({
   imports: [
@@ -127,7 +127,7 @@ per-environment settings separate:
 ```ts
 // ConfigModule validates everything at boot
 import { z } from 'zod';
-import { ConfigModule } from '@kabyeon/nexusjs/config';
+import { ConfigModule } from '@nexusts/config';
 
 ConfigModule.forRoot({
   schema: z.object({
@@ -286,8 +286,8 @@ If you switch to PostgreSQL or MySQL, update the `dialect` field and
 Inject `DrizzleService` into your services for type-safe queries:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
+import { Inject, Injectable } from '@nexusts/core';
+import { DrizzleService } from '@nexusts/drizzle';
 import { eq } from 'drizzle-orm';
 import { users } from '../models/user.model.js';
 

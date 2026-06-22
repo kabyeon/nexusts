@@ -14,7 +14,7 @@ For the architectural deep-dive, see
 ## 1. Enable it
 
 ```ts
-import { Application } from '@kabyeon/nexusjs';
+import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule, {
@@ -38,8 +38,8 @@ it.
 ## 2. Render a page
 
 ```ts
-import { Controller, Get, Inject } from '@kabyeon/nexusjs';
-import { Inertia } from '@kabyeon/nexusjs/view/inertia';
+import { Controller, Get, Inject } from '@nexusts/core';
+import { Inertia } from '@nexusts/view/inertia';
 
 @Controller('/users')
 class UserController {
@@ -98,7 +98,7 @@ dashboard() {
 }
 ```
 
-Helpers are imported from `@kabyeon/nexusjs/view/inertia`.
+Helpers are imported from `@nexusts/view/inertia`.
 
 ---
 
@@ -154,8 +154,8 @@ Inertia v3's `<Form>` component pairs with this server-side helper:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post } from '@kabyeon/nexusjs';
-import { Inertia } from '@kabyeon/nexusjs/view/inertia';
+import { Body, Controller, Post } from '@nexusts/core';
+import { Inertia } from '@nexusts/view/inertia';
 
 const UserSchema = z.object({
   name: z.string().min(2),
@@ -230,7 +230,7 @@ this.inertia.back();   // 302 with Location: back
 Plug in a server-side renderer for your frontend:
 
 ```ts
-import { createReactAdapter, ComponentRegistry } from '@kabyeon/nexusjs/view/inertia/ssr';
+import { createReactAdapter, ComponentRegistry } from '@nexusts/view/inertia/ssr';
 
 const components = new ComponentRegistry()
   .register('Home', HomePage)
@@ -256,7 +256,7 @@ client hydrates from `data-page` after JS loads.
 The `<Form>` helper handles validation and PRG; CSRF is upstream:
 
 ```ts
-import { inertiaFormMiddleware } from '@kabyeon/nexusjs/view/inertia';
+import { inertiaFormMiddleware } from '@nexusts/view/inertia';
 
 app.server.app.use('*', inertiaFormMiddleware({
   validateCsrf: true,
@@ -275,7 +275,7 @@ Returns **419 Page Expired** on mismatch.
 A complete `app.module.ts` with Inertia:
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { HomeController } from './controllers/home.controller.js';
 import { UserController } from './controllers/user.controller.js';
 import { UserService } from './services/user.service.js';
@@ -290,7 +290,7 @@ export class AppModule {}
 ```ts
 // main.ts
 import 'reflect-metadata';
-import { Application } from '@kabyeon/nexusjs';
+import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule, {

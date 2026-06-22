@@ -1,6 +1,6 @@
 # 20 · Tracing (OpenTelemetry)
 
-Distributed tracing for HTTP, gRPC, and DB calls with `@kabyeon/nexusjs/tracing`.
+Distributed tracing for HTTP, gRPC, and DB calls with `@nexusts/tracing`.
 
 ## What it shows
 
@@ -25,8 +25,8 @@ curl http://localhost:3000/work
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { TracingModule, TracingService } from "@kabyeon/nexusjs/tracing";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { TracingModule, TracingService } from "@nexusts/tracing";
 
 @Injectable()
 class WorkService {

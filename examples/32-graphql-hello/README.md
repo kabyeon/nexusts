@@ -1,6 +1,6 @@
 # 32 · GraphQL (Hello World)
 
-Minimal GraphQL endpoint with `@kabyeon/nexusjs/graphql`. Demonstrates
+Minimal GraphQL endpoint with `@nexusts/graphql`. Demonstrates
 SDL-first schema definition, hand-written resolver maps, the
 no-deps GraphiQL playground, and the `context()` factory for
 injecting per-request state.
@@ -53,8 +53,8 @@ open http://localhost:3000/graphql
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get } from "@kabyeon/nexusjs";
-import { GraphQLModule, GraphQLService } from "@kabyeon/nexusjs/graphql";
+import { Application, Module, Controller, Get } from "@nexusts/core";
+import { GraphQLModule, GraphQLService } from "@nexusts/graphql";
 
 @Controller("/")
 class HomeController {
@@ -112,7 +112,7 @@ await app.listen(3000);
 
 ## The `graphql` peer-dep
 
-`@kabyeon/nexusjs/graphql` requires the `graphql` package at runtime
+`@nexusts/graphql` requires the `graphql` package at runtime
 (it does NOT bundle it). Install with:
 
 ```bash

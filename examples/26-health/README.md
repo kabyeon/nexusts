@@ -1,6 +1,6 @@
 # 26 · Health Check
 
-Health, liveness, and readiness endpoints with `@kabyeon/nexusjs/health`.
+Health, liveness, and readiness endpoints with `@nexusts/health`.
 
 ## What it shows
 
@@ -29,8 +29,8 @@ curl http://localhost:3000/health/ready
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { HealthModule, HealthIndicator, HealthService } from "@kabyeon/nexusjs/health";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { HealthModule, HealthIndicator, HealthService } from "@nexusts/health";
 
 @Injectable()
 class MemoryIndicator extends HealthIndicator {
@@ -86,7 +86,7 @@ await app.listen(3000);
 ## Drizzle indicator
 
 ```ts
-import { DrizzleHealthIndicator } from "@kabyeon/nexusjs/health/indicators/drizzle";
+import { DrizzleHealthIndicator } from "@nexusts/health/indicators/drizzle";
 
 @Injectable()
 class DbIndicator extends DrizzleHealthIndicator { ... }

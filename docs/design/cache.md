@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`cache.ko.md`](./cache.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/cache`:
+This document explains the architecture of `@nexusts/cache`:
 the `CacheStore` interface, the three built-in backends, the `wrap`
 pattern, decorator integration, and tag-based invalidation.
 
@@ -46,7 +46,7 @@ User code
              CacheStore
           ┌──────────────────────┐
           │ MemoryStore          │  ← default
-          │ RedisCacheStore      │  ← requires @kabyeon/nexusjs/redis
+          │ RedisCacheStore      │  ← requires @nexusts/redis
           │ DrizzleCacheStore    │  ← requires a DrizzleService instance
           │ CustomStore          │  ← implement CacheStore interface
           └──────────────────────┘
@@ -86,7 +86,7 @@ sweep (`MemoryStore.gc()`).
 
 ### RedisCacheStore
 
-- Uses `@kabyeon/nexusjs/redis`'s unified `RedisClient` interface.
+- Uses `@nexusts/redis`'s unified `RedisClient` interface.
 - Values are JSON-serialized with `CacheEntry<T>` envelope.
 - Tag index is a separate Redis key per tag (CRC32-hashed tag name
   to avoid key collisions).

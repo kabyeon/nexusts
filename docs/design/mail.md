@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`mail.ko.md`](./mail.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/mail`:
+This document explains the architecture of `@nexusts/mail`:
 the `MailTransport` interface, the three built-in transports, MJML
 integration, and the zero-dependency design.
 
@@ -144,7 +144,7 @@ them as-is.
 
 - **Template engine integration** — resolve Handlebars/Mustache/Vento
   templates from the view engine before sending.
-- **Email queue** — defer sending via the `nexusjs/queue` module for
+- **Email queue** — defer sending via the `nexusts/queue` module for
   reliability and rate limiting.
 - **Open/track** — transparent pixel + click tracking (opt-in).
 - **Mailgun / SES / SendGrid transports** — thin adapters wrapping

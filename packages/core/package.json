@@ -1,0 +1,44 @@
+{
+  "name": "@nexusts/core",
+  "version": "0.7.0",
+  "description": "NexusTS core — MVC + DI + routing + validation + view engine. Install this and you have a working Bun-native app.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "bin": {
+    "nx": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "bun run ../../build.ts"
+  },
+  "keywords": [
+    "nexusts",
+    "framework",
+    "bun",
+    "mvc",
+    "di",
+    "hono",
+    "typescript",
+    "decorator"
+  ],
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.3.0"
+  },
+  "dependencies": {
+    "@nexusts/cli": "workspace:*",
+    "@nexusts/view": "workspace:*",
+    "hono": "^4.6.0",
+    "reflect-metadata": "^0.2.2",
+    "rendu": "^0.1.0",
+    "zod": "^3.23.8"
+  }
+}

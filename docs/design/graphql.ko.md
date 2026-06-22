@@ -2,7 +2,7 @@
 
 > English version: [`graphql.md`](./graphql.md)
 
-이 문서는 `@kabyeon/nexusjs/graphql`의 아키텍처를 설명한다: SDL-first를
+이 문서는 `@nexusts/graphql`의 아키텍처를 설명한다: SDL-first를
 선택한 이유, `graphql`이 peer-dep인 이유, resolver가 `buildSchema()` 결과에
 어떻게 부착되는지, Hono 라우트가 어떻게 연결되는지.
 
@@ -44,14 +44,14 @@ code-first 모드를 출시한다. 우리는 의도적으로 출시하지 않았
 
 ## 왜 `graphql`이 peer-dep인가?
 
-GraphQL 실행기는 ~50KB minified다. 공짜가 아니다. `@kabyeon/nexusjs`를
+GraphQL 실행기는 ~50KB minified다. 공짜가 아니다. `@nexusts/core`를
 가져오는 대부분의 앱은 GraphQL이 필요 없다 — REST, admin panel,
 CLI 등이 필요하다. 모든 번들에 graphql을 번들하는 것은 사용하지
 않는 기능에 대해 비용을 지우는 것이다.
 
 Optional peer-dep으로 만들면:
 
-- **프레임워크 번들이 작게 유지된다.** `@kabyeon/nexusjs/graphql`
+- **프레임워크 번들이 작게 유지된다.** `@nexusts/graphql`
   자체는 wiring (마운트 포인트, 데코레이터 메타데이터, service
   생명주기) 일 뿐이다. 파서나 실행기는 포함하지 않는다.
 - **사용자가 opt-in.** `bun add graphql` 한 번, 그 다음

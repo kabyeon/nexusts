@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { z } from "zod";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { ConfigService, ConfigModule } from "@kabyeon/nexusjs/config";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { ConfigService, ConfigModule } from "@nexusts/config";
 
 /**
  * 17-config — type-safe env access with Zod validation.

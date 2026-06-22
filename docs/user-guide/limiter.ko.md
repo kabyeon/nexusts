@@ -1,19 +1,19 @@
-# Rate Limiting · `@kabyeon/nexusjs/limiter`
+# Rate Limiting · `@nexusts/limiter`
 
 > English version: [`limiter.md`](./limiter.md)
 
-`@kabyeon/nexusjs/limiter`는 세 가지 전략, 플러그 가능한 스토리지 백엔드,
+`@nexusts/limiter`는 세 가지 전략, 플러그 가능한 스토리지 백엔드,
 데코레이터 기반 라우트별 설정을 제공하는 레이트 리미터입니다.
 
 ---
 
 ## 설치
 
-리미터 모듈은 `@kabyeon/nexusjs` **내부**에 포함되어 있습니다 — 추가 설치가
+리미터 모듈은 `@nexusts/core` **내부**에 포함되어 있습니다 — 추가 설치가
 필요 없습니다. `./limiter` 진입점에서 임포트하세요:
 
 ```ts
-import { LimiterModule } from '@kabyeon/nexusjs/limiter';
+import { LimiterModule } from '@nexusts/limiter';
 ```
 
 ---
@@ -21,8 +21,8 @@ import { LimiterModule } from '@kabyeon/nexusjs/limiter';
 ## 빠른 시작
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { LimiterModule } from '@kabyeon/nexusjs/limiter';
+import { Module } from '@nexusts/core';
+import { LimiterModule } from '@nexusts/limiter';
 
 @Module({
   imports: [
@@ -105,8 +105,8 @@ LimiterModule.forRoot({
 컨트롤러 메서드에 `@RateLimit`을 사용하여 라우트별 제한을 설정하세요:
 
 ```ts
-import { Controller, Post } from '@kabyeon/nexusjs';
-import { RateLimit } from '@kabyeon/nexusjs/limiter';
+import { Controller, Post } from '@nexusts/core';
+import { RateLimit } from '@nexusts/limiter';
 
 @Controller('/auth')
 class AuthController {
@@ -142,8 +142,8 @@ LimiterModule.forRoot({
 멀티 프로세스 또는 영구 레이트 리밋 상태 저장용:
 
 ```ts
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
-import { DrizzleRateLimitStorage } from '@kabyeon/nexusjs/limiter';
+import { DrizzleService } from '@nexusts/drizzle';
+import { DrizzleRateLimitStorage } from '@nexusts/limiter';
 
 const db = new DrizzleService({
   dialect: 'postgres',
@@ -177,7 +177,7 @@ CREATE TABLE rate_limits (
 `RateLimitStorage` 인터페이스를 구현하세요:
 
 ```ts
-import { RateLimitStorage, RateLimitResult } from '@kabyeon/nexusjs/limiter';
+import { RateLimitStorage, RateLimitResult } from '@nexusts/limiter';
 
 class RedisRateLimitStorage implements RateLimitStorage {
   readonly kind = 'redis';

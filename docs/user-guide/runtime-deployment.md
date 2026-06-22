@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`runtime-deployment.ko.md`](./runtime-deployment.ko.md)
 
-NexusJS targets **Bun, Node.js, and Cloudflare Workers** through a
+NexusTS targets **Bun, Node.js, and Cloudflare Workers** through a
 single `Application` API. The framework auto-detects the runtime and
 loads the appropriate adapter.
 
@@ -13,7 +13,7 @@ loads the appropriate adapter.
 ```ts
 // main.ts
 import 'reflect-metadata';
-import { Application } from '@kabyeon/nexusjs';
+import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -67,7 +67,7 @@ Both `tsx` and `ts-node` respect `tsconfig.json` and emit
 ```ts
 // app/worker.ts
 import 'reflect-metadata';
-import { Application } from '@kabyeon/nexusjs';
+import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -238,7 +238,7 @@ These will be first-class in v0.2.
 The framework logs to `console` by default. To replace:
 
 ```ts
-import { logger } from '@kabyeon/nexusjs';  // if exposed
+import { logger } from '@nexusts/core';  // if exposed
 // or via a custom middleware:
 app.server.app.use('*', async (c, next) => {
   const start = Date.now();

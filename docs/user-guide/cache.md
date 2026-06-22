@@ -1,8 +1,8 @@
-# Application Cache · `@kabyeon/nexusjs/cache`
+# Application Cache · `@nexusts/cache`
 
 > 한국어 버전: [`cache.ko.md`](./cache.ko.md)
 
-`@kabyeon/nexusjs/cache` provides application-level caching with
+`@nexusts/cache` provides application-level caching with
 pluggable backends, TTL-based expiration, tag-based invalidation, and
 decorator support.
 
@@ -10,11 +10,11 @@ decorator support.
 
 ## Installation
 
-The cache module ships **inside** `@kabyeon/nexusjs` — no extra install
+The cache module ships **inside** `@nexusts/core` — no extra install
 is needed for the in-memory store.
 
 ```ts
-import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { CacheModule } from '@nexusts/cache';
 ```
 
 Optional peer dependency for Redis:
@@ -28,8 +28,8 @@ bun add ioredis    # or @redis/client
 ## Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { Module } from '@nexusts/core';
+import { CacheModule } from '@nexusts/cache';
 
 @Module({
   imports: [
@@ -49,8 +49,8 @@ export class AppModule {}
 Inject `CacheService` into any service:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { CacheService } from '@kabyeon/nexusjs/cache';
+import { Inject, Injectable } from '@nexusts/core';
+import { CacheService } from '@nexusts/cache';
 
 @Injectable()
 class UserService {
@@ -85,7 +85,7 @@ await cache.clear('users:*');                      // pattern delete
 Caches the return value of a method:
 
 ```ts
-import { Cacheable, CacheInvalidate } from '@kabyeon/nexusjs/cache';
+import { Cacheable, CacheInvalidate } from '@nexusts/cache';
 
 class UserService {
   @Cacheable('user', (id: string) => id, 60)
@@ -126,7 +126,7 @@ method executes successfully.
 LRU cache with automatic TTL sweep:
 
 ```ts
-import { CacheModule, MemoryStore } from '@kabyeon/nexusjs/cache';
+import { CacheModule, MemoryStore } from '@nexusts/cache';
 
 CacheModule.forRoot({
   store: new MemoryStore({
@@ -144,8 +144,8 @@ entry cleanup. Not cluster-safe.
 For multi-pod deployments:
 
 ```ts
-import { CacheModule } from '@kabyeon/nexusjs/cache';
-import { RedisCacheStore, createRedisClient } from '@kabyeon/nexusjs/redis';
+import { CacheModule } from '@nexusts/cache';
+import { RedisCacheStore, createRedisClient } from '@nexusts/redis';
 
 const cache = new CacheService({
   store: new RedisCacheStore(
@@ -155,7 +155,7 @@ const cache = new CacheService({
 });
 ```
 
-Requires `@kabyeon/nexusjs/redis` and a Redis instance. Supports
+Requires `@nexusts/redis` and a Redis instance. Supports
 tag-based invalidation and works across multiple instances.
 
 ### Drizzle (database)
@@ -163,8 +163,8 @@ tag-based invalidation and works across multiple instances.
 For persistent cache backed by any Drizzle-supported database:
 
 ```ts
-import { CacheModule, DrizzleCacheStore } from '@kabyeon/nexusjs/cache';
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
+import { CacheModule, DrizzleCacheStore } from '@nexusts/cache';
+import { DrizzleService } from '@nexusts/drizzle';
 
 const db = new DrizzleService({
   dialect: 'postgres',
@@ -200,7 +200,7 @@ CREATE TABLE nexus_cache_tags (
 Implement the `CacheStore` interface:
 
 ```ts
-import { CacheService, CacheStore, CacheSetOptions } from '@kabyeon/nexusjs/cache';
+import { CacheService, CacheStore, CacheSetOptions } from '@nexusts/cache';
 
 class MyStore implements CacheStore {
   readonly kind = 'my-custom';
@@ -247,7 +247,7 @@ add event-based invalidation via the event system.
 | ----- | ---- | ------- | ----------- |
 | `store` | `CacheStore` | `MemoryStore` | Storage backend |
 | `defaultTtl` | `number` | `60` | Default TTL in seconds |
-| `prefix` | `string` | `'nexusjs'` | Key prefix |
+| `prefix` | `string` | `'nexusts'` | Key prefix |
 
 ### `CacheService`
 

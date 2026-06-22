@@ -1,8 +1,8 @@
-# Metrics · `@kabyeon/nexusjs/metrics` (Tier 2 v0.4)
+# Metrics · `@nexusts/metrics` (Tier 2 v0.4)
 
 > Tier 2 gap from the v0.3 gap analyses, closed in **v0.4**.
 
-`@kabyeon/nexusjs/metrics` is a Prometheus-compatible metrics collection library
+`@nexusts/metrics` is a Prometheus-compatible metrics collection library
 for the Bun-native stack. It implements the four standard metric
 types (counter, gauge, histogram, summary), label support, and
 the Prometheus / OpenMetrics text exposition formats.
@@ -14,8 +14,8 @@ the Prometheus / OpenMetrics text exposition formats.
 ## 1. Quick start
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { MetricsModule } from '@kabyeon/nexusjs/metrics';
+import { Module } from '@nexusts/core';
+import { MetricsModule } from '@nexusts/metrics';
 
 @Module({
   imports: [
@@ -119,7 +119,7 @@ provided:
 For ergonomics, two method decorators are provided:
 
 ```ts
-import { Counted, Timed } from '@kabyeon/nexusjs/metrics';
+import { Counted, Timed } from '@nexusts/metrics';
 
 class UserController {
   @Counted('http_requests_total', { labels: () => ({ method: 'GET' }) })

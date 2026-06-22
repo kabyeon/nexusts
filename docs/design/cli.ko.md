@@ -2,7 +2,7 @@
 
 > English version: [`cli.md`](./cli.md)
 
-이 문서는 `@kabyeon/nexusjs/cli`의 아키텍처를 설명한다: `nx` 명령
+이 문서는 `@nexusts/cli`의 아키텍처를 설명한다: `nx` 명령
 러너, 스캐폴드 생성기, 코드 템플릿, config 로더, REPL.
 
 ## 목표
@@ -178,7 +178,7 @@ CLI는 Bun과 Node.js 둘 다에서 실행:
 - **Node.js**: `fs/promises`와 Node의 내장 `repl`로 fallback.
   TypeScript 파싱은 `nx.config.ts` 로드를 위해 `tsx` 또는 `ts-node` 필요.
 
-런타임 감지는 `nexusjs/redis`와 `nexusjs/ws`의 같은 패턴:
+런타임 감지는 `nexusts/redis`와 `nexusts/ws`의 같은 패턴:
 
 ```ts
 const isBun = typeof Bun !== 'undefined';

@@ -1,8 +1,8 @@
-# @kabyeon/nexusjs/grpc — gRPC 통합
+# @nexusts/grpc — gRPC 통합
 
 > English version: [`grpc.md`](./grpc.md)
 
-`@kabyeon/nexusjs/grpc`은 TypeScript 클래스와 decorator로 gRPC 서비스를 정의하고
+`@nexusts/grpc`은 TypeScript 클래스와 decorator로 gRPC 서비스를 정의하고
 Hono HTTP 라우트와 함께 서빙할 수 있게 해줍니다. 같은 모듈이 앱 내부에서
 gRPC 서비스를 호출하기 위한 typed client도 제공합니다.
 
@@ -13,7 +13,7 @@ gRPC 서비스를 호출하기 위한 typed client도 제공합니다.
 - **HTTP/2 + 바이너리.** 내부 마이크로서비스 트래픽에서
   JSON-over-HTTP/1.1보다 오버헤드가 낮습니다.
 - **Streaming.** server-streaming, client-streaming, bidirectional
-  streaming이 gRPC에서 first-class입니다. (Streaming은 `@kabyeon/nexusjs/grpc`의
+  streaming이 gRPC에서 first-class입니다. (Streaming은 `@nexusts/grpc`의
   v2에서 예정.)
 
 ## 설치
@@ -22,7 +22,7 @@ gRPC 서비스를 호출하기 위한 typed client도 제공합니다.
 bun add @grpc/grpc-js @grpc/proto-loader
 ```
 
-둘 다 `@kabyeon/nexusjs/grpc`의 `package.json`에서 **optional** peer dependency로
+둘 다 `@nexusts/grpc`의 `package.json`에서 **optional** peer dependency로
 선언되어 있습니다. 프레임워크가 dynamic import로 로드하므로 gRPC 모듈을
 실제로 사용할 때만 설치하면 됩니다.
 
@@ -50,8 +50,8 @@ message ListResponse { repeated UserResponse users = 1; }
 
 ```ts
 // app/user/user.grpc.ts
-import { Injectable, Inject } from "@kabyeon/nexusjs";
-import { GrpcService, GrpcMethod } from "@kabyeon/nexusjs/grpc";
+import { Injectable, Inject } from "@nexusts/core";
+import { GrpcService, GrpcMethod } from "@nexusts/grpc";
 
 @Injectable()
 @GrpcService("UserService")
@@ -79,8 +79,8 @@ export class UserServiceImpl {
 
 ```ts
 // app/app.module.ts
-import { Module } from "@kabyeon/nexusjs";
-import { GrpcModule } from "@kabyeon/nexusjs/grpc";
+import { Module } from "@nexusts/core";
+import { GrpcModule } from "@nexusts/grpc";
 import { UserServiceImpl } from "./user/user.grpc";
 
 @Module({
@@ -99,8 +99,8 @@ export class AppModule {}
 
 ```ts
 // app/main.ts
-import { Application } from "@kabyeon/nexusjs";
-import { GrpcService } from "@kabyeon/nexusjs/grpc";
+import { Application } from "@nexusts/core";
+import { GrpcService } from "@nexusts/grpc";
 import { AppModule } from "./app.module";
 
 const app = new Application(AppModule);
@@ -111,7 +111,7 @@ await grpc.start();
 
 ## Typed client
 
-`@kabyeon/nexusjs/grpc`은 등록한 서비스에 대한 typed client도 만들어줍니다.
+`@nexusts/grpc`은 등록한 서비스에 대한 typed client도 만들어줍니다.
 앱 안의 한 서비스가 다른 서비스를 호출해야 할 때 유용합니다:
 
 ```ts

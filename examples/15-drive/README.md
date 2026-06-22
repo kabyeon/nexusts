@@ -1,6 +1,6 @@
 # 15 · Drive (File Storage)
 
-Cloud-agnostic file storage with `@kabyeon/nexusjs/drive`.
+Cloud-agnostic file storage with `@nexusts/drive`.
 
 ## What it shows
 
@@ -29,8 +29,8 @@ curl http://localhost:3000/files/hello.txt
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { DriveService, DriveModule } from "@kabyeon/nexusjs/drive";
+import { Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable } from "@nexusts/core";
+import { DriveService, DriveModule } from "@nexusts/drive";
 
 @Injectable()
 @Controller("/files")

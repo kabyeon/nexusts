@@ -5,7 +5,7 @@
 
 ## 1. Goals
 
-NexusJS is a **Bun-native fullstack framework** designed around four
+NexusTS is a **Bun-native fullstack framework** designed around four
 guiding principles:
 
 1. **Multi-runtime** — the same code runs on Bun, Node.js, Deno, and
@@ -70,7 +70,7 @@ without changing application code.
 
 ## 3. Module tree
 
-A NexusJS app is a tree of `@Module` nodes. The root module is passed
+A NexusTS app is a tree of `@Module` nodes. The root module is passed
 to `new Application(...)`; the scanner walks the imports graph and
 builds one `ApplicationContainer` per module:
 
@@ -229,13 +229,13 @@ users can swap internals without forking:
 
 | Sub-path | Purpose |
 | -------- | ------- |
-| `@kabyeon/nexusjs/view` | View engines (default `RenduAdapter`) |
-| `@kabyeon/nexusjs/view/inertia` | Inertia adapter + helpers |
-| `@kabyeon/nexusjs/view/inertia/ssr` | React/Vue/Svelte/Solid SSR adapters |
-| `@kabyeon/nexusjs/orm` | ORM adapters (Drizzle today) |
-| `@kabyeon/nexusjs/runtime` | Runtime adapters |
+| `@nexusts/view` | View engines (default `RenduAdapter`) |
+| `@nexusts/view/inertia` | Inertia adapter + helpers |
+| `@nexusts/view/inertia/ssr` | React/Vue/Svelte/Solid SSR adapters |
+| `@nexusts/orm` | ORM adapters (Drizzle today) |
+| `@nexusts/runtime` | Runtime adapters |
 
-The public entry point (`@kabyeon/nexusjs`) only re-exports the stable, agreed-on
+The public entry point (`@nexusts/core`) only re-exports the stable, agreed-on
 surface. Anything else is **advanced** and may change without a major
 version bump.
 
@@ -248,33 +248,33 @@ entry point — install only what you need.
 
 | Module | Bundle subpath | Replaces / supersedes |
 | ------ | -------------- | --------------------- |
-| `@kabyeon/nexusjs` | `@kabyeon/nexusjs` | core MVC + DI + validation + views |
-| `@kabyeon/nexusjs/cli` | `nx` | Adonis ACE-style command runner |
-| `@kabyeon/nexusjs/auth` | `@kabyeon/nexusjs/auth` | session, JWT, OAuth, passkey (better-auth) |
-| `@kabyeon/nexusjs/queue` | `@kabyeon/nexusjs/queue` | BullMQ, Cloudflare Queues, memory |
-| `@kabyeon/nexusjs/schedule` | `@kabyeon/nexusjs/schedule` | `@Cron` / `@Interval` / `@Timeout` |
-| `@kabyeon/nexusjs/events` | `@kabyeon/nexusjs/events` | `@OnEvent` with wildcards, priorities, guards |
-| `@kabyeon/nexusjs/session` | `@kabyeon/nexusjs/session` | cookie (HMAC), memory, Drizzle |
-| `@kabyeon/nexusjs/health` | `@kabyeon/nexusjs/health` | liveness/readiness/startup, indicators |
-| `@kabyeon/nexusjs/config` | `@kabyeon/nexusjs/config` | Zod-validated env config |
-| `@kabyeon/nexusjs/logger` | `@kabyeon/nexusjs/logger` | Pino-backed structured logging |
-| `@kabyeon/nexusjs/static` | `@kabyeon/nexusjs/static` | static file serving with ETag, Range |
-| `@kabyeon/nexusjs/limiter` | `@kabyeon/nexusjs/limiter` | 3 strategies × memory/Drizzle storage |
-| `@kabyeon/nexusjs/shield` | `@kabyeon/nexusjs/shield` | CSRF, HSTS, CSP, security headers |
-| `@kabyeon/nexusjs/cache` | `@kabyeon/nexusjs/cache` | memory (LRU) / Drizzle, tag invalidation |
-| `@kabyeon/nexusjs/drive` | `@kabyeon/nexusjs/drive` | memory/Local/S3/R2 storage abstraction |
-| `@kabyeon/nexusjs/mail` | `@kabyeon/nexusjs/mail` | SMTP / File / Null, MJML |
-| `@kabyeon/nexusjs/drizzle` | `@kabyeon/nexusjs/drizzle` | **default ORM** (5 dialects) |
+| `@nexusts/core` | `@nexusts/core` | core MVC + DI + validation + views |
+| `@nexusts/cli` | `nx` | Adonis ACE-style command runner |
+| `@nexusts/auth` | `@nexusts/auth` | session, JWT, OAuth, passkey (better-auth) |
+| `@nexusts/queue` | `@nexusts/queue` | BullMQ, Cloudflare Queues, memory |
+| `@nexusts/schedule` | `@nexusts/schedule` | `@Cron` / `@Interval` / `@Timeout` |
+| `@nexusts/events` | `@nexusts/events` | `@OnEvent` with wildcards, priorities, guards |
+| `@nexusts/session` | `@nexusts/session` | cookie (HMAC), memory, Drizzle |
+| `@nexusts/health` | `@nexusts/health` | liveness/readiness/startup, indicators |
+| `@nexusts/config` | `@nexusts/config` | Zod-validated env config |
+| `@nexusts/logger` | `@nexusts/logger` | Pino-backed structured logging |
+| `@nexusts/static` | `@nexusts/static` | static file serving with ETag, Range |
+| `@nexusts/limiter` | `@nexusts/limiter` | 3 strategies × memory/Drizzle storage |
+| `@nexusts/shield` | `@nexusts/shield` | CSRF, HSTS, CSP, security headers |
+| `@nexusts/cache` | `@nexusts/cache` | memory (LRU) / Drizzle, tag invalidation |
+| `@nexusts/drive` | `@nexusts/drive` | memory/Local/S3/R2 storage abstraction |
+| `@nexusts/mail` | `@nexusts/mail` | SMTP / File / Null, MJML |
+| `@nexusts/drizzle` | `@nexusts/drizzle` | **default ORM** (5 dialects) |
 
 ### Drizzle as the data backbone
 
-`@kabyeon/nexusjs/drizzle` is the default ORM and is wired into every
+`@nexusts/drizzle` is the default ORM and is wired into every
 DB-dependent module:
 
-- `@kabyeon/nexusjs/session` → `DrizzleSessionStorage`
-- `@kabyeon/nexusjs/health`  → `DrizzleHealthIndicator`
-- `@kabyeon/nexusjs/limiter` → `DrizzleRateLimitStorage`
-- `@kabyeon/nexusjs/cache`   → `DrizzleCacheStore`
+- `@nexusts/session` → `DrizzleSessionStorage`
+- `@nexusts/health`  → `DrizzleHealthIndicator`
+- `@nexusts/limiter` → `DrizzleRateLimitStorage`
+- `@nexusts/cache`   → `DrizzleCacheStore`
 
 A multi-pod deployment can share session, health, rate-limit, and
 cache state through any Drizzle-compatible database.
@@ -283,9 +283,9 @@ cache state through any Drizzle-compatible database.
 
 ## 10. What's planned for v0.6+
 
-- **Observability**: `@kabyeon/nexusjs/tracing` (OpenTelemetry), `@kabyeon/nexusjs/metrics`
+- **Observability**: `@nexusts/tracing` (OpenTelemetry), `@nexusts/metrics`
   (Prometheus).
-- **i18n**: `@kabyeon/nexusjs/i18n` for multi-locale messages.
+- **i18n**: `@nexusts/i18n` for multi-locale messages.
 - **AI agent module** + MCP server integration.
 - **Stable public API** (semver guarantees).
 - **Removal of v0.1 deprecated aliases**.
@@ -300,4 +300,4 @@ cache state through any Drizzle-compatible database.
 | The router is **the single source of truth** for matching | Decorator-driven routes register through the same router. |
 | The DI graph is **constructed eagerly** at startup | Failures surface at boot, not at request time. |
 | Every async boundary is **await-able in a Worker** | No `setTimeout`-driven hot paths; no Node-only APIs. |
-| Public surface stays **small** | Anything experimental is behind a `@kabyeon/nexusjs/<x>` sub-path. |
+| Public surface stays **small** | Anything experimental is behind a `@nexusts/<x>` sub-path. |

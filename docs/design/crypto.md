@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`crypto.ko.md`](./crypto.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/crypto`:
+This document explains the architecture of `@nexusts/crypto`:
 AES-256-GCM encryption, HMAC-based signing, password hashing (scrypt
 and argon2), and the purpose-tagged signing scheme.
 

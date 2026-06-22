@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { EncryptionService, HashService, CryptoModule } from "@kabyeon/nexusjs/crypto";
+import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@nexusts/core";
+import { EncryptionService, HashService, CryptoModule } from "@nexusts/crypto";
 
 /**
  * 22-crypto — encryption + password hashing.

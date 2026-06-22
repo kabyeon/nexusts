@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Inject, Injectable } from "@kabyeon/nexusjs";
-import { Logger, LoggerModule } from "@kabyeon/nexusjs/logger";
+import { Application, Module, Controller, Get, Inject, Injectable } from "@nexusts/core";
+import { Logger, LoggerModule } from "@nexusts/logger";
 
 /**
  * 18-logger — structured logging.

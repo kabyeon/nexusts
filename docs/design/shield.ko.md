@@ -2,7 +2,7 @@
 
 > English version: [`shield.md`](./shield.md)
 
-이 문서는 `@kabyeon/nexusjs/shield`의 아키텍처를 설명한다: CSRF
+이 문서는 `@nexusts/shield`의 아키텍처를 설명한다: CSRF
 보호, 보안 헤더, 가드 구성 방식, 미들웨어 파이프라인.
 
 ## 목표

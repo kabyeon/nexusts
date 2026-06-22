@@ -1,8 +1,8 @@
-# 파일 스토리지 · `@kabyeon/nexusjs/drive`
+# 파일 스토리지 · `@nexusts/drive`
 
 > English version: [`drive.md`](./drive.md)
 
-`@kabyeon/nexusjs/drive`는 로컬 파일시스템, 인메모리, S3 호환 백엔드
+`@nexusts/drive`는 로컬 파일시스템, 인메모리, S3 호환 백엔드
 (AWS S3, Cloudflare R2, MinIO)에 걸친 통합 파일 스토리지 추상화를
 제공합니다.
 
@@ -10,11 +10,11 @@
 
 ## 설치
 
-drive 모듈은 `@kabyeon/nexusjs` **내부**에 포함되어 있습니다 — 로컬 또는
+drive 모듈은 `@nexusts/core` **내부**에 포함되어 있습니다 — 로컬 또는
 메모리 드라이버 사용 시 추가 설치가 필요 없습니다.
 
 ```ts
-import { DriveModule } from '@kabyeon/nexusjs/drive';
+import { DriveModule } from '@nexusts/drive';
 ```
 
 S3 선택적 피어 의존성:
@@ -30,8 +30,8 @@ bun add @aws-sdk/client-s3 @aws-sdk/s3-request-presigner
 ### 로컬 파일시스템
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { DriveModule, LocalDriver } from '@kabyeon/nexusjs/drive';
+import { Module } from '@nexusts/core';
+import { DriveModule, LocalDriver } from '@nexusts/drive';
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ export class AppModule {}
 차단됩니다.
 
 ```ts
-import { LocalDriver } from '@kabyeon/nexusjs/drive';
+import { LocalDriver } from '@nexusts/drive';
 
 new LocalDriver({
   root: '/var/data',                       // 스토리지 루트 디렉터리
@@ -69,7 +69,7 @@ new LocalDriver({
 인메모리 저장소. 테스트와 임시 상태에 유용합니다.
 
 ```ts
-import { MemoryDriver } from '@kabyeon/nexusjs/drive';
+import { MemoryDriver } from '@nexusts/drive';
 
 DriveModule.forRoot({
   driver: new MemoryDriver(),
@@ -81,7 +81,7 @@ DriveModule.forRoot({
 AWS S3, Cloudflare R2, MinIO 및 모든 S3 호환 API에서 작동합니다.
 
 ```ts
-import { S3Driver } from '@kabyeon/nexusjs/drive';
+import { S3Driver } from '@nexusts/drive';
 
 DriveModule.forRoot({
   driver: new S3Driver({

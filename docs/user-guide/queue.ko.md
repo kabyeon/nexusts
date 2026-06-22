@@ -2,7 +2,7 @@
 
 > English version: [`queue.md`](./queue.md)
 
-NexusJS는 `@kabyeon/nexusjs/queue` 모듈 아래 두 가지 프로덕션 준비 백엔드를 래핑한다.
+NexusTS는 `@nexusts/queue` 모듈 아래 두 가지 프로덕션 준비 백엔드를 래핑한다.
 
 - **BullMQ** — Redis 기반, 장기 실행 Bun / Node 서버용.
 - **Cloudflare Queues** — Workers 네이티브, 엣지 친화적.
@@ -10,7 +10,7 @@ NexusJS는 `@kabyeon/nexusjs/queue` 모듈 아래 두 가지 프로덕션 준비
 
 두 백엔드는 공통 `QueueBackend` 인터페이스를 공유하므로, 애플리케이션 코드는 `QueueService`와만 통신하고 특정 백엔드를 직접 다루지 않는다.
 
-queue 모듈은 **`@kabyeon/nexusjs/core`와 분리**되어 있으며 자체 번들 진입점으로 추가된다.
+queue 모듈은 **`@nexusts/core`와 분리**되어 있으며 자체 번들 진입점으로 추가된다.
 
 ---
 
@@ -30,8 +30,8 @@ bun add nexus bullmq ioredis
 
 ```ts
 // app/app.module.ts
-import { Module } from '@kabyeon/nexusjs';
-import { QueueModule } from '@kabyeon/nexusjs/queue';
+import { Module } from '@nexusts/core';
+import { QueueModule } from '@nexusts/queue';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { QueueModule } from '@kabyeon/nexusjs/queue';
       backend: 'bullmq',
       bullmq: {
         connection: process.env.REDIS_URL ?? 'redis://localhost:6379',
-        prefix: 'nexusjs',
+        prefix: 'nexusts',
       },
       defaults: { attempts: 3, backoff: { type: 'exponential', delayMs: 1000 } },
     }),
@@ -51,9 +51,9 @@ export class AppModule {}
 컨트롤러나 서비스에서 enqueue:
 
 ```ts
-import { Inject } from '@kabyeon/nexusjs';
-import { QueueService } from '@kabyeon/nexusjs/queue';
-import { Controller, Post, Body } from '@kabyeon/nexusjs';
+import { Inject } from '@nexusts/core';
+import { QueueService } from '@nexusts/queue';
+import { Controller, Post, Body } from '@nexusts/core';
 
 @Controller('/signup')
 class SignupController {
@@ -70,8 +70,8 @@ class SignupController {
 워커 등록:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { QueueService, OnQueueReady } from '@kabyeon/nexusjs/queue';
+import { Inject, Injectable } from '@nexusts/core';
+import { QueueService, OnQueueReady } from '@nexusts/queue';
 
 @Injectable()
 class EmailWorker {
@@ -115,7 +115,7 @@ QueueModule.forRoot({
   bullmq: {
     connection: 'redis://localhost:6379',
     // 또는: { host: '...', port: 6379, password: '...' }
-    prefix: 'nexusjs',
+    prefix: 'nexusts',
   },
   defaults: {
     attempts: 5,
@@ -160,8 +160,8 @@ max_retries = 3
 
 ```ts
 // app/worker.ts
-import { Application } from '@kabyeon/nexusjs';
-import { QueueService, QueueModule } from '@kabyeon/nexusjs/queue';
+import { Application } from '@nexusts/core';
+import { QueueService, QueueModule } from '@nexusts/queue';
 
 const AppModule = QueueModule.forRoot({
   backend: 'cloudflare',
@@ -289,7 +289,7 @@ const unsub = queue.on((event) => {
 });
 ```
 
-로깅, 메트릭, NexusJS 이벤트 시스템 연결에 유용 (v0.2).
+로깅, 메트릭, NexusTS 이벤트 시스템 연결에 유용 (v0.2).
 
 ---
 

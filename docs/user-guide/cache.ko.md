@@ -1,19 +1,19 @@
-# 애플리케이션 캐시 · `@kabyeon/nexusjs/cache`
+# 애플리케이션 캐시 · `@nexusts/cache`
 
 > English version: [`cache.md`](./cache.md)
 
-`@kabyeon/nexusjs/cache`는 플러그 가능한 백엔드, TTL 기반 만료, 태그 기반
+`@nexusts/cache`는 플러그 가능한 백엔드, TTL 기반 만료, 태그 기반
 무효화, 데코레이터 지원을 갖춘 애플리케이션 레벨 캐싱을 제공합니다.
 
 ---
 
 ## 설치
 
-cache 모듈은 `@kabyeon/nexusjs` **내부**에 포함되어 있습니다 — 인메모리
+cache 모듈은 `@nexusts/core` **내부**에 포함되어 있습니다 — 인메모리
 스토어 사용 시 추가 설치가 필요 없습니다.
 
 ```ts
-import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { CacheModule } from '@nexusts/cache';
 ```
 
 Redis 선택적 피어 의존성:
@@ -27,8 +27,8 @@ bun add ioredis    # 또는 @redis/client
 ## 빠른 시작
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { CacheModule } from '@kabyeon/nexusjs/cache';
+import { Module } from '@nexusts/core';
+import { CacheModule } from '@nexusts/cache';
 
 @Module({
   imports: [
@@ -48,8 +48,8 @@ export class AppModule {}
 `CacheService`를 서비스에 주입:
 
 ```ts
-import { Inject, Injectable } from '@kabyeon/nexusjs';
-import { CacheService } from '@kabyeon/nexusjs/cache';
+import { Inject, Injectable } from '@nexusts/core';
+import { CacheService } from '@nexusts/cache';
 
 @Injectable()
 class UserService {
@@ -84,7 +84,7 @@ await cache.clear('users:*');                      // 패턴 삭제
 메서드의 반환값을 캐시:
 
 ```ts
-import { Cacheable, CacheInvalidate } from '@kabyeon/nexusjs/cache';
+import { Cacheable, CacheInvalidate } from '@nexusts/cache';
 
 class UserService {
   @Cacheable('user', (id: string) => id, 60)
@@ -125,7 +125,7 @@ class UserService {
 자동 TTL 스윕이 있는 LRU 캐시:
 
 ```ts
-import { CacheModule, MemoryStore } from '@kabyeon/nexusjs/cache';
+import { CacheModule, MemoryStore } from '@nexusts/cache';
 
 CacheModule.forRoot({
   store: new MemoryStore({
@@ -143,8 +143,8 @@ CacheModule.forRoot({
 멀티 팟 배포용:
 
 ```ts
-import { CacheModule } from '@kabyeon/nexusjs/cache';
-import { RedisCacheStore, createRedisClient } from '@kabyeon/nexusjs/redis';
+import { CacheModule } from '@nexusts/cache';
+import { RedisCacheStore, createRedisClient } from '@nexusts/redis';
 
 const cache = new CacheService({
   store: new RedisCacheStore(
@@ -154,7 +154,7 @@ const cache = new CacheService({
 });
 ```
 
-`@kabyeon/nexusjs/redis`와 Redis 인스턴스가 필요합니다. 태그 기반
+`@nexusts/redis`와 Redis 인스턴스가 필요합니다. 태그 기반
 무효화를 지원하며 여러 인스턴스에서 사용 가능합니다.
 
 ### Drizzle (데이터베이스)
@@ -162,8 +162,8 @@ const cache = new CacheService({
 Drizzle이 지원하는 모든 데이터베이스를 백엔드로 사용:
 
 ```ts
-import { CacheModule, DrizzleCacheStore } from '@kabyeon/nexusjs/cache';
-import { DrizzleService } from '@kabyeon/nexusjs/drizzle';
+import { CacheModule, DrizzleCacheStore } from '@nexusts/cache';
+import { DrizzleService } from '@nexusts/drizzle';
 
 const db = new DrizzleService({
   dialect: 'postgres',
@@ -199,7 +199,7 @@ CREATE TABLE nexus_cache_tags (
 `CacheStore` 인터페이스 구현:
 
 ```ts
-import { CacheService, CacheStore, CacheSetOptions } from '@kabyeon/nexusjs/cache';
+import { CacheService, CacheStore, CacheSetOptions } from '@nexusts/cache';
 
 class MyStore implements CacheStore {
   readonly kind = 'my-custom';
@@ -238,7 +238,7 @@ await cache.invalidateByTag('users');
 | -------- | ---- | ------ | ---- |
 | `store` | `CacheStore` | `MemoryStore` | 스토리지 백엔드 |
 | `defaultTtl` | `number` | `60` | 기본 TTL(초) |
-| `prefix` | `string` | `'nexusjs'` | 키 접두사 |
+| `prefix` | `string` | `'nexusts'` | 키 접두사 |
 
 ### `CacheService`
 

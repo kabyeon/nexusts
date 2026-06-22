@@ -1,0 +1,26 @@
+{
+  "name": "@nexusts/cache",
+  "version": "0.7.0",
+  "description": "Application cache (memory / Drizzle backends)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "bun run ../../build.ts"
+  },
+  "keywords": ["nexusts", "framework", "bun"],
+  "license": "MIT",
+  
+  
+  "dependencies": {
+    "@nexusts/core": "workspace:*"
+  }
+}

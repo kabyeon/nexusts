@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import {
   Application, Controller, Get, Post, Body, Module, Inject, Injectable, Param,
-} from "@kabyeon/nexusjs";
-import { EventService, EventsModule, OnEvent } from "@kabyeon/nexusjs/events";
+} from "@nexusts/core";
+import { EventService, EventsModule, OnEvent } from "@nexusts/events";
 
 /**
  * 07-events — typed event emitter with wildcards, priorities, guards.

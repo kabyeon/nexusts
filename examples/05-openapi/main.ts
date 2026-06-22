@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import {
   Application, Module, Controller, Get, Post, Param, Body, Inject, Injectable,
-} from "@kabyeon/nexusjs";
+} from "@nexusts/core";
 import {
   OpenAPIModule, OpenAPIService,
   ApiTags, ApiOperation, ApiResponse, ApiParam,
-} from "@kabyeon/nexusjs/openapi";
+} from "@nexusts/openapi";
 import { z } from "zod";
 
 /**

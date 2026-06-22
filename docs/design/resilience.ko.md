@@ -2,7 +2,7 @@
 
 > English version: [`resilience.md`](./resilience.md)
 
-이 문서는 `@kabyeon/nexusjs/resilience`의 아키텍처를 설명한다:
+이 문서는 `@nexusts/resilience`의 아키텍처를 설명한다:
 왜 세 가지 프리미티브를 한 모듈에, 서킷 브레이커 상태 머신의 동작
 방식, 데코레이터가 metadata-only인 이유, 프레임워크 통합 형태.
 
@@ -216,7 +216,7 @@ function makeMethodDecorator<TConfig>(key, extract) {
 원하면 자신의 프레임워크 hook에서 호출 가능:
 
 ```ts
-import { applyResilience } from "@kabyeon/nexusjs/resilience";
+import { applyResilience } from "@nexusts/resilience";
 
 class MyController {
   @Retry({ attempts: 3 })
@@ -285,11 +285,11 @@ getOrCreateCircuit(name, config) {
 
 ## 포함하지 않은 것들
 
-- **Token-bucket rate limiting.** 이건 `@kabyeon/nexusjs/limiter`.
+- **Token-bucket rate limiting.** 이건 `@nexusts/limiter`.
   resilience에 합치는 것도 고려했지만, rate limiting은 모양이
   다르고 (요청 budget, 실패 감지가 아님) 다른 storage backend
   (Redis, Drizzle) 가 있다.
-- **Health checks.** 이건 `@kabyeon/nexusjs/health`.
+- **Health checks.** 이건 `@nexusts/health`.
 - **Adaptive retry.** 일부 라이브러리 (Cockatiel) 는
   "upstream latency에 비례한 backoff"를 지원. 우리는 안 한다 —
   복잡하고 단순한 `exponential-jitter`가 95% 사용 사례에 충분.

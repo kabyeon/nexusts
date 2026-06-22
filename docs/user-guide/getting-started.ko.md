@@ -2,7 +2,7 @@
 
 > English version: [`getting-started.md`](./getting-started.md)
 
-이 가이드는 빈 디렉터리에서 약 5분 안에 실행되는 NexusJS 앱까지 안내합니다.
+이 가이드는 빈 디렉터리에서 약 5분 안에 실행되는 NexusTS 앱까지 안내합니다.
 
 ## 1. 사전 요구 사항
 
@@ -26,7 +26,7 @@ bun add nexus reflect-metadata zod hono
 bun add -d @types/bun typescript vitest
 ```
 
-> `reflect-metadata`는 peer dependency이며 애플리케이션 진입점에서 한 번 import되어야 합니다. `zod`와 `hono`는 NexusJS에 번들되어 있지만 타입 해석을 위해 명시적으로 설치하는 것을 권장합니다.
+> `reflect-metadata`는 peer dependency이며 애플리케이션 진입점에서 한 번 import되어야 합니다. `zod`와 `hono`는 NexusTS에 번들되어 있지만 타입 해석을 위해 명시적으로 설치하는 것을 권장합니다.
 
 ---
 
@@ -82,7 +82,7 @@ my-app/
 
 ```ts
 import 'reflect-metadata';
-import { Application } from '@kabyeon/nexusjs';
+import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
 const app = new Application(AppModule);
@@ -94,7 +94,7 @@ console.log('[nexus] http://localhost:3000 에서 수신 대기 중');
 ### `app/app.module.ts`
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
@@ -106,13 +106,13 @@ export class AppModule {}
 ### `app/controllers/home.controller.ts`
 
 ```ts
-import { Controller, Get } from '@kabyeon/nexusjs';
+import { Controller, Get } from '@nexusts/core';
 
 @Controller('/')
 export class HomeController {
   @Get('/')
   index() {
-    return { message: '안녕하세요, NexusJS!' };
+    return { message: '안녕하세요, NexusTS!' };
   }
 }
 ```
@@ -136,7 +136,7 @@ bun app/main.ts
 
 ```bash
 $ curl http://localhost:3000/
-{"message":"안녕하세요, NexusJS!"}
+{"message":"안녕하세요, NexusTS!"}
 ```
 
 ---

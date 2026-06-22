@@ -1,7 +1,7 @@
 # User Guide · 사용자 메뉴얼
 
-Step-by-step guides for building applications with NexusJS.
-NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
+Step-by-step guides for building applications with NexusTS.
+NexusTS로 애플리케이션을 개발하기 위한 단계별 가이드.
 
 | Guide | English | 한국어 |
 | ----- | ------- | ------ |
@@ -44,7 +44,7 @@ NexusJS로 애플리케이션을 개발하기 위한 단계별 가이드.
 
 ## Reading order · 읽는 순서
 
-If you're new to NexusJS, read in this order:
+If you're new to NexusTS, read in this order:
 처음이시면 다음 순서로 읽으세요.
 
 1. **Getting started** — install, scaffold, run.
@@ -66,5 +66,5 @@ If you're new to NexusJS, read in this order:
 - TypeScript decorators require `experimentalDecorators: true` in
   `tsconfig.json` (and `emitDecoratorMetadata: true` if you want bare-type
   constructor injection).
-- Imports use the public entry point `@kabyeon/nexusjs` unless the example
+- Imports use the public entry point `@nexusts/core` unless the example
   intentionally demonstrates a deep import.

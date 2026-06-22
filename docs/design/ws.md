@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`ws.ko.md`](./ws.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/ws`:
+This document explains the architecture of `@nexusts/ws`:
 the gateway decorator pattern, runtime adapters (Bun vs Node),
 room-based broadcasting, and lifecycle hooks.
 
@@ -181,7 +181,7 @@ The decorators store metadata via `Reflect.defineMetadata`:
 - **Namespaced rooms** — scoped per gateway path (e.g., `/chat/lobby`
   vs `/game/lobby`).
 - **Auto-reconnect** — client-side helper for resiliency.
-- **Rate limiting per connection** — integrate with `nexusjs/limiter`
+- **Rate limiting per connection** — integrate with `nexusts/limiter`
   for per-WebSocket message rate limits.
 - **Statistics** — active connections, messages/sec, room sizes.
 

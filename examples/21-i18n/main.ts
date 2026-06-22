@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Ctx, Inject, Injectable } from "@kabyeon/nexusjs";
-import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@kabyeon/nexusjs/i18n";
+import { Application, Module, Controller, Get, Ctx, Inject, Injectable } from "@nexusts/core";
+import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@nexusts/i18n";
 
 /**
  * 21-i18n — multi-language messages.

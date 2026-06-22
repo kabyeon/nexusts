@@ -2,7 +2,7 @@
 
 > English version: [`crypto.md`](./crypto.md)
 
-이 문서는 `@kabyeon/nexusjs/crypto`의 아키텍처를 설명한다: AES-256-GCM
+이 문서는 `@nexusts/crypto`의 아키텍처를 설명한다: AES-256-GCM
 암호화, HMAC 기반 서명, 패스워드 해싱 (scrypt와 argon2), 그리고
 purpose-tagged 서명 스킴.
 

@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`cli.ko.md`](./cli.ko.md)
 
-This document explains the architecture of `@kabyeon/nexusjs/cli`:
+This document explains the architecture of `@nexusts/cli`:
 the `nx` command runner, scaffold generators, code templates, the
 config loader, and the REPL.
 
@@ -184,8 +184,8 @@ The CLI runs on both Bun and Node.js:
 - **Node.js**: falls back to `fs/promises` and Node's built-in `repl`.
   TypeScript parsing requires `tsx` or `ts-node` to load `nx.config.ts`.
 
-Runtime detection is the same pattern as `nexusjs/redis` and
-`nexusjs/ws`:
+Runtime detection is the same pattern as `nexusts/redis` and
+`nexusts/ws`:
 
 ```ts
 const isBun = typeof Bun !== 'undefined';

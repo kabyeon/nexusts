@@ -12,14 +12,14 @@ your project's chosen routing style, view engine, ORM, and database.
 
 ## 1. Install
 
-The CLI is part of the `@kabyeon/nexusjs` package — no extra dependency:
+The CLI is part of the `@nexusts/core` package — no extra dependency:
 
 ```bash
 bun add nexus reflect-metadata zod hono
 ```
 
 After install, `bunx nx ...` works automatically via the `bin` entry
-in `@kabyeon/nexusjs/package.json`.
+in `@nexusts/package.json`.
 
 ---
 
@@ -402,11 +402,11 @@ nx make:crud Post --no-interaction --style nest --view inertia --orm drizzle
 
 ## 11. Programmatic API
 
-Every CLI module is also importable from `@kabyeon/nexusjs/cli`:
+Every CLI module is also importable from `@nexusts/cli`:
 
 ```ts
-import { loadConfig, render, parseArgs } from '@kabyeon/nexusjs/cli';
-import controllerTemplate from '@kabyeon/nexusjs/cli/templates/controller/nest.js';
+import { loadConfig, render, parseArgs } from '@nexusts/cli';
+import controllerTemplate from '@nexusts/cli/templates/controller/nest.js';
 
 const config = await loadConfig();
 const code = render(controllerTemplate, {
@@ -427,8 +427,8 @@ This is what the `make:*` commands do internally.
 
 ```ts
 // src/cli/commands/make-feature.ts
-import type { Command, CommandContext } from '@kabyeon/nexusjs/cli';
-import { logger, writeFile, render } from '@kabyeon/nexusjs/cli';
+import type { Command, CommandContext } from '@nexusts/cli';
+import { logger, writeFile, render } from '@nexusts/cli';
 
 export default {
   name: 'make:feature',

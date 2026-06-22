@@ -1,8 +1,8 @@
-# GraphQL · `@kabyeon/nexusjs/graphql`
+# GraphQL · `@nexusts/graphql`
 
 > 한국어 버전: [`graphql.ko.md`](./graphql.ko.md)
 
-Add a GraphQL endpoint to your NexusJS application with a single
+Add a GraphQL endpoint to your NexusTS application with a single
 `@Module({ imports: [...] })` entry. The framework ships an
 SDL-first GraphQL adapter that mounts a `/graphql` endpoint, an
 introspection-friendly playground, and an SDL debug view, all
@@ -15,7 +15,7 @@ bun add graphql       # the only peer-dep you need
 ```
 
 ```ts
-import { GraphQLModule } from "@kabyeon/nexusjs/graphql";
+import { GraphQLModule } from "@nexusts/graphql";
 
 @Module({
   imports: [
@@ -197,17 +197,17 @@ The framework forwards `subscribe` to graphql-js as-is.
 
 ## The peer-dep story
 
-`@kabyeon/nexusjs/graphql` does **not** bundle the `graphql`
+`@nexusts/graphql` does **not** bundle the `graphql`
 package. It's a peer-dep you install yourself. The reason is
 bundle size — a typical app uses REST or one of the other
-NexusJS modules, not GraphQL, and we don't want the graphql
+NexusTS modules, not GraphQL, and we don't want the graphql
 parser/executor in every bundle.
 
 If you forget to install `graphql`, the first attempt to use
 the service will throw:
 
 ```
-[nexusjs/graphql] The `graphql` package is required for execution.
+[nexusts/graphql] The `graphql` package is required for execution.
 Install it with `bun add graphql`. Original error: ...
 ```
 

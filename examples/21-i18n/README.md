@@ -1,6 +1,6 @@
 # 21 · i18n
 
-Multi-language messages with `@kabyeon/nexusjs/i18n`.
+Multi-language messages with `@nexusts/i18n`.
 
 ## What it shows
 
@@ -31,8 +31,8 @@ curl http://localhost:3000/greet?lang=ja
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Ctx, Inject, Injectable } from "@kabyeon/nexusjs";
-import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@kabyeon/nexusjs/i18n";
+import { Application, Module, Controller, Get, Ctx, Inject, Injectable } from "@nexusts/core";
+import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@nexusts/i18n";
 
 const messages = {
   en: { greeting: "Hello, {name}!" },

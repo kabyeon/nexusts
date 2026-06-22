@@ -1,13 +1,13 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable, Inject } from "@kabyeon/nexusjs";
+import { Application, Module, Controller, Get, Injectable, Inject } from "@nexusts/core";
 import {
   WebSocketService, WebSocketModule,
   WebSocketGateway,
   OnWebSocketOpen, OnWebSocketMessage, OnWebSocketClose,
-} from "@kabyeon/nexusjs/ws";
+} from "@nexusts/ws";
 
 /**
- * 10-websocket — real-time chat with @kabyeon/nexusjs/ws.
+ * 10-websocket — real-time chat with @nexusts/ws.
  *
  *   WS /chat   — broadcast "message" events to all connected clients.
  *

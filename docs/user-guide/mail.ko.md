@@ -1,8 +1,8 @@
-# 이메일 · `@kabyeon/nexusjs/mail`
+# 이메일 · `@nexusts/mail`
 
 > English version: [`mail.md`](./mail.md)
 
-`@kabyeon/nexusjs/mail`은 플러그 가능한 트랜스포트를 갖춘 발신 이메일
+`@nexusts/mail`은 플러그 가능한 트랜스포트를 갖춘 발신 이메일
 전송을 제공합니다: SMTP(nodemailer 기반), 개발용 파일 기반 `.eml` 출력,
 테스트용 널 트랜스포트.
 
@@ -10,11 +10,11 @@
 
 ## 설치
 
-mail 모듈은 `@kabyeon/nexusjs` **내부**에 포함되어 있습니다 — 파일 또는
+mail 모듈은 `@nexusts/core` **내부**에 포함되어 있습니다 — 파일 또는
 널 트랜스포트 사용 시 추가 설치가 필요 없습니다.
 
 ```ts
-import { MailModule } from '@kabyeon/nexusjs/mail';
+import { MailModule } from '@nexusts/mail';
 ```
 
 선택적 피어 의존성:
@@ -29,8 +29,8 @@ bun add mjml                    # renderMjml() 사용 시
 ## 빠른 시작
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
-import { MailModule, NullTransport } from '@kabyeon/nexusjs/mail';
+import { Module } from '@nexusts/core';
+import { MailModule, NullTransport } from '@nexusts/mail';
 
 @Module({
   imports: [
@@ -50,7 +50,7 @@ export class AppModule {}
 ### SMTP (프로덕션)
 
 ```ts
-import { SmtpTransport } from '@kabyeon/nexusjs/mail';
+import { SmtpTransport } from '@nexusts/mail';
 
 MailModule.forRoot({
   transport: new SmtpTransport({
@@ -73,7 +73,7 @@ MailModule.forRoot({
 모든 발신 메시지를 `.eml` 파일로 기록합니다:
 
 ```ts
-import { FileTransport } from '@kabyeon/nexusjs/mail';
+import { FileTransport } from '@nexusts/mail';
 
 MailModule.forRoot({
   transport: new FileTransport({
@@ -92,7 +92,7 @@ MailModule.forRoot({
 모든 메시지를 폐기합니다. 전송된 메시지를 검사용으로 캡처:
 
 ```ts
-import { NullTransport } from '@kabyeon/nexusjs/mail';
+import { NullTransport } from '@nexusts/mail';
 
 const transport = new NullTransport();
 

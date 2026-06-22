@@ -1,6 +1,6 @@
 # 16 · Mail
 
-Send emails via SMTP, file transport, or null (test) with `@kabyeon/nexusjs/mail`.
+Send emails via SMTP, file transport, or null (test) with `@nexusts/mail`.
 
 ## What it shows
 
@@ -31,8 +31,8 @@ ls outbox/
 
 ```ts
 import "reflect-metadata";
-import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@kabyeon/nexusjs";
-import { MailService, MailModule } from "@kabyeon/nexusjs/mail";
+import { Application, Module, Controller, Post, Body, Inject, Injectable } from "@nexusts/core";
+import { MailService, MailModule } from "@nexusts/mail";
 
 @Injectable()
 @Controller("/mail")
@@ -68,7 +68,7 @@ await app.listen(3000);
 ## SMTP transport
 
 ```ts
-import { SmtpTransport } from "@kabyeon/nexusjs/mail";
+import { SmtpTransport } from "@nexusts/mail";
 MailModule.forRoot({
   transport: new SmtpTransport({
     host: "smtp.example.com",

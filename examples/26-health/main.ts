@@ -1,6 +1,6 @@
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { HealthModule, HealthIndicator } from "@kabyeon/nexusjs/health";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { HealthModule, HealthIndicator } from "@nexusts/health";
 
 /**
  * 26-health — liveness + readiness endpoints with a custom indicator.

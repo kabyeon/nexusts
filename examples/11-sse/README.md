@@ -1,6 +1,6 @@
 # 11 · Server-Sent Events
 
-Server-push streaming with `@kabyeon/nexusjs/sse`.
+Server-push streaming with `@nexusts/sse`.
 
 ## What it shows
 
@@ -26,8 +26,8 @@ curl -N http://localhost:3000/events/timeseries
 ```ts
 // main.ts
 import "reflect-metadata";
-import { Application, Module, Controller, Get, Injectable } from "@kabyeon/nexusjs";
-import { sse, SseStream } from "@kabyeon/nexusjs/sse";
+import { Application, Module, Controller, Get, Injectable } from "@nexusts/core";
+import { sse, SseStream } from "@nexusts/sse";
 
 @Injectable()
 @Controller("/events")

@@ -2,7 +2,7 @@
 
 > English version: [`limiter.md`](./limiter.md)
 
-이 문서는 `@kabyeon/nexusjs/limiter`의 아키텍처를 설명한다: 세 가지
+이 문서는 `@nexusts/limiter`의 아키텍처를 설명한다: 세 가지
 전략, 백엔드 스토리지 인터페이스, 글로벌 규칙과 데코레이터의 상호작용,
 미들웨어 파이프라인.
 

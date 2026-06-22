@@ -1,8 +1,8 @@
-# GraphQL · `@kabyeon/nexusjs/graphql`
+# GraphQL · `@nexusts/graphql`
 
 > English version: [`graphql.md`](./graphql.md)
 
-`@Module({ imports: [...] })` 한 줄로 NexusJS 앱에 GraphQL
+`@Module({ imports: [...] })` 한 줄로 NexusTS 앱에 GraphQL
 엔드포인트를 추가한다. 프레임워크는 SDL-first GraphQL 어댑터를
 출시하며, `/graphql` 엔드포인트, introspection-friendly
 playground, SDL debug 뷰를 모두 마운트한다. 백엔드는 표준
@@ -15,7 +15,7 @@ bun add graphql       # 유일한 peer-dep
 ```
 
 ```ts
-import { GraphQLModule } from "@kabyeon/nexusjs/graphql";
+import { GraphQLModule } from "@nexusts/graphql";
 
 @Module({
   imports: [
@@ -193,15 +193,15 @@ resolvers: {
 
 ## peer-dep 관련
 
-`@kabyeon/nexusjs/graphql`는 `graphql` 패키지를 번들하지 **않는다**.
+`@nexusts/graphql`는 `graphql` 패키지를 번들하지 **않는다**.
 사용자가 직접 설치하는 peer-dep이다. 이유는 번들 크기 — 일반적인
-앱은 GraphQL이 아니라 REST나 다른 NexusJS 모듈을 사용하므로 모든
+앱은 GraphQL이 아니라 REST나 다른 NexusTS 모듈을 사용하므로 모든
 번들에 graphql 파서/실행기가 들어가지 않게 하려는 것이다.
 
 `graphql` 설치를 잊으면 첫 사용 시 명확한 에러:
 
 ```
-[nexusjs/graphql] The `graphql` package is required for execution.
+[nexusts/graphql] The `graphql` package is required for execution.
 Install it with `bun add graphql`. Original error: ...
 ```
 

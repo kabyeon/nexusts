@@ -139,7 +139,7 @@ spawn("bun", ["run", mainTs], { cwd, env, stdio: ["ignore", "pipe", "pipe"] });
 
    ```
    examples/28-my-feature/
-   ├── main.ts        # "@kabyeon/nexusjs" 로 import (로컬 path alias 없음)
+   ├── main.ts        # "@nexusts/core" 로 import (로컬 path alias 없음)
    ├── README.md      # 영문, "How to run" / `bun main.ts` 블록 포함
    └── (선택) views/, public/, proto/, …
    ```

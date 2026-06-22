@@ -2,7 +2,7 @@
 
 > English version: [`drive.md`](./drive.md)
 
-이 문서는 `@kabyeon/nexusjs/drive`의 아키텍처를 설명한다:
+이 문서는 `@nexusts/drive`의 아키텍처를 설명한다:
 `StorageDriver` 인터페이스, 세 가지 내장 드라이버, 서명된 URL 추상화,
 경로 안전성.
 

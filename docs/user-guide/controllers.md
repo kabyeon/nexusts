@@ -8,14 +8,14 @@ Inertia page).
 
 ## 1. Three routing styles
 
-NexusJS supports **three** styles side-by-side — pick the one that fits
+NexusTS supports **three** styles side-by-side — pick the one that fits
 each route.
 
 ### 1.1 Nest style (class decorators)
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Validate } from '@kabyeon/nexusjs';
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Query, Validate } from '@nexusts/core';
 import { UserService } from '../services/user.service.js';
 
 const CreateUserSchema = z.object({
@@ -102,7 +102,7 @@ fit a controller shape.
 | `@Repository()` | class | Same as `@Injectable()`, named for repositories |
 
 ```ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { UserController } from './controllers/user.controller.js';
 import { UserService } from './services/user.service.js';
 import { UserRepository } from './repositories/user.repository.js';
@@ -332,7 +332,7 @@ A complete controller with DI, validation, and error handling:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Get, Inject, Param, Post, Validate } from '@kabyeon/nexusjs';
+import { Body, Controller, Get, Inject, Param, Post, Validate } from '@nexusts/core';
 import { UserService } from '../services/user.service.js';
 
 const CreateUserSchema = z.object({
@@ -367,7 +367,7 @@ export class UserController {
 
 ```ts
 // user.module.ts
-import { Module } from '@kabyeon/nexusjs';
+import { Module } from '@nexusts/core';
 import { UserController } from '../controllers/user.controller.js';
 import { UserService } from '../services/user.service.js';
 
