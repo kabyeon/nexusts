@@ -9,7 +9,7 @@ import {
 	createHttpGuard,
 	executeHttpGuards,
 } from "@nexusts/core";
-import type { HttpExecutionContext } from "@nexusts/core";
+
 
 describe("createHttpGuard", () => {
 	it("creates a guard class from a function", async () => {
@@ -134,7 +134,12 @@ describe("RolesGuard", () => {
 	});
 });
 
-function makeMockCtx(req: Request): HttpExecutionContext {
+function makeMockCtx(req: Request): {
+	type: "http";
+	getRequest(): Request;
+	getHandler(): string;
+	getController(): string;
+} {
 	return {
 		type: "http" as const,
 		getRequest: () => req,

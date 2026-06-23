@@ -2,7 +2,7 @@
  * Tests for interceptors.
  */
 import "reflect-metadata";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
 	createInterceptor,
 	composeInterceptors,
@@ -13,7 +13,7 @@ import type { ExecutionContext } from "@nexusts/core";
 
 describe("createInterceptor", () => {
 	it("creates an interceptor class from a function", async () => {
-		const Cls = createInterceptor(async (ctx, next) => {
+		const Cls = createInterceptor(async (_ctx, next) => {
 			const result = await next();
 			return `wrapped(${result})`;
 		});
@@ -147,8 +147,11 @@ describe("TimeoutInterceptor", () => {
 function makeMockCtx(): ExecutionContext {
 	return {
 		type: "http" as const,
+		// The ExecutionContext interface doesn't have getRequest(), but
+		// LoggingInterceptor calls isHttpContext() which checks type === "http"
+		// and then follows with getRequest(). We add it as a duck-typed member.
 		getRequest: () => new Request("http://localhost/test"),
 		getHandler: () => "testMethod",
 		getController: () => "TestController",
-	};
+	} as any;
 }

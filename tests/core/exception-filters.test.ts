@@ -2,14 +2,22 @@
  * Tests for exception filters and HttpException.
  */
 import "reflect-metadata";
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
 	HttpException,
 	createExceptionFilter,
 	createDefaultExceptionFilter,
 	executeExceptionFilters,
 } from "@nexusts/core";
-import type { ExceptionFilter, HttpExecutionContext } from "@nexusts/core";
+
+
+/** Minimal execution context shape for testing. */
+interface MinimalFilterCtx {
+	type: "http";
+	getRequest(): Request;
+	getHandler(): string;
+	getController(): string;
+}
 
 describe("HttpException", () => {
 	it("creates with status code and message", () => {
@@ -83,7 +91,7 @@ describe("HttpException", () => {
 
 describe("createExceptionFilter", () => {
 	it("creates a filter from a function", async () => {
-		const filter = createExceptionFilter((error, ctx) => {
+		const filter = createExceptionFilter((error, _ctx) => {
 			return new Response(`Caught: ${(error as Error).message}`, { status: 400 });
 		});
 		expect(filter).toHaveProperty("catch");
@@ -143,7 +151,7 @@ describe("executeExceptionFilters", () => {
 		const filter1 = createExceptionFilter(() => {
 			throw new Error("skip me");
 		});
-		const filter2 = createExceptionFilter(async (error) => {
+		const filter2 = createExceptionFilter(async (_error) => {
 			return new Response("handled", { status: 200 });
 		});
 		const ctx = makeMockContext();
@@ -171,7 +179,7 @@ describe("executeExceptionFilters", () => {
 	});
 });
 
-function makeMockContext(): HttpExecutionContext {
+function makeMockContext(): MinimalFilterCtx {
 	return {
 		type: "http" as const,
 		getRequest: () => new Request("http://localhost/"),

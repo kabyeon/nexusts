@@ -16,7 +16,6 @@
  * ```
  */
 import fs from "node:fs";
-import path from "node:path";
 
 /**
  * Generate migration files using drizzle-kit.

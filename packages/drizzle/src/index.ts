@@ -46,33 +46,33 @@ export { generateMigrations, pushSchema } from "./migrations.js";
 // ============================================================================
 
 // Comparison — short chain, always resolves.
-export { eq, ne, gt, gte, lt, lte } from "drizzle-orm";
-export { and, or } from "drizzle-orm";
-export { like, ilike } from "drizzle-orm";
-export { inArray, notInArray } from "drizzle-orm";
-export { isNull, isNotNull } from "drizzle-orm";
-export { sql } from "drizzle-orm";
-export { asc, desc } from "drizzle-orm";
+export {
+	eq, ne, gt, gte, lt, lte,
+	and, or,
+	like, ilike,
+	inArray, notInArray,
+	isNull, isNotNull,
+	sql, asc, desc,
+} from "drizzle-orm";
 
-// Deep chain — available at runtime, ts-expect-error because TS hits
-// the re-export depth limit through drizzle-orm's barrel files.
-
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
+// Deep chain — available at runtime. @ts-expect-error because TS 5.9
+// hits the re-export depth limit through drizzle-orm's barrel files.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
 export { not } from "drizzle-orm";
 
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
 export { notLike, notIlike } from "drizzle-orm";
 
-// @ts-expect-error — runtime export from drizzle-orm/relations
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error — runtime export from drizzle-orm/relations
 export { relations } from "drizzle-orm";
 
-// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error — runtime export from drizzle-orm/sql/expressions/conditions
 export { between, notBetween } from "drizzle-orm";
 
-// @ts-expect-error — runtime export from drizzle-orm/sql/functions/aggregate
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-expect-error — runtime export from drizzle-orm/sql/functions/aggregate
 export { count, sum, avg, min, max } from "drizzle-orm";
