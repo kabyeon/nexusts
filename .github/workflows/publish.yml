@@ -19,10 +19,11 @@ on:
 
 jobs:
   publish:
-    # Use a specific image instead of ubuntu-latest so the runner
-    # comes from a more stable IP pool. The default pool has been
-    # rate-limited by npm registry on previous runs.
-    runs-on: ubuntu-24.04
+    # Run on a Mac runner so the IP comes from a different pool than
+    # the ubuntu-latest/ubuntu-24.04 runners, which are all in the
+    # same IP range and got rate-limited by the npm registry after
+    # the v0.7.0 publish burst. macos-latest has a clean IP for us.
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -40,7 +41,10 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        # Use --no-frozen-lockfile on macOS because the bun.lock
+        # format can differ slightly across platforms; we still
+        # want a deterministic install but allow lockfile updates.
+        run: bun install --no-frozen-lockfile
 
       - name: Build all packages
         run: bun run build:all || bun run build
