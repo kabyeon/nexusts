@@ -1,29 +1,29 @@
 name: Publish packages to npm
 
-# This workflow publishes all 31 packages to npm. Triggers:
+# Publishes all 31 packages to npm. Triggers:
 #   - on release (auto-publish on GitHub release)
-#   - on workflow_dispatch (manual trigger; choose dry-run or publish)
+#   - on workflow_dispatch (manual trigger; choose publish, dry-run, or build)
 #
-# Both paths now share the same publish step so manual triggers
-# can also do real publishes (useful when the auto-publish run
-# hit a transient npm rate limit).
+# Triggers a real publish via workflow_dispatch with mode=publish
+# when the auto-publish run hit a transient npm rate limit.
 on:
   release:
     types: [published]
   workflow_dispatch:
     inputs:
       mode:
-        description: "publish, dry-run, or build"
+        description: "publish | dry-run | build"
         required: false
         default: "dry-run"
 
 jobs:
   publish:
-    # Run on a Mac runner so the IP comes from a different pool than
-    # the ubuntu-latest/ubuntu-24.04 runners, which are all in the
-    # same IP range and got rate-limited by the npm registry after
-    # the v0.7.0 publish burst. macos-latest has a clean IP for us.
-    runs-on: macos-latest
+    # Use ubuntu-22.04 to access a different runner pool than the
+    # default ubuntu-latest / ubuntu-24.04 — those pools share IPs
+    # that got rate-limited by the npm registry after the v0.7.0
+    # publish burst. ubuntu-22.04 is also faster to spin up than
+    # macos-latest (which we tried and it still hit the same IP).
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
     steps:
       - name: Checkout
@@ -41,32 +41,43 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        # Use --no-frozen-lockfile on macOS because the bun.lock
-        # format can differ slightly across platforms; we still
-        # want a deterministic install but allow lockfile updates.
         run: bun install --no-frozen-lockfile
 
       - name: Build all packages
         run: bun run build:all || bun run build
 
+      # Real publish path: fires on release events AND on manual
+      # workflow_dispatch with mode=publish.
       - name: Publish to npm
         if: >
           github.event_name == 'release'
           || (github.event_name == 'workflow_dispatch'
-              && (inputs.mode == 'publish' || inputs.mode == ''))
+              && inputs.mode == 'publish')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun run scripts/publish.ts
 
-      - name: Dry run (no actual publish)
+      # Validation path: only on manual dispatch with default
+      # (dry-run) mode — checks that every package.json parses.
+      - name: Dry run (validate package.json)
         if: >
           github.event_name == 'workflow_dispatch'
           && inputs.mode == 'dry-run'
         run: |
-          echo "Dry run — checking package.json validity for all 31 packages"
+          echo "Dry run — checking package.json validity"
           for pkg in packages/*/; do
             if [ -f "$pkg/package.json" ]; then
               echo "✓ $pkg/package.json"
               node -e "JSON.parse(require('fs').readFileSync('$pkg/package.json', 'utf8'))" || exit 1
             fi
           done
+
+      # Build-only path: useful for verifying the build step in
+      # isolation without touching the registry.
+      - name: Build only (no publish, no validation)
+        if: >
+          github.event_name == 'workflow_dispatch'
+          && inputs.mode == 'build'
+        run: |
+          echo "Build only — no publish, no validation"
+          bun run build:all
