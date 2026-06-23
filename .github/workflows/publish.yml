@@ -1,25 +1,27 @@
 name: Publish packages to npm
 
-# This workflow publishes all 31 packages to npm when a release is
-# published. It runs the workspace-aware publish script after
-# building all packages.
-
+# This workflow publishes all 31 packages to npm. Triggers:
+#   - on release (auto-publish on GitHub release)
+#   - on workflow_dispatch (manual trigger; choose dry-run or publish)
+#
+# Both paths now share the same publish step so manual triggers
+# can also do real publishes (useful when the auto-publish run
+# hit a transient npm rate limit).
 on:
   release:
     types: [published]
   workflow_dispatch:
     inputs:
-      dry-run:
-        description: "Dry run (don't actually publish)"
+      mode:
+        description: "publish, dry-run, or build"
         required: false
-        default: "true"
+        default: "dry-run"
 
 jobs:
   publish:
     # Use a specific image instead of ubuntu-latest so the runner
-    # comes from a different IP pool. This avoids the npm registry's
-    # per-IP rate limit (429) when many packages are published in
-    # quick succession.
+    # comes from a more stable IP pool. The default pool has been
+    # rate-limited by npm registry on previous runs.
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -44,13 +46,18 @@ jobs:
         run: bun run build:all || bun run build
 
       - name: Publish to npm
-        if: github.event_name == 'release'
+        if: >
+          github.event_name == 'release'
+          || (github.event_name == 'workflow_dispatch'
+              && (inputs.mode == 'publish' || inputs.mode == ''))
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: bun run scripts/publish.ts
 
       - name: Dry run (no actual publish)
-        if: github.event_name == 'workflow_dispatch' && inputs.dry-run == 'true'
+        if: >
+          github.event_name == 'workflow_dispatch'
+          && inputs.mode == 'dry-run'
         run: |
           echo "Dry run — checking package.json validity for all 31 packages"
           for pkg in packages/*/; do
