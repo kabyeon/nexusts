@@ -189,12 +189,31 @@ for (const pkg of publishOrder) {
 		console.error(`[publish] ✖ ${pkgJson.name}@${pkgJson.version} failed`);
 	}
 
-	// Always wait between publishes to be a good citizen of the npm
-	// registry and avoid 429s on subsequent packages.
+	// Wait between publishes to be a good citizen of the npm
+	// registry. The delay scales with the number of packages still
+	// pending so a small re-run after a partial failure is fast
+	// while a fresh first-time publish of 31 packages gives the
+	// registry plenty of breathing room.
+	//
+	// Tunable via env:
+	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 30_000)
+	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 600_000 = 10 min)
+	//   PUBLISH_BATCH_BREAK_N   — packages per break (default 5)
 	if (pkg !== publishOrder[publishOrder.length - 1]) {
-		const between = 3_000;
-		console.log(`[publish] waiting ${between / 1000}s before next package…`);
-		await new Promise((r) => setTimeout(r, between));
+		const remaining = publishOrder.length - publishOrder.indexOf(pkg) - 1;
+		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 30_000);
+		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 600_000);
+		const batchN = Number(process.env.PUBLISH_BATCH_BREAK_N ?? 5);
+
+		const publishedSoFar = publishOrder.length - remaining;
+		const isAtBoundary = publishedSoFar > 0 && publishedSoFar % batchN === 0;
+		const waitMs = isAtBoundary ? batchBreak : batchDelay;
+		const waitLabel = isAtBoundary ? "batch break" : "between packages";
+
+		console.log(
+			`[publish] waiting ${(waitMs / 1000).toFixed(0)}s before next package (${waitLabel}; ${remaining} remaining)…`,
+		);
+		await new Promise((r) => setTimeout(r, waitMs));
 	}
 }
 
