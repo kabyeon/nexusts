@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -27,10 +27,12 @@ bun add @nexusts/drizzle
 ## Peer dependencies
 
 ```bash
-bun add drizzle-orm + driver (e.g. better-sqlite3, postgres, pg, mysql2)
+bun add drizzle-orm
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`drizzle-orm`** ^0.36.0 — ORM integration; required only if you use Drizzle. Also install a driver (e.g. better-sqlite3, pg, mysql2, postgres).
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 

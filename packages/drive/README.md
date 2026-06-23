@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -26,7 +26,7 @@ bun add @nexusts/drive
 
 ## Peer dependencies
 
-None. This module is fully self-contained.
+**None.** No external dependencies for the memory / local backends. The S3 / R2 backends require an AWS SDK; install only if you use them.
 
 ## Usage
 

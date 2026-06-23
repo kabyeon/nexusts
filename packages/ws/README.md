@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -27,10 +27,12 @@ bun add @nexusts/ws
 ## Peer dependencies
 
 ```bash
-bun add ws (Node only)
+bun add ws
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`ws`** ^8.18.0 — Required on Node.js. On Bun the WebSocket runtime is built in, so you can skip this dependency.
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 

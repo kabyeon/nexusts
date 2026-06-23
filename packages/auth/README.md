@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -30,7 +30,9 @@ bun add @nexusts/auth
 bun add better-auth
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`better-auth`** ^1.6.0 — Authentication provider required by this module.
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 

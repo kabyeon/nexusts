@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -26,7 +26,7 @@ bun add @nexusts/view
 
 ## Peer dependencies
 
-None. This module is fully self-contained.
+**None.** No external dependencies for Rendu / Edge / Eta. Inertia.js React requires `react` and `@inertiajs/react`; Inertia.js Vue requires `vue` and `@inertiajs/vue3`.
 
 ## Usage
 

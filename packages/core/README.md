@@ -17,7 +17,7 @@
 ## Install
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 npx @nexusts/core init
 ```
 
@@ -27,24 +27,43 @@ That's it. No additional dependencies required to get a working app.
 
 `@nexusts/core` is enough for most apps. Add individual `@nexusts/*` packages
 as you need them — each is a separately-installed npm package with its own
-peer dependencies.
+peer dependencies. The peer deps below are **optional** — the module
+loads without them, but its public methods throw a clear error pointing
+to the install command on first call.
 
 | Module | What it adds | Extra install |
 | ------ | ------------ | ------------- |
 | `@nexusts/auth` | better-auth integration | `bun add better-auth` |
-| `@nexusts/graphql` | SDL-first GraphQL | `bun add graphql` |
-| `@nexusts/drizzle` | Drizzle ORM (default) | `bun add drizzle-orm` + driver |
-| `@nexusts/queue` | Background jobs (BullMQ) | `bun add bullmq ioredis` |
-| `@nexusts/redis` | Redis client | `bun add ioredis` |
-| `@nexusts/tracing` | OpenTelemetry | `bun add @opentelemetry/api` + SDK |
-| `@nexusts/metrics` | Prometheus | _(none)_ |
-| `@nexusts/ws` | WebSockets | `bun add ws` (Node only) |
-| `@nexusts/grpc` | gRPC server + client | _(none)_ |
-| `@nexusts/grpc` | gRPC server + client | _(none)_ |
-| ... | ... | ... |
+| `@nexusts/cache` | Application cache (memory / Drizzle) | _(none)_ |
+| `@nexusts/cli` | CLI command runner (`nx`) | _(none, bundled with core)_ |
+| `@nexusts/config` | Zod-validated configuration | _(none)_ |
+| `@nexusts/crypto` | AES-256-GCM + HMAC + scrypt/argon2 | _(none)_ |
+| `@nexusts/drive` | File storage (Local / S3 / R2 / memory) | _(none)_ |
+| `@nexusts/drizzle` | Drizzle ORM (default, 5 dialects) | `bun add drizzle-orm` |
+| `@nexusts/events` | Event emitter with wildcards / priorities | _(none)_ |
+| `@nexusts/graphql` | SDL-first GraphQL endpoint | `bun add graphql` |
+| `@nexusts/grpc` | gRPC server + client (reflection-based) | _(none)_ |
+| `@nexusts/health` | Health check endpoints | _(none)_ |
+| `@nexusts/i18n` | Internationalization (Intl-based) | _(none)_ |
+| `@nexusts/limiter` | Rate limiting (3 strategies) | _(none)_ |
+| `@nexusts/logger` | Pino-backed structured logging | _(none)_ |
+| `@nexusts/mail` | Outbound email (SMTP / File / Null) | _(none)_ |
+| `@nexusts/metrics` | Prometheus / OpenMetrics | _(none)_ |
+| `@nexusts/openapi` | OpenAPI 3.1 spec generation | _(none)_ |
+| `@nexusts/queue` | Background jobs (BullMQ / Cloudflare / memory) | `bun add bullmq` + `bun add ioredis` |
+| `@nexusts/redis` | Runtime-aware Redis client | `bun add ioredis` |
+| `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead | _(none)_ |
+| `@nexusts/schedule` | Cron scheduling (`@Cron` decorator) | _(none)_ |
+| `@nexusts/session` | Cookie / Memory / Drizzle sessions | _(none)_ |
+| `@nexusts/shield` | CSRF / HSTS / CSP security | _(none)_ |
+| `@nexusts/sse` | Server-Sent Events streaming | _(none)_ |
+| `@nexusts/static` | Static file serving (ETag / Range) | _(none)_ |
+| `@nexusts/tracing` | OpenTelemetry distributed tracing | `bun add @opentelemetry/api` |
+| `@nexusts/upload` | Multipart file upload | _(none)_ |
+| `@nexusts/view` | View engines + Inertia.js v2 | _(none)_ |
+| `@nexusts/ws` | WebSockets (Bun native / Node fallback) | `bun add ws` (Node only) |
 
 See [`docs/user-guide/`](../../docs/user-guide/) for the full module list.
-
 ## Usage
 
 ```typescript

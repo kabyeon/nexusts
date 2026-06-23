@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -30,7 +30,9 @@ bun add @nexusts/redis
 bun add ioredis
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`ioredis`** ^5.11.1 — Required for Redis-backed sessions / cache / limiter / queue. Skip if you use only the memory / Drizzle backends.
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 

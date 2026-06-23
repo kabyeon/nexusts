@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -27,10 +27,13 @@ bun add @nexusts/queue
 ## Peer dependencies
 
 ```bash
-bun add bullmq + ioredis
+bun add bullmq ioredis
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`bullmq`** ^5.79.0 — Required for the BullMQ backend. Skip if you only use the in-memory or Cloudflare backends.
+- **`ioredis`** ^5.11.1 — Required for the BullMQ backend's Redis connection. Skip if you only use the in-memory or Cloudflare backends.
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 

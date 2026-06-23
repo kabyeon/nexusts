@@ -15,7 +15,7 @@ This module is part of the NexusTS monorepo. Each module is published as its own
 Most apps start with just the core:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core
 ```
 
 Then add this module only if you need it:
@@ -27,10 +27,12 @@ bun add @nexusts/tracing
 ## Peer dependencies
 
 ```bash
-bun add @opentelemetry/api + SDK
+bun add @opentelemetry/api
 ```
 
-Required by this module. Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
+- **`@opentelemetry/api`** ^1.9.0 — OpenTelemetry API. Required to enable tracing.
+
+Without them the module loads but its public methods throw a clear error pointing to this install command on first call.
 
 ## Usage
 
