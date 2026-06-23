@@ -163,15 +163,23 @@ export const initCommand: Command = {
 			const exists = existsSync(abs);
 
 			if (entry.mode === "merge-pkg") {
-				// Always merge: never clobber an existing package.json.
-				// If missing, create a minimal one.
+				// Build deps based on context
+				const coreDeps: Record<string, string> = {
+					"@nexusts/core": "*",
+					"reflect-metadata": "^0.2.2",
+					hono: "^4.6.0",
+					zod: "^3.23.8",
+				};
+				if (orm === "drizzle") {
+					coreDeps["@nexusts/drizzle"] = "*";
+					coreDeps["drizzle-orm"] = "^0.45.0";
+				}
+				if (view !== "none") {
+					coreDeps["@nexusts/static"] = "*";
+				}
+
 				if (exists) {
-					mergePackageJson(abs, {
-						"@nexusts/core": "*",
-						"reflect-metadata": "^0.2.2",
-						hono: "^4.6.0",
-						zod: "^3.23.8",
-					});
+					mergePackageJson(abs, coreDeps);
 					merged.push(entry.path);
 				} else {
 					writeFileSync(
@@ -189,12 +197,7 @@ export const initCommand: Command = {
 									test: "vitest",
 									nx: "nx",
 								},
-								dependencies: {
-									"@nexusts/core": "*",
-									"reflect-metadata": "^0.2.2",
-									hono: "^4.6.0",
-									zod: "^3.23.8",
-								},
+								dependencies: coreDeps,
 							},
 							null,
 							2,
@@ -347,30 +350,46 @@ DATABASE_URL=app.db
 # DATABASE_URL=postgres://user:password@localhost:5432/myapp
 # SESSION_SECRET=my-local-secret
 `;
-		case "app/main.ts":
+		case "app/main.ts": {
+			const hasView = ctx.view !== "none";
+			const staticMw = hasView
+				? `import { StaticModule } from '@nexusts/static';\n`
+					+ `const staticMiddleware = StaticModule.mount({ root: './public', prefix: '/static' });\n`
+				: '';
+			const staticOpt = hasView ? '\n  middleware: [staticMiddleware],' : '';
 			return `import 'reflect-metadata';
 import { Application } from '@nexusts/core';
-import { StaticModule } from '@nexusts/static';
-import { AppModule } from './app.module.js';
+${staticMw}import { AppModule } from './app.module.js';
 
-const app = new Application(AppModule);
-// Serve ./public files under /static/*
-app.server.app.use('/static/*', StaticModule.mount({ root: './public', prefix: '/static' }));
+const app = new Application(AppModule, {
+  logging: true,
+  port: Number(process.env['PORT'] ?? 3000),${staticOpt}
+});
 
-const port = Number(process.env["PORT"] ?? 3000);
-await app.listen(port);
-console.log("[nexusjs] Listening on http://localhost:" + port);
+await app.listen();
+console.log('[nexus] Listening on http://localhost:' + (process.env['PORT'] ?? 3000));
 `;
-		case "app/app.module.ts":
-			return `import { Module } from '@nexusts/core';
+		}
+		case "app/app.module.ts": {
+			const hasOrm = ctx.orm === "drizzle";
+			const ormImport = hasOrm
+				? `import { DrizzleModule } from '@nexusts/drizzle';\n`
+				: '';
+			const forRootDialect = ctx.dbDriver === 'bun-sqlite' ? 'bun-sqlite' : 'sqlite';
+			const forRootFile = ctx.dbUrl || 'app.db';
+			const ormBlock = hasOrm
+				? '    DrizzleModule.forRoot({\n      dialect: \'' + forRootDialect + '\',\n      connection: { filename: \'' + forRootFile + '\' },\n      logging: true,\n    })'
+				: '';
+			return `${ormImport}import { Module } from '@nexusts/core';
 import { HomeController } from './controllers/home.controller.js';
 
 @Module({
-  imports: [],
+  imports: [${hasOrm ? `\n${ormBlock},\n` : ''}  ],
   controllers: [HomeController],
 })
 export class AppModule {}
 `;
+		}
 		case "app/controllers/home.controller.ts":
 			return `import { Controller, Get } from '@nexusts/core';
 

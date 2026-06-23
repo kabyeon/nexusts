@@ -10,7 +10,9 @@
 
 export default `
 import { Inject, Injectable } from '@nexusts/core';
-{{#hasRepo}}import { {{ repository }} } from '../repositories/{{ kebab }}.repository.js';{{/hasRepo}}
+{{#hasRepo}}import { eq } from '@nexusts/drizzle';
+import { {{ repository }} } from '../repositories/{{ kebab }}.repository.js';
+import { {{ snake }} } from '../models/{{ kebab }}.model.js';{{/hasRepo}}
 
 @Injectable()
 export class {{ name }}Service {
@@ -24,7 +26,7 @@ export class {{ name }}Service {
   }
 
   async findOne(id: number) {
-    {{#hasRepo}}return this.{{ repositoryCamel }}.findOne(id);{{/hasRepo}}
+    {{#hasRepo}}return this.{{ repositoryCamel }}.findOne(eq({{ snake }}.id, id));{{/hasRepo}}
     {{^hasRepo}}return { id }; // TODO: implement{{/hasRepo}}
   }
 
@@ -34,12 +36,12 @@ export class {{ name }}Service {
   }
 
   async update(id: number, data: any) {
-    {{#hasRepo}}return this.{{ repositoryCamel }}.update(id, data);{{/hasRepo}}
+    {{#hasRepo}}return this.{{ repositoryCamel }}.update(eq({{ snake }}.id, id), data);{{/hasRepo}}
     {{^hasRepo}}return { id, ...data }; // TODO: implement{{/hasRepo}}
   }
 
   async delete(id: number) {
-    {{#hasRepo}}return this.{{ repositoryCamel }}.delete(id);{{/hasRepo}}
+    {{#hasRepo}}return this.{{ repositoryCamel }}.delete(eq({{ snake }}.id, id));{{/hasRepo}}
     {{^hasRepo}}return { removed: id }; // TODO: implement{{/hasRepo}}
   }
 }

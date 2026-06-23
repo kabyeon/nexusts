@@ -71,13 +71,13 @@ const DIALECT_SPECS: Record<string, DialectSpec> = {
 		tsDateMode: "",
 	},
 	"bun-sqlite": {
-		imports: ["sqliteTable", "integer", "text", "real"],
+		imports: ["sqliteTable", "integer", "text"],
 		importPath: "drizzle-orm/sqlite-core",
 		tableFn: "sqliteTable",
 		idHelper: "integer",
 		idOpts: "{ autoIncrement: true }",
-		tsTimestamp: "integer",
-		tsDateMode: ", { mode: 'timestamp' }",
+		tsTimestamp: "text",
+		tsDateMode: "",
 	},
 	sqlite: {
 		imports: ["sqliteTable", "integer", "text", "real"],
