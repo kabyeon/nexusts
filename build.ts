@@ -18,6 +18,15 @@ import { spawnSync } from "node:child_process";
 const PACKAGES_DIR = "packages";
 const ENTRY = "src/index.ts";
 
+// Special entries that don't follow the standard src/index.ts pattern.
+const SPECIAL_ENTRIES: Record<string, Array<{ entry: string; outDir: string }>> = {
+	// The core package exposes the `nx` CLI binary at dist/cli/index.js.
+	// The CLI source lives in packages/cli/src/index.ts.
+	core: [
+		{ entry: "packages/cli/src/index.ts", outDir: "packages/core/dist/cli" },
+	],
+};
+
 console.log("[build] scanning packages/…");
 const packageDirs = readdirSync(PACKAGES_DIR, { withFileTypes: true })
 	.filter((e) => e.isDirectory())
@@ -37,6 +46,7 @@ for (const pkg of packageDirs) {
 		continue;
 	}
 
+	// Build the main entry (src/index.ts → dist/index.js)
 	const outDir = join(PACKAGES_DIR, pkg, "dist");
 	console.log(`[build] building @nexusts/${pkg}…`);
 	if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true });
@@ -66,6 +76,32 @@ for (const pkg of packageDirs) {
 
 	totalOutputs += result.outputs.length;
 	console.log(`[build] ✓ @nexusts/${pkg} (${result.outputs.length} files)`);
+
+	// Build any special entries (e.g., CLI binary for core package)
+	const specials = SPECIAL_ENTRIES[pkg];
+	if (specials) {
+		for (const sp of specials) {
+			const spResult = await Bun.build({
+				entrypoints: [sp.entry],
+				outdir: sp.outDir,
+				target: "bun",
+				format: "esm",
+				splitting: false,
+				minify: false,
+				sourcemap: "linked",
+				naming: "[dir]/[name].[ext]",
+				loader: { ".ts": "ts" },
+				packages: "external",
+			});
+			if (spResult.success) {
+				totalOutputs += spResult.outputs.length;
+				console.log(`[build] ✓ @nexusts/${pkg} (special: ${sp.entry})`);
+			} else {
+				console.error(`[build] ${pkg}: special build failed:`);
+				for (const log of spResult.logs) console.error(log);
+			}
+		}
+	}
 }
 
 console.log(`\n[build] done: ${totalOutputs} runtime files written`);

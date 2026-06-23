@@ -75,8 +75,9 @@ console.log(`\n  ✦  Scaffolding ${name}...\n`);
 const isBun = typeof Bun !== "undefined";
 const runner = isBun ? "bunx" : "npx";
 
-// Run @nexusts/core init in the target directory.
-const initArgs = ["@nexusts/core", "init", "--no-interaction", ...args.slice(1)];
+// Run @nexusts/cli init in the target directory.
+// @nexusts/cli exposes the `nx` binary which handles the `init` command.
+const initArgs = ["@nexusts/cli", "init", "--no-interaction", ...args.slice(1)];
 const child = spawn(runner, initArgs, {
 	cwd: target,
 	stdio: "inherit",
