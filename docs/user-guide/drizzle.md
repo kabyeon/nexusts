@@ -506,7 +506,128 @@ class DrizzleService {
 
 ---
 
-## 11. Closing gap with AdonisJS Lucid
+## 11. Re-exported drizzle-orm operators
+
+`@nexusts/drizzle` re-exports the most commonly used drizzle-orm operators
+so you can use them without an extra import:
+
+```ts
+import { eq, and, sql, like, inArray, isNull, asc, desc, count, relations } from '@nexusts/drizzle';
+
+// Instead of:
+// import { eq, and, sql, like, inArray, isNull, asc, desc, count, relations } from 'drizzle-orm';
+```
+
+Full list of re-exports:
+
+| Category | Operators |
+|----------|-----------|
+| Comparison | `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `between`, `notBetween` |
+| Logical | `and`, `or`, `not` |
+| Pattern | `like`, `ilike`, `notLike`, `notIlike` |
+| Array | `inArray`, `notInArray` |
+| Null | `isNull`, `isNotNull` |
+| Ordering | `asc`, `desc` |
+| Aggregates | `count`, `sum`, `avg`, `min`, `max` |
+| Other | `sql`, `relations` |
+
+---
+
+## 12. @Entity decorator
+
+The `@Entity()` decorator auto-injects the table schema into a
+`DrizzleRepository` subclass, so the constructor only needs
+`DrizzleService` — no need to pass the table explicitly.
+
+```ts
+import { Entity, DrizzleRepository, DrizzleService } from '@nexusts/drizzle';
+import { users } from '../schema/users.js';
+
+@Entity(users)
+class UserRepository extends DrizzleRepository<typeof users> {
+  // Only DrizzleService is needed in the constructor
+  constructor(db: DrizzleService) {
+    super(db, users);  // table is auto-injected
+  }
+}
+```
+
+Then use it like any other DI provider:
+
+```ts
+@Injectable()
+class UserService {
+  constructor(@Inject(UserRepository) private users: UserRepository) {}
+
+  async findAll() {
+    return this.users.findAll();
+  }
+}
+```
+
+---
+
+## 13. Validation schemas (Zod from Drizzle tables)
+
+`@nexusts/drizzle/validation` generates Zod schemas directly from your
+Drizzle table definitions, so your `@Validate()` decorators stay in sync
+with your database schema automatically.
+
+```ts
+import { z } from 'zod';
+import { createInsertSchema, createSelectSchema } from '@nexusts/drizzle/validation';
+import { users } from '../schema/users.js';
+
+const insertUserSchema = createInsertSchema(users);
+type InsertUser = z.infer<typeof insertUserSchema>;
+
+@Post('/users')
+@Validate({ body: insertUserSchema })
+async create(@Body() body: InsertUser) {
+  return this.users.create(body);
+}
+```
+
+Available helpers:
+
+| Helper | Purpose |
+|--------|---------|
+| `createSelectSchema(table)` | Full schema — all columns, required where `notNull` |
+| `createInsertSchema(table)` | Omits auto-generated columns (serial, timestamps with defaults) |
+| `createUpdateSchema(table)` | All fields optional — for PATCH endpoints |
+
+---
+
+## 14. Migration helpers
+
+`generateMigrations()` and `pushSchema()` wrap `drizzle-kit`
+programmatically — no CLI needed:
+
+```ts
+import { generateMigrations, pushSchema } from '@nexusts/drizzle';
+
+// Generate migration files from schema
+await generateMigrations({
+  schema: './src/schema',
+  out: './drizzle',
+  dialect: 'postgresql',
+});
+
+// Push schema directly (development only — not for production)
+await pushSchema({
+  schema: './src/schema',
+  dialect: 'sqlite',
+  url: './data.db',
+});
+```
+
+> These helpers create a temporary `drizzle.config.generated.ts`, run
+> `drizzle-kit generate` or `drizzle-kit push`, then clean up. They
+> require `drizzle-kit` to be installed (`bun add -d drizzle-kit`).
+
+---
+
+## 15. Closing gap with AdonisJS Lucid
 
 | AdonisJS Lucid | NexusTS drizzle equivalent |
 | -------------- | --------------------------- |
@@ -521,6 +642,10 @@ class DrizzleService {
 | Migration runner | `db.migrate(folder)` |
 | Lucid relations | Drizzle relations API (via `drizzle-orm`) |
 | `Database.rawQuery(sql, bindings)` | `db.rawQuery(sql, params)` / `db.raw\`...\`` |
+| Schema-based validation | `createInsertSchema(table)` — Zod from Drizzle tables |
+| Programmatic migrations | `generateMigrations()` — wraps drizzle-kit |
+| Repository auto-wiring | `@Entity(table)` decorator |
+| Re-exported operators | `eq`, `and`, `like`, `sql`, … from `@nexusts/drizzle` |
 | Multiple connection dialects | `DrizzleModule.forRoot({ dialect, ... })` |
 
 For users coming from Lucid, the `DrizzleRepository` class plus the
@@ -539,7 +664,7 @@ transparency and zero runtime overhead.
 
 ---
 
-## 12. See also
+## 16. See also
 
 - [`./cross-cutting-features.md`](./cross-cutting-features.md) — limiter, shield, cache, drive, mail
 - [`./production-basics.md`](./production-basics.md) — health, config, logger, static

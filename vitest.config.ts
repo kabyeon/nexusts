@@ -30,6 +30,7 @@ export default defineConfig({
 			{ find: /^@nexusts\/crypto$/, replacement: `${root}/packages/crypto/src/index.ts` },
 			{ find: /^@nexusts\/drive$/, replacement: `${root}/packages/drive/src/index.ts` },
 			{ find: /^@nexusts\/drizzle$/, replacement: `${root}/packages/drizzle/src/index.ts` },
+			{ find: /^@nexusts\/drizzle\/validation$/, replacement: `${root}/packages/drizzle/src/validation/index.ts` },
 			{ find: /^@nexusts\/events$/, replacement: `${root}/packages/events/src/index.ts` },
 			{ find: /^@nexusts\/graphql$/, replacement: `${root}/packages/graphql/src/index.ts` },
 			{ find: /^@nexusts\/grpc$/, replacement: `${root}/packages/grpc/src/index.ts` },

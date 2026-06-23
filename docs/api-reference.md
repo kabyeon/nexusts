@@ -722,7 +722,23 @@ import {
   Table, Column, PrimaryKey,
   resolveDriver, postgresDriver, mysqlDriver, sqliteDriver, bunSqliteDriver, d1Driver,
   RawQuery,
+  Entity, getEntityTable,
+  generateMigrations, pushSchema,
+  // drizzle-orm operators (re-exported for convenience)
+  eq, ne, gt, gte, lt, lte,
+  and, or, not,
+  like, ilike, notLike, notIlike,
+  inArray, notInArray,
+  isNull, isNotNull,
+  between, notBetween,
+  count, sum, avg, min, max,
+  sql, asc, desc,
+  relations,
 } from '@nexusts/drizzle';
+
+// Validation schemas (subpath import)
+import { createSelectSchema, createInsertSchema, createUpdateSchema }
+  from '@nexusts/drizzle/validation';
 
 class DrizzleModule { static forRoot(config: DrizzleConfig): Type; }
 class DrizzleService {
@@ -764,6 +780,17 @@ class DrizzleRepository<TTable = any, TRow = Record<string, unknown>> {
 function Table(name: string): ClassDecorator;
 function Column(opts?: Partial<ColumnMetadata>): PropertyDecorator;
 function PrimaryKey(opts?: Partial<ColumnMetadata>): PropertyDecorator;
+
+function Entity<TTable>(table: TTable): ClassDecorator;
+function getEntityTable(target: Function): any | undefined;
+
+function generateMigrations(opts?: { schema?: string | string[]; out?: string; dialect?: string }): Promise<void>;
+function pushSchema(opts?: { schema?: string | string[]; dialect?: string; url?: string }): Promise<void>;
+
+// Subpath: @nexusts/drizzle/validation
+function createSelectSchema(table: any): ZodObject;
+function createInsertSchema(table: any): ZodObject;
+function createUpdateSchema(table: any): ZodObject;
 ```
 
 ### Drizzle dialects (5 supported)
