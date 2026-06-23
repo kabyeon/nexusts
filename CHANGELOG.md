@@ -77,26 +77,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `Inertia` adapter and SSR engine re-exported from `@nexusts/view`
-  (was previously only available via deep imports). Includes `Inertia`,
-  `createReactAdapter`, `createVueAdapter`, `defer` / `always` / `merge`
-  / `once` / `optional` / `deepMerge` helpers, `InertiaFormBuilder`, and
-  `renderDefaultRoot`.
-- 4 new Inertia examples under `examples/28-31`:
-  - `28-inertia-react-spa` — Inertia v2 + React, client-side rendering
-  - `29-inertia-react-ssr` — Inertia v2 + React, server-side rendering
-    with `react-dom/server`
-  - `30-inertia-vue-spa` — Inertia v2 + Vue 3, client-side rendering
-  - `31-inertia-vue-ssr` — Inertia v2 + Vue 3, server-side rendering
-    with `@vue/server-renderer`
-- Smoke test runner now supports `.tsx` / `vue` SSR examples
-  (`jsx: "react-jsx"` in the per-example tsconfig stub).
-- All 27 prior examples now read `PORT` from env, so the smoke test
-  runner can pick free ports sequentially without colliding with
-  manually-running dev servers on 3000.
+- **End-to-end validation app** at `../blog-app/` (sibling repo) that
+  exercises the framework against a real SQLite database with real auth,
+  real CRUD, and real markdown rendering. Includes a 23-endpoint
+  validation script (`scripts/test-api.sh`) that verifies the framework's
+  happy paths.
+- `@nexusts/crypto`: standalone helper functions exported —
+  `scryptHash()`, `scryptVerify()`, `hash()`, `verify()`. These wrap
+  `HashService` for use outside the DI container (CLI scripts, seeders,
+  smoke tests).
+- `@nexusts/drizzle`: `select<T>()` / `insert<T>(table)` / `update<T>(table)` /
+  `delete<T>(table)` are now generic so call sites get full type
+  inference via `select(...).from(table).all()` chains.
+- **Build pipeline**: `.d.ts` files are now emitted via
+  `tsc --emitDeclarationOnly` (best-effort; peer-deps and cross-module
+  type-resolution failures are logged but don't fail the build).
+- **New user-guide**: `docs/user-guide/common-pitfalls.md` +
+  `common-pitfalls.ko.md` — comprehensive debugging recipes for the
+  10 most common pitfalls first-time users hit:
+  - `@Inject(X.TOKEN)` not resolving — `useExisting` alias pattern
+  - Multiple controllers per file causing 404 routes
+  - `DrizzleService.client` not being a raw SQL handle
+  - `No provider for "undefined"` diagnostic tree
+  - SQLite init / migration patterns with Bun
+  - `bun:sqlite` vs `better-sqlite3` choice
+  - Bun 1.3.14 decorator + `private readonly` quirk
+  - Cookie/session pattern when no built-in auth
+  - Custom error class → HTTP status mapping
+  - Markdown rendering is not built-in
+- Existing guides (`getting-started.md`, `dependency-injection.md`,
+  `controllers.md`, `drizzle.md`, `crypto.md`) updated with cross-
+  references to the new pitfalls doc and additional tips.
 
 ### Fixed
 
+- `@nexusts/drizzle`: previous generic `T = unknown` made
+  `db.select({...}).from(table).all()` return type `unknown` in
+  monorepo-external consumers. The new explicit generic + better
+  `.d.ts` emission restore inference.
+- `@nexusts/crypto`: `scryptHash` / `scryptVerify` were only
+  available as private methods on `HashService`. CLI scripts and
+  seeders had to instantiate the full class to hash a single
+  password. Standalone functions fix this.
 - `Inertia` was unreachable from the published package because the
   `./inertia` subpath was not declared in `package.json` `exports`.
   Re-exporting from `@nexusts/view` is the user-friendly fix.

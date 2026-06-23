@@ -130,6 +130,67 @@ const CONFIG = Symbol('CONFIG');
 })
 ```
 
+### 3.6 Class-with-TOKEN pattern (recommended for services)
+
+Many built-in services ship with a `static readonly TOKEN = Symbol.for(...)` to
+allow injection **either** by class or by token. To use the token form, you
+must register the class and the token in tandem:
+
+```ts
+// app/services/user.service.ts
+import { Injectable } from '@nexusts/core';
+
+@Injectable()
+export class UserService {
+  static readonly TOKEN = Symbol.for('nexus:app:UserService');
+
+  greet(name: string) { return `hello ${name}`; }
+}
+```
+
+```ts
+// app.module.ts
+@Module({
+  providers: [
+    UserService,
+    { provide: UserService.TOKEN, useExisting: UserService },   // ← alias
+  ],
+  exports: [UserService, UserService.TOKEN],                    // ← export both
+})
+```
+
+Now both work:
+
+```ts
+constructor(@Inject(UserService) private users: UserService) {}     // class form
+constructor(@Inject(UserService.TOKEN) private users: UserService) {} // token form
+```
+
+> ⚠️ **Why this matters**: If you only register `UserService` and try
+> `@Inject(UserService.TOKEN)`, you will see
+> `No provider for "undefined"`. The container registers the class as
+> a key but doesn't know that `UserService.TOKEN` is the same thing.
+> The `useExisting` alias bridges them.
+>
+> For module-internal use, prefer the simpler class form. Reserve the
+> token form for cross-module injection or library exposure.
+
+### 3.7 Static-only (no DI) — when you don't need the container
+
+If you just need a value (e.g. for a CLI script or one-off script), you
+can construct services directly:
+
+```ts
+import { UserService } from './user.service.js';
+
+const users = new UserService(...);
+users.greet('alice');
+```
+
+Many services also expose static helpers that don't require DI at all
+— for example, `@nexusts/crypto` exports `scryptHash` / `scryptVerify`
+as standalone functions in addition to the `HashService` class.
+
 ---
 
 ## 4. Modules
@@ -346,3 +407,20 @@ Output:
 [nexus] Providers (root): [Inertia, CONFIG, DB]
 [nexus] Inertia: enabled
 ```
+
+---
+
+## 12. Common error patterns
+
+| Error | Cause | Fix |
+| --- | --- | --- |
+| `No provider for "undefined"` | `static TOKEN` defined but not registered | Add `{ provide: X.TOKEN, useExisting: X }` to providers |
+| `No provider for "DB"` | Token not in any module's `providers` | Add to providers of the importing module |
+| `Cannot resolve parameter at index 0` | Decorator metadata missing | Use explicit `@Inject(Token)` instead of bare type |
+| `Circular dependency detected for token "A"` | A→B→A cycle | Use forward-reference factory |
+| Controller methods not appearing in router | Controller defined inline in `main.ts` (Bun TS transformer quirk) | Move each controller to its own file |
+| `private readonly` + `@Inject` doesn't work on Bun | Bun 1.3.14 TS transformer quirk | Use manual assignment: declare field, assign in constructor |
+| `@Inject(SomeClass)` works but `@Inject(SomeClass.TOKEN)` doesn't | Only the class is registered | Register both: `providers: [SomeClass, { provide: SomeClass.TOKEN, useExisting: SomeClass }]` |
+
+> For a complete walkthrough of these patterns with real examples see
+> **[common-pitfalls.md](./common-pitfalls.md)**.

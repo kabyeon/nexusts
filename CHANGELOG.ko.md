@@ -73,25 +73,45 @@ NexusTS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 
 ### 추가
 
-- `Inertia` 어댑터와 SSR 엔진을 `@nexusts/view` 에서 re-export
-  (그동안은 deep import 로만 사용 가능했음). `Inertia`,
-  `createReactAdapter`, `createVueAdapter`, `defer` / `always` / `merge`
-  / `once` / `optional` / `deepMerge` 헬퍼, `InertiaFormBuilder`,
-  `renderDefaultRoot` 포함.
-- `examples/28-31` 아래 4개 Inertia 예제 추가:
-  - `28-inertia-react-spa` — Inertia v2 + React, 클라이언트 렌더링
-  - `29-inertia-react-ssr` — Inertia v2 + React, `react-dom/server` 로
-    서버 사이드 렌더링
-  - `30-inertia-vue-spa` — Inertia v2 + Vue 3, 클라이언트 렌더링
-  - `31-inertia-vue-ssr` — Inertia v2 + Vue 3,
-    `@vue/server-renderer` 로 서버 사이드 렌더링
-- smoke test runner 가 `.tsx` / Vue SSR 예제 지원
-  (per-example tsconfig stub 에 `jsx: "react-jsx"` 추가).
-- 이전 27개 examples 모두 `PORT` env 읽도록 변경 — smoke test runner가
-  수동 dev server(3000 포트 사용)와 충돌 없이 순차적으로 free port 할당.
+- **End-to-end 검증 앱** `../blog-app/` (sibling repo) 추가. 실제
+  SQLite 데이터베이스에 실제 auth, 실제 CRUD, 실제 마크다운 렌더링으로
+  framework를 검증. 23개 endpoint 검증 스크립트
+  (`scripts/test-api.sh`) 포함.
+- `@nexusts/crypto`: standalone 헬퍼 함수 export —
+  `scryptHash()`, `scryptVerify()`, `hash()`, `verify()`. DI 컨테이너
+  밖에서 사용 가능 (CLI 스크립트, seeder, smoke test).
+- `@nexusts/drizzle`: `select<T>()` / `insert<T>(table)` /
+  `update<T>(table)` / `delete<T>(table)` 가 이제 generic.
+  `select(...).from(table).all()` 체인에서 완전한 타입 추론 제공.
+- **Build pipeline**: `tsc --emitDeclarationOnly` 로 `.d.ts` 파일
+  emit (best-effort; peer-deps와 cross-module 타입 resolution 실패는
+  로그만 남기고 build는 계속 성공).
+- **새 user-guide**: `docs/user-guide/common-pitfalls.md` +
+  `common-pitfalls.ko.md` — 처음 사용하는 사람들이 빠지는 10가지
+  함정과 해결책:
+  - `@Inject(X.TOKEN)` 이 동작 안 함 — `useExisting` 별칭 패턴
+  - 한 파일에 여러 controller 정의 시 404 라우트 누락
+  - `DrizzleService.client` 에 raw SQL 메서드 없음
+  - `No provider for "undefined"` 진단 트리
+  - Bun에서 SQLite init / migration 패턴
+  - `bun:sqlite` vs `better-sqlite3` 선택
+  - Bun 1.3.14 decorator + `private readonly` 호환성 이슈
+  - built-in auth 없을 때 cookie/session 패턴
+  - Custom error class → HTTP 상태 코드 매핑
+  - 마크다운 렌더링은 built-in이 아님
+- 기존 가이드 (`getting-started.md`, `dependency-injection.md`,
+  `controllers.md`, `drizzle.md`, `crypto.md`) 에 새 pitfalls doc으로의
+  cross-reference와 추가 팁 업데이트.
 
 ### 수정
 
+- `@nexusts/drizzle`: 이전 generic `T = unknown` 때문에
+  `db.select({...}).from(table).all()` 결과 타입이 monorepo 외부
+  consumer에서 `unknown` 이 됨. 명시적 generic + 개선된 `.d.ts`
+  emission으로 추론 복구.
+- `@nexusts/crypto`: `scryptHash` / `scryptVerify` 가 `HashService` 의
+  private 메서드로만 존재. CLI 스크립트와 seeder는 비밀번호 하나
+  해싱하려면 전체 class를 인스턴스화해야 했음. standalone 함수로 해결.
 - `Inertia`가 `package.json` `exports`에 `./inertia` subpath가 선언되지
   않아 published package에서 import 불가했음.
   `@nexusts/view` 에서 re-export 하는 방식으로 사용자 친화적으로 해결.

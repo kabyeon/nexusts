@@ -56,6 +56,11 @@ bun add mysql2
 bun add better-sqlite3
 ```
 
+> **Bun 사용자 주의**: `bun:sqlite`를 강력히 권장합니다. Bun 1.3+에서
+> `better-sqlite3`는 로드 실패합니다. `bun add drizzle-orm`만 설치하고
+> `dialect: 'bun-sqlite'`로 설정하세요 (별도 driver 패키지 불필요).
+> 자세한 내용은 **[common-pitfalls.md §6](./common-pitfalls.md#6-bunsqlite-vs-better-sqlite3-선택)**.
+
 ### Configure
 
 ```ts
@@ -234,6 +239,34 @@ const rows = await db.rawQuery<User>(
   [new Date('2026-01-01'), 100],
 );
 ```
+
+### "Can I get the raw database handle?"
+
+Sometimes you want the raw `bun:sqlite` / `pg` / `mysql2` client — for
+admin queries, transactions, or `EXPLAIN` analysis. `DrizzleService.client`
+**isn't** the raw handle; it's the Drizzle wrapper. Use these instead:
+
+```ts
+// Option 1: Drizzle query builder (recommended)
+const users = await db.select().from(usersTable).all();
+
+// Option 2: Drizzle's sql`` template for raw SQL
+const rows = await db
+  .select()
+  .from(sql`users WHERE id = ${id}`)
+  .all();
+
+// Option 3: Drizzle's session API for very raw queries
+const session = db.client.$client ?? db.client;
+const result = await session.execute('SELECT 1');
+```
+
+If you absolutely need a low-level connection (rare), use
+`DrizzleModule.forRoot({ logging: true })` to log every SQL statement,
+or grab the handle via `db.driver.db` (internal — may change).
+
+> For the most common gotcha around `DrizzleService.client` see
+> **[common-pitfalls.md §3](./common-pitfalls.md#3-drizzlestoredserviceclient에-raw-쿼리-메서드가-없음)**.
 
 ### Inspecting the generated SQL
 

@@ -207,6 +207,37 @@ if (hash.needsRehash(stored)) {
 res.status(200).send("OK");
 ```
 
+### 3.4 Standalone helpers (no DI required)
+
+In addition to the `HashService` class, `@nexusts/crypto` exports
+**standalone helper functions** that wrap the class. Use these when
+you're outside the DI container — CLI scripts, database seeders,
+smoke tests, one-off serverless handlers:
+
+```ts
+import { scryptHash, scryptVerify, hash, verify } from "@nexusts/crypto";
+
+const stored = await scryptHash("hunter2");
+const ok = await scryptVerify(stored, "hunter2");
+
+// Or pick algorithm explicitly:
+const argonHash = await hash("hunter2", { algorithm: "argon2" });
+```
+
+Available helpers:
+
+| Function | Returns | Equivalent |
+| --- | --- | --- |
+| `scryptHash(password)` | `Promise<string>` | `new HashService().hash(password, { algorithm: "scrypt" })` |
+| `scryptVerify(hashed, password)` | `Promise<boolean>` | `new HashService().verify(hashed, password)` (scrypt) |
+| `hash(password, options?)` | `Promise<string>` | `new HashService().hash(password, options)` |
+| `verify(hashed, password)` | `Promise<boolean>` | `new HashService().verify(hashed, password)` |
+
+The standalone functions **do not register in DI** — they create a
+one-off `HashService` instance per call. They're safe to use in async
+background tasks where you don't have access to the application
+container.
+
 ---
 
 ## 4. Use cases

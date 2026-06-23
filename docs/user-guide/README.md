@@ -39,6 +39,7 @@ NexusTS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **CLI · `nx` command runner** | [`cli.md`](./cli.md) | [`cli.ko.md`](./cli.ko.md) |
 | **Testing the published package** | [`testing-published-package.md`](./testing-published-package.md) | [`testing-published-package.ko.md`](./testing-published-package.ko.md) |
 | **Testing the examples (smoke tests)** | [`testing-examples.md`](./testing-examples.md) | [`testing-examples.ko.md`](./testing-examples.ko.md) |
+| **Common pitfalls (debugging recipes)** | [`common-pitfalls.md`](./common-pitfalls.md) | [`common-pitfalls.ko.md`](./common-pitfalls.ko.md) |
 
 ---
 
@@ -54,6 +55,7 @@ If you're new to NexusTS, read in this order:
 5. **View engines** — Rendu, Edge, or Inertia?
 6. **Inertia.js adapter** — full SPA UX without an API.
 7. **Runtime & deployment** — Bun / Node / Cloudflare Workers.
+8. **Common pitfalls** — first-run debugging recipes (read when stuck).
 
 ---
 

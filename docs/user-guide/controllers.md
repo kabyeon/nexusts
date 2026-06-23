@@ -324,6 +324,54 @@ requests unless you put it on a singleton service.
   CORS middleware if installed. Add it via
   `app.server.app.use('*', cors())`.
 
+### 10.1 One controller per file (Bun + TS transformer quirk)
+
+On Bun 1.3.14, defining multiple `@Controller`-decorated classes in the
+**same file** (especially `main.ts`) can cause the router to silently
+skip some controllers — routes return 404 even though the class is
+registered. The fix is simple: **one controller per file**.
+
+```ts
+// app/controllers/posts.controller.ts
+@Controller('/posts')
+export class PostsController { /* ... */ }
+
+// app/controllers/users.controller.ts
+@Controller('/users')
+export class UsersController { /* ... */ }
+
+// app/main.ts — only imports + module wiring
+import { PostsController } from './controllers/posts.controller.js';
+import { UsersController } from './controllers/users.controller.js';
+
+@Module({ controllers: [PostsController, UsersController] })
+class AppModule {}
+```
+
+For the full debugging walkthrough see
+**[common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨)**.
+
+### 10.2 Constructor injection on Bun: avoid `private readonly`
+
+If you write `@Inject(...) private readonly x: X`, Bun's TypeScript
+transformer sometimes drops the decorator on Bun 1.3.14 (the param-property
+syntax interacts badly with legacy decorator metadata). The portable
+form is:
+
+```ts
+@Injectable()
+class FooService {
+  drizzle: DrizzleService;
+
+  constructor(@Inject(DrizzleService.TOKEN) drizzle: DrizzleService) {
+    this.drizzle = drizzle;   // ← explicit assignment
+  }
+}
+```
+
+This works under Bun, `tsc`+`node`, and `tsc`+`bun dist/` — same code
+everywhere.
+
 ---
 
 ## 11. Putting it together
