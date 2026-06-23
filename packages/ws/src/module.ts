@@ -28,7 +28,7 @@
  *   const { server, wss } = await app.serveNodeWebSocket(3000);
  */
 
-import { Inject, Module } from "../core/decorators/index.js";
+import { Inject, Module } from "@nexusts/core/decorators/index.js";
 import { WebSocketService, WEBSOCKET_SERVICE_TOKEN } from "./service.js";
 import type { WebSocketConfig } from "./types.js";
 import { detectRuntime } from "./runtime/index.js";

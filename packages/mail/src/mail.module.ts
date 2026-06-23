@@ -12,7 +12,7 @@
  *   export class AppModule {}
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { MailService } from "./mail.service.js";
 import { NullTransport } from "./transports/null.js";
 import type { MailConfig } from "./types.js";

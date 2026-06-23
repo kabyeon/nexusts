@@ -11,8 +11,8 @@
  */
 
 import { resolve } from "node:path";
-import type { Command, CommandContext } from "../core/index.js";
-import { logger, nameVariants, render, writeFile } from "../core/index.js";
+import type { Command, CommandContext } from "@nexusts/core/index.js";
+import { logger, nameVariants, render, writeFile } from "@nexusts/core/index.js";
 
 const SESSION_TEMPLATE = `
 import { Inject, Injectable } from '@nexusts/core';

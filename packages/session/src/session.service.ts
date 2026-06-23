@@ -12,7 +12,7 @@
  * exposed when the cookie backend is configured.
  */
 
-import { Inject, Injectable } from '../core/decorators/index.js';
+import { Inject, Injectable } from '@nexusts/core/src/decorators/index.js';
 import {
 	RedisSessionStorage,
 	CloudflareKVSessionStorage,

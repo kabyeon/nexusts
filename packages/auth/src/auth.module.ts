@@ -19,7 +19,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthService } from "./auth.service.js";
 import type { AuthConfig } from "./types.js";

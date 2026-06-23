@@ -12,7 +12,7 @@
  * decorators plus `ScheduleModule.scanForSchedulers(instance)`.
  */
 
-import { Inject, Injectable } from '../core/decorators/index.js';
+import { Inject, Injectable } from '@nexusts/core/src/decorators/index.js';
 import type {
 	ScheduleRegistry,
 	ScheduleConfig,

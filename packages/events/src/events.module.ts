@@ -27,7 +27,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { EventService } from "./event.service.js";
 import type { EventsConfig } from "./types.js";
 

@@ -14,7 +14,7 @@
  *   const users = pgTable('users', { id: serial('id').primaryKey(), email: text('email') });
  *   const rows = await db.select().from(users).all();
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import type { DrizzleConfig, MigrateResult, MigrationRecord } from "./types.js";
 import { resolveDriver, type RawExecutor } from "./drivers/index.js";
 import { RawQuery } from "./raw-query.js";

@@ -13,7 +13,7 @@
  *   export class AppModule {}
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { CacheService } from "./cache.service.js";
 import { MemoryStore } from "./stores/memory.js";
 import type { CacheConfig } from "./types.js";

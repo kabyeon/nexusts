@@ -8,7 +8,7 @@
  * already returned a 400 — by the time we run, the file is either
  * present or the request is non-multipart.
  */
-import { createParamDecorator } from "../../core/decorators/params.js";
+import { createParamDecorator } from "@nexusts/core/src/decorators/params.js";
 import { UPLOAD_STORAGE_KEY } from "../types.js";
 
 export const UploadedFile = (fieldName?: string) =>

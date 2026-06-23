@@ -21,7 +21,7 @@
  * metrics and mount the controller manually.
  */
 
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { MetricsService, METRICS_SERVICE_TOKEN } from "./service.js";
 import { MetricsController } from "./controller.js";
 import type { MetricsConfig } from "./types.js";

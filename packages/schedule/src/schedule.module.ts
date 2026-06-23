@@ -33,7 +33,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { ScheduleService } from "./schedule.service.js";
 import type { ScheduleConfig } from "./types.js";
 

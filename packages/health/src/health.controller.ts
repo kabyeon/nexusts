@@ -7,7 +7,7 @@
  * via `HealthConfig`.
  */
 
-import { Controller, Get, Req, Res, Inject } from "../core/decorators/index.js";
+import { Controller, Get, Req, Res, Inject } from "@nexusts/core/decorators/index.js";
 import type { Context } from "hono";
 import { HealthCheckService } from "./health.service.js";
 import type { HealthCheckKind, HealthConfig } from "./types.js";

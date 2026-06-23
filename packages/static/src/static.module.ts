@@ -18,7 +18,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { StaticService } from "./static.service.js";
 import type { ServeStaticOptions } from "./static.service.js";
 

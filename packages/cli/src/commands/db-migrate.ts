@@ -30,8 +30,8 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Command, CommandContext } from "../core/index.js";
-import { logger } from "../core/index.js";
+import type { Command, CommandContext } from "@nexusts/core/index.js";
+import { logger } from "@nexusts/core/index.js";
 
 export const dbMigrateCommand: Command = {
 	name: "db:migrate",

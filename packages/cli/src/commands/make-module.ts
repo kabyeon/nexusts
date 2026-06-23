@@ -7,14 +7,14 @@
  */
 
 import { resolve } from "node:path";
-import type { Command, CommandContext } from "../core/index.js";
+import type { Command, CommandContext } from "@nexusts/core/index.js";
 import {
 	flagBool,
 	logger,
 	nameVariants,
 	render,
 	writeFile,
-} from "../core/index.js";
+} from "@nexusts/core/index.js";
 import { templates } from "../templates/index.js";
 
 export const makeModuleCommand: Command = {

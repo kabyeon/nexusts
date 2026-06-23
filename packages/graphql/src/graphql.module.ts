@@ -28,7 +28,7 @@
  */
 import "reflect-metadata";
 import type { Context } from "hono";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { GraphQLService } from "./graphql.service.js";
 import type { GraphQLConfig } from "./types.js";
 

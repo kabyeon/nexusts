@@ -25,7 +25,7 @@
  * the user configures a `redis` / `cloudflare-kv` backend.
  */
 
-import { Module } from "../core/decorators/index.js";
+import { Module } from "@nexusts/core/decorators/index.js";
 import { createRedisClient } from "./adapters/index.js";
 import type { RedisClient, RedisConfig } from "./types.js";
 

@@ -27,7 +27,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { Logger } from "./logger.service.js";
 import type { LoggerOptions } from "./types.js";
 

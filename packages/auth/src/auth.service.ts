@@ -15,7 +15,7 @@
  *   return this.auth.redirect('/dashboard');  // 302
  */
 
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import type {
 	AuthUser,
 	AuthSessionRecord,
@@ -23,7 +23,7 @@ import type {
 	AuthConfig,
 } from "./types.js";
 import { createAuth, type NexusAuth } from "./auth.js";
-import type { SessionService } from "../session/index.js";
+import type { SessionService } from "@nexusts/session/index.js";
 
 @Injectable()
 export class AuthService {

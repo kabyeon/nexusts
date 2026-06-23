@@ -26,7 +26,7 @@
  *   - No SDK packages are loaded.
  */
 
-import { Inject, Injectable, Module } from "../core/decorators/index.js";
+import { Inject, Injectable, Module } from "@nexusts/core/decorators/index.js";
 import type { MiddlewareHandler } from "hono";
 import { TracingService, TRACING_SERVICE_TOKEN, setTracingService } from "./service.js";
 import { tracingMiddleware } from "./hono-instrumentation.js";

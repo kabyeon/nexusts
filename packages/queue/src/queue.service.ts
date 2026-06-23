@@ -15,7 +15,7 @@
  * `QueueService.stop()` (called on shutdown).
  */
 
-import { Inject, Injectable } from '../core/decorators/index.js';
+import { Inject, Injectable } from '@nexusts/core/src/decorators/index.js';
 import type {
 	QueueBackend,
 	QueueConfig,

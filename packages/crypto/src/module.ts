@@ -18,7 +18,7 @@
  *   // Encryption will pad the key to 32 bytes via HKDF.
  */
 
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { EncryptionService } from "./encryption.js";
 import { HashService } from "./hash.js";
 import type { EncryptionConfig, HashConfig } from "./types.js";

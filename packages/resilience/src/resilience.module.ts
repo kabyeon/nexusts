@@ -19,7 +19,7 @@
  * `@Resilient`) work without the module — they pick up the
  * service from the DI container at controller-mount time.
  */
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { ResilienceService } from "./resilience.service.js";
 import { setResilienceService } from "./decorators/index.js";
 import type { ResilienceConfig } from "./types.js";

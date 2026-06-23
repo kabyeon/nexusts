@@ -16,7 +16,7 @@
  *   export class AppModule {}
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { ShieldService } from "./shield.service.js";
 import type { ShieldConfig } from "./types.js";
 

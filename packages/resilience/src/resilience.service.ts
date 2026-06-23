@@ -13,7 +13,7 @@
  * when no per-call options are given.
  */
 import "reflect-metadata";
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import { CircuitBreaker } from "./circuit-breaker.js";
 import { Bulkhead } from "./bulkhead.js";
 import { retry } from "./retry.js";

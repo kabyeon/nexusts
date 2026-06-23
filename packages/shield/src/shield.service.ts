@@ -2,7 +2,7 @@
  * `ShieldService` — orchestrator. Aggregates the per-feature guards
  * into a single Hono middleware that can be mounted globally.
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import type { CsrfConfig, ShieldConfig } from "./types.js";
 import { CsrfGuard, HeadersGuard } from "./guards/index.js";
 

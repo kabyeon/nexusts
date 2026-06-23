@@ -13,14 +13,14 @@
  */
 
 import { resolve } from "node:path";
-import type { Command, CommandContext } from "../core/index.js";
+import type { Command, CommandContext } from "@nexusts/core/index.js";
 import {
 	flagBool,
 	logger,
 	nameVariants,
 	render,
 	writeFile,
-} from "../core/index.js";
+} from "@nexusts/core/index.js";
 
 const WORKER_TEMPLATE = `
 import { Inject, Injectable } from '@nexusts/core';

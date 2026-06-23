@@ -2,7 +2,7 @@
  * Hono middleware factory. Applies all matching global rules in order;
  * the first one that rejects wins. Used by the framework's mount pipeline.
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import { LimiterService } from "./limiter.service.js";
 import type { RateLimitRule } from "./types.js";
 

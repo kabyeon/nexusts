@@ -9,8 +9,8 @@
 
 import { readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import type { Command, CommandContext } from "../core/index.js";
-import { colors, logger } from "../core/index.js";
+import type { Command, CommandContext } from "@nexusts/core/index.js";
+import { colors, logger } from "@nexusts/core/index.js";
 
 interface DiscoveredRoute {
 	method: string;

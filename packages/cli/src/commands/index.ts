@@ -5,7 +5,7 @@
  * here is the order commands appear in `nx help`.
  */
 
-import type { Command } from "../core/index.js";
+import type { Command } from "@nexusts/core/index.js";
 import info from "./info.js";
 import init from "./init.js";
 import makeAuth from "./make-auth.js";

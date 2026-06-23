@@ -27,7 +27,7 @@
  */
 
 import "reflect-metadata";
-import { METADATA_KEY } from "../core/constants.js";
+import { METADATA_KEY } from "@nexusts/core/constants.js";
 
 /** Identifier of the request — IP, user ID, API key, etc. */
 export type RateLimitKey = string;

@@ -23,7 +23,7 @@
  * and pruned by `gc()`.
  */
 
-import type { RedisClient } from "../../redis/types.js";
+import type { RedisClient } from "@nexusts/redis/src/types.js";
 import type {
 	SessionStorage,
 	SessionRecord,

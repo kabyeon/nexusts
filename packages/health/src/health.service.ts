@@ -6,7 +6,7 @@
  * `/health/live`, `/health/ready`, `/health/startup` endpoints.
  */
 
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import type {
 	HealthCheckResult,
 	HealthCheckEntry,

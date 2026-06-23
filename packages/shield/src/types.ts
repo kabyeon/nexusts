@@ -22,7 +22,7 @@
 
 import "reflect-metadata";
 import { randomBytes } from "node:crypto";
-import { EncryptionService } from "../crypto/encryption.js";
+import { EncryptionService } from "@nexusts/crypto/encryption.js";
 
 /** CSRF protection configuration. */
 export interface CsrfConfig {

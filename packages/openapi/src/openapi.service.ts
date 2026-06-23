@@ -10,7 +10,7 @@
  * the spec is always in sync with the actual API.
  */
 import "reflect-metadata";
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import type {
 	ApiOperationOptions,
 	ApiParamOptions,

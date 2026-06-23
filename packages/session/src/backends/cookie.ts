@@ -21,7 +21,7 @@
  */
 
 import { timingSafeEqual } from "node:crypto";
-import { EncryptionService } from "../../crypto/encryption.js";
+import { EncryptionService } from "@nexusts/crypto/src/encryption.js";
 import type {
 	SessionStorage,
 	SessionRecord,

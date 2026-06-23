@@ -23,7 +23,7 @@
  * but correct.
  */
 
-import type { RedisClient } from "../../redis/types.js";
+import type { RedisClient } from "@nexusts/redis/src/types.js";
 import type { CacheEntry, CacheSetOptions, CacheStore } from "../types.js";
 
 const DEFAULT_KEY_PREFIX = "cache:";

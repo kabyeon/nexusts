@@ -27,7 +27,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { SessionService } from "./session.service.js";
 import type { SessionConfig } from "./types.js";
 

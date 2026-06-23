@@ -14,7 +14,7 @@
  *   export class AppModule {}
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { LimiterService } from "./limiter.service.js";
 import { LimiterMiddleware } from "./limiter.middleware.js";
 import { MemoryRateLimitStorage } from "./backends/memory.js";

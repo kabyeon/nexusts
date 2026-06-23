@@ -17,7 +17,7 @@
  * which fields to parse.
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { UploadService } from "./upload.service.js";
 import type { UploadConfig } from "./types.js";
 import { uploadMiddleware } from "./upload.middleware.js";

@@ -31,7 +31,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { ConfigService } from "./config.service.js";
 import type { ConfigOptions } from "./types.js";
 

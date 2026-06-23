@@ -6,7 +6,7 @@
  *
  *   mail.renderMjml('<mjml>...</mjml>', { name: 'Kim' });
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import { NullTransport } from "./transports/null.js";
 import type {
 	MailConfig,

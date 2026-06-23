@@ -22,7 +22,7 @@
  * inside the module's onModuleInit hook (see the helper below).
  */
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { OpenAPIService } from "./openapi.service.js";
 import type { OpenAPIConfig } from "./types.js";
 

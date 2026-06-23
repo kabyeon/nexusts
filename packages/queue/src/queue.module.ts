@@ -31,7 +31,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { QueueService } from "./queue.service.js";
 import type { QueueConfig } from "./types.js";
 

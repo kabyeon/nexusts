@@ -18,7 +18,7 @@
  * The middleware runs **before** the controller handler, so by the
  * time the handler is invoked, all files are already validated.
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import {
 	UPLOAD_STORAGE_KEY,
 	UploadError,

@@ -23,10 +23,10 @@
  *   I18nModule.install(app, container);  // or via @Module middleware config
  */
 
-import { Module } from "../core/decorators/module.js";
-import { Inject } from "../core/decorators/injectable.js";
+import { Module } from "@nexusts/core/decorators/module.js";
+import { Inject } from "@nexusts/core/decorators/injectable.js";
 import "reflect-metadata";
-import type { Application } from "../core/application.js";
+import type { Application } from "@nexusts/core/application.js";
 import {
 	I18nService,
 	I18N_SERVICE_TOKEN,

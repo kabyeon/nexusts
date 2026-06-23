@@ -21,7 +21,7 @@
  */
 
 import "reflect-metadata";
-import { Module } from "../core/decorators/module.js";
+import { Module } from "@nexusts/core/decorators/module.js";
 import { HealthCheckService } from "./health.service.js";
 import { HealthController } from "./health.controller.js";
 import type { HealthConfig } from "./types.js";

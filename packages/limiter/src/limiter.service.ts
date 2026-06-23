@@ -7,7 +7,7 @@
  *   const svc = new LimiterService({ storage: new MemoryRateLimitStorage() });
  *   await svc.check('ip:1.2.3.4', { points: 5, duration: '1m' });
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import { MemoryRateLimitStorage } from "./backends/memory.js";
 import type {
 	LimiterConfig,

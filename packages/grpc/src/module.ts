@@ -26,7 +26,7 @@
  * are wired up automatically.
  */
 
-import { Module } from "../core/decorators/index.js";
+import { Module } from "@nexusts/core/decorators/index.js";
 import { GrpcService, GRPC_SERVICE_TOKEN } from "./service.js";
 import type { GrpcConfig } from "./types.js";
 

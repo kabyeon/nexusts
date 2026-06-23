@@ -11,8 +11,8 @@
  */
 
 import "reflect-metadata";
-import { createParamDecorator } from "../core/decorators/params.js";
-import { PARAM_TYPES } from "../core/constants.js";
+import { createParamDecorator } from "@nexusts/core/decorators/params.js";
+import { PARAM_TYPES } from "@nexusts/core/constants.js";
 import type { Locale } from "./types.js";
 
 export function CurrentLocale(): ParameterDecorator {

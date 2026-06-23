@@ -16,11 +16,11 @@ import "reflect-metadata";
 import { ApplicationContainer } from "./di/container.js";
 import { ModuleScanner } from "./di/scanner.js";
 import { NexusServer, type NexusServerOptions } from "./http/server.js";
-import type { ViewAdapter } from "../view/types.js";
-import { RenduAdapter } from "../view/rendu.js";
-import { setViewPaths as setViewPathsModule } from "../view/view-engine.js";
+import type { ViewAdapter } from "@nexusts/view/types.js";
+import { RenduAdapter } from "@nexusts/view/rendu.js";
+import { setViewPaths as setViewPathsModule } from "@nexusts/view/view-engine.js";
 import type { Type } from "./di/tokens.js";
-import { Inertia, type InertiaConfig } from "../view/inertia/index.js";
+import { Inertia, type InertiaConfig } from "@nexusts/view/inertia/index.js";
 
 export interface ApplicationOptions extends NexusServerOptions {
 	/** Default view adapter. Defaults to Rendu. */

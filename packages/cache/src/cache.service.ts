@@ -13,7 +13,7 @@
  *   - `applyDecorators(target)` — wires @Cacheable / @CacheInvalidate
  *     onto an existing service instance.
  */
-import { Inject, Injectable } from "../core/decorators/index.js";
+import { Inject, Injectable } from "@nexusts/core/decorators/index.js";
 import { MemoryStore } from "./stores/memory.js";
 import type { CacheConfig, CacheStore } from "./types.js";
 import {

@@ -29,7 +29,7 @@
  */
 
 import "reflect-metadata";
-import { METADATA_KEY } from "../core/constants.js";
+import { METADATA_KEY } from "@nexusts/core/constants.js";
 
 // ---------------------------------------------------------------------------
 // Public types
