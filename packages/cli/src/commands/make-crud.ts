@@ -279,7 +279,7 @@ export const makeCrudCommand: Command = {
 		for (const f of written) logger.info(`     ${f}`);
 		logger.info(`2. Add ${variants.pascal}Module to AppModule.imports.`);
 		logger.info(
-			`3. ${noRepo ? "" : `Run \`bun nx db:generate & bun nx db:migrate\` (or your migration tool).`}`,
+			`3. ${noRepo ? "" : `Run \`bun nx db:generate && bun nx db:migrate\` (or your migration tool).`}`,
 		);
 		logger.info(`4. Start the dev server: \`bun run dev\`.`);
 		logger.blank();
