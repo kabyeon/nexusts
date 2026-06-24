@@ -175,7 +175,7 @@ export const newCommand: Command = {
 			dependencies: deps,
 		};
 		if (orm === "drizzle") {
-			pkgJson.devDependencies = { "drizzle-kit": "^0.45.0" };
+			pkgJson.devDependencies = { "drizzle-kit": "^0.31.0" };
 		}
 		writeFileSync(resolve(target, "package.json"), JSON.stringify(pkgJson, null, 2));
 
