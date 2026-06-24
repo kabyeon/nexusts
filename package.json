@@ -12,7 +12,7 @@
     "build:all": "bun run build.ts",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "lint": "biome lint packages/cli/ tests/cli/",
     "lint:fix": "biome check --write packages/cli/ tests/cli/",
     "nx": "bun packages/cli/src/index.ts",

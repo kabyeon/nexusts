@@ -49,8 +49,8 @@ jobs:
       - name: Run benchmarks
         id: bench
         run: |
-          bun benchmarks/bench.ts --json > /tmp/bench-raw.json
-          cat /tmp/bench-raw.json
+          bun benchmarks/bench.ts --json
+          cat benchmarks/results/latest.json
         env:
           BENCH_DURATION: ${{ github.event.inputs.duration || '5' }}
           BENCH_CONCURRENCY: ${{ github.event.inputs.concurrency || '50' }}
@@ -67,7 +67,7 @@ jobs:
         id: format
         run: |
           bun - << 'EOF'
-          const raw = await Bun.file("/tmp/bench-raw.json").json();
+          const raw = await Bun.file("benchmarks/results/latest.json").json();
           const { results } = raw;
 
           let md = "## Benchmark Results\n\n";
@@ -97,7 +97,7 @@ jobs:
         run: |
           bun - << 'EOF'
           import { readFileSync } from "node:fs";
-          const latest = JSON.parse(readFileSync("/tmp/bench-raw.json", "utf8"));
+          const latest = JSON.parse(readFileSync("benchmarks/results/latest.json", "utf8"));
           const baselinePath = "benchmarks/results/baseline.json";
           let baseline;
           try {
