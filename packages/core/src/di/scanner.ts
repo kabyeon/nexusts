@@ -14,6 +14,8 @@ import type { InjectionToken, ModuleOptions, Provider, Type } from "./tokens.js"
 import { isGlobalModule } from "../decorators/global.js";
 
 interface ScanResult {
+	/** The original module class constructor. */
+	moduleClass?: Type<any>;
 	/** Controllers registered by this module. */
 	controllers: Type[];
 	/** Providers registered locally (classes + non-class providers). */
@@ -65,6 +67,7 @@ export class ModuleScanner {
 
 		// Pre-fill the slot to break import cycles when modules reference each other.
 		const placeholder: ScanResult = {
+			moduleClass,
 			controllers: [],
 			providers: [],
 			exports: [],
@@ -128,6 +131,7 @@ export class ModuleScanner {
 		}
 
 		const result: ScanResult = {
+			moduleClass,
 			controllers: options.controllers ?? [],
 			providers: options.providers ?? [],
 			exports: options.exports ?? [],

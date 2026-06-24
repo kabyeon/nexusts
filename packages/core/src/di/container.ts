@@ -54,6 +54,31 @@ export class DIContainer {
 		return new DIContainer(this);
 	}
 
+	/** List all registered provider tokens (for diagnostics / REPL). */
+	listProviders(): Array<{ token: InjectionToken<any> }> {
+		const tokens: Array<{ token: InjectionToken<any> }> = [];
+		const seen = new Set<InjectionToken<any>>();
+		// Collect from this container.
+		for (const token of this.providers.keys()) {
+			if (!seen.has(token)) {
+				seen.add(token);
+				tokens.push({ token });
+			}
+		}
+		// Collect from parent chain.
+		let p = this.parent;
+		while (p) {
+			for (const token of (p as any).providers?.keys() ?? []) {
+				if (!seen.has(token)) {
+					seen.add(token);
+					tokens.push({ token });
+				}
+			}
+			p = (p as any).parent;
+		}
+		return tokens;
+	}
+
 	/** Register a provider or list of providers. */
 	register(providers: Provider<any> | Provider<any>[]): void {
 		const list = Array.isArray(providers) ? providers : [providers];

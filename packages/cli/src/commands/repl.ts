@@ -254,15 +254,12 @@ export const replCommand: Command = {
 					return true;
 				}
 				case ".modules": {
-					const mods = (env.app as { modules?: unknown[] } | undefined)
-						?.modules as Array<{ name?: string; constructor?: { name?: string } }> | undefined;
+					const mods = (env.app as { modules?: Array<{ moduleClass?: { name?: string } }> } | undefined)?.modules;
 					if (!mods || mods.length === 0) {
 						console.log("  (no modules)");
 					} else {
 						for (const m of mods) {
-							console.log(
-								`  ${m.name ?? m.constructor?.name ?? "(anon)"}`,
-							);
+							console.log(`  ${m.moduleClass?.name ?? "(anon)"}`);
 						}
 					}
 					return true;
@@ -275,7 +272,14 @@ export const replCommand: Command = {
 								};
 						  }
 						| undefined;
-					const routes = app?.server?.app?.routes ?? [];
+					const raw = app?.server?.app?.routes ?? [];
+					const seen = new Set<string>();
+					const routes = raw.filter((r) => {
+						const key = `${r.method ?? "?"}:${r.path ?? "?"}`;
+						if (seen.has(key)) return false;
+						seen.add(key);
+						return true;
+					});
 					if (routes.length === 0) {
 						console.log("  (no routes registered)");
 					} else {
