@@ -1,7 +1,7 @@
 {
   "name": "@nexusts/cache",
   "version": "0.8.0",
-  "description": "Application cache (memory / Drizzle backends)",
+  "description": "Application cache (memory / Redis / Drizzle backends)",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -27,6 +27,14 @@
   "license": "MIT",
   "dependencies": {
     "@nexusts/core": "file:../core"
+  },
+  "peerDependencies": {
+    "@nexusts/redis": ">=0.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@nexusts/redis": {
+      "optional": true
+    }
   },
   "repository": {
     "type": "git",

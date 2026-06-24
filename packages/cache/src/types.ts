@@ -64,7 +64,27 @@ export interface CacheSetOptions {
 }
 
 export interface CacheConfig {
-	/** Storage backend. Default: in-memory LRU. */
+	/**
+	 * Shorthand backend selector. When set, an appropriate store is
+	 * created automatically — no need to pass `store` explicitly.
+	 *   - `'memory'` (default) — in-process LRU
+	 *   - `'redis'` — requires `redis` config field
+	 */
+	backend?: "memory" | "redis";
+	/**
+	 * Redis connection options — used when `backend: 'redis'`.
+	 * Passed directly to `createRedisClient()` from `@nexusts/redis`.
+	 */
+	redis?: {
+		url?: string;
+		host?: string;
+		port?: number;
+		password?: string;
+		db?: number;
+		/** Key prefix for the underlying RedisCacheStore. Default: "cache:". */
+		keyPrefix?: string;
+	};
+	/** Explicit store instance. Overrides `backend` when provided. */
 	store?: CacheStore;
 	/** Default TTL in seconds when none is provided. Default: 60. */
 	defaultTtl?: number;

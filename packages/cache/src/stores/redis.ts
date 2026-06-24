@@ -114,7 +114,7 @@ export class RedisCacheStore implements CacheStore {
 				count: 100,
 			});
 			for (const k of res.keys) {
-				await this.#client.del(this.#keyPrefix + k);
+				await this.#client.del(k);
 				n++;
 			}
 			cursor = res.cursor;
@@ -135,20 +135,17 @@ export class RedisCacheStore implements CacheStore {
 				count: 100,
 			});
 			for (const k of res.keys) {
-				const raw = await this.#client.get(this.#keyPrefix + k);
+				const raw = await this.#client.get(k);
 				const ids = raw ? safeParseStringArray(raw) : [];
 				const live: string[] = [];
 				for (const id of ids) {
 					if (await this.#client.exists(this.#key(id))) live.push(id);
 				}
 				if (live.length === 0) {
-					await this.#client.del(this.#keyPrefix + k);
+					await this.#client.del(k);
 					removed++;
 				} else if (live.length !== ids.length) {
-					await this.#client.set(
-						this.#keyPrefix + k,
-						JSON.stringify(live),
-					);
+					await this.#client.set(k, JSON.stringify(live));
 				}
 			}
 			cursor = res.cursor;

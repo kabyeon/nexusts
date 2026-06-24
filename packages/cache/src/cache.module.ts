@@ -16,6 +16,7 @@ import "reflect-metadata";
 import { Module } from "@nexusts/core";
 import { CacheService } from "./cache.service.js";
 import { MemoryStore } from "./stores/memory.js";
+import { RedisCacheStore } from "./stores/redis.js";
 import type { CacheConfig } from "./types.js";
 
 @Module({
@@ -27,15 +28,29 @@ import type { CacheConfig } from "./types.js";
 })
 export class CacheModule {
 	static forRoot(config: CacheConfig = {}) {
-		const cfg: CacheConfig = {
-			store: new MemoryStore(),
-			...config,
-		};
 		@Module({
 			providers: [
 				CacheService,
 				{ provide: CacheService.TOKEN, useExisting: CacheService },
-				{ provide: "CACHE_CONFIG", useValue: cfg },
+				{
+					provide: "CACHE_CONFIG",
+					useFactory: async () => {
+						// Explicit store wins; otherwise fall back to backend shorthand.
+						if (config.store) {
+							return { ...config };
+						}
+						if (config.backend === "redis") {
+							const { createRedisClient } = await import("@nexusts/redis");
+							const { keyPrefix, ...redisOpts } = config.redis ?? {};
+							const client = createRedisClient(redisOpts);
+							return {
+								...config,
+								store: new RedisCacheStore(client, { keyPrefix }),
+							};
+						}
+						return { ...config, store: new MemoryStore() };
+					},
+				},
 			],
 			exports: [CacheService, CacheService.TOKEN],
 		})

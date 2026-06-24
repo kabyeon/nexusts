@@ -140,22 +140,35 @@ CacheModule.forRoot({
 
 ### Redis
 
-멀티 팟 배포용:
+멀티 팟 배포용. `@nexusts/redis`가 필요합니다.
+
+**방법 1 — `backend: 'redis'` 단축 옵션 (권장):**
 
 ```ts
-import { CacheModule } from '@nexusts/cache';
-import { RedisCacheStore, createRedisClient } from '@nexusts/redis';
+CacheModule.forRoot({
+  backend: 'redis',
+  redis: { url: process.env.REDIS_URL },
+  defaultTtl: 300,
+})
+```
 
-const cache = new CacheService({
+Redis 클라이언트와 스토어가 자동으로 생성됩니다.
+
+**방법 2 — 명시적 스토어 인스턴스:**
+
+```ts
+import { CacheModule, RedisCacheStore } from '@nexusts/cache';
+import { createRedisClient } from '@nexusts/redis';
+
+CacheModule.forRoot({
   store: new RedisCacheStore(
     createRedisClient({ url: process.env.REDIS_URL! }),
     { keyPrefix: 'cache:' },
   ),
-});
+})
 ```
 
-`@nexusts/redis`와 Redis 인스턴스가 필요합니다. 태그 기반
-무효화를 지원하며 여러 인스턴스에서 사용 가능합니다.
+태그 기반 무효화를 지원하며 여러 인스턴스에서 공유 가능합니다.
 
 ### Drizzle (데이터베이스)
 
@@ -236,7 +249,9 @@ await cache.invalidateByTag('users');
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 | -------- | ---- | ------ | ---- |
-| `store` | `CacheStore` | `MemoryStore` | 스토리지 백엔드 |
+| `backend` | `'memory' \| 'redis'` | `'memory'` | 단축 백엔드 선택자 |
+| `redis` | `RedisConnectionOptions` | — | `backend: 'redis'` 시 Redis 접속 설정 |
+| `store` | `CacheStore` | `MemoryStore` | 명시적 스토어 인스턴스 (`backend` 보다 우선) |
 | `defaultTtl` | `number` | `60` | 기본 TTL(초) |
 | `prefix` | `string` | `'nexusts'` | 키 접두사 |
 

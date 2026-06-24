@@ -9,11 +9,9 @@ import {
 	MemoryStore,
 	Cacheable,
 	CacheInvalidate,
-} from "../../src/cache/index.js";
-import {
 	getCacheableSpecs,
 	getCacheInvalidateSpecs,
-} from "../../src/cache/types.js";
+} from "@nexusts/cache";
 
 describe("MemoryStore", () => {
 	let store: MemoryStore;
