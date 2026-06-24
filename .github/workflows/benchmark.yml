@@ -1,0 +1,157 @@
+name: Benchmarks
+
+# Runs the NexusTS benchmark suite on every PR and on main.
+# Results are posted as a PR comment and saved as an artifact.
+# A regression is flagged when req/s drops >10% vs the baseline on main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/core/**"
+      - "packages/resilience/**"
+      - "benchmarks/**"
+      - ".github/workflows/benchmark.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/core/**"
+      - "packages/resilience/**"
+      - "benchmarks/**"
+      - ".github/workflows/benchmark.yml"
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: "Seconds per benchmark run"
+        default: "5"
+      concurrency:
+        description: "Concurrent workers"
+        default: "50"
+
+concurrency:
+  group: benchmark-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    name: "Benchmark (Bun)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --no-frozen-lockfile
+
+      - name: Run benchmarks
+        id: bench
+        run: |
+          bun benchmarks/bench.ts --json > /tmp/bench-raw.json
+          cat /tmp/bench-raw.json
+        env:
+          BENCH_DURATION: ${{ github.event.inputs.duration || '5' }}
+          BENCH_CONCURRENCY: ${{ github.event.inputs.concurrency || '50' }}
+          BENCH_WARMUP: "1"
+          BUN_BIN: ${{ env.BUN_INSTALL }}/bin/bun
+
+      - name: Save results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.sha }}
+          path: benchmarks/results/latest.json
+          retention-days: 30
+
+      - name: Format results as Markdown
+        id: format
+        run: |
+          bun - << 'EOF'
+          const raw = await Bun.file("/tmp/bench-raw.json").json();
+          const { results } = raw;
+
+          let md = "## Benchmark Results\n\n";
+          md += "| Suite | Framework | Req/s | Avg (ms) | P99 (ms) | Errors |\n";
+          md += "|-------|-----------|------:|--------:|--------:|-------:|\n";
+          for (const r of results) {
+            md += `| ${r.suite} | ${r.framework} | ${r.reqPerSec} | ${r.avgLatencyMs} | ${r.p99LatencyMs} | ${r.errors} |\n`;
+          }
+
+          md += `\n_Duration: ${process.env.BENCH_DURATION}s · Concurrency: ${process.env.BENCH_CONCURRENCY}_\n`;
+
+          await Bun.write("/tmp/bench-comment.md", md);
+          console.log(md);
+          EOF
+        env:
+          BENCH_DURATION: ${{ github.event.inputs.duration || '5' }}
+          BENCH_CONCURRENCY: ${{ github.event.inputs.concurrency || '50' }}
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: benchmark-results
+          path: /tmp/bench-comment.md
+
+      - name: Regression check
+        run: |
+          bun - << 'EOF'
+          import { readFileSync } from "node:fs";
+          const latest = JSON.parse(readFileSync("/tmp/bench-raw.json", "utf8"));
+          const baselinePath = "benchmarks/results/baseline.json";
+          let baseline;
+          try {
+            baseline = JSON.parse(readFileSync(baselinePath, "utf8"));
+          } catch {
+            console.log("No baseline found — skipping regression check.");
+            process.exit(0);
+          }
+
+          const baseMap = new Map(
+            baseline.results.map((r) => [`${r.suite}:${r.framework}`, r.reqPerSec])
+          );
+
+          let failed = false;
+          for (const r of latest.results) {
+            const key = `${r.suite}:${r.framework}`;
+            const base = baseMap.get(key);
+            if (base == null) continue;
+            const delta = ((r.reqPerSec - base) / base) * 100;
+            const sign = delta >= 0 ? "+" : "";
+            const status = delta < -10 ? "❌ REGRESSION" : "✅";
+            console.log(`${status}  ${key}: ${r.reqPerSec} req/s (${sign}${delta.toFixed(1)}% vs baseline ${base})`);
+            if (delta < -10) failed = true;
+          }
+
+          if (failed) {
+            console.error("\nPerformance regression detected (>10% drop).");
+            process.exit(1);
+          }
+          EOF
+
+  # Update baseline on main branch after a successful benchmark run
+  update-baseline:
+    name: "Update baseline"
+    needs: benchmark
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download benchmark results
+        uses: actions/download-artifact@v4
+        with:
+          name: benchmark-results-${{ github.sha }}
+          path: benchmarks/results/
+
+      - name: Commit new baseline
+        run: |
+          cp benchmarks/results/latest.json benchmarks/results/baseline.json
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add benchmarks/results/baseline.json
+          git diff --staged --quiet || git commit -m "chore(bench): update performance baseline [skip ci]"
+          git push
