@@ -36,8 +36,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { flagBool, logger, render, select } from "../core/index.js";
-import { parseJsonLoose } from "../core/index.js";
+import { flagBool, logger, parseJsonLoose, render, select } from "../core/index.js";
 import { templates } from "../templates/index.js";
 
 type WriteMode = "write" | "skip" | "merge-pkg" | "merge-tsconfig";
