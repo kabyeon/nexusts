@@ -20,7 +20,8 @@ import type {
 	FieldResolver,
 	ResolverMap,
 } from "./types.js";
-import { getRegisteredResolvers } from "./decorators/index.js";
+import { getRegisteredResolvers, getResolverFields } from "./decorators/index.js";
+import { normalizeGQLType } from "./decorators/type-mapper.js";
 
 interface GraphQLJs {
 	parse: (s: string) => unknown;
@@ -116,9 +117,56 @@ export class GraphQLService {
 		// that case. To wire our `ResolverMap`, we set each field's
 		// `resolve` directly. This works for graphql 16 and 17.
 		const schema = (g.buildSchema as Function)(merged);
-		const final: ResolverMap = { ...this._resolvers, ...this.config.resolvers };
+		// Deep-merge resolver maps: auto-wired < addResolvers() < config.resolvers.
+		// Shallow spread would clobber an entire type object (e.g. the Query key)
+		// when two sources contribute fields to the same type.
+		const autoWired = this.config.autoSchema ? this._autoWireResolvers() : {};
+		const final = mergeResolverMaps(autoWired, this._resolvers, this.config.resolvers ?? {});
 		wrapSchemaWithResolvers(schema, final);
 		return schema;
+	}
+
+	/**
+	 * Instantiate each registered `@Resolver` class and map its `@Query` /
+	 * `@Mutation` / `@Subscription` methods into a `ResolverMap`.
+	 *
+	 * For methods decorated with `@Arg`, positional arguments are extracted
+	 * from the graphql-js `args` object by name and forwarded positionally.
+	 * For methods without `@Arg`, the standard graphql-js 4-tuple
+	 * `(parent, args, ctx, info)` is passed through unchanged.
+	 */
+	private _autoWireResolvers(): ResolverMap {
+		const map: ResolverMap = {};
+		for (const resolverClass of getRegisteredResolvers()) {
+			const fields = getResolverFields(resolverClass);
+			const instance = new (resolverClass as any)();
+			for (const f of fields) {
+				let typeName: string;
+				if (f.kind === "query") typeName = "Query";
+				else if (f.kind === "mutation") typeName = "Mutation";
+				else typeName = "Subscription";
+
+				if (!map[typeName]) map[typeName] = {};
+
+				const method = (instance as any)[f.propertyKey];
+				if (typeof method !== "function") continue;
+
+				const argNames = f.args.map((a) => a.name);
+				if (argNames.length === 0) {
+					// No @Arg — pass graphql-js 4-tuple as-is.
+					map[typeName][f.name] = (parent: any, args: any, ctx: any, info: any) =>
+						method.call(instance, parent, args, ctx, info);
+				} else {
+					// @Arg present — extract each value from the args object by
+					// name and call the method with positional parameters.
+					map[typeName][f.name] = (_parent: any, args: any) => {
+						const positional = argNames.map((n) => args[n]);
+						return method.call(instance, ...positional);
+					};
+				}
+			}
+		}
+		return map;
 	}
 
 	/**
@@ -216,25 +264,67 @@ export class GraphQLService {
 	}
 
 	/**
-	 * Decorator-discovered types/methods get added to the SDL so the
-	 * schema actually has a place to put them. Each `@Resolver("X")`
-	 * with `@Query()` / `@Mutation()` / `@Subscription()` methods
-	 * contributes a `type X { ... }` or `extend type Query { ... }`
-	 * snippet.
+	 * Synthesise SDL snippets from `@Resolver` / `@Query` / `@Mutation` /
+	 * `@Subscription` decorator metadata and merge them with any
+	 * user-supplied `typeDefs`.
+	 *
+	 * - If the user's SDL already defines `type Query`, decorator-added
+	 *   fields are appended with `extend type Query { ... }` to avoid
+	 *   duplicate-type errors.
+	 * - Unknown return types or argument types are passed through as-is
+	 *   (they are treated as user-defined object types).
 	 */
 	private mergeSDLWithDecorators(sdl: string[]): string {
-		// The framework's scanner injects decorator-discovered
-		// resolvers into `this._resolvers` before the schema is
-		// built. To keep things simple, the schema is built from
-		// the user-supplied SDL only; the resolver map is attached
-		// afterwards. We still allow simple `type X { ... }` SDL
-		// shapes — the scanner's job is to fill the resolvers.
-		//
-		// (We could synthesise SDL from the resolver metadata for a
-		// pure-code-first experience, but that requires guessing
-		// types. Defer to v2.)
-		return sdl.join("\n");
+		const registered = getRegisteredResolvers();
+		if (registered.length === 0) return sdl.join("\n");
+
+		const queryFields: string[] = [];
+		const mutationFields: string[] = [];
+		const subscriptionFields: string[] = [];
+
+		for (const resolverClass of registered) {
+			const fields = getResolverFields(resolverClass);
+			for (const f of fields) {
+				const argStr =
+					f.args.length > 0
+						? `(${f.args.map((a) => `${a.name}: ${normalizeGQLType(a.type)}`).join(", ")})`
+						: "";
+				const line = `  ${f.name}${argStr}: ${normalizeGQLType(f.returnTypeName)}`;
+				if (f.kind === "query") queryFields.push(line);
+				else if (f.kind === "mutation") mutationFields.push(line);
+				else if (f.kind === "subscription") subscriptionFields.push(line);
+			}
+		}
+
+		const userSDL = sdl.join("\n");
+		const generated: string[] = [];
+
+		if (queryFields.length > 0) {
+			const keyword = /type\s+Query\s*\{/.test(userSDL) ? "extend type" : "type";
+			generated.push(`${keyword} Query {\n${queryFields.join("\n")}\n}`);
+		}
+		if (mutationFields.length > 0) {
+			const keyword = /type\s+Mutation\s*\{/.test(userSDL) ? "extend type" : "type";
+			generated.push(`${keyword} Mutation {\n${mutationFields.join("\n")}\n}`);
+		}
+		if (subscriptionFields.length > 0) {
+			const keyword = /type\s+Subscription\s*\{/.test(userSDL) ? "extend type" : "type";
+			generated.push(`${keyword} Subscription {\n${subscriptionFields.join("\n")}\n}`);
+		}
+
+		return [userSDL, ...generated].filter(Boolean).join("\n");
 	}
+}
+
+/** Deep-merge multiple `ResolverMap`s. Later entries win at the field level. */
+function mergeResolverMaps(...maps: ResolverMap[]): ResolverMap {
+	const result: ResolverMap = {};
+	for (const map of maps) {
+		for (const [typeName, fields] of Object.entries(map)) {
+			result[typeName] = { ...result[typeName], ...fields };
+		}
+	}
+	return result;
 }
 
 /**

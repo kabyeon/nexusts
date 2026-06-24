@@ -16,4 +16,5 @@ export {
 	getRegisteredResolvers,
 	clearResolverRegistry,
 	getMethodArgs,
+	normalizeGQLType,
 } from "./decorators/index.js";

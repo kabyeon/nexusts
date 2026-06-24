@@ -18,54 +18,38 @@
  *   }
  */
 import "reflect-metadata";
-import { pushResolverField, getResolverTypeName } from "./resolver.js";
+import { pushResolverField } from "./resolver.js";
+import { getMethodArgs } from "./arg.js";
 import type { ResolverClassRecord } from "../types.js";
 
 type OperationKind = "query" | "mutation" | "subscription";
 
 /**
  * Common implementation. `decorator` is a factory the user calls as
- * `@Query(...)` / `@Mutation(...)` etc. We can't share one decorator
- * across kinds because we want per-kind runtime behavior to be
- * identical — only the discriminator string differs.
+ * `@Query(name?, opts?)` / `@Mutation(name?, opts?)` etc.
+ *
+ * `opts.returns` — explicit GraphQL return type string, e.g. `"String!"`.
+ * Defaults to `"JSON"` when omitted (safe fallback; set explicitly for
+ * code-first schemas that use `autoSchema: true`).
  */
 function makeOperationDecorator(kind: OperationKind) {
-	return function (name?: string) {
+	return function (name?: string, opts?: { returns?: string }) {
 		return (
 			target: object,
 			propertyKey: string | symbol,
-			descriptor: TypedPropertyDescriptor<any>,
+			_descriptor: TypedPropertyDescriptor<any>,
 		): void => {
-			const meta = parseMethodType(descriptor.value);
+			const argsMeta = getMethodArgs(target, propertyKey);
 			pushResolverField(target, {
 				propertyKey: String(propertyKey),
 				kind,
 				name: name ?? String(propertyKey),
-				returnTypeName: meta.returnTypeName,
-				args: meta.args,
+				returnTypeName: opts?.returns ?? "JSON",
+				args: argsMeta
+					.sort((a, b) => a.index - b.index)
+					.map((a) => ({ name: a.name, type: a.type })),
 			});
 		};
-	};
-}
-
-/** Reflect on a method's parameter list to extract `@Arg` names. */
-function parseMethodType(fn: Function): {
-	returnTypeName: string;
-	args: Array<{ name: string; type: string; defaultValue?: unknown }>;
-} {
-	// We can't read parameter names at runtime in vanilla JS without
-	// extra tooling (the TypeScript metadata API exposes types but
-	// not parameter names). Convention: methods accept a single
-	// `args` object whose keys are the GraphQL field arguments.
-	//
-	// For finer control, the user can call `@Arg("name")` on
-	// individual parameters (see `./arg.js`). The names are then
-	// gathered by `@Arg` and merged at scan time.
-	const fnName = fn.name || "unknown";
-	return {
-		returnTypeName: "JSON", // SDL "JSON" scalar until a more specific
-								// type system is wired in.
-		args: [],
 	};
 }
 

@@ -1,64 +1,78 @@
 import "reflect-metadata";
-import { Application, Module, Injectable, Controller, Get } from "@nexusts/core";
-import { GraphQLModule, GraphQLService } from "@nexusts/graphql";
+import { Application, Module, Controller, Get } from "@nexusts/core";
+import {
+	GraphQLModule,
+	GraphQLService,
+	Resolver,
+	Query,
+	Mutation,
+	Arg,
+} from "@nexusts/graphql";
 
 /**
- * 32-graphql-hello — minimal GraphQL endpoint.
+ * 32-graphql-hello — code-first GraphQL endpoint.
  *
- *   GET  /            → plain text intro
- *   POST /graphql     → queries + mutations
- *   GET  /graphql     → GraphiQL playground (with ?query=... pre-baked)
- *   GET  /graphql/schema → the SDL as text/plain
+ * SDL is auto-generated from @Resolver / @Query / @Mutation / @Arg
+ * decorators. No hand-written typeDefs required.
+ *
+ *   GET  /              → plain text intro
+ *   POST /graphql       → queries + mutations
+ *   GET  /graphql       → GraphiQL playground
+ *   GET  /graphql/schema → generated SDL as text/plain
  *
  *   Run: bun main.ts
  *   Then:
  *     curl -s -X POST http://localhost:3000/graphql \
  *       -H "Content-Type: application/json" \
  *       -d '{"query":"{ hello(name:\"world\") }"}'
- *
- * The `context()` factory injects a `user` field so the `whoami`
- * query can be used to verify the context wiring end-to-end.
  */
 
-@Injectable()
-class Counter {
-  private n = 0;
-  bump() { this.n += 1; return this.n; }
+// Declare resolver classes BEFORE @Module so the decorator registry is
+// populated when GraphQLModule.forRoot() is called.
+
+@Resolver()
+class HelloResolver {
+	@Query("hello", { returns: "String!" })
+	hello(@Arg("name", "String!") name: string): string {
+		return `Hello, ${name}!`;
+	}
+
+	@Query("add", { returns: "Int!" })
+	add(@Arg("a", "Int!") a: number, @Arg("b", "Int!") b: number): number {
+		return a + b;
+	}
+}
+
+@Resolver()
+class EchoResolver {
+	@Mutation("echo", { returns: "String!" })
+	echo(@Arg("message", "String!") message: string): string {
+		return message;
+	}
 }
 
 @Controller("/")
 class HomeController {
-  @Get("/")
-  home() {
-    return {
-      graphql: "POST /graphql with { query: '{ hello(name: \"x\") }' }",
-      playground: "GET /graphql in a browser",
-    };
-  }
+	@Get("/")
+	home() {
+		return {
+			info: "Code-first GraphQL — SDL is auto-generated from decorators",
+			graphql: "POST /graphql with { query: '{ hello(name: \"x\") }' }",
+			playground: "GET /graphql in a browser",
+			schema: "GET /graphql/schema",
+		};
+	}
 }
 
 @Module({
-  imports: [
-    GraphQLModule.forRoot({
-      typeDefs: `
-        type Query {
-          hello(name: String!): String!
-          whoami: String!
-          add(a: Int!, b: Int!): Int!
-        }
-      `,
-      resolvers: {
-        Query: {
-          hello: (_p: any, args: { name: string }) => `Hello, ${args.name}!`,
-          whoami: (_p: any, _a: any, ctx: any) => ctx.state.user,
-          add: (_p: any, args: { a: number; b: number }) => args.a + args.b,
-        },
-      },
-      context: () => ({ user: "alice" }),
-    }),
-  ],
-  controllers: [HomeController],
-  providers: [Counter],
+	imports: [
+		GraphQLModule.forRoot({
+			autoSchema: true,
+			// typeDefs is not required — the schema is synthesised from
+			// @Resolver / @Query / @Mutation / @Arg decorators above.
+		}),
+	],
+	controllers: [HomeController],
 })
 class AppModule {}
 

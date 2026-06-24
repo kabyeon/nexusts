@@ -241,6 +241,172 @@ describe("loadGraphQLJs — lazy load", () => {
 	});
 });
 
+describe("normalizeGQLType", () => {
+	it("maps TypeScript primitive aliases to GraphQL scalars", async () => {
+		const { normalizeGQLType } = await import("@nexusts/graphql");
+		expect(normalizeGQLType("string")).toBe("String");
+		expect(normalizeGQLType("number")).toBe("Float");
+		expect(normalizeGQLType("int")).toBe("Int");
+		expect(normalizeGQLType("float")).toBe("Float");
+		expect(normalizeGQLType("boolean")).toBe("Boolean");
+		expect(normalizeGQLType("bool")).toBe("Boolean");
+		expect(normalizeGQLType("id")).toBe("ID");
+	});
+
+	it("preserves non-null suffix and list wrappers", async () => {
+		const { normalizeGQLType } = await import("@nexusts/graphql");
+		expect(normalizeGQLType("string!")).toBe("String!");
+		expect(normalizeGQLType("[string!]!")).toBe("[String!]!");
+		expect(normalizeGQLType("[int]")).toBe("[Int]");
+		expect(normalizeGQLType("String!")).toBe("String!"); // already canonical
+		expect(normalizeGQLType("JSON")).toBe("JSON"); // unknown — unchanged
+	});
+});
+
+describe("SDL synthesis — code-first schema generation", () => {
+	let Resolver: any;
+	let Query: any;
+	let Mutation: any;
+	let Arg: any;
+	let clearResolverRegistry: () => void;
+
+	beforeAll(async () => {
+		const mod = await import("@nexusts/graphql");
+		Resolver = mod.Resolver;
+		Query = mod.Query;
+		Mutation = mod.Mutation;
+		Arg = mod.Arg;
+		clearResolverRegistry = mod.clearResolverRegistry;
+	});
+
+	afterEach(() => {
+		clearResolverRegistry();
+	});
+
+	it("synthesises type Query SDL from @Query decorators", async () => {
+		@Resolver()
+		class PingResolver {
+			@Query("ping", { returns: "String!" })
+			ping(): string {
+				return "pong";
+			}
+		}
+		void PingResolver;
+
+		const svc = new GraphQLService({ autoSchema: true });
+		const schema = await svc.ensureSchema();
+		expect(schema).toBeDefined();
+		const r = await svc.execute("{ ping }");
+		expect(r.data).toEqual({ ping: "pong" });
+		expect(r.errors).toBeUndefined();
+	});
+
+	it("wires @Arg metadata as field arguments in generated SDL", async () => {
+		@Resolver()
+		class GreetResolver {
+			@Query("greet", { returns: "String!" })
+			greet(@Arg("name", "String!") name: string): string {
+				return `Hello, ${name}!`;
+			}
+		}
+		void GreetResolver;
+
+		const svc = new GraphQLService({ autoSchema: true });
+		await svc.ensureSchema();
+		const r = await svc.execute('{ greet(name: "World") }');
+		expect(r.data).toEqual({ greet: "Hello, World!" });
+		expect(r.errors).toBeUndefined();
+	});
+
+	it("synthesises type Mutation SDL from @Mutation decorators", async () => {
+		@Resolver()
+		class EchoResolver {
+			@Mutation("echo", { returns: "String!" })
+			echo(@Arg("msg", "String!") msg: string): string {
+				return msg;
+			}
+		}
+		void EchoResolver;
+
+		// A valid GraphQL schema requires at least one Query type.
+		const svc = new GraphQLService({
+			autoSchema: true,
+			typeDefs: "type Query { _noop: Boolean }",
+		});
+		await svc.ensureSchema();
+		const r = await svc.execute('mutation { echo(msg: "hi") }');
+		expect(r.data).toEqual({ echo: "hi" });
+		expect(r.errors).toBeUndefined();
+	});
+
+	it("uses 'extend type Query' when typeDefs already defines Query", async () => {
+		@Resolver()
+		class AddResolver {
+			@Query("add", { returns: "Int!" })
+			add(@Arg("a", "Int!") a: number, @Arg("b", "Int!") b: number): number {
+				return a + b;
+			}
+		}
+		void AddResolver;
+
+		const svc = new GraphQLService({
+			autoSchema: true,
+			typeDefs: "type Query { ping: String! }",
+			resolvers: { Query: { ping: () => "pong" } },
+		});
+		await svc.ensureSchema();
+
+		const r1 = await svc.execute("{ ping }");
+		expect(r1.data).toEqual({ ping: "pong" });
+
+		const r2 = await svc.execute("{ add(a: 3, b: 4) }");
+		expect(r2.data).toEqual({ add: 7 });
+	});
+
+	it("auto-wires resolver class methods without a manual resolver map", async () => {
+		let callCount = 0;
+
+		@Resolver()
+		class CounterResolver {
+			@Query("callCount", { returns: "Int!" })
+			getCallCount(): number {
+				callCount += 1;
+				return callCount;
+			}
+		}
+		void CounterResolver;
+
+		const svc = new GraphQLService({ autoSchema: true });
+		await svc.ensureSchema();
+		const r = await svc.execute("{ callCount }");
+		expect(r.data).toEqual({ callCount: 1 });
+		expect(r.errors).toBeUndefined();
+	});
+
+	it("multiple @Resolver classes contribute fields to the same Query type", async () => {
+		@Resolver()
+		class NameResolver {
+			@Query("name", { returns: "String!" })
+			name(): string { return "NexusTS"; }
+		}
+
+		@Resolver()
+		class VersionResolver {
+			@Query("version", { returns: "String!" })
+			version(): string { return "0.7"; }
+		}
+
+		void NameResolver;
+		void VersionResolver;
+
+		const svc = new GraphQLService({ autoSchema: true });
+		await svc.ensureSchema();
+		const r = await svc.execute("{ name version }");
+		expect(r.data).toEqual({ name: "NexusTS", version: "0.7" });
+		expect(r.errors).toBeUndefined();
+	});
+});
+
 describe("@Resolver registry", () => {
 	it("registers a class when @Resolver is applied", async () => {
 		const { Resolver, getRegisteredResolvers, clearResolverRegistry } =

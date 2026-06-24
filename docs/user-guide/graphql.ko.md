@@ -84,7 +84,7 @@ curl -X POST http://localhost:3000/graphql \
 
 ```ts
 interface GraphQLConfig {
-  /** SDL typeDefs (string 또는 string 배열). */
+  /** SDL typeDefs (string 또는 string 배열). code-first 전용이면 생략 가능. */
   typeDefs?: string | string[];
 
   /** Resolver 맵: { [TypeName]: { [fieldName]: resolverFn } }. */
@@ -104,6 +104,12 @@ interface GraphQLConfig {
 
   /** introspection 허용 (기본값: true). 프로덕션에서는 false. */
   introspection?: boolean;
+
+  /**
+   * true 이면 `@Resolver` / `@Query` / `@Mutation` 데코레이터에서
+   * SDL을 자동 합성한다 — `typeDefs` 불필요. 두 방식 병용 가능.
+   */
+  autoSchema?: boolean;
 }
 ```
 
@@ -153,33 +159,102 @@ GraphQLModule.forRoot({
 });
 ```
 
-## 데코레이터를 통한 Code-first
+## Code-first (autoSchema)
 
-`@Resolver`, `@Query`, `@Mutation`, `@Subscription`, `@Arg`
-데코레이터를 export한다. `@Resolver`로 장식된 클래스는 전역
-레지스트리에 자동 등록되므로 `GraphQLModule.forRoot()`에 수동으로
-나열할 필요가 없다. resolver 클래스를 모듈의 `providers` 배열에만
-추가하면 된다.
+`autoSchema: true` 하나로 SDL 작성 없이 데코레이터만으로 스키마를
+정의한다. `@Resolver` 클래스는 데코레이터 평가 시점에 전역 레지스트리에
+자동 등록되므로 `forRoot()`에 나열할 필요가 없다.
+
+### 빠른 예제
 
 ```ts
-import { Resolver, Query, Arg } from "@nexusts/graphql";
+import "reflect-metadata";
+import { Resolver, Query, Mutation, Arg } from "@nexusts/graphql";
 
-@Resolver("Query")
+@Resolver()
 class HelloResolver {
-  @Query()
-  hello(@Arg("name", { type: "String!" }) name: string): string {
+  @Query("hello", { returns: "String!" })
+  hello(@Arg("name", "String!") name: string): string {
     return `Hello, ${name}!`;
   }
+
+  @Mutation("echo", { returns: "String!" })
+  echo(@Arg("message", "String!") message: string): string {
+    return message;
+  }
+}
+
+@Module({
+  imports: [
+    GraphQLModule.forRoot({
+      autoSchema: true,
+      // typeDefs 불필요 — @Resolver 클래스에서 자동 합성
+    }),
+  ],
+})
+class AppModule {}
+```
+
+자동으로 생성되는 SDL:
+
+```graphql
+type Query {
+  hello(name: String!): String!
+}
+type Mutation {
+  echo(message: String!): String!
 }
 ```
 
-전역 레지스트리(`getRegisteredResolvers()`)는 `@Resolver` 장식
-클래스를 데코레이션 시점에 수집하여 별도의 스캔 패스 없이 스키마
-빌더에서 사용할 수 있게 한다.
+### 데코레이터 레퍼런스
 
-**참고**: 데코레이터 메타데이터에서 SDL을 합성하는 기능은 아직
-alpha — 스키마는 현재 `typeDefs`로 빌드된다. 프로덕션에서는 SDL-우선
-방식을 권장한다. 풀 code-first SDL 합성은 v0.8에서 예정.
+| 데코레이터 | 위치 | 용도 |
+|------------|------|------|
+| `@Resolver(typeName?)` | 클래스 | resolver 클래스 등록. 이름 생략 시 클래스명에서 추론 (`UserResolver` → `"User"`). |
+| `@Query(name?, { returns })` | 메서드 | `type Query` 필드 선언. `returns`는 GraphQL 타입 문자열 (예: `"String!"`). |
+| `@Mutation(name?, { returns })` | 메서드 | `type Mutation` 필드 선언. |
+| `@Subscription(name?, { returns })` | 메서드 | `type Subscription` 필드 선언. |
+| `@Arg(name, type?)` | 파라미터 | 필드 인수 선언. `type` 기본값 `"String"`. |
+
+### 타입 문자열 정규화
+
+`returns` / `@Arg`의 타입에 TypeScript 별칭을 쓸 수 있다:
+
+| TypeScript | GraphQL |
+|------------|---------|
+| `"string"` | `"String"` |
+| `"int"` | `"Int"` |
+| `"float"` / `"number"` | `"Float"` |
+| `"boolean"` / `"bool"` | `"Boolean"` |
+| `"id"` | `"ID"` |
+| 그 외 | 그대로 사용 (사용자 정의 타입) |
+
+Non-null(`!`)과 리스트(`[...]`) 래퍼는 그대로 보존된다.
+
+### SDL-first와 병용
+
+`typeDefs`와 `autoSchema: true`를 함께 사용하면 데코레이터 필드가
+기존 `type Query`에 `extend type Query`로 병합된다:
+
+```ts
+GraphQLModule.forRoot({
+  autoSchema: true,
+  typeDefs: "type Query { ping: String! }",
+  resolvers: { Query: { ping: () => "pong" } },
+})
+// 결과: type Query { ping } + extend type Query { 데코레이터 필드 }
+```
+
+### Resolver 클래스 자동 주입
+
+`autoSchema: true` 상태에서 프레임워크는 `@Resolver` 클래스를
+자동으로 인스턴스화하고 `@Query`/`@Mutation` 메서드를 resolver 맵에
+등록한다. `@Arg` 파라미터는 graphql-js의 `args` 객체에서 이름으로
+추출되어 메서드에 순서대로 전달된다.
+
+> **제약**: 자동 인스턴스화는 인자 없는 생성자를 가정한다. DI 컨테이너
+> 연동이 필요한 경우 `config.resolvers`에 수동으로 resolver 맵을
+> 추가하면 자동 주입 결과를 덮어쓸 수 있다.
 
 ## Subscriptions
 
@@ -229,16 +304,13 @@ Install it with `bun add graphql`. Original error: ...
 32-graphql-hello 예제가 `tests/examples/smoke.test.ts`에
 등재되어 있다.
 
-## v0.7에서 누락된 부분 (v0.8에서 예정)
+## 로드맵 (v0.8+)
 
-- **풀 SDL 합성 from 데코레이터.** `@Resolver` 클래스는 자동
-  등록(`getRegisteredResolvers()`)되지만, 데코레이터 메타데이터에서
-  `typeDefs`를 합성하는 기능은 아직 연결되지 않았다.
-  현재는 `typeDefs`를 수동으로 정의하라.
-- **DataLoader 통합.** N+1 쿼리 배칭은 일반적인 요구사항;
-  통합 지점은 resolver별 `loader` 옵션이 될 것이다.
-- **Federation.** Apollo Federation v2 subgraph 지원은 v0.8+ 로드맵에 있다.
-- **Persisted queries.** APQ 지원은 graphql 16+에 있으며, 그냥 연결만 하면 된다.
+- **DataLoader 통합.** N+1 쿼리 배칭 — resolver별 `loader` 옵션.
+- **DI 연동 자동 인스턴스화.** `@Resolver` 클래스를 NexusTS 컨테이너에서
+  resolve하여 주입된 서비스를 사용할 수 있도록.
+- **Federation.** Apollo Federation v2 subgraph 지원.
+- **Persisted queries.** APQ (Automatic Persisted Queries) 지원.
 
 ## 참고
 
