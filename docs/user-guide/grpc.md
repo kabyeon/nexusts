@@ -12,8 +12,8 @@ within your app.
 - **HTTP/2 + binary.** Lower overhead than JSON-over-HTTP/1.1 for
   internal microservice traffic.
 - **Streaming.** Server-streaming, client-streaming, and bidirectional
-  streaming are first-class in gRPC. (Streaming is a planned v2
-  addition for `@nexusts/grpc`.)
+  streaming via `@GrpcServerStream`, `@GrpcClientStream`, and
+  `@GrpcBidiStream` decorators — see [Streaming](#streaming).
 
 ## Install
 
@@ -252,12 +252,125 @@ async findById(req: { id: number }) {
 }
 ```
 
-## v1 scope and limitations
+## Streaming
 
-- **Unary methods only.** Server-streaming, client-streaming, and
-  bidirectional streaming are planned for v2. The infrastructure is
-  ready (handlers use the standard gRPC callback signature); the
-  remaining work is decorator helpers and client wrappers.
+`@nexusts/grpc` supports all three gRPC streaming patterns.
+
+### Call pattern summary
+
+| Decorator | Proto declaration | Server signature | Client return |
+|-----------|-------------------|-----------------|---------------|
+| `@GrpcMethod` | `rpc M(Req) returns (Res)` | `(req) => Promise<Res>` | `Promise<Res>` |
+| `@GrpcServerStream` | `rpc M(Req) returns (stream Res)` | `(req) => AsyncIterable<Res>` | `AsyncIterable<Res>` |
+| `@GrpcClientStream` | `rpc M(stream Req) returns (Res)` | `(reqs: AsyncIterable<Req>) => Promise<Res>` | `(src: AsyncIterable<Req>) => Promise<Res>` |
+| `@GrpcBidiStream` | `rpc M(stream Req) returns (stream Res)` | `(reqs: AsyncIterable<Req>) => AsyncIterable<Res>` | `(src: AsyncIterable<Req>) => AsyncIterable<Res>` |
+
+### Server streaming
+
+The server receives a single request and streams multiple responses.
+
+```proto
+service NumberService {
+  rpc ListNumbers (ListRequest) returns (stream NumberResponse);
+}
+message ListRequest     { int32 count = 1; }
+message NumberResponse  { int32 n     = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("NumberService")
+class NumberServiceImpl {
+  @GrpcServerStream("ListNumbers")
+  async *listNumbers(req: { count: number }): AsyncIterable<{ n: number }> {
+    for (let i = 0; i < req.count; i++) {
+      yield { n: i };
+    }
+  }
+}
+```
+
+Client usage:
+
+```ts
+const client = grpc.client<{
+  listNumbers(req: { count: number }): AsyncIterable<{ n: number }>;
+}>("NumberService");
+
+for await (const { n } of client.listNumbers({ count: 5 })) {
+  console.log(n); // 0, 1, 2, 3, 4
+}
+```
+
+### Client streaming
+
+The client streams multiple messages and the server returns a single response.
+
+```proto
+service SumService {
+  rpc Sum (stream NumberRequest) returns (SumResponse);
+}
+message NumberRequest { int32 n     = 1; }
+message SumResponse   { int32 total = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("SumService")
+class SumServiceImpl {
+  @GrpcClientStream("Sum")
+  async sum(reqs: AsyncIterable<{ n: number }>): Promise<{ total: number }> {
+    let total = 0;
+    for await (const { n } of reqs) total += n;
+    return { total };
+  }
+}
+```
+
+Client usage:
+
+```ts
+const client = grpc.client<{
+  sum(): (src: AsyncIterable<{ n: number }>) => Promise<{ total: number }>;
+}>("SumService");
+
+const result = await client.sum()(async function* () {
+  yield { n: 1 }; yield { n: 2 }; yield { n: 3 };
+}());
+// → { total: 6 }
+```
+
+### Bidirectional streaming
+
+Both sides stream simultaneously.
+
+```proto
+service EchoService {
+  rpc Echo (stream EchoRequest) returns (stream EchoResponse);
+}
+message EchoRequest  { string message = 1; }
+message EchoResponse { string reply   = 1; }
+```
+
+```ts
+@Injectable()
+@GrpcService("EchoService")
+class EchoServiceImpl {
+  @GrpcBidiStream("Echo")
+  async *echo(reqs: AsyncIterable<{ message: string }>): AsyncIterable<{ reply: string }> {
+    for await (const { message } of reqs) {
+      yield { reply: `Echo: ${message}` };
+    }
+  }
+}
+```
+
+Full example: [`examples/34-grpc-streaming/main.ts`](../../examples/34-grpc-streaming/main.ts)
+
+---
+
+## Limitations
+
 - **Reflection-based.** No codegen step; `.proto` files are loaded at
   runtime via `@grpc/proto-loader`. Trade-off: zero build step, but
   slightly slower cold start.
