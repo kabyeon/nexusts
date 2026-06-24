@@ -230,13 +230,66 @@ class SubscriptionService {
 }
 ```
 
+## Admin API
+
+실행 중인 회로와 벌크헤드를 검사하고 수동으로 제어합니다.
+
+### 전체 회로 목록
+
+```ts
+const circuits = svc.listCircuits();
+// → [
+//     { name: "stripe",  state: "open",   metrics: { failures: 8, totalCalls: 10, ... } },
+//     { name: "github", state: "closed", metrics: { failures: 0, totalCalls: 42, ... } },
+//   ]
+```
+
+각 항목에는 `CircuitMetrics` 스냅샷이 포함됩니다:
+
+| 필드 | 타입 | 설명 |
+|------|------|------|
+| `name` | `string` | 회로 이름 |
+| `state` | `"closed"` \| `"open"` \| `"half-open"` | 현재 상태 |
+| `totalCalls` | `number` | 롤링 윈도우 내 호출 수 |
+| `failures` | `number` | 실패한 호출 수 |
+| `successes` | `number` | 성공한 호출 수 |
+| `failureRatio` | `number` | `failures / totalCalls` (0..1) |
+| `openedAt` | `number` | 마지막 open 시각 (0 = 없음) |
+| `msUntilHalfOpen` | `number` | open → half-open 전환까지 ms |
+
+### 전체 벌크헤드 목록
+
+```ts
+const bulkheads = svc.listBulkheads();
+// → [
+//     { name: "stripe", inFlight: 2, queued: 0, maxConcurrent: 5 },
+//   ]
+```
+
+### 수동 회로 제어
+
+```ts
+const cb = svc.getOrCreateCircuit("stripe", { threshold: 0.5 });
+
+// 메트릭 스냅샷
+const m = cb.metrics();
+console.log(`State: ${m.state}, failures: ${m.failures}/${m.totalCalls}`);
+
+// 강제 open (알려진 장애 발생 시)
+cb.forceOpen();
+
+// 강제 close (업스트림 복구 확인 후)
+cb.forceClose();
+
+// 초기 closed 상태로 리셋 (히스토리 삭제)
+cb.reset();
+```
+
 ## 이번 릴리스에 포함되지 않은 것
 
 - **Bulkhead 큐 추적.** 큐가 길 때 현재는 `BulkheadFullError`만 본다.
   미래 버전에서 `bulkhead.queue.waiting` Prometheus-style 메트릭을
   emit할 것이다.
-- **Half-open chaos testing.** `forceOpen(name)` / `forceClose(name)`
-  admin API가 v0.8에 예정.
 - **Per-route HTTP 통합.** `@WithResilience({ retry, circuit })`
   Hono 미들웨어 변형이 로드맵에 있다.
 

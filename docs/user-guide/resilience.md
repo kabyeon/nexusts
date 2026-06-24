@@ -235,13 +235,66 @@ class SubscriptionService {
 }
 ```
 
+## Admin API
+
+Inspect and manually control circuits and bulkheads at runtime.
+
+### List all circuits
+
+```ts
+const circuits = svc.listCircuits();
+// → [
+//     { name: "stripe",  state: "open",   metrics: { failures: 8, totalCalls: 10, ... } },
+//     { name: "github", state: "closed", metrics: { failures: 0, totalCalls: 42, ... } },
+//   ]
+```
+
+Each entry includes a `CircuitMetrics` snapshot:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | `string` | Circuit name |
+| `state` | `"closed"` \| `"open"` \| `"half-open"` | Current state |
+| `totalCalls` | `number` | Calls in the rolling window |
+| `failures` | `number` | Failed calls in the window |
+| `successes` | `number` | Successful calls |
+| `failureRatio` | `number` | `failures / totalCalls` (0..1) |
+| `openedAt` | `number` | Timestamp when last opened (0 if never) |
+| `msUntilHalfOpen` | `number` | ms until open → half-open transition |
+
+### List all bulkheads
+
+```ts
+const bulkheads = svc.listBulkheads();
+// → [
+//     { name: "stripe", inFlight: 2, queued: 0, maxConcurrent: 5 },
+//   ]
+```
+
+### Manual circuit overrides
+
+```ts
+const cb = svc.getOrCreateCircuit("stripe", { threshold: 0.5 });
+
+// Metrics snapshot (same as above, from the circuit directly)
+const m = cb.metrics();
+console.log(`State: ${m.state}, failures: ${m.failures}/${m.totalCalls}`);
+
+// Force the circuit open (e.g. during a known outage).
+cb.forceOpen();
+
+// Force the circuit closed (e.g. after you know the upstream recovered).
+cb.forceClose();
+
+// Reset to clean closed state (clears all history).
+cb.reset();
+```
+
 ## What's not in this release
 
 - **Bulkhead queue tracing.** When the queue is long, you currently
   only see `BulkheadFullError`. A future version will emit
   `bulkhead.queue.waiting` Prometheus-style metrics.
-- **Half-open chaos testing.** A `forceOpen(name)` / `forceClose(name)`
-  admin API is planned for v0.8.
 - **Per-route HTTP integration.** A `@WithResilience({ retry, circuit })`
   Hono middleware variant is on the roadmap.
 
