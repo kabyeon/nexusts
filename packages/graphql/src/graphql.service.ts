@@ -20,6 +20,7 @@ import type {
 	FieldResolver,
 	ResolverMap,
 } from "./types.js";
+import { getRegisteredResolvers } from "./decorators/index.js";
 
 interface GraphQLJs {
 	parse: (s: string) => unknown;
@@ -129,11 +130,14 @@ export class GraphQLService {
 		if (this._bootstrapPromise) return this._bootstrapPromise.then(() => this._schema);
 		this._bootstrapPromise = (async () => {
 			const sdl = this.normaliseTypeDefs(this.config.typeDefs);
-			if (sdl.length === 0) {
+			const autoSchema = this.config.autoSchema ?? false;
+			const hasResolvers = getRegisteredResolvers().length > 0;
+
+			if (sdl.length === 0 && !autoSchema && !hasResolvers) {
 				throw new Error(
 					"[nexusjs/graphql] No typeDefs configured. " +
-						"Pass `typeDefs: '...' to GraphQLModule.forRoot()` or " +
-						"use `@Resolver` + `@Query` / `@Mutation` decorators.",
+						"Pass `typeDefs: '...'` to GraphQLModule.forRoot(), " +
+						"or set `autoSchema: true` and use `@Resolver` + `@Query` / `@Mutation` decorators.",
 				);
 			}
 			this._schema = await this._buildSchema(sdl);

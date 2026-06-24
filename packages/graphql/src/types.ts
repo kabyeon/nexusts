@@ -94,6 +94,13 @@ export interface GraphQLConfig {
 	exposeSchemaSDL?: boolean;
 	/** Enable introspection at runtime (disable in production). */
 	introspection?: boolean;
+	/**
+	 * When true, the schema is synthesised from `@Resolver` / `@Query` /
+	 * `@Mutation` / `@Subscription` decorators alone — `typeDefs` is not
+	 * required. Both can coexist: decorator-generated SDL is merged with
+	 * any user-supplied `typeDefs`.
+	 */
+	autoSchema?: boolean;
 }
 
 /** The shape of a hand-written resolver map. */

@@ -69,6 +69,28 @@ describe("GraphQLService — ensureSchema", () => {
 			/No typeDefs configured/,
 		);
 	});
+
+	it("does not throw 'No typeDefs' when autoSchema: true is set", async () => {
+		// autoSchema: true bypasses the 'No typeDefs' guard.
+		// graphql-js may still throw for empty SDL — that's expected until
+		// the SDL synthesiser (Task 4) populates the schema from decorators.
+		const svc = new GraphQLService({ autoSchema: true });
+		await expect(svc.ensureSchema()).rejects.not.toThrow(
+			/No typeDefs configured/,
+		);
+	});
+
+	it("accepts autoSchema: true alongside typeDefs and builds normally", async () => {
+		const svc = new GraphQLService({
+			autoSchema: true,
+			typeDefs: "type Query { ping: String! }",
+			resolvers: { Query: { ping: () => "pong" } },
+		});
+		const schema = await svc.ensureSchema();
+		expect(schema).toBeDefined();
+		const r = await svc.execute("{ ping }");
+		expect(r.data).toEqual({ ping: "pong" });
+	});
 });
 
 describe("GraphQLService — execute()", () => {
