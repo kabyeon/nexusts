@@ -21,6 +21,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.2] — 2026-06-24
+
+### Added
+
+- **gRPC streaming** (`@GrpcServerStream`, `@GrpcClientStream`,
+  `@GrpcBidiStream`): full server/client/bidirectional streaming
+  support. Example at `examples/34-grpc-streaming`.
+- **Multi-runtime CI**: workflows for Bun, Node.js 22, Drizzle
+  dialects (bun-sqlite + postgres), and Cloudflare Workers.
+- **Benchmark suite**: `benchmarks/bench.ts` with cross-runtime
+  HTTP benchmark (NexusTS vs Hono), auto-regression check in CI.
+
+### Fixed
+
+- **CI workflows**: lint (biome exit code), Node.js 22 test config
+  (vitest exclude list), benchmark BUN_BIN path, Cloudflare Workers
+  smoke test file, Drizzle dialect test exclusion.
+- **All 314 tests pass** across 18 test files.
+
+---
+
 ## [0.8.1] — 2026-06-24
 
 ### Added
@@ -1464,6 +1485,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0
 [0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9

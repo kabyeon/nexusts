@@ -21,6 +21,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.2] — 2026-06-24
+
+### 추가
+
+- **gRPC 스트리밍** (`@GrpcServerStream`, `@GrpcClientStream`,
+  `@GrpcBidiStream`): server/client/bidirectional streaming 지원.
+  `examples/34-grpc-streaming` 예제.
+- **멀티 런타임 CI**: Bun, Node.js 22, Drizzle dialect, CF Workers.
+- **벤치마크 스위트**: `benchmarks/bench.ts` — NexusTS vs Hono.
+
+### 수정
+
+- **CI 워크플로우**: lint, Node.js 22 vitest 설정, BUN_BIN 경로,
+  Workers smoke test, Drizzle dialect 테스트 제외.
+- **전체 314개 테스트 통과** (18개 파일).
+
+---
+
 ## [0.8.1] — 2026-06-24
 
 ### 추가
@@ -1113,6 +1131,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.8.2]: https://github.com/nexus-ts/nexusts/compare/v0.8.1...v0.8.2
 [0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0
 [0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
