@@ -24,6 +24,11 @@ const RESOLVER_KEY = Symbol.for("nexus:GraphQL:Resolver");
 const FIELDS_KEY = Symbol.for("nexus:GraphQL:Fields");
 const TYPENAME_KEY = Symbol.for("nexus:GraphQL:TypeName");
 
+// Global registry of all @Resolver-decorated classes. Populated at
+// decorator evaluation time so the SDL synthesiser can enumerate them
+// without needing a separate scan pass.
+const _resolverRegistry = new Set<Function>();
+
 export function Resolver(typeName?: string): ClassDecorator {
 	return (target: Function) => {
 		const ctor = target as unknown as new (...args: any[]) => any;
@@ -33,7 +38,18 @@ export function Resolver(typeName?: string): ClassDecorator {
 		if (!Reflect.hasMetadata(FIELDS_KEY, ctor)) {
 			Reflect.defineMetadata(FIELDS_KEY, [], ctor);
 		}
+		_resolverRegistry.add(ctor);
 	};
+}
+
+/** Return all classes decorated with `@Resolver`. */
+export function getRegisteredResolvers(): Function[] {
+	return [..._resolverRegistry];
+}
+
+/** Remove all entries from the registry. Intended for use in tests only. */
+export function clearResolverRegistry(): void {
+	_resolverRegistry.clear();
 }
 
 /** Read the type-name this resolver is for. */

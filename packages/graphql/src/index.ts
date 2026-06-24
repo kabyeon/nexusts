@@ -13,5 +13,7 @@ export {
 	isResolverClass,
 	getResolverTypeName,
 	getResolverFields,
+	getRegisteredResolvers,
+	clearResolverRegistry,
 	getMethodArgs,
 } from "./decorators/index.js";
