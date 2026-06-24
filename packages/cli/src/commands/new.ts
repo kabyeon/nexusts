@@ -156,7 +156,7 @@ export const newCommand: Command = {
 			deps["drizzle-orm"] = "^0.45.0";
 			if (db === "postgres") deps["pg"] = "^8.13.0";
 			if (db === "mysql") deps["mysql2"] = "^3.11.0";
-			if (db === "sqlite" || db === "node-sqlite") deps["better-sqlite3"] = "^11.0.0";
+			if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") deps["better-sqlite3"] = "^11.0.0";
 		}
 		if (view !== "none") {
 			deps["@nexusts/static"] = "*";

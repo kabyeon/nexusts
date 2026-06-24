@@ -179,7 +179,7 @@ export const initCommand: Command = {
 					// Add database driver for non-bun-sqlite dialects
 					if (db === "postgres") coreDeps["pg"] = "^8.13.0";
 					if (db === "mysql") coreDeps["mysql2"] = "^3.11.0";
-					if (db === "sqlite" || db === "node-sqlite") coreDeps["better-sqlite3"] = "^11.0.0";
+					if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") coreDeps["better-sqlite3"] = "^11.0.0";
 					// drizzle-kit goes to devDependencies, handled below
 				}
 				if (view !== "none") {
