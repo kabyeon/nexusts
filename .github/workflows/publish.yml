@@ -5,36 +5,25 @@ name: Publish packages to npm
 #   - on workflow_dispatch (manual trigger)
 #
 # Modes for workflow_dispatch:
-#   - publish       : real publish, 30s between packages
-#   - publish-batch : real publish, 10min every 5 packages
-#                     (safer for 31 fresh publishes)
+#   - publish       : real publish, 3s between packages, 10s batch break
+#   - publish-batch : slower publish, 10s between packages, 30s batch break
 #   - dry-run       : validate package.json only
 #   - build         : build only, no registry interaction
-#
-# The "publish-batch" mode is recommended for a first-time publish of
-# all 31 packages. After 25 of them are on the registry, a partial
-# republish via the regular "publish" mode is fast (idempotent skip).
+
 on:
   release:
     types: [published]
   workflow_dispatch:
     inputs:
       mode:
-        description: "publish-batch | publish | dry-run | build"
+        description: "publish | publish-batch | dry-run | build"
         required: false
         default: "dry-run"
 
 jobs:
   publish:
-    # Use ubuntu-22.04 to access a different runner pool than the
-    # default ubuntu-latest / ubuntu-24.04 — those pools share IPs
-    # that got rate-limited by the npm registry after the v0.7.0
-    # publish burst. ubuntu-22.04 is also faster to spin up than
-    # macos-latest (which we tried and it still hit the same IP).
-    runs-on: ubuntu-22.04
-    # 180 minutes covers the worst case: 31 packages × 10min per
-    # batch break (6 breaks total = 60min) + build time + retries.
-    timeout-minutes: 180
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,8 +45,8 @@ jobs:
       - name: Build all packages
         run: bun run build:all || bun run build
 
-      # Real publish — release OR manual dispatch with mode=publish.
-      # 30s between packages (idempotent skip means re-runs are fast).
+      # Regular publish — release OR manual dispatch with mode=publish.
+      # Default delays: 3s between packages, 10s batch break every 5.
       - name: Publish to npm (regular)
         if: >
           github.event_name == 'release'
@@ -65,28 +54,21 @@ jobs:
               && inputs.mode == 'publish')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Tunable delays (env-driven so we can adjust per-run).
-          PUBLISH_BATCH_DELAY_MS: "30000"
-          PUBLISH_BATCH_BREAK_MS: "60000"
-          PUBLISH_BATCH_BREAK_N: "10"
         run: bun run scripts/publish.ts
 
-      # Batched publish — manual dispatch only. 10 minutes every 5
-      # packages. Use this for a first-time release of 31 packages
-      # so the npm registry doesn't flag the burst as anti-abuse.
-      - name: Publish to npm (batched, anti-abuse)
+      # Batched publish — slower delays for first-time full publish.
+      - name: Publish to npm (batched)
         if: >
           github.event_name == 'workflow_dispatch'
           && inputs.mode == 'publish-batch'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          PUBLISH_BATCH_DELAY_MS: "30000"
-          PUBLISH_BATCH_BREAK_MS: "600000" # 10 minutes
+          PUBLISH_BATCH_DELAY_MS: "10000"
+          PUBLISH_BATCH_BREAK_MS: "30000"
           PUBLISH_BATCH_BREAK_N: "5"
         run: bun run scripts/publish.ts
 
-      # Validation path: only on manual dispatch with default
-      # (dry-run) mode — checks that every package.json parses.
+      # Validation path: only on manual dispatch with dry-run mode.
       - name: Dry run (validate package.json)
         if: >
           github.event_name == 'workflow_dispatch'
@@ -96,13 +78,13 @@ jobs:
           for pkg in packages/*/; do
             if [ -f "$pkg/package.json" ]; then
               echo "✓ $pkg/package.json"
-              node -e "JSON.parse(require('fs').readFileSync('$pkg/package.json', 'utf8'))" || exit 1
+              node -e "JSON.parse(require('fs').readFileSync('$pkg/package.json', 'utf8'))" \
+                || exit 1
             fi
           done
 
-      # Build-only path: useful for verifying the build step in
-      # isolation without touching the registry.
-      - name: Build only (no publish, no validation)
+      # Build-only path: verify build without touching the registry.
+      - name: Build only
         if: >
           github.event_name == 'workflow_dispatch'
           && inputs.mode == 'build'
