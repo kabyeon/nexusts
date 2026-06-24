@@ -81,7 +81,7 @@ export {
 } from "./guards/index.js";
 
 // Application
-export { Application, type ApplicationOptions } from "./application.js";
+export { Application, type ApplicationOptions, setScheduleScanner } from "./application.js";
 
 // Constants and types
 export { METADATA_KEY, PARAM_TYPES, HTTP_METHODS } from "./constants.js";

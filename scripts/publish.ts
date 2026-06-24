@@ -169,10 +169,10 @@ for (const pkg of publishOrder) {
 			// Non-rate-limit error: bail out, no point retrying.
 			break;
 		}
-		// Long backoff: 60s, 120s — npm rate limits are sticky and need
+		// Long backoff: 5s, 10s — npm rate limits are sticky and need
 		// a real wait before they reset. Going any shorter just wastes
 		// attempts.
-		const sleepSec = attempt === 1 ? 60 : 120;
+		const sleepSec = attempt === 1 ? 5 : 10;
 		console.warn(
 			`[publish] ⚠ rate-limited (attempt ${attempt}/${maxAttempts}); sleeping ${sleepSec}s before retry…`,
 		);
@@ -201,13 +201,13 @@ for (const pkg of publishOrder) {
 	// registry plenty of breathing room.
 	//
 	// Tunable via env:
-	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 30_000)
-	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 600_000 = 10 min)
+	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 10_000 = 10s)
+	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 30_000 = 30s)
 	//   PUBLISH_BATCH_BREAK_N   — packages per break (default 5)
 	if (pkg !== publishOrder[publishOrder.length - 1]) {
 		const remaining = publishOrder.length - publishOrder.indexOf(pkg) - 1;
-		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 30_000);
-		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 600_000);
+		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 10_000);
+		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 30_000);
 		const batchN = Number(process.env.PUBLISH_BATCH_BREAK_N ?? 5);
 
 		const publishedSoFar = publishOrder.length - remaining;

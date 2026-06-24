@@ -114,8 +114,13 @@ export class CronExpression {
 	 */
 	next(from: Date, maxYears = 5): Date | null {
 		const cap = new Date(from.getTime() + maxYears * 365 * 24 * 60 * 60 * 1000);
-		let cur = new Date(from.getTime() + 1000);
+		// For 5-field expressions (no seconds), start from the next minute boundary.
+		// For 6-field expressions (with seconds), start from +1 second.
+		const offsetMs = this.hasSeconds ? 1000 : 60_000;
+		let cur = new Date(from.getTime() + offsetMs);
 		cur.setMilliseconds(0);
+		// For 5-field, also zero out seconds so we start at :00 of the next minute.
+		if (!this.hasSeconds) cur.setSeconds(0);
 
 		// Brute-force: step minute-by-minute, but skip ahead when a
 		// higher-order field doesn't match. For most crons this is

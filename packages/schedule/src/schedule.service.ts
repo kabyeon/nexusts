@@ -1,18 +1,5 @@
-/**
- * `ScheduleService` — DI-friendly facade over a `ScheduleRegistry`.
- *
- * Mirrors the `@nestjs/schedule` API for familiarity. Controllers and
- * services can:
- *   - Inject this and call `addCron / addInterval / addTimeout` to
- *     schedule dynamically.
- *   - Inject this and call `list / get / pause / resume / delete` to
- *     introspect or mutate registered tasks.
- *
- * For static registration, use the `@Cron`, `@Interval`, `@Timeout`
- * decorators plus `ScheduleModule.scanForSchedulers(instance)`.
- */
-
-import { Inject, Injectable } from '@nexusts/core';
+import { Inject, Injectable, OnApplicationInit } from '@nexusts/core';
+import { __setScheduleService } from './scanner.js';
 import type {
 	ScheduleRegistry,
 	ScheduleConfig,
@@ -28,8 +15,10 @@ import {
 	CloudflareSchedulesBackend,
 } from './backends/index.js';
 
+
+
 @Injectable()
-export class ScheduleService {
+export class ScheduleService implements OnApplicationInit {
 	/** DI token — use with `@Inject(ScheduleService.TOKEN)`. */
 	static readonly TOKEN = Symbol.for('nexus:ScheduleService');
 
@@ -38,17 +27,56 @@ export class ScheduleService {
 	#started = false;
 	#memoryBackend: MemorySchedulesBackend | null = null;
 
-	constructor(@Inject('SCHEDULE_CONFIG') private readonly config: ScheduleConfig = {}) {
-		this.registry = this.#createBackend(config);
+	constructor(@Inject('SCHEDULE_CONFIG') private _config: ScheduleConfig = {}) {
+		this.registry = this.#createBackend(this._config);
+		// Register this instance immediately so the Application's scanner
+		// callback can use it for subsequent providers resolved after this one.
+		__setScheduleService(this);
+	}
+
+	/** @internal called by Application.bootstrap() for each resolved instance. */
+	scanInstance(instance: object): void {
+		const { getCronHooks, getIntervalHooks, getTimeoutHooks } =
+			// eslint-disable-next-line @typescript-eslint/no-require-imports
+			require('./decorators/cron.js');
+		for (const h of getCronHooks(instance)) {
+			const fn = (instance as Record<string, unknown>)[h.method] as
+				| ScheduleHandler
+				| undefined;
+			if (typeof fn !== 'function') continue;
+			this.addCron(h.expression, fn.bind(instance), {
+				...h.options,
+				name: h.options.name ?? `${instance.constructor.name}.${h.method}`,
+			});
+		}
+		for (const h of getIntervalHooks(instance)) {
+			const fn = (instance as Record<string, unknown>)[h.method] as
+				| ScheduleHandler
+				| undefined;
+			if (typeof fn !== 'function') continue;
+			this.addInterval(h.milliseconds, fn.bind(instance), h.name ?? `${instance.constructor.name}.${h.method}`);
+		}
+		for (const h of getTimeoutHooks(instance)) {
+			const fn = (instance as Record<string, unknown>)[h.method] as
+				| ScheduleHandler
+				| undefined;
+			if (typeof fn !== 'function') continue;
+			this.addTimeout(h.milliseconds, fn.bind(instance), h.name ?? `${instance.constructor.name}.${h.method}`);
+		}
+	}
+
+	async onApplicationInit(): Promise<void> {
+		// Register this instance so the scanner callback can use it.
+		const { __setScheduleService } = await import('./scanner.js');
+		__setScheduleService(this);
+		// Auto-start the scheduler
+		this.start();
 	}
 
 	// ===========================================================================
 	// Static-style API (used by @Cron / @Interval / @Timeout decorators)
 	// ===========================================================================
 
-	/**
-	 * Schedule a cron task. Returns the assigned task id.
-	 */
 	addCron(
 		expression: CronExpression,
 		handler: ScheduleHandler,
@@ -65,10 +93,6 @@ export class ScheduleService {
 	addTimeout(milliseconds: number, handler: ScheduleHandler, name?: string): string {
 		return this.registry.addTimeout(name ?? `timeout-${Date.now()}`, milliseconds, handler);
 	}
-
-	// ===========================================================================
-	// Introspection / mutation
-	// ===========================================================================
 
 	list(): ScheduledTask[] {
 		return this.registry.list();
@@ -90,27 +114,15 @@ export class ScheduleService {
 		return this.registry.delete(idOrName);
 	}
 
-	// ===========================================================================
-	// Events
-	// ===========================================================================
-
 	on(listener: ScheduleEventListener): () => void {
 		this.#listeners.add(listener);
 		return () => this.#listeners.delete(listener);
 	}
 
-	// ===========================================================================
-	// Lifecycle
-	// ===========================================================================
-
-	/** Start the in-process scheduler tick. Idempotent. */
 	start(): void {
 		if (this.#started) return;
 		this.#started = true;
-		if (this.#memoryBackend) {
-			this.#memoryBackend.start();
-		}
-		// Bridge backend events.
+		if (this.#memoryBackend) this.#memoryBackend.start();
 		this.registry.on((event) => this.#broadcast(event));
 	}
 
@@ -120,25 +132,13 @@ export class ScheduleService {
 		await this.registry.stop();
 	}
 
-	/**
-	 * Get the underlying in-process backend (for tests / `nx dev`).
-	 * Returns null when the configured backend isn't memory.
-	 */
 	getMemoryBackend(): MemorySchedulesBackend | null {
 		return this.#memoryBackend;
 	}
 
-	/**
-	 * Get the underlying Cloudflare backend (for Workers). Returns
-	 * null when the configured backend isn't Cloudflare.
-	 */
 	getCloudflareBackend(): CloudflareSchedulesBackend | null {
 		return this.registry instanceof CloudflareSchedulesBackend ? this.registry : null;
 	}
-
-	// ===========================================================================
-	// Internal
-	// ===========================================================================
 
 	#createBackend(config: ScheduleConfig): ScheduleRegistry {
 		switch (config.backend ?? 'memory') {

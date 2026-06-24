@@ -28,6 +28,20 @@ import {
 	callBeforeApplicationDestroy,
 	callOnApplicationDestroy,
 } from "./lifecycle/index.js";
+
+// Globally-registered hook for scanning schedule decorators at boot.
+// Set by ScheduleModule; called by Application for each resolved provider.
+let _scheduleScanner: ((instance: unknown) => void) | null = null;
+
+/**
+ * Register a callback that is invoked for every resolved provider instance
+ * during application bootstrap. Used by the schedule module to auto-register
+ * @Cron / @Interval / @Timeout decorated methods.
+ * @internal
+ */
+export function setScheduleScanner(fn: ((instance: unknown) => void) | null): void {
+	_scheduleScanner = fn;
+}
 import { DIContainer } from "./di/container.js";
 
 export interface ApplicationOptions extends NexusServerOptions {
@@ -67,6 +81,9 @@ export class Application {
 	constructor(rootModule: Type<any>, options: ApplicationOptions = {}) {
 		// Build the DI container and scan the module tree.
 		this.container = new ApplicationContainer();
+		// Stash container globally so modules (e.g. schedule) can resolve
+		// providers during auto-init without importing @nexusts/core directly.
+		(globalThis as any)["__nexus_container"] = this.container;
 		const scanner = new ModuleScanner(this.container);
 		const { root, modules } = scanner.scan(rootModule);
 
@@ -264,7 +281,10 @@ export class Application {
 					const instance = container.resolve(token);
 					if (!visited.has(instance)) {
 						visited.add(instance);
+						// Call lifecycle hook
 						await fn(instance);
+						// Call schedule scanner if registered
+						if (_scheduleScanner) _scheduleScanner(instance);
 					}
 				} catch {
 					// Skip providers that can't be resolved yet (lazy).

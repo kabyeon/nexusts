@@ -1,41 +1,30 @@
 /**
- * `ScheduleModule` — drop-in module for adding scheduled tasks to a
- * NexusTS app.
+ * `ScheduleModule` — drop-in module for adding scheduled tasks.
  *
  * Usage:
- *   // src/app/app.module.ts
  *   @Module({
- *     imports: [
- *       ScheduleModule.forRoot({
- *         backend: 'memory',          // or 'cloudflare'
- *         defaultTimezone: 'UTC',
- *       }),
- *     ],
+ *     imports: [ScheduleModule.forRoot({ backend: 'memory' })],
  *   })
  *   export class AppModule {}
  *
- *   // any service
  *   @Injectable()
- *   class CleanupWorker {
- *     constructor(@Inject(ScheduleService.TOKEN) private schedule: ScheduleService) {}
- *
- *     @Cron('0 * * * *')                     // every hour
- *     async hourly() {
- *       // ...
- *     }
+ *   class Worker {
+ *     @Cron('0 * * * *')
+ *     async hourly() { ... }
  *   }
  *
- *   // bootstrap
- *   const app = new Application(AppModule);
- *   const schedule = app.container.resolve(ScheduleService);
- *   await scanForSchedulers(worker, schedule);
- *   schedule.start();
+ * No manual scanForSchedulers or start() call needed — the module
+ * auto-scans every resolved provider during bootstrap.
  */
 
 import "reflect-metadata";
-import { Module } from "@nexusts/core";
+import { Module, setScheduleScanner } from "@nexusts/core";
 import { ScheduleService } from "./schedule.service.js";
+import { scanProviderForSchedules } from "./scanner.js";
 import type { ScheduleConfig } from "./types.js";
+
+// Register the scanner hook once at module load time.
+setScheduleScanner(scanProviderForSchedules);
 
 @Module({
 	providers: [
@@ -45,9 +34,6 @@ import type { ScheduleConfig } from "./types.js";
 	exports: [ScheduleService, ScheduleService.TOKEN],
 })
 export class ScheduleModule {
-	/**
-	 * Build a configured `ScheduleModule` class.
-	 */
 	static forRoot(config: ScheduleConfig = {}) {
 		@Module({
 			providers: [
