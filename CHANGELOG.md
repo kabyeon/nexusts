@@ -21,6 +21,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.9] — 2026-06-24
+
+### Added
+
+- **GitHub repo metadata**: all 32 package.json files now include
+  `repository`, `homepage`, and `bugs` fields pointing to the
+  `nexus-ts/nexusts` repository.
+
+### Fixed
+
+- **Bun decorator diagnostics**: improved error messages when Bun's
+  stage-3 decorator mode clashes with legacy `@Inject`/`@Controller`
+  decorators. Added runtime checks with actionable guidance.
+- **`@Arg` signature in docs**: corrected from `@Arg("name", { type:
+  "String!" })` to `@Arg("name", "String!")` — the second parameter
+  is a string, not an object.
+- **Docs synced**: Bun decorator warnings added to English
+  `controllers.md` (were only in Korean).
+
+---
+
 ## [0.7.8] — 2026-06-24
 
 ### Changed
@@ -1402,6 +1423,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
 [0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/nexus-ts/nexusts/compare/v0.7.5...v0.7.6

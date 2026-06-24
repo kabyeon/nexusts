@@ -21,6 +21,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.9] — 2026-06-24
+
+### 추가
+
+- **GitHub 저장소 메타데이터**: 모든 32개 package.json에
+  `repository`, `homepage`, `bugs` 필드 추가.
+
+### 수정
+
+- **Bun 데코레이터 진단**: stage-3 decorator 모드 충돌 시
+  개선된 오류 메시지.
+- **`@Arg` 시그니처 문서**: `@Arg("name", { type: "String!" })` →
+  `@Arg("name", "String!")`로 수정.
+- **영문 문서 동기화**: Bun 데코레이터 경고를 영문
+  `controllers.md`에 추가.
+
+---
+
 ## [0.7.8] — 2026-06-24
 
 ### 변경
@@ -1063,6 +1081,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
 [0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7
 [0.7.6]: https://github.com/nexus-ts/nexusts/compare/v0.7.5...v0.7.6
