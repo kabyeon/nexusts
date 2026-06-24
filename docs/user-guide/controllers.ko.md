@@ -8,6 +8,12 @@
 
 NexusTS는 **세 가지** 스타일을 나란히 지원합니다 — 각 라우트에 맞는 것을 선택하세요.
 
+> **⚠ Bun 주의 — 파일당 하나의 `@Controller`**: 한 `.ts` 파일에 여러
+> `@Controller` 클래스를 정의하면 Bun이 decorator 실행 순서를 잘못
+> 처리하여 일부 라우트가 등록되지 않을 수 있습니다. 각 컨트롤러를
+> 별도 파일로 분리하세요. 자세한 내용:
+> [`common-pitfalls.ko.md §2`](./common-pitfalls.ko.md).
+
 ### 1.1 Nest 스타일 (클래스 데코레이터)
 
 ```ts
@@ -55,6 +61,21 @@ export class UserController {
   }
 }
 ```
+
+> **⚠ Bun 주의 — `@Inject` + constructor parameter property**: Bun 1.3.x에서
+> `constructor(@Inject(Svc) private svc: Svc)` 문법은 DI 토큰이 누락될 수
+> 있습니다. 아래처럼 명시적 할당을 사용하세요:
+>
+> ```ts
+> // ✅ 권장
+> svc: Svc;
+> constructor(@Inject(Svc) svc: Svc) { this.svc = svc; }
+>
+> // ⚠ Bun에서 불안정
+> constructor(@Inject(Svc) private svc: Svc) {}
+> ```
+>
+> 자세한 내용: [`common-pitfalls.ko.md §7`](./common-pitfalls.ko.md).
 
 ### 1.2 Adonis 스타일
 
