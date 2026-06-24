@@ -13,8 +13,7 @@ gRPC 서비스를 호출하기 위한 typed client도 제공합니다.
 - **HTTP/2 + 바이너리.** 내부 마이크로서비스 트래픽에서
   JSON-over-HTTP/1.1보다 오버헤드가 낮습니다.
 - **Streaming.** server-streaming, client-streaming, bidirectional
-  streaming이 gRPC에서 first-class입니다. (Streaming은 `@nexusts/grpc`의
-  v2에서 예정.)
+  streaming이 gRPC에서 first-class입니다. v0.8.2에서 완전 지원.
 
 ## 설치
 
@@ -250,11 +249,10 @@ async findById(req: { id: number }) {
 }
 ```
 
-## v1 범위와 한계
+## 범위와 한계
 
-- **Unary 메서드만.** Server-streaming, client-streaming, bidirectional
-  streaming은 v2에서 예정. 인프라(handler는 표준 gRPC callback 시그니처
-  사용)는 준비됨; 남은 작업은 decorator helper와 client wrapper.
+- **4가지 call type 지원.** Unary(`@GrpcMethod`), server-streaming(`@GrpcServerStream`),
+  client-streaming(`@GrpcClientStream`), bidirectional(`@GrpcBidiStream`) — v0.8.2에서 완성.
 - **Reflection 기반.** codegen 단계 없음; `.proto` 파일은
   `@grpc/proto-loader`로 런타임 로드. 트레이드오프: 빌드 단계 0, 다만
   cold start가 약간 느림.

@@ -45,7 +45,7 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Feature flags | ⚠️ DIY (no first-party) | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator, memory backend. Shipped v0.8.0. |
 | Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff |
 | GraphQL | ✅ @nestjs/graphql | ✅ `@nexusts/graphql` | SDL-first + code-first (`autoSchema: true`). `@Resolver`/`@Query`/`@Mutation` decorators with full SDL synthesis. Shipped v0.7.6. |
-| gRPC | ✅ @nestjs/microservices | ✅ `@nexusts/grpc` | Reflection-based, unary methods (streaming planned v2). Shipped v0.5. |
+| gRPC | ✅ @nestjs/microservices | ✅ `@nexusts/grpc` | Reflection-based, all 4 call types: unary + server/client/bidi streaming. Shipped v0.5; streaming v0.8.2. |
 | Resilience | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, HTTP admin API (`ResilienceAdminModule`), eager `applyResilience()` auto-wrap. **Zero new dependencies.** |
 
 **Headline**: NexusTS v0.8.4 closes **every Tier 1 and Tier 2 gap** from
@@ -79,6 +79,7 @@ the v0.2 analysis. All **32** shipped modules are first-party.
 | **Encryption + password hashing** | v0.5 | `@nexusts/crypto` (AES-256-GCM + HMAC + scrypt) |
 | **i18n** | v0.5 | `@nexusts/i18n` (Intl-based, pluralization) |
 | **gRPC** | v0.5 | `@nexusts/grpc` (reflection-based, unary) |
+| **gRPC streaming** | v0.8.2 | `@GrpcServerStream` / `@GrpcClientStream` / `@GrpcBidiStream` |
 | **nx repl** | v0.5 | Interactive REPL |
 | **View engine extracted** | v0.6 | `@nexusts/view` (separate bundle) |
 | **Auto-load viewPaths from nx.config.ts** | v0.6.4 | `Application.tryLoadNxConfig()` |
@@ -155,8 +156,9 @@ None. v0.3 closed every original Tier 1 gap.
     from a controller class.
   - Typed client — `grpcClient()` returns a promises-based proxy.
   - Runtime-backend auto-detection (Bun / Node).
-- **Note**: Unary methods only for v1; streaming (server,
-  client, bidi) planned for v2.
+- **All 4 call types**: unary, server-streaming, client-streaming, and
+  bidirectional — `@GrpcServerStream`, `@GrpcClientStream`, `@GrpcBidiStream`
+  added in v0.8.2.
 - See [`../../user-guide/grpc.md`](../../user-guide/grpc.md).
 
 ### 4.5 GraphQL (`@nestjs/graphql` equivalent)
@@ -441,7 +443,7 @@ that NestJS supports today, with the runtime + ORM advantages of Bun.
 ## 9. See also
 
 - [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 release notes
-- [`../../user-guide/`](../../user-guide/) — guides for the 30 modules
+- [`../../user-guide/`](../../user-guide/) — guides for the 32 modules
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
 - [`../../../examples/`](../../../examples/) — 33 working example apps
 - [`../../../AGENTS.md`](../../../AGENTS.md) — contributor + module-author guide

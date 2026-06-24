@@ -1,7 +1,7 @@
 # Common Pitfalls · 자주 빠지는 함정
 
 > 실전에서 nexusts 사용자가 자주 마주치는 **5가지 핵심 이슈**와 해결책.
-> 30개 모듈을 import해서 실제 blog app을 만들면서 발견한 패턴을 정리했습니다.
+> 32개 모듈을 import해서 실제 blog app을 만들면서 발견한 패턴을 정리했습니다.
 
 > 한국어 버전: [`common-pitfalls.ko.md`](./common-pitfalls.ko.md)
 

@@ -62,7 +62,7 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Inspector | ✅ `@adonisjs/inspector` | ❌ Not shipped | Debugging-only |
 | Admin panel | ✅ `@adonisjs/admin` | ❌ Not shipped | Lower priority |
 | GraphQL | ✅ `@adonisjs/graphql` (legacy) | ✅ `@nexusts/graphql` | SDL-first + code-first (`autoSchema: true`). Full SDL synthesis from decorators. Shipped v0.7.6. |
-| gRPC | ❌ DIY | ✅ `@nexusts/grpc` | Reflection-based, unary (streaming v2). v0.5 shipped. |
+| gRPC | ❌ DIY | ✅ `@nexusts/grpc` | Reflection-based, all 4 call types: unary + server/client/bidi streaming. v0.5 shipped; streaming v0.8.2. |
 | Feature flags | ❌ DIY | ✅ `@nexusts/feature-flag` | Rollout, allowlist, denylist, `@FeatureFlag` decorator. Shipped v0.8.0. |
 | Resilience (circuit breaker, retry) | ❌ DIY | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff. v0.7.0 shipped. **Zero new deps.** |
 
@@ -351,7 +351,7 @@ user today, with the runtime + DX advantages of Bun.
 ## 9. See also
 
 - [`../../CHANGELOG.md`](../../CHANGELOG.md) — release notes
-- [`../../user-guide/`](../../user-guide/) — guides for the 30 modules
+- [`../../user-guide/`](../../user-guide/) — guides for the 32 modules
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
 - [`../../../examples/`](../../../examples/) — 34 working example apps
 - [AdonisJS documentation](https://docs.adonisjs.com) — the comparison baseline
