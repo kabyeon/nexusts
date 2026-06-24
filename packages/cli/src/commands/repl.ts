@@ -41,13 +41,24 @@ import { logger } from "../core/index.js";
 import { VERSION } from "../core/index.js";
 import type { Command, CommandContext } from "../core/index.js";
 
-const BANNER = `
-╭─────────────────────────────────────────────────╮
-│  NexusTS REPL                          v${VERSION} │
-│                                                 │
-│  Type .help for available commands              │
-╰─────────────────────────────────────────────────╯
-`;
+const BANNER = (() => {
+	const W = 49;
+	const dash = "─".repeat(W);
+	const ver = `v${VERSION}`;
+	const verLen = ver.length;
+	const TITLE = "NexusTS REPL";
+	const HINT = "Type .help for available commands";
+	const titleGap = " ".repeat(W - 2 - TITLE.length - verLen - 1);
+	const hintGap = " ".repeat(W - 2 - HINT.length);
+	const L = (s: string) => `│${s}│`;
+	return [
+		`╭${dash}╮`,
+		L(`  ${TITLE}${titleGap}${ver} `),
+		L(" ".repeat(W)),
+		L(`  ${HINT}${hintGap}`),
+		`╰${dash}╯`,
+	].join("\n");
+})();
 
 const HELP = `
 Available commands:
