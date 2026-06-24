@@ -10,7 +10,7 @@
 | **DI** | Constructor injection with singleton / transient / request scopes |
 | **Routing** | Three styles: Nest decorators, Adonis-style router, Hono functional |
 | **Validation** | `@Validate()` with Zod schemas, automatic 422 responses |
-| **View engines** | Rendu (default), Edge, Eta, Inertia.js v2 (React + Vue) |
+| **View engines** | Rendu (default), Edge, Eta, Inertia.js v3 (React + Vue) |
 | **CLI** | `nx` command runner: `new`, `init`, `make:*`, `db:*`, `repl` |
 | **Hono server** | Underlying HTTP server (Bun / Node / Cloudflare Workers) |
 
@@ -60,7 +60,7 @@ to the install command on first call.
 | `@nexusts/static` | Static file serving (ETag / Range) | _(none)_ |
 | `@nexusts/tracing` | OpenTelemetry distributed tracing | `bun add @opentelemetry/api` |
 | `@nexusts/upload` | Multipart file upload | _(none)_ |
-| `@nexusts/view` | View engines + Inertia.js v2 | _(none)_ |
+| `@nexusts/view` | View engines + Inertia.js v3 | _(none)_ |
 | `@nexusts/ws` | WebSockets (Bun native / Node fallback) | `bun add ws` (Node only) |
 
 See [`docs/user-guide/`](../../docs/user-guide/) for the full module list.

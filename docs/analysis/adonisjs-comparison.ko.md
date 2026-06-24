@@ -110,7 +110,7 @@ v0.3, v0.4, v0.5, v0.6.x, v0.7.0 마일스톤이 v0.2 분석에서 식별된 모
 | **OpenAPI용 `router.getRoutes()`** | v0.6.6 |
 | **`create-nexusts` 스캐폴더** | v0.6.7 |
 | **`examples/` + smoke test 슈트** | v0.6.8 | 27개 동작 예제 |
-| **Inertia v2 예제 (React + Vue, SPA + SSR)** | v0.6.8 | 4개 예제 (28–31) |
+| **Inertia v3 예제 (React + Vue, SPA + SSR)** | v0.6.8 | 4개 예제 (28–31) |
 | **`@nexusts/graphql`** | v0.6.9 | SDL-first GraphQL 엔드포인트 |
 | **`@nexusts/resilience`** | v0.7.0 | Retry + Circuit Breaker + Bulkhead |
 
@@ -257,13 +257,13 @@ NexusTS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 10. **OpenAPI용 `router.getRoutes()`** (v0.6.6)
 11. **`create-nexusts` 스캐폴더** (v0.6.7)
 12. **`examples/` + smoke test 슈트** (v0.6.8)
-13. **Inertia v2 예제** (v0.6.8)
+13. **Inertia v3 예제** (v0.6.8)
 
 ### v0.6.9 — GraphQL — 출시됨
 
 - **`@nexusts/graphql`** — SDL-first GraphQL 엔드포인트.
   `@Resolver`/`@Query`/`@Mutation`/`@Subscription`/`@Arg` 데코레이터.
-- **Inertia v2 예제** (28–31: React + Vue, SPA + SSR).
+- **Inertia v3 예제** (28–31: React + Vue, SPA + SSR).
 - **example 32** (`graphql-hello`).
 
 ### v0.7.0 — Resilience — 출시됨

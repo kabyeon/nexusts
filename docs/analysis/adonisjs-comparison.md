@@ -112,7 +112,7 @@ The v0.3, v0.4, v0.5, v0.6.x, and v0.7.0 milestones together closed every
 | **`router.getRoutes()` for OpenAPI** | v0.6.6 | feeds spec generation |
 | **`create-nexusts` scaffolder** | v0.6.7 | `bunx create-nexusts my-app` |
 | **`examples/` + smoke test suite** | v0.6.8 | 27 working examples |
-| **Inertia v2 examples (React + Vue, SPA + SSR)** | v0.6.8 | 4 examples (28–31) |
+| **Inertia v3 examples (React + Vue, SPA + SSR)** | v0.6.8 | 4 examples (28–31) |
 | **`@nexusts/graphql`** | v0.6.9 | SDL-first GraphQL endpoint |
 | **`@nexusts/resilience`** | v0.7.0 | Retry + Circuit Breaker + Bulkhead |
 
@@ -262,13 +262,13 @@ A team that needs any of these gets them for free with NexusTS.
 10. **`router.getRoutes()` for OpenAPI** (v0.6.6)
 11. **`create-nexusts` scaffolder** (v0.6.7)
 12. **`examples/` + smoke test suite** (v0.6.8)
-13. **Inertia v2 examples** (v0.6.8)
+13. **Inertia v3 examples** (v0.6.8)
 
 ### v0.6.9 — GraphQL — shipped
 
 - **`@nexusts/graphql`** — SDL-first GraphQL endpoint.
   `@Resolver`/`@Query`/`@Mutation`/`@Subscription`/`@Arg` decorators.
-- **Inertia v2 examples** (28–31: React + Vue, SPA + SSR).
+- **Inertia v3 examples** (28–31: React + Vue, SPA + SSR).
 - **example 32** (`graphql-hello`).
 
 ### v0.7.0 — Resilience — shipped

@@ -91,7 +91,7 @@ the v0.2 analysis. All **30** shipped modules are first-party.
 | **`create-nexusts` scaffolder** | v0.6.7 | separate npm package |
 | **`examples/` + smoke test suite** | v0.6.8 | 27 working examples, 55 vitest tests in ~2s |
 | **`@nexusts/graphql`** | v0.6.9 | SDL-first GraphQL endpoint + `GraphQLService`/`GraphQLModule`. `@Resolver`/`@Query`/`@Mutation` decorators (code-first SDL synthesis alpha). Optional peer-dep `graphql` |
-| **Inertia v2 examples (React + Vue, SPA + SSR)** | v0.6.9 | 4 new examples under `examples/28-31` |
+| **Inertia v3 examples (React + Vue, SPA + SSR)** | v0.6.9 | 4 new examples under `examples/28-31` |
 | **`@nexusts/resilience`** | v0.7.0 | Retry + Circuit Breaker + Bulkhead in a single DI singleton. `retry()` with 4 backoff strategies, named-circuit registry. **Zero new dependencies.** |
 | **Examples + smoke test expansion** | v0.7.0 | 33 examples total (added `32-graphql-hello`, `33-resilience-calls`). 67 smoke tests. |
 
@@ -286,7 +286,7 @@ Shipped in v0.5–v0.6.8:
 10. **`router.getRoutes()` for OpenAPI** (v0.6.6)
 11. **`create-nexusts` scaffolder** (v0.6.7) — `bunx create-nexusts my-app`
 12. **`examples/` + smoke test suite** (v0.6.8) — 27 working examples, 55 vitest tests in ~2s
-13. **Inertia v2 examples** (v0.6.9) — React + Vue, SPA + SSR
+13. **Inertia v3 examples** (v0.6.9) — React + Vue, SPA + SSR
 
 ### v0.6.9 — GraphQL — shipped
 
@@ -295,7 +295,7 @@ Shipped in v0.5–v0.6.8:
   playground, `context()` factory). `@Resolver`/`@Query`/
   `@Mutation`/`@Subscription`/`@Arg` decorators (code-first
   SDL synthesis reserved for v0.8). Optional peer-dep `graphql`.
-- **4 Inertia v2 examples** (examples 28–31).
+- **4 Inertia v3 examples** (examples 28–31).
 - **example 32** (`graphql-hello`).
 
 ### v0.7.0 — Resilience — shipped

@@ -38,7 +38,7 @@ Your app will be running at `http://localhost:3000`.
 # Minimal: NestJS-style + Rendu + Drizzle + SQLite
 npm create nexusts@latest my-app
 
-# Inertia.js v2 + React SPA
+# Inertia.js v3 + React SPA
 npm create nexusts@latest my-app --view inertia
 
 # No ORM (just an HTTP skeleton)

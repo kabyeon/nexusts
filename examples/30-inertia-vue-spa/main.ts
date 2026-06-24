@@ -5,7 +5,7 @@ import { StaticModule } from "@nexusts/static";
 import { Inertia } from "@nexusts/view";
 
 /**
- * 30-inertia-vue-spa — Inertia.js v2 with **Vue 3** (client-side only).
+ * 30-inertia-vue-spa — Inertia.js v3 with **Vue 3** (client-side only).
  *
  *   Run: bun main.ts
  *   Open: http://localhost:3000

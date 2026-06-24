@@ -6,7 +6,7 @@ import { Inertia, createVueAdapter } from "@nexusts/view";
 import { HomePage } from "./frontend/home.js";
 
 /**
- * 31-inertia-vue-ssr — Inertia.js v2 with Vue 3 **server-side rendered**.
+ * 31-inertia-vue-ssr — Inertia.js v3 with Vue 3 **server-side rendered**.
  *
  *   The first-page HTML is rendered by `@vue/server-renderer` and
  *   embedded in the page shell. The Vue client then **hydrates** the

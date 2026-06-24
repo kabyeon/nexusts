@@ -16,6 +16,7 @@ NexusTS로 애플리케이션을 개발하기 위한 단계별 가이드.
 | **Schedule · `@Cron` decorator** | [`schedule.md`](./schedule.md) | [`schedule.ko.md`](./schedule.ko.md) |
 | **Event System** | [`events.md`](./events.md) | [`events.ko.md`](./events.ko.md) |
 | **Session (cookie / memory / Redis)** | [`session.md`](./session.md) | [`session.ko.md`](./session.ko.md) |
+| **Structured logging (Pino-based)** | [`logger.md`](./logger.md) | [`logger.ko.md`](./logger.ko.md) |
 | **Production basics (health / config / logger / static)** | [`production-basics.md`](./production-basics.md) | [`production-basics.ko.md`](./production-basics.ko.md) |
 | **Rate limiter** | [`limiter.md`](./limiter.md) | [`limiter.ko.md`](./limiter.ko.md) |
 | **Security middleware (shield)** | [`shield.md`](./shield.md) | [`shield.ko.md`](./shield.ko.md) |

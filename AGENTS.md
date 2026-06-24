@@ -45,7 +45,7 @@ nexusts/                          # Monorepo root
 │   │   ├── src/
 │   │   └── README.md
 │   ├── cli/                      # @nexusts/cli — `nx` command runner
-│   ├── view/                     # @nexusts/view — view engines + Inertia.js v2 adapter
+│   ├── view/                     # @nexusts/view — view engines + Inertia.js v3 adapter
 │   ├── auth/                     # @nexusts/auth — better-auth integration
 │   ├── cache, config, crypto, drive, drizzle, events, graphql,
 │   │   grpc, health, i18n, limiter, logger, mail, metrics, openapi,
@@ -58,8 +58,8 @@ nexusts/                          # Monorepo root
 │   └── e2e/                      # (mostly empty — reserved for future)
 ├── examples/                     # 33 working examples (1 per module) — also serves as smoke-test corpus
 │   ├── 01-basic-mvc/ ... 27-request-scope/         # core/DI/etc.
-│   ├── 28-inertia-react-spa/ 29-inertia-react-ssr/   # Inertia v2 examples
-│   ├── 30-inertia-vue-spa/ 31-inertia-vue-ssr/     # Inertia v2 + Vue
+│   ├── 28-inertia-react-spa/ 29-inertia-react-ssr/   # Inertia v3 examples
+│   ├── 30-inertia-vue-spa/ 31-inertia-vue-ssr/     # Inertia v3 + Vue
 │   ├── 32-graphql-hello/                            # GraphQL example
 │   └── 33-resilience-calls/                         # retry/circuit/bulkhead
 ├── create-nexusts/               # `bunx create-nexusts my-app` scaffolder

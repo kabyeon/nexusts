@@ -5,7 +5,7 @@ import { StaticModule } from "@nexusts/static";
 import { Inertia } from "@nexusts/view";
 
 /**
- * 28-inertia-react-spa — Inertia.js v2 with React (client-side only).
+ * 28-inertia-react-spa — Inertia.js v3 with React (client-side only).
  *
  *   GET  /            → Inertia page "Home" with greeting + count
  *   POST /counter     → increment the counter (Inertia action, returns 303)
@@ -52,7 +52,7 @@ class HomeController {
 
   @Post("/greet")
   greet(@Ctx() c: any, @Body() body: { name?: string }) {
-    // Inertia v2 form errors: 422 with `{ errors: {...} }` in props.
+    // Inertia v3 form errors: 422 with `{ errors: {...} }` in props.
     if (!body?.name || body.name.trim().length === 0) {
       c.status(422);
       return this.inertia.render("Home", {

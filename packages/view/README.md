@@ -4,9 +4,9 @@
 
 ## Description
 
-View engines (Rendu, Edge, Eta) + Inertia.js v2 adapter.
+View engines (Rendu, Edge, Eta) + Inertia.js v3 adapter.
 
-3 engines: Rendu (default, every runtime), Edge (Adonis-style .edge), Eta (EJS-style .eta). Inertia v2 adapter for React + Vue SPAs and SSR.
+3 engines: Rendu (default, every runtime), Edge (Adonis-style .edge), Eta (EJS-style .eta). Inertia v3 adapter for React + Vue SPAs and SSR.
 
 ## Install
 

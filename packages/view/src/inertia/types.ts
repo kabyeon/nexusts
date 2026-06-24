@@ -1,5 +1,5 @@
 /**
- * Inertia.js v2/v3 server-side adapter types.
+ * Inertia.js v3/v3 server-side adapter types.
  *
  * The server speaks the Inertia protocol: it returns either a JSON
  * page object (for XHR requests) or a full HTML shell with the page

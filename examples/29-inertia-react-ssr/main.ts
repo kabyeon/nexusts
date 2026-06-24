@@ -6,7 +6,7 @@ import { Inertia, createReactAdapter } from "@nexusts/view";
 import { HomePage } from "./frontend/home.tsx";
 
 /**
- * 29-inertia-react-ssr — Inertia.js v2 with React **server-side rendered**.
+ * 29-inertia-react-ssr — Inertia.js v3 with React **server-side rendered**.
  *
  *   The first-page HTML is fully rendered by `react-dom/server` and
  *   embedded in the page shell. The client React then **hydrates** the

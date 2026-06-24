@@ -85,7 +85,7 @@ for the detailed v0.7 release notes.
 | **First-party GraphQL** *(v0.7)*  |   ✅   |   △    |   ❌   |    ✅     |
 | **First-party retry / circuit / bulkhead** *(v0.7)* |   △   |   ❌   |   ❌   |    ✅     |
 | **First-party gRPC server + client** |   ✅   |   ❌   |   ❌   |    ✅     |
-| **Inertia.js v2 server-side**    |   ❌   |   ✅   |   ❌   |    ✅     |
+| **Inertia.js v3 server-side**    |   ❌   |   ✅   |   ❌   |    ✅     |
 
 ---
 
@@ -630,7 +630,7 @@ class EventController {
 ## Inertia.js adapter
 
 Single-page-app UX without writing an API. The framework ships a
-server-side [Inertia.js v2/v3 protocol](https://inertiajs.com/the-protocol)
+server-side [Inertia.js v3/v3 protocol](https://inertiajs.com/the-protocol)
 adapter that returns either JSON (XHR) or a full HTML shell (first
 load) depending on the request.
 
@@ -927,7 +927,7 @@ src/
 │   ├── http/               # NexusServer (Hono), multi-style router, middleware
 │   ├── validation/         # Zod schema runner
 │   ├── view/               # Rendu / Edge / Inertia adapters (v0.6+)
-│   │   └── inertia/         # Inertia v2 protocol + SSR adapters
+│   │   └── inertia/         # Inertia v3 protocol + SSR adapters
 │   └── runtime/            # Bun / Node / Cloudflare Workers adapters
 ├── cli/                    # `nx` command runner (optional bundle)
 │   ├── commands/           # new, init, make:*, migrate, info, db:*
@@ -973,10 +973,10 @@ examples/                                  # 33 working examples
 ├── 05-openapi/
 ├── 06-rendu-views/
 ├── ...
-├── 28-inertia-react-spa/                  # Inertia v2 — React, client-side
-├── 29-inertia-react-ssr/                  # Inertia v2 — React, server-side
-├── 30-inertia-vue-spa/                    # Inertia v2 — Vue 3, client-side
-├── 31-inertia-vue-ssr/                    # Inertia v2 — Vue 3, server-side
+├── 28-inertia-react-spa/                  # Inertia v3 — React, client-side
+├── 29-inertia-react-ssr/                  # Inertia v3 — React, server-side
+├── 30-inertia-vue-spa/                    # Inertia v3 — Vue 3, client-side
+├── 31-inertia-vue-ssr/                    # Inertia v3 — Vue 3, server-side
 ├── 32-graphql-hello/                      # GraphQL endpoint
 └── 33-resilience-calls/                  # retry / circuit / bulkhead
 ```

@@ -1,7 +1,7 @@
 /**
  * Inertia adapter barrel.
  *
- * Public exports for the server-side Inertia.js v2/v3 adapter. The
+ * Public exports for the server-side Inertia.js v3/v3 adapter. The
  * adapter implements the Inertia protocol: JSON responses for XHR,
  * HTML shell with embedded page data for first-page loads, deferred /
  * merge / always / once / lazy prop helpers, asset versioning, shared
