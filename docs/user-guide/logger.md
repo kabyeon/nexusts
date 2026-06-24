@@ -47,9 +47,9 @@ Import the entry point:
 import { Logger, LoggerModule } from '@nexusts/logger';
 ```
 
-No additional npm install is needed — the logger ships as part of
-`@nexusts/core`. Pino and pino-pretty are optional peer
-dependencies that are lazy-loaded at runtime (see § Transports).
+No additional npm install is needed for production — `pino` is bundled
+as a direct dependency of `@nexusts/logger`. For colorized pretty-print
+output in development, optionally install `pino-pretty`.
 
 ---
 
@@ -284,19 +284,15 @@ LoggerModule.forRoot({
 
 Pino is loaded lazily at runtime via dynamic `import()`. If you
 use `PrettyTransport` and `pino-pretty` is not installed, the
-logger falls back gracefully to plain JSON. To install the peer
-dependencies:
+logger falls back gracefully to plain JSON. To install the pretty-print
+helper:
 
 ```bash
-# Pino is all you need for production JSON output
-bun add pino
-
-# For pretty-print in development
+# For colorized output in development
 bun add pino-pretty
 ```
 
-If a transport fails to load, the logger uses `console.log` as a
-fallback so you never lose a log message.
+pino itself is bundled with `@nexusts/logger` — no manual install needed.
 
 ---
 

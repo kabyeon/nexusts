@@ -18,9 +18,8 @@
   },
   "keywords": ["nexusts", "framework", "bun"],
   "license": "MIT",
-  
-  
   "dependencies": {
-    "@nexusts/core": "file:../core"
+    "@nexusts/core": "file:../core",
+    "pino": "^9.0.0"
   }
 }

@@ -33,35 +33,29 @@ async function loadPino(
 	const pino = pinoMod.default ?? pinoMod;
 	if (pretty) {
 		if (prettySingleton) return prettySingleton;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const opts: any = {
+		// Try to use pino-pretty for colorized output (optional peer dep).
+		const opts: Record<string, unknown> = {
 			level,
 			base,
 			errorKey: "error",
-			translateTime: "HH:MM:ss.l",
-			ignore: "pid,hostname",
-			colorize: true,
+			timestamp: () => `,"time":"${new Date().toISOString()}"`,
 		};
-		// Try to use pino-pretty if installed.
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-require-imports
-			const prettyMod = (
-				globalThis as { require?: (id: string) => unknown }
-			).require?.("pino-pretty") as ((opts: unknown) => unknown) | undefined;
-			if (prettyMod) {
-				prettySingleton = (pino as unknown as (opts: unknown) => PinoLike)(
-					opts,
-				);
-				return prettySingleton;
+			const prettyMod = (await import("pino-pretty")) as {
+				default?: (opts: unknown) => unknown;
+			};
+			const transport = prettyMod.default ?? prettyMod;
+			if (typeof transport === "function") {
+				opts.transport = transport({
+					translateTime: "HH:MM:ss.l",
+					ignore: "pid,hostname",
+					colorize: true,
+				});
 			}
 		} catch {
-			// fall through
+			// pino-pretty not installed — use pino's built-in pretty mode
 		}
-		prettySingleton = (pino as unknown as (opts: unknown) => PinoLike)({
-			level,
-			base,
-			timestamp: () => `,"time":"${new Date().toISOString()}"`,
-		});
+		prettySingleton = (pino as unknown as (opts: unknown) => PinoLike)(opts);
 		return prettySingleton;
 	}
 	if (pinoSingleton) return pinoSingleton;
@@ -91,11 +85,7 @@ export class PinoTransport implements LogTransport {
 	}
 
 	write(record: LogRecord): void {
-		if (!this.#pino) {
-			// Fall back to stdout until pino is loaded.
-			console.log(JSON.stringify(record));
-			return;
-		}
+		if (!this.#pino) return;
 		const { level, time, msg, ...rest } = record;
 		const obj = { time, ...rest };
 		switch (level) {
@@ -139,11 +129,7 @@ export class PrettyTransport implements LogTransport {
 	}
 
 	write(record: LogRecord): void {
-		if (!this.#pino) {
-			// eslint-disable-next-line no-console
-			console.log(`[${record.level}] ${record.msg}`, record);
-			return;
-		}
+		if (!this.#pino) return;
 		const { level, time, msg, ...rest } = record;
 		const obj = { time, ...rest };
 		switch (level) {

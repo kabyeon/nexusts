@@ -31,7 +31,7 @@
     },
     "packages/auth": {
       "name": "@nexusts/auth",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -44,28 +44,31 @@
     },
     "packages/cache": {
       "name": "@nexusts/cache",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/cli": {
       "name": "@nexusts/cli",
-      "version": "0.7.0",
+      "version": "0.7.4",
+      "bin": {
+        "nx": "./dist/index.js",
+      },
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/config": {
       "name": "@nexusts/config",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/core": {
       "name": "@nexusts/core",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "bin": {
         "nx": "./dist/cli/index.js",
       },
@@ -80,28 +83,28 @@
     },
     "packages/create-nexusts": {
       "name": "create-nexusts",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "bin": {
         "create-nexusts": "index.js",
       },
     },
     "packages/crypto": {
       "name": "@nexusts/crypto",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/drive": {
       "name": "@nexusts/drive",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/drizzle": {
       "name": "@nexusts/drizzle",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -114,14 +117,14 @@
     },
     "packages/events": {
       "name": "@nexusts/events",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/graphql": {
       "name": "@nexusts/graphql",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -134,63 +137,64 @@
     },
     "packages/grpc": {
       "name": "@nexusts/grpc",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/health": {
       "name": "@nexusts/health",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/i18n": {
       "name": "@nexusts/i18n",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/limiter": {
       "name": "@nexusts/limiter",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/logger": {
       "name": "@nexusts/logger",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
+        "pino": "^9.0.0",
       },
     },
     "packages/mail": {
       "name": "@nexusts/mail",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/metrics": {
       "name": "@nexusts/metrics",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/openapi": {
       "name": "@nexusts/openapi",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/queue": {
       "name": "@nexusts/queue",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -205,7 +209,7 @@
     },
     "packages/redis": {
       "name": "@nexusts/redis",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -218,49 +222,49 @@
     },
     "packages/resilience": {
       "name": "@nexusts/resilience",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/schedule": {
       "name": "@nexusts/schedule",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/session": {
       "name": "@nexusts/session",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/shield": {
       "name": "@nexusts/shield",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/sse": {
       "name": "@nexusts/sse",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/static": {
       "name": "@nexusts/static",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/tracing": {
       "name": "@nexusts/tracing",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -273,21 +277,21 @@
     },
     "packages/upload": {
       "name": "@nexusts/upload",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/view": {
       "name": "@nexusts/view",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/ws": {
       "name": "@nexusts/ws",
-      "version": "0.7.0",
+      "version": "0.7.4",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -447,6 +451,8 @@
     "@nexusts/ws": ["@nexusts/ws@workspace:packages/ws"],
 
     "@opentelemetry/api": ["@opentelemetry/api@1.9.1", "", {}, "sha512-gLyJlPHPZYdAk1JENA9LeHejZe1Ti77/pTeFm/nMXmQH/HFZlcS/O2XJB+L8fkbrNSqhdtlvjBVjxwUYanNH5Q=="],
+
+    "@pinojs/redact": ["@pinojs/redact@0.4.0", "", {}, "sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg=="],
 
     "@protobufjs/aspromise": ["@protobufjs/aspromise@1.1.2", "", {}, "sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ=="],
 
@@ -684,19 +690,29 @@
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
+    "pino": ["pino@9.14.0", "", { "dependencies": { "@pinojs/redact": "^0.4.0", "atomic-sleep": "^1.0.0", "on-exit-leak-free": "^2.1.0", "pino-abstract-transport": "^2.0.0", "pino-std-serializers": "^7.0.0", "process-warning": "^5.0.0", "quick-format-unescaped": "^4.0.3", "real-require": "^0.2.0", "safe-stable-stringify": "^2.3.1", "sonic-boom": "^4.0.1", "thread-stream": "^3.0.0" }, "bin": { "pino": "bin.js" } }, "sha512-8OEwKp5juEvb/MjpIc4hjqfgCNysrS94RIOMXYvpYCdm/jglrKEiAYmiumbmGhCvs+IcInsphYDFwqrjr7398w=="],
+
     "pino-abstract-transport": ["pino-abstract-transport@3.0.0", "", { "dependencies": { "split2": "^4.0.0" } }, "sha512-wlfUczU+n7Hy/Ha5j9a/gZNy7We5+cXp8YL+X+PG8S0KXxw7n/JXA3c46Y0zQznIJ83URJiwy7Lh56WLokNuxg=="],
 
     "pino-pretty": ["pino-pretty@13.1.3", "", { "dependencies": { "colorette": "^2.0.7", "dateformat": "^4.6.3", "fast-copy": "^4.0.0", "fast-safe-stringify": "^2.1.1", "help-me": "^5.0.0", "joycon": "^3.1.1", "minimist": "^1.2.6", "on-exit-leak-free": "^2.1.0", "pino-abstract-transport": "^3.0.0", "pump": "^3.0.0", "secure-json-parse": "^4.0.0", "sonic-boom": "^4.0.1", "strip-json-comments": "^5.0.2" }, "bin": { "pino-pretty": "bin.js" } }, "sha512-ttXRkkOz6WWC95KeY9+xxWL6AtImwbyMHrL1mSwqwW9u+vLp/WIElvHvCSDg0xO/Dzrggz1zv3rN5ovTRVowKg=="],
 
+    "pino-std-serializers": ["pino-std-serializers@7.1.0", "", {}, "sha512-BndPH67/JxGExRgiX1dX0w1FvZck5Wa4aal9198SrRhZjH3GxKQUKIBnYJTdj2HDN3UQAS06HlfcSbQj2OHmaw=="],
+
     "postcss": ["postcss@8.5.15", "", { "dependencies": { "nanoid": "^3.3.12", "picocolors": "^1.1.1", "source-map-js": "^1.2.1" } }, "sha512-FfR8sjd4em2T6fb3I2MwAJU7HWVMr9zba+enmQeeWFfCbm+UOC/0X4DS8XtpUTMwWMGbjKYP7xjfNekzyGmB3A=="],
+
+    "process-warning": ["process-warning@5.0.0", "", {}, "sha512-a39t9ApHNx2L4+HBnQKqxxHNs1r7KF+Intd8Q/g1bUh6q0WIp9voPXJ/x0j+ZL45KF1pJd9+q2jLIRMfvEshkA=="],
 
     "protobufjs": ["protobufjs@7.6.4", "", { "dependencies": { "@protobufjs/aspromise": "^1.1.2", "@protobufjs/base64": "^1.1.2", "@protobufjs/codegen": "^2.0.5", "@protobufjs/eventemitter": "^1.1.1", "@protobufjs/fetch": "^1.1.1", "@protobufjs/float": "^1.0.2", "@protobufjs/path": "^1.1.2", "@protobufjs/pool": "^1.1.0", "@protobufjs/utf8": "^1.1.1", "@types/node": ">=13.7.0", "long": "^5.3.2" } }, "sha512-RJJPTTpvFfHcWLkIa2JFWK4XvtSzS0yEWDmunqHXli1h3JlkbcQZXDZdcWxv+JK3Xsl5/UFDPZ0iGm7DAengYw=="],
 
     "pump": ["pump@3.0.4", "", { "dependencies": { "end-of-stream": "^1.1.0", "once": "^1.3.1" } }, "sha512-VS7sjc6KR7e1ukRFhQSY5LM2uBWAUPiOPa/A3mkKmiMwSmRFUITt0xuj+/lesgnCv+dPIEYlkzrcyXgquIHMcA=="],
 
+    "quick-format-unescaped": ["quick-format-unescaped@4.0.4", "", {}, "sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg=="],
+
     "react": ["react@19.2.7", "", {}, "sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ=="],
 
     "react-dom": ["react-dom@19.2.7", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.7" } }, "sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ=="],
+
+    "real-require": ["real-require@0.2.0", "", {}, "sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg=="],
 
     "redis-errors": ["redis-errors@1.2.0", "", {}, "sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w=="],
 
@@ -709,6 +725,8 @@
     "require-directory": ["require-directory@2.1.1", "", {}, "sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q=="],
 
     "rollup": ["rollup@4.62.2", "", { "dependencies": { "@types/estree": "1.0.9" }, "optionalDependencies": { "@rollup/rollup-android-arm-eabi": "4.62.2", "@rollup/rollup-android-arm64": "4.62.2", "@rollup/rollup-darwin-arm64": "4.62.2", "@rollup/rollup-darwin-x64": "4.62.2", "@rollup/rollup-freebsd-arm64": "4.62.2", "@rollup/rollup-freebsd-x64": "4.62.2", "@rollup/rollup-linux-arm-gnueabihf": "4.62.2", "@rollup/rollup-linux-arm-musleabihf": "4.62.2", "@rollup/rollup-linux-arm64-gnu": "4.62.2", "@rollup/rollup-linux-arm64-musl": "4.62.2", "@rollup/rollup-linux-loong64-gnu": "4.62.2", "@rollup/rollup-linux-loong64-musl": "4.62.2", "@rollup/rollup-linux-ppc64-gnu": "4.62.2", "@rollup/rollup-linux-ppc64-musl": "4.62.2", "@rollup/rollup-linux-riscv64-gnu": "4.62.2", "@rollup/rollup-linux-riscv64-musl": "4.62.2", "@rollup/rollup-linux-s390x-gnu": "4.62.2", "@rollup/rollup-linux-x64-gnu": "4.62.2", "@rollup/rollup-linux-x64-musl": "4.62.2", "@rollup/rollup-openbsd-x64": "4.62.2", "@rollup/rollup-openharmony-arm64": "4.62.2", "@rollup/rollup-win32-arm64-msvc": "4.62.2", "@rollup/rollup-win32-ia32-msvc": "4.62.2", "@rollup/rollup-win32-x64-gnu": "4.62.2", "@rollup/rollup-win32-x64-msvc": "4.62.2", "fsevents": "~2.3.2" }, "bin": { "rollup": "dist/bin/rollup" } }, "sha512-RFnrW4lhXA3s3eqHDZvN654g8OTjzRfqpIRJYczCGB6HzphckVAi/Qh4tbPUbRuDi7s1Llv8g/NspLkttY3gTA=="],
+
+    "safe-stable-stringify": ["safe-stable-stringify@2.5.0", "", {}, "sha512-b3rppTKm9T+PsVCBEOUR46GWI7fdOs00VKZ1+9c1EWDaDMvjQc6tUwuFyIprgGgTcWoVHSKrU8H31ZHA2e0RHA=="],
 
     "scheduler": ["scheduler@0.27.0", "", {}, "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="],
 
@@ -737,6 +755,8 @@
     "strip-ansi": ["strip-ansi@6.0.1", "", { "dependencies": { "ansi-regex": "^5.0.1" } }, "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="],
 
     "strip-json-comments": ["strip-json-comments@5.0.3", "", {}, "sha512-1tB5mhVo7U+ETBKNf92xT4hrQa3pm0MZ0PQvuDnWgAAGHDsfp4lPSpiS6psrSiet87wyGPh9ft6wmhOMQ0hDiw=="],
+
+    "thread-stream": ["thread-stream@3.2.0", "", { "dependencies": { "real-require": "^0.2.0" } }, "sha512-zLBvqpwr4Esa0kRjcrzGU6zL25lePWaCLMx0RQFrmteozIfeNdaMLpG5U7PeHzvlFkAWaRKA9/KVW4F60iB+qw=="],
 
     "tinybench": ["tinybench@2.9.0", "", {}, "sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg=="],
 
@@ -787,6 +807,8 @@
     "@vue/compiler-sfc/estree-walker": ["estree-walker@2.0.2", "", {}, "sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w=="],
 
     "bullmq/ioredis": ["ioredis@5.10.1", "", { "dependencies": { "@ioredis/commands": "1.5.1", "cluster-key-slot": "^1.1.0", "debug": "^4.3.4", "denque": "^2.1.0", "lodash.defaults": "^4.2.0", "lodash.isarguments": "^3.1.0", "redis-errors": "^1.2.0", "redis-parser": "^3.0.0", "standard-as-callback": "^2.1.0" } }, "sha512-HuEDBTI70aYdx1v6U97SbNx9F1+svQKBDo30o0b9fw055LMepzpOOd0Ccg9Q6tbqmBSJaMuY0fB7yw9/vjBYCA=="],
+
+    "pino/pino-abstract-transport": ["pino-abstract-transport@2.0.0", "", { "dependencies": { "split2": "^4.0.0" } }, "sha512-F63x5tizV6WCh4R6RHyi2Ml+M70DNRXt/+HANowMflpgGFMAym/VKm6G7ZOQRjqN7XbGxK1Lg9t6ZrtzOaivMw=="],
 
     "bullmq/ioredis/@ioredis/commands": ["@ioredis/commands@1.5.1", "", {}, "sha512-JH8ZL/ywcJyR9MmJ5BNqZllXNZQqQbnVZOqpPQqE1vHiFgAw4NHbvE0FOduNU8IX9babitBT46571OnPTT0Zcw=="],
   }

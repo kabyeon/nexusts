@@ -47,9 +47,10 @@ export class AppModule {}
 import { Logger, LoggerModule } from '@nexusts/logger';
 ```
 
-추가 npm 설치가 필요하지 않습니다 — 로거는 `@nexusts/core`의
-일부로 제공됩니다. Pino와 pino-pretty는 선택적 피어 의존성으로
-런타임에 지연 로딩됩니다 (트랜스포트 섹션 참조).
+프로덕션 사용을 위한 추가 npm 설치는 필요하지 않습니다 — `pino`가
+`@nexusts/logger`의 직접 의존성으로 번들링되어 있습니다.
+개발 환경에서 컬러 pretty-print 출력을 원한다면 선택적으로
+`pino-pretty`를 설치하세요.
 
 ---
 
@@ -286,20 +287,16 @@ LoggerModule.forRoot({
 
 ### 지연 로딩되는 피어 의존성
 
-Pino는 런타임에 동적 `import()`를 통해 지연 로딩됩니다.
 `PrettyTransport`를 사용하는데 `pino-pretty`가 설치되지 않은
-경우, 로거는 일반 JSON으로 폴백합니다. 피어 의존성 설치:
+경우, 로거는 일반 JSON으로 폴백합니다. pretty-print 헬퍼 설치:
 
 ```bash
-# 프로덕션 JSON 출력에는 Pino만 있으면 됩니다
-bun add pino
-
-# 개발 환경 pretty-print를 위해
+# 개발 환경 컬러 출력을 위해
 bun add pino-pretty
 ```
 
-트랜스포트 로딩에 실패하면 로거는 `console.log`로 폴백하여
-로그 메시지가 절대 손실되지 않도록 합니다.
+pino 자체는 `@nexusts/logger`에 번들링되어 있습니다 — 수동 설치가
+필요하지 않습니다.
 
 ---
 
