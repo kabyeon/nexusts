@@ -204,9 +204,18 @@ export class DIContainer {
 					// Fall through to throw a richer error below.
 				}
 			}
+			const name = this.tokenName(token);
+			const hint =
+				name === "undefined" || name === ""
+					? " Possible cause: @Inject on a constructor parameter property " +
+					  "(e.g. `constructor(@Inject(Svc) private svc: Svc)`) can cause " +
+					  "Bun to lose the token — use explicit assignment instead: " +
+					  "`svc: Svc; constructor(@Inject(Svc) svc: Svc) { this.svc = svc; }`."
+					: "";
 			throw new Error(
-				`No provider for "${this.tokenName(token)}". ` +
-					`Register it via DIContainer.register() or @Module({ providers: [...] }).`,
+				`No provider for "${name}". ` +
+					`Register it via DIContainer.register() or @Module({ providers: [...] }).` +
+					hint,
 			);
 		}
 

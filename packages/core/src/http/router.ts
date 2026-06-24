@@ -157,8 +157,16 @@ class NexusRouterImpl implements NexusRouter {
 			container ?? this.resolveControllerContainer(controller);
 
 		if (routes.length === 0) {
-			// Register the controller so DI still wires it up; useful for future
-			// features (CLI introspection, lifecycle hooks, etc.).
+			// Warn rather than silently skip — the most common cause is defining
+			// multiple @Controller classes in the same file, which causes Bun's
+			// TypeScript transformer to mis-order decorator execution so that
+			// @Get/@Post metadata is never stored on the class.
+			console.warn(
+				`[nexus] Controller "${controller.name}" has no registered routes. ` +
+					`If this is unexpected, ensure each @Controller class is defined ` +
+					`in its own file (Bun may mis-order decorators when multiple ` +
+					`@Controller classes share a single module file).`,
+			);
 			return;
 		}
 
