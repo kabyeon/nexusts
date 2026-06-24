@@ -1,0 +1,22 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nexusts/*": ["../packages/*/src/index.ts"],
+      "@nexusts/core": ["../packages/core/src/index.ts"],
+      "@nexusts/view": ["../packages/view/src/index.ts"],
+      "@nexusts/redis": ["../packages/redis/src/index.ts"]
+    }
+  },
+  "include": ["./**/*.ts"]
+}
