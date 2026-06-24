@@ -46,7 +46,7 @@ import { Resolver, Query, Arg } from "@nexusts/graphql";
 @Resolver()
 class HelloResolver {
   @Query()
-  hello(@Arg("name", { type: "String!" }) name: string): string {
+  hello(@Arg("name", "String!") name: string): string {
     return `Hello, ${name}!`;
   }
 }
@@ -190,12 +190,12 @@ import { Resolver, Query, Mutation, Arg } from "@nexusts/graphql";
 @Resolver()
 class UserResolver {
   @Query()
-  users(@Arg("limit", { type: "Int" }) limit: number): User[] {
+  users(@Arg("limit", "Int") limit: number): User[] {
     return this.userService.findAll(limit);
   }
 
   @Mutation()
-  addUser(@Arg("name", { type: "String!" }) name: string): User {
+  addUser(@Arg("name", "String!") name: string): User {
     return this.userService.create({ name });
   }
 }
