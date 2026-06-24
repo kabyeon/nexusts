@@ -1,0 +1,43 @@
+{
+  "name": "@nexusts/feature-flag",
+  "version": "0.7.9",
+  "description": "Feature flags, canary deployments, and A/B testing for NexusTS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun run ../../build.ts"
+  },
+  "keywords": [
+    "nexusts",
+    "framework",
+    "bun",
+    "feature-flag",
+    "ab-testing",
+    "canary"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@nexusts/core": "file:../core"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nexus-ts/nexusts.git",
+    "directory": "packages/feature-flag"
+  },
+  "homepage": "https://github.com/nexus-ts/nexusts#readme",
+  "bugs": {
+    "url": "https://github.com/nexus-ts/nexusts/issues"
+  }
+}

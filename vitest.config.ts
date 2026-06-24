@@ -32,6 +32,7 @@ export default defineConfig({
 			{ find: /^@nexusts\/drizzle$/, replacement: `${root}/packages/drizzle/src/index.ts` },
 			{ find: /^@nexusts\/drizzle\/validation$/, replacement: `${root}/packages/drizzle/src/validation/index.ts` },
 			{ find: /^@nexusts\/events$/, replacement: `${root}/packages/events/src/index.ts` },
+			{ find: /^@nexusts\/feature-flag$/, replacement: `${root}/packages/feature-flag/src/index.ts` },
 			{ find: /^@nexusts\/graphql$/, replacement: `${root}/packages/graphql/src/index.ts` },
 			{ find: /^@nexusts\/grpc$/, replacement: `${root}/packages/grpc/src/index.ts` },
 			{ find: /^@nexusts\/health$/, replacement: `${root}/packages/health/src/index.ts` },
