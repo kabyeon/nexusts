@@ -38,8 +38,20 @@ describe("MemoryResilienceStore", () => {
 
 	it("stores separate snapshots per circuit name", async () => {
 		const store = new MemoryResilienceStore();
-		await store.saveSnapshot("a", { state: "open", openedAt: 1, failures: 3, successes: 0, updatedAt: 10 });
-		await store.saveSnapshot("b", { state: "closed", openedAt: 0, failures: 0, successes: 5, updatedAt: 20 });
+		await store.saveSnapshot("a", {
+			state: "open",
+			openedAt: 1,
+			failures: 3,
+			successes: 0,
+			updatedAt: 10,
+		});
+		await store.saveSnapshot("b", {
+			state: "closed",
+			openedAt: 0,
+			failures: 0,
+			successes: 5,
+			updatedAt: 20,
+		});
 
 		expect((await store.getSnapshot("a"))?.state).toBe("open");
 		expect((await store.getSnapshot("b"))?.state).toBe("closed");
@@ -47,14 +59,32 @@ describe("MemoryResilienceStore", () => {
 
 	it("overwrites an existing snapshot", async () => {
 		const store = new MemoryResilienceStore();
-		await store.saveSnapshot("x", { state: "open", openedAt: 1, failures: 3, successes: 0, updatedAt: 10 });
-		await store.saveSnapshot("x", { state: "closed", openedAt: 0, failures: 0, successes: 10, updatedAt: 20 });
+		await store.saveSnapshot("x", {
+			state: "open",
+			openedAt: 1,
+			failures: 3,
+			successes: 0,
+			updatedAt: 10,
+		});
+		await store.saveSnapshot("x", {
+			state: "closed",
+			openedAt: 0,
+			failures: 0,
+			successes: 10,
+			updatedAt: 20,
+		});
 		expect((await store.getSnapshot("x"))?.state).toBe("closed");
 	});
 
 	it("returns a copy — mutations don't affect the stored value", async () => {
 		const store = new MemoryResilienceStore();
-		const snap: CircuitSnapshot = { state: "open", openedAt: 1, failures: 2, successes: 1, updatedAt: 5 };
+		const snap: CircuitSnapshot = {
+			state: "open",
+			openedAt: 1,
+			failures: 2,
+			successes: 1,
+			updatedAt: 5,
+		};
 		await store.saveSnapshot("y", snap);
 		// Mutate original
 		snap.state = "closed";
@@ -70,9 +100,16 @@ describe("MemoryResilienceStore", () => {
 function makeRedisClient() {
 	const data = new Map<string, string>();
 	return {
-		async get(key: string) { return data.get(key) ?? null; },
-		async set(key: string, value: string) { data.set(key, value); },
-		async del(key: string) { data.delete(key); return 1; },
+		async get(key: string) {
+			return data.get(key) ?? null;
+		},
+		async set(key: string, value: string) {
+			data.set(key, value);
+		},
+		async del(key: string) {
+			data.delete(key);
+			return 1;
+		},
 		async close() {},
 	};
 }
@@ -85,7 +122,13 @@ describe("RedisResilienceStore", () => {
 
 	it("saves and retrieves a snapshot via JSON", async () => {
 		const store = new RedisResilienceStore(makeRedisClient());
-		const snap: CircuitSnapshot = { state: "half-open", openedAt: 50, failures: 1, successes: 0, updatedAt: 60 };
+		const snap: CircuitSnapshot = {
+			state: "half-open",
+			openedAt: 50,
+			failures: 1,
+			successes: 0,
+			updatedAt: 60,
+		};
 		await store.saveSnapshot("payments", snap);
 		const r = await store.getSnapshot("payments");
 		expect(r).toEqual(snap);
@@ -95,10 +138,19 @@ describe("RedisResilienceStore", () => {
 		const client = makeRedisClient() as any;
 		const orig = client.set.bind(client);
 		const keys: string[] = [];
-		client.set = async (k: string, v: string, opts?: any) => { keys.push(k); return orig(k, v, opts); };
+		client.set = async (k: string, v: string, opts?: any) => {
+			keys.push(k);
+			return orig(k, v, opts);
+		};
 
 		const store = new RedisResilienceStore(client, { keyPrefix: "app:cb:" });
-		await store.saveSnapshot("db", { state: "open", openedAt: 0, failures: 0, successes: 0, updatedAt: 0 });
+		await store.saveSnapshot("db", {
+			state: "open",
+			openedAt: 0,
+			failures: 0,
+			successes: 0,
+			updatedAt: 0,
+		});
 		expect(keys[0]).toBe("app:cb:db");
 	});
 });
@@ -128,13 +180,17 @@ describe("CircuitBreaker cross-pod sync", () => {
 		// Force open on pod A — this saves to store
 		cbA.forceOpen();
 		// Pod B reads store before executing
-		await expect(cbB.execute(() => Promise.resolve("ok"))).rejects.toThrow("open");
+		await expect(cbB.execute(() => Promise.resolve("ok"))).rejects.toThrow(
+			"open",
+		);
 	});
 
 	it("pod A closing circuit is visible to pod B", async () => {
 		cbA.forceOpen();
 		// pod B sees open
-		await expect(cbB.execute(() => Promise.resolve("ok"))).rejects.toThrow("open");
+		await expect(cbB.execute(() => Promise.resolve("ok"))).rejects.toThrow(
+			"open",
+		);
 		// Ensure updatedAt timestamps are distinct (forceClose below must have
 		// a strictly newer timestamp than forceOpen above, or the sync will
 		// skip the close because updatedAt is not strictly greater).
@@ -173,7 +229,10 @@ describe("CircuitBreaker cross-pod sync", () => {
 describe("ResilienceService.setStore()", () => {
 	it("wires the store into all existing and future circuits", async () => {
 		const svc = new ResilienceService({});
-		const cb = svc.getOrCreateCircuit("svc-cb", { threshold: 0.5, minCalls: 2 });
+		const cb = svc.getOrCreateCircuit("svc-cb", {
+			threshold: 0.5,
+			minCalls: 2,
+		});
 
 		const store = new MemoryResilienceStore();
 		svc.setStore(store);
