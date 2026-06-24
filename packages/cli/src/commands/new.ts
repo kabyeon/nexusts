@@ -75,7 +75,7 @@ export const newCommand: Command = {
 			return 1;
 		}
 
-		const interactive = !flagBool(ctx.flags, "no-interaction", false);
+		const interactive = flagBool(ctx.flags, "interaction", true);
 		const target = resolve(ctx.cwd, name);
 
 		if (existsSync(target)) {

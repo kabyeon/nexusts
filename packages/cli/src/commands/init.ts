@@ -104,7 +104,7 @@ export const initCommand: Command = {
 		{ name: "no-interaction", description: "Skip interactive prompts" },
 	],
 	async run(ctx: CommandContext): Promise<number> {
-		const interactive = !flagBool(ctx.flags, "no-interaction", false);
+		const interactive = flagBool(ctx.flags, "interaction", true);
 		const force = flagBool(ctx.flags, "force", false);
 
 		const target = resolve(
