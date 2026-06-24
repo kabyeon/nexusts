@@ -70,9 +70,9 @@ tracing, metrics, gRPC, resilience)에서 AdonisJS가 battery로
 
 ---
 
-## 2. v0.3 → v0.7.0에서 해소된 항목 (최근 성과)
+## 2. v0.3 → v0.8.3에서 해소된 항목
 
-v0.3, v0.4, v0.5, v0.6.x, v0.7.0 마일스톤이 v0.2 분석에서 식별된 모든
+v0.3~v0.8.3 마일스톤이 v0.2 분석에서 식별된 모든
 "누락된 battery" 격차를 해소했다. 총 **35개** AdonisJS 스타일 배터리가
 출시되었다.
 
@@ -241,7 +241,7 @@ NexusTS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 
 ---
 
-## 7. 권장 v0.7+ 로드맵
+## 7. 권장 v0.8+ 로드맵
 
 ### v0.6.x — Async RPC & DX — 출시됨
 
@@ -286,13 +286,26 @@ NexusTS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 - `@Resolver` 전역 클래스 레지스트리.
 - `drizzle.config.ts` 자동 생성.
 
-### v0.8 — Hardening + Feature flags (계획)
+### v0.8.0 — ResilienceAdminModule + FeatureFlagModule (출시)
 
-- **Code-first GraphQL SDL 합성**.
-- **`@nexusts/feature-flag`**.
-- **Cross-pod circuit breakers**.
-- 안정 public API surface (semver).
-- 다중 런타임 CI.
+- `ResilienceAdminModule` HTTP admin endpoints.
+- `@nexusts/feature-flag`.
+- Code-first GraphQL SDL 합성 (`autoSchema: true`).
+- Cross-pod circuit breaker (Redis / Drizzle).
+
+### v0.8.1 — Cross-pod circuit breaker store (출시)
+
+### v0.8.2 — gRPC streaming (출시)
+
+### v0.8.3 — CI workflow 안정화 (출시)
+
+### v0.9 — DataLoader + Federation (계획)
+
+- **DataLoader 통합** — N+1 쿼리 배칭.
+- **Federation** — Apollo Federation v2 subgraph.
+- **Persisted queries.**
+- **Bulkhead 큐 추적.**
+- **LaunchDarkly/Unleash 어댑터.**
 
 ### v1.0 — Production-ready LTS
 
@@ -307,43 +320,43 @@ NexusTS의 쿠키 기반 세션은 본질적으로 stateless이므로 다중 리
 v0.8.3 릴리스는 **모든 AdonisJS v6 battery 격차를 해소**.
 AdonisJS에서 NexusTS v0.8.3로 마이그레이션하는 팀:
 
-- 모든 first-party battery에 NexusTS v0.7.0에 동등한 것 있음.
-- **GraphQL** 출시 (`@nexusts/graphql`, v0.6.9).
-- **gRPC** 출시 (`@nexusts/grpc`, v0.5).
-- **Resilience** 출시 (`@nexusts/resilience`, v0.7.0).
-- **REPL** 출시 (`nx repl`, v0.5).
-- Lucid → Drizzle 마이그레이션은 기계적.
-- Vine → Zod 마이그레이션은 기계적.
-- **33개 동작 예제**가 모든 주요 모듈을 다루며 살아있는 문서 역할.
+- **모든** first-party battery에 NexusTS에 동등한 것 있음.
+- GraphQL (code-first `autoSchema: true`).
+- gRPC + streaming (`@GrpcServerStream`).
+- Resilience (retry + circuit + bulkhead + HTTP admin).
+- Feature flags (`@nexusts/feature-flag`).
+- Cross-pod circuit breaker (Redis / Drizzle).
+- REPL (`nx repl`).
+- 시딩 팩토리 (`Factory<T>`).
+- CORS (ShieldModule 내장).
+- Cache with Redis backend shorthand.
+- **34개 동작 예제**, 69개 smoke test, 314+ unit tests.
 
 **완전한** AdonisJS 커버리지에 여전히 **부족한 것**:
 
 - **Inspector** — 디버깅 전용; 낮은 우선순위.
-- **Admin panel** — 낮은 우선순위; 대부분의 팀은 커스텀 사용.
-- **Feature flags** — v0.8 계획 (`@nexusts/feature-flag`).
-- **Seeding factories** — first-party 시드 팩토리 모듈.
+- **Admin panel** — 낮은 우선순위.
 
-AdonisJS v6 vs NexusTS v0.7.0 차별점:
+AdonisJS v6 vs NexusTS v0.8.3 차별점:
 
-- **Bun 네이티브** — NexusTS는 Bun에서 네이티브로 실행.
+- **Bun 네이티브** — 빠른 시작, 빠른 I/O, 적은 의존성.
 - **모듈별 번들** — 필요한 것만 import.
 - **OpenAPI / WebSockets / SSE / tracing / metrics / GraphQL /
-  resilience batteries** — NexusTS 기본 출시; AdonisJS는 DIY.
+  resilience / feature flags** — NexusTS 기본 출시.
 - **기본 ORM = Drizzle** — Bun에서 Drizzle가 더 뛰어난 성능.
 - **Cloudflare Workers** — NexusTS가 Workers에 더 친화적.
 
-v0.7.0 이후 NexusTS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에
-대한 **실현 가능한 대안**이며, AdonisJS가 battery로 출시하지 않는
-모던 기능을 기본 제공.
+v0.8.3 이후 NexusTS는 오늘 AdonisJS 사용자가 사용 가능한 모든 것에
+대한 **실현 가능한 대안**.
 
 ---
 
 ## 9. 참고
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 릴리스 노트
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — 전체 릴리스 노트
 - [`../../user-guide/`](../../user-guide/) — 32개 모듈의 가이드
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner 가이드
-- [`../../../examples/`](../../../examples/) — 33개 동작 예제 앱
+- [`../../../examples/`](../../../examples/) — 34개 동작 예제 앱
 - [`./nestjs-comparison.md`](./nestjs-comparison.md) — 동반 분석
 - [AdonisJS 문서](https://docs.adonisjs.com) — 비교 기준선
 - [Drizzle ORM](https://orm.drizzle.team) — NexusTS가 출시하는 기본 ORM

@@ -73,9 +73,9 @@ ship as batteries. All **32** modules are first-party.
 
 ---
 
-## 2. Closed in v0.3 → v0.7.0 (recent wins)
+## 2. Closed in v0.3 → v0.8.3
 
-The v0.3, v0.4, v0.5, v0.6.x, and v0.7.0 milestones together closed every
+The v0.3–v0.8.3 milestones together closed every
 "missing battery" gap. **35 AdonisJS-style batteries** now ship.
 
 | Was missing in v0.2 | Shipped | Module |
@@ -246,7 +246,7 @@ A team that needs any of these gets them for free with NexusTS.
 
 ---
 
-## 7. Recommended v0.7+ roadmap
+## 7. Recommended v0.8+ roadmap
 
 ### v0.6.x — Async RPC & DX — shipped
 
@@ -350,9 +350,9 @@ user today, with the runtime + DX advantages of Bun.
 
 ## 9. See also
 
-- [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 release notes
+- [`../../CHANGELOG.md`](../../CHANGELOG.md) — release notes
 - [`../../user-guide/`](../../user-guide/) — guides for the 30 modules
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner guide
-- [`../../../examples/`](../../../examples/) — 33 working example apps
+- [`../../../examples/`](../../../examples/) — 34 working example apps
 - [AdonisJS documentation](https://docs.adonisjs.com) — the comparison baseline
 - [Drizzle ORM](https://orm.drizzle.team) — the default ORM NexusTS ships
