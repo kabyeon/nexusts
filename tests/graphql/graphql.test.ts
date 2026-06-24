@@ -218,3 +218,62 @@ describe("loadGraphQLJs — lazy load", () => {
 		expect(doc).toBeDefined();
 	});
 });
+
+describe("@Resolver registry", () => {
+	it("registers a class when @Resolver is applied", async () => {
+		const { Resolver, getRegisteredResolvers, clearResolverRegistry } =
+			await import("@nexusts/graphql");
+
+		clearResolverRegistry();
+
+		@Resolver("Query")
+		class HelloResolver {}
+
+		const registered = getRegisteredResolvers();
+		expect(registered).toContain(HelloResolver);
+	});
+
+	it("accumulates multiple @Resolver classes", async () => {
+		const { Resolver, getRegisteredResolvers, clearResolverRegistry } =
+			await import("@nexusts/graphql");
+
+		clearResolverRegistry();
+
+		@Resolver()
+		class FooResolver {}
+
+		@Resolver()
+		class BarResolver {}
+
+		const registered = getRegisteredResolvers();
+		expect(registered).toContain(FooResolver);
+		expect(registered).toContain(BarResolver);
+		expect(registered.length).toBe(2);
+	});
+
+	it("clearResolverRegistry() empties the registry", async () => {
+		const { Resolver, getRegisteredResolvers, clearResolverRegistry } =
+			await import("@nexusts/graphql");
+
+		@Resolver()
+		class TempResolver {}
+		void TempResolver;
+
+		clearResolverRegistry();
+		expect(getRegisteredResolvers().length).toBe(0);
+	});
+
+	it("infers type name from class name when typeName is omitted", async () => {
+		const { Resolver, getRegisteredResolvers, clearResolverRegistry, getResolverTypeName } =
+			await import("@nexusts/graphql");
+
+		clearResolverRegistry();
+
+		@Resolver()
+		class UserResolver {}
+
+		const registered = getRegisteredResolvers();
+		expect(registered).toContain(UserResolver);
+		expect(getResolverTypeName(UserResolver)).toBe("User");
+	});
+});
