@@ -5,6 +5,7 @@
     "": {
       "name": "nexusts",
       "devDependencies": {
+        "@biomejs/biome": "^2.5.1",
         "@grpc/grpc-js": "^1.14.4",
         "@grpc/proto-loader": "^0.8.1",
         "@inertiajs/react": "^3.4.0",
@@ -35,7 +36,7 @@
     },
     "packages/auth": {
       "name": "@nexusts/auth",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -48,14 +49,20 @@
     },
     "packages/cache": {
       "name": "@nexusts/cache",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
+      "peerDependencies": {
+        "@nexusts/redis": ">=0.7.0",
+      },
+      "optionalPeers": [
+        "@nexusts/redis",
+      ],
     },
     "packages/cli": {
       "name": "@nexusts/cli",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "bin": {
         "nx": "./dist/index.js",
       },
@@ -65,14 +72,14 @@
     },
     "packages/config": {
       "name": "@nexusts/config",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/core": {
       "name": "@nexusts/core",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "bin": {
         "nx": "./dist/cli/index.js",
       },
@@ -87,28 +94,28 @@
     },
     "packages/create-nexusts": {
       "name": "create-nexusts",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "bin": {
         "create-nexusts": "index.js",
       },
     },
     "packages/crypto": {
       "name": "@nexusts/crypto",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/drive": {
       "name": "@nexusts/drive",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/drizzle": {
       "name": "@nexusts/drizzle",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -121,14 +128,21 @@
     },
     "packages/events": {
       "name": "@nexusts/events",
-      "version": "0.7.5",
+      "version": "0.8.1",
+      "dependencies": {
+        "@nexusts/core": "file:../core",
+      },
+    },
+    "packages/feature-flag": {
+      "name": "@nexusts/feature-flag",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/graphql": {
       "name": "@nexusts/graphql",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -141,35 +155,35 @@
     },
     "packages/grpc": {
       "name": "@nexusts/grpc",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/health": {
       "name": "@nexusts/health",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/i18n": {
       "name": "@nexusts/i18n",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/limiter": {
       "name": "@nexusts/limiter",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/logger": {
       "name": "@nexusts/logger",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
         "pino": "^9.0.0",
@@ -177,28 +191,28 @@
     },
     "packages/mail": {
       "name": "@nexusts/mail",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/metrics": {
       "name": "@nexusts/metrics",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/openapi": {
       "name": "@nexusts/openapi",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/queue": {
       "name": "@nexusts/queue",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -213,7 +227,7 @@
     },
     "packages/redis": {
       "name": "@nexusts/redis",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -226,49 +240,49 @@
     },
     "packages/resilience": {
       "name": "@nexusts/resilience",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/schedule": {
       "name": "@nexusts/schedule",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/session": {
       "name": "@nexusts/session",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/shield": {
       "name": "@nexusts/shield",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/sse": {
       "name": "@nexusts/sse",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/static": {
       "name": "@nexusts/static",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/tracing": {
       "name": "@nexusts/tracing",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -281,21 +295,21 @@
     },
     "packages/upload": {
       "name": "@nexusts/upload",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/view": {
       "name": "@nexusts/view",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
     },
     "packages/ws": {
       "name": "@nexusts/ws",
-      "version": "0.7.5",
+      "version": "0.8.1",
       "dependencies": {
         "@nexusts/core": "file:../core",
       },
@@ -315,6 +329,24 @@
     "@babel/parser": ["@babel/parser@7.29.7", "", { "dependencies": { "@babel/types": "^7.29.7" }, "bin": "./bin/babel-parser.js" }, "sha512-hnORnjP/1P/zFEndoeX+n+t1RwWRJiJpM/jO7FW32Kn9r5+sJB2JWOdYo4L6k78j15eCwY3Gm/7364B1EMwtNg=="],
 
     "@babel/types": ["@babel/types@7.29.7", "", { "dependencies": { "@babel/helper-string-parser": "^7.29.7", "@babel/helper-validator-identifier": "^7.29.7" } }, "sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA=="],
+
+    "@biomejs/biome": ["@biomejs/biome@2.5.1", "", { "optionalDependencies": { "@biomejs/cli-darwin-arm64": "2.5.1", "@biomejs/cli-darwin-x64": "2.5.1", "@biomejs/cli-linux-arm64": "2.5.1", "@biomejs/cli-linux-arm64-musl": "2.5.1", "@biomejs/cli-linux-x64": "2.5.1", "@biomejs/cli-linux-x64-musl": "2.5.1", "@biomejs/cli-win32-arm64": "2.5.1", "@biomejs/cli-win32-x64": "2.5.1" }, "bin": { "biome": "bin/biome" } }, "sha512-IXWLCxKmae+rI7LOHS1B3EbVisQ6GRAWbhN9msa6KjNCyFWrvKZWR4oUdinaNssrV852OrSHuSPa95h1GPJc7Q=="],
+
+    "@biomejs/cli-darwin-arm64": ["@biomejs/cli-darwin-arm64@2.5.1", "", { "os": "darwin", "cpu": "arm64" }, "sha512-npqDzvqv7vFaWRiNN1Te71siRgPaqS9MpqgYCdP/CrUbkJ7ApezaeaKjueKHRN/JH/6lRjJQAHi8acQDCAz22w=="],
+
+    "@biomejs/cli-darwin-x64": ["@biomejs/cli-darwin-x64@2.5.1", "", { "os": "darwin", "cpu": "x64" }, "sha512-RgwTqPAM8g2tn1j+b5oRjF/DbSBX8a4gwojtuG9XuhfK7GgomvZ9+T+tqjXiVbjLEeGJOoL6VEk8mvRTVeSybw=="],
+
+    "@biomejs/cli-linux-arm64": ["@biomejs/cli-linux-arm64@2.5.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-yhV35CzZh38VyMvTEXi3JTjxZBs++oCKK9KG8vB6VI5+uvQvZNR3BFWEKKzuOmx9DJJj7sQpZ4LQJcmbGTs3+Q=="],
+
+    "@biomejs/cli-linux-arm64-musl": ["@biomejs/cli-linux-arm64-musl@2.5.1", "", { "os": "linux", "cpu": "arm64" }, "sha512-WMcvMLgByyTqVxGlq918NBBYliq9FRR9GAQVETHb+VjGVqXCZFfHlZHC1FX4ibuYY/Hg6TJE3rHU0xVrdJXNRw=="],
+
+    "@biomejs/cli-linux-x64": ["@biomejs/cli-linux-x64@2.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-J/7uHSX7NfoYDI7HijAkd8lnQIOrRb2W7j3X+tw4R+N5ExvXGsyXFiGdQcfcxfOmNQmZVSQOCDk757fwpzqQcg=="],
+
+    "@biomejs/cli-linux-x64-musl": ["@biomejs/cli-linux-x64-musl@2.5.1", "", { "os": "linux", "cpu": "x64" }, "sha512-ANTowtlLmPYm5yeMckWY8Xzb9Ix+JJP3tgHR/n6xRj1VWyIzzWtfRfih9hv9VmClwadpBvZduISZIbBsIlYG3A=="],
+
+    "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.5.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-zgXnKNgWPC4iPF7Y1lR3STUeCUuZRpD6IiOrC7TZTlh0Lx6FiVUT05myuMQHQ9D+1cc7uyMldi4forE6lp0ivQ=="],
+
+    "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.5.1", "", { "os": "win32", "cpu": "x64" }, "sha512-6uxpR9hvaglANkZemeSiN/FhYgkGasrEGn267eXIWvjrjJ2LhDlk251IhjVJq6MXzkV2/bcXwLwSroLyPtqRZg=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.21.5", "", { "os": "aix", "cpu": "ppc64" }, "sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ=="],
 
@@ -411,6 +443,8 @@
     "@nexusts/drizzle": ["@nexusts/drizzle@workspace:packages/drizzle"],
 
     "@nexusts/events": ["@nexusts/events@workspace:packages/events"],
+
+    "@nexusts/feature-flag": ["@nexusts/feature-flag@workspace:packages/feature-flag"],
 
     "@nexusts/graphql": ["@nexusts/graphql@workspace:packages/graphql"],
 

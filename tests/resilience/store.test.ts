@@ -135,6 +135,10 @@ describe("CircuitBreaker cross-pod sync", () => {
 		cbA.forceOpen();
 		// pod B sees open
 		await expect(cbB.execute(() => Promise.resolve("ok"))).rejects.toThrow("open");
+		// Ensure updatedAt timestamps are distinct (forceClose below must have
+		// a strictly newer timestamp than forceOpen above, or the sync will
+		// skip the close because updatedAt is not strictly greater).
+		await new Promise((r) => setTimeout(r, 5));
 		// pod A closes
 		cbA.forceClose();
 		// pod B should now be able to execute (store has 'closed')

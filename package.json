@@ -22,6 +22,7 @@
     "publish:dry-run": "bun run scripts/publish.ts --dry-run"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.1",
     "@grpc/grpc-js": "^1.14.4",
     "@grpc/proto-loader": "^0.8.1",
     "@inertiajs/react": "^3.4.0",
