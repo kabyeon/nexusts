@@ -200,7 +200,7 @@ A real-time chat app is easier in NexusTS.
 
 ### 4.2 Granular modules
 
-NexusTS ships 30 independent packages. You pay for what you use:
+NexusTS ships 32 independent packages. You pay for what you use:
 
 ```ts
 // Pick modules like Lego bricks

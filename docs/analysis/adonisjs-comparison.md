@@ -20,7 +20,7 @@ covers every battery AdonisJS ships — and then some.
 
 ---
 
-## 1. Summary table (v0.7.0)
+## 1. Summary table (v0.8.3)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 

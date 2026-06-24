@@ -381,7 +381,7 @@ NexusTS v0.8.3 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.
-- All **30** optional modules are independently usable and well-scoped.
+- All **32** optional modules are independently usable and well-scoped.
 - **Tier 1 and Tier 2 gaps are fully closed**. Every production-need
   infrastructure piece from the v0.2 analysis has shipped.
 - gRPC (v0.5) closes the remaining NestJS-microservices gap.

@@ -17,7 +17,7 @@ Tier 3+ 잔존 격차에 집중한다.
 
 ---
 
-## 1. 요약 표 (v0.7.0)
+## 1. 요약 표 (v0.8.3)
 
 범례: ✅ 출시 · ⚠️ 부분적 · ❌ 없음 · 🔵 third-party 필요
 
@@ -47,7 +47,7 @@ Tier 3+ 잔존 격차에 집중한다.
 | gRPC | ✅ @nestjs/microservices | ✅ `@nexusts/grpc` | Reflection 기반, unary 메소드 (streaming v2 예정). v0.5 출시. |
 | Resilience | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, 공유 명명 레지스트리, exponential-jitter 백오프. v0.7.0 출시. **새 의존성 0.** |
 
-**헤드라인**: NexusTS v0.7.0는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 **30개** 모듈 모두 first-party.
+**헤드라인**: NexusTS v0.7.0는 v0.2 분석의 **모든 Tier 1 및 Tier 2 격차**를 해소했다. 출시된 **32개** 모듈 모두 first-party.
 
 ---
 
@@ -314,7 +314,7 @@ v0.7.0 이후 NexusTS는 Bun의 런타임 + ORM 이점을 가지고 NestJS가
 ## 9. 참고
 
 - [`../../CHANGELOG.md`](../../CHANGELOG.md) — v0.7.0 릴리스 노트
-- [`../../user-guide/`](../../user-guide/) — 30개 모듈의 가이드
+- [`../../user-guide/`](../../user-guide/) — 32개 모듈의 가이드
 - [`../../user-guide/testing-examples.md`](../../user-guide/testing-examples.md) — smoke test runner 가이드
 - [`../../../examples/`](../../../examples/) — 33개 동작 예제 앱
 - [NestJS 문서](https://docs.nestjs.com) — 비교 기준선
