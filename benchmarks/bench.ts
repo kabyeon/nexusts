@@ -212,13 +212,15 @@ for (const server of SERVERS) {
 
 // ── Output ────────────────────────────────────────────────────────────────────
 
+const output = { timestamp: new Date().toISOString(), results };
+
 if (OUTPUT_JSON) {
-  console.log(JSON.stringify(results, null, 2));
+  console.log(JSON.stringify(output, null, 2));
 } else {
   printTable(results);
 }
 
 // Save to results/latest.json
 const outPath = join(import.meta.dir, "results", "latest.json");
-writeFileSync(outPath, JSON.stringify({ timestamp: new Date().toISOString(), results }, null, 2));
+writeFileSync(outPath, JSON.stringify(output, null, 2));
 console.log(`Results saved to ${outPath}`);
