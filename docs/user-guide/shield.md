@@ -176,6 +176,65 @@ ShieldModule.forRoot({
 
 ---
 
+## CORS
+
+The `cors` option automatically handles preflight (OPTIONS) and sets
+`Access-Control-*` headers on every response. When used with CSRF
+protection, OPTIONS preflight bypasses CSRF checks so the browser's
+preflight request works normally.
+
+### Basic config
+
+```ts
+ShieldModule.forRoot({
+  cors: {
+    origin: ['https://app.example.com', 'https://admin.example.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  },
+});
+```
+
+### Origin options
+
+```ts
+// Allow all origins (default; incompatible with credentials)
+cors: { origin: '*' }
+
+// Single origin
+cors: { origin: 'https://app.example.com' }
+
+// Whitelist
+cors: { origin: ['https://a.com', 'https://b.com'] }
+
+// Custom function
+cors: {
+  origin: (requestOrigin) => requestOrigin.endsWith('.mycompany.com'),
+}
+```
+
+### Full example
+
+```ts
+ShieldModule.forRoot({
+  cors: {
+    origin: 'https://app.example.com',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Request-Id'],
+    credentials: true,
+    maxAge: 86_400,       // cache preflight for 24h
+  },
+  csrf: { enabled: true },
+});
+```
+
+> **Note:** `origin: '*'` and `credentials: true` cannot be used
+> together. Restrict `origin` to specific domains for credentials
+> to work.
+
+---
+
 ## Direct service access
 
 ```ts
@@ -201,6 +260,7 @@ class FormController {
 
 | Param | Type | Default | Description |
 | ----- | ---- | ------- | ----------- |
+| `cors` | `CorsConfig \| false` | `false` | CORS headers |
 | `csrf` | `CsrfConfig \| false` | `{ enabled: true }` | CSRF protection |
 | `hsts` | `HstsConfig \| false` | `false` | HSTS header |
 | `csp` | `CspConfig \| false` | `false` | Content-Security-Policy |
@@ -208,6 +268,17 @@ class FormController {
 | `xContentTypeOptions` | `boolean` | `true` | X-Content-Type-Options |
 | `referrerPolicy` | `string \| undefined` | `undefined` | Referrer-Policy |
 | `secret` | `string` | `NEXUS_SHIELD_SECRET` env | Token signing secret |
+
+### `CorsConfig`
+
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| `origin` | `string \| string[] \| function \| false` | `'*'` | Allowed origins |
+| `methods` | `string[]` | `GET POST PUT PATCH DELETE HEAD OPTIONS` | Allowed HTTP methods |
+| `allowedHeaders` | `string[]` | `undefined` | `Access-Control-Allow-Headers` |
+| `exposedHeaders` | `string[]` | `undefined` | `Access-Control-Expose-Headers` |
+| `credentials` | `boolean` | `false` | `Access-Control-Allow-Credentials` |
+| `maxAge` | `number` | `undefined` | Preflight cache TTL (seconds) |
 
 ### `CsrfConfig`
 
