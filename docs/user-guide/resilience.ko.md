@@ -184,11 +184,10 @@ try {
 벌크헤드는 fair — 호출자는 FIFO 순서로 해제된다. `rejectOnFull: true`이면
 대기열이 가득 찰 때 `BulkheadFullError`로 즉시 실패.
 
-## `@Resilient` 데코레이터 (alpha)
+## `@Resilient` 데코레이터
 
 retry + circuit + bulkhead를 한 번에 메소드에 감싸는 통합 데코레이터.
-현재 metadata로만 제공됨 — decorator 레벨에서의 즉시 wrapping은 v0.8에서
-다른 Bun stage-3-decorator 개선과 함께 예정.
+`ResilienceModule.forRoot()`가 임포트되면 컨트롤러 마운트 시 자동으로 래핑됩니다.
 
 ```ts
 @Resilient({
@@ -202,6 +201,68 @@ async callExternal() { ... }
 의미: retry가 안쪽, circuit이 retry를, bulkhead가 circuit을 감쌈. 순서가
 중요하다 — bulkhead가 바깥쪽이라는 것은 `rejectOnFull`이 회로가 open 되기
 전에 발화한다는 의미.
+
+## Eager 자동 래핑
+
+`ResilienceModule.forRoot()`를 임포트하면 프레임워크가 컨트롤러를 마운트할
+때 `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`가 붙은 메서드를
+**자동으로** 래핑합니다. 별도의 `svc.retry(...)` / `cb.execute(...)` 호출이
+필요 없습니다.
+
+```ts
+import { Retry, CircuitBreaker, Bulkhead, Resilient } from "@nexusts/resilience";
+
+@Controller("/payments")
+class PaymentController {
+  @Post("/charge")
+  @Resilient({
+    retry:    { attempts: 3, backoff: "exponential-jitter" },
+    circuit:  { threshold: 0.5, timeout: 30_000 },
+    bulkhead: { maxConcurrent: 5 },
+  })
+  async charge(@Body() body: ChargeDto) {
+    // ← 자동으로 bulkhead → circuit → retry 순으로 래핑됨
+    return stripe.charge(body);
+  }
+
+  @Get("/history")
+  @Retry({ attempts: 2, initialDelay: 200 })
+  async history() {
+    return db.query("SELECT ...");
+  }
+
+  @Get("/health")
+  @CircuitBreaker({ threshold: 0.5 })
+  async health() {
+    return externalApi.ping();
+  }
+}
+```
+
+### 동작 원리
+
+1. `ResilienceModule.forRoot()` 호출 시 core 라우터에 컨트롤러-메서드 훅을 등록합니다.
+2. 각 컨트롤러가 마운트될 때 훅이 메서드별로 resilience 메타데이터를 확인합니다.
+3. 메타데이터가 있으면 `makeResilientWrapper`로 래핑한 함수로 교체합니다.
+4. 래핑된 메서드는 요청마다 `ResilienceService`를 통해 retry / circuit / bulkhead를
+   적용합니다.
+
+### 래핑 순서 (바깥 → 안)
+
+```
+bulkhead → circuit → retry → 원래 메서드
+```
+
+`rejectOnFull`이 circuit이 open되기 전에 발화하고, retry는 회로를 통과한
+호출에만 적용됩니다.
+
+### 주의사항
+
+- `ResilienceModule.forRoot()`를 임포트하지 않으면 데코레이터는 메타데이터만
+  저장하고 래핑이 적용되지 않습니다.
+- `@Retry` / `@CircuitBreaker` / `@Bulkhead`는 독립적으로 사용하거나
+  `@Resilient`로 한꺼번에 사용할 수 있습니다.
+- 회로 이름은 메서드 이름에서 자동으로 가져옵니다 (예: `charge`, `history`).
 
 ## Service 레지스트리
 

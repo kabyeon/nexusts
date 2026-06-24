@@ -21,6 +21,8 @@ let BulkheadFullError: typeof import("@nexusts/resilience").BulkheadFullError;
 let ResilienceService: typeof import("@nexusts/resilience").ResilienceService;
 let ResilienceModule: typeof import("@nexusts/resilience").ResilienceModule;
 let ResilienceAdminModule: typeof import("@nexusts/resilience").ResilienceAdminModule;
+let RetryDecorator: typeof import("@nexusts/resilience").Retry;
+let CircuitBreakerDecorator: typeof import("@nexusts/resilience").CircuitBreakerDecorator;
 
 beforeAll(async () => {
 	const mod = await import("@nexusts/resilience");
@@ -33,6 +35,8 @@ beforeAll(async () => {
 	ResilienceService = mod.ResilienceService;
 	ResilienceModule = mod.ResilienceModule;
 	ResilienceAdminModule = mod.ResilienceAdminModule;
+	RetryDecorator = mod.Retry;
+	CircuitBreakerDecorator = mod.CircuitBreakerDecorator;
 });
 
 describe("retry()", () => {
@@ -413,5 +417,114 @@ describe("ResilienceAdminModule — HTTP endpoints", () => {
 			new Request("http://localhost/admin/resilience/circuits"),
 		);
 		expect(res.status).toBe(200);
+	});
+});
+
+describe("ResilienceModule — eager applyResilience wrapping", () => {
+	async function makeEagerApp(controllers: any[]) {
+		const { Application, Module } = await import("@nexusts/core");
+		const ResilienceMod = (ResilienceModule as any).forRoot({
+			retry: { initialDelay: 0, backoff: "constant" },
+		});
+
+		class TestAppModule {}
+		(Module as any)({ imports: [ResilienceMod], controllers })(TestAppModule);
+
+		const app = new (Application as any)(TestAppModule);
+		// Eagerly resolve the service so setResilienceService() is called
+		// before the first request reaches the wrapped methods.
+		app.container.resolve(ResilienceService.TOKEN);
+		return app;
+	}
+
+	it("@Retry decorated method is retried on transient failure", async () => {
+		const { Controller, Get } = await import("@nexusts/core");
+		let calls = 0;
+
+		class RetryCtrl {
+			async go() {
+				calls++;
+				if (calls < 3) throw new Error("transient");
+				return { calls };
+			}
+		}
+		// Apply framework decorators programmatically (avoids TS decorator syntax for lazy vars).
+		(Get as any)("/go")(
+			RetryCtrl.prototype,
+			"go",
+			Object.getOwnPropertyDescriptor(RetryCtrl.prototype, "go"),
+		);
+		(Controller as any)("/retry-eager")(RetryCtrl);
+		// Apply resilience metadata.
+		RetryDecorator({ attempts: 5, initialDelay: 0 })(
+			RetryCtrl.prototype,
+			"go",
+			Object.getOwnPropertyDescriptor(RetryCtrl.prototype, "go"),
+		);
+
+		calls = 0;
+		const app = await makeEagerApp([RetryCtrl]);
+		const res = await app.server.app.fetch(
+			new Request("http://localhost/retry-eager/go"),
+		);
+		expect(res.status).toBe(200);
+		const body = await res.json();
+		// Succeeded on the 3rd attempt.
+		expect(body.calls).toBe(3);
+	});
+
+	it("@CircuitBreaker decorated method throws CircuitOpenError when circuit is open", async () => {
+		const { Controller, Get } = await import("@nexusts/core");
+
+		class CbCtrl {
+			async go() {
+				return { ok: true };
+			}
+		}
+		(Get as any)("/go")(
+			CbCtrl.prototype,
+			"go",
+			Object.getOwnPropertyDescriptor(CbCtrl.prototype, "go"),
+		);
+		(Controller as any)("/cb-eager")(CbCtrl);
+		CircuitBreakerDecorator({ threshold: 0.5, timeout: 60_000 })(
+			CbCtrl.prototype,
+			"go",
+			Object.getOwnPropertyDescriptor(CbCtrl.prototype, "go"),
+		);
+
+		const app = await makeEagerApp([CbCtrl]);
+		// Force the circuit open via the service.
+		const svc = app.container.resolve(ResilienceService.TOKEN);
+		svc.getOrCreateCircuit("go", { threshold: 0.5 }).forceOpen();
+
+		// The wrapped method should now throw CircuitOpenError (→ 500).
+		const res = await app.server.app.fetch(
+			new Request("http://localhost/cb-eager/go"),
+		);
+		expect(res.status).toBe(500);
+	});
+
+	it("undecorated method works normally (hook is a no-op)", async () => {
+		const { Controller, Get } = await import("@nexusts/core");
+
+		class PlainCtrl {
+			async go() {
+				return { plain: true };
+			}
+		}
+		(Get as any)("/go")(
+			PlainCtrl.prototype,
+			"go",
+			Object.getOwnPropertyDescriptor(PlainCtrl.prototype, "go"),
+		);
+		(Controller as any)("/plain-eager")(PlainCtrl);
+
+		const app = await makeEagerApp([PlainCtrl]);
+		const res = await app.server.app.fetch(
+			new Request("http://localhost/plain-eager/go"),
+		);
+		expect(res.status).toBe(200);
+		expect(await res.json()).toEqual({ plain: true });
 	});
 });

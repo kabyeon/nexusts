@@ -102,6 +102,30 @@ const HTTP_METHOD_TO_HONO: Record<
 	HEAD: "head",
 };
 
+/**
+ * Optional hook invoked once per controller method at mount time.
+ * If set, the return value replaces `route.handler` for that method.
+ * External packages (e.g. `@nexusts/resilience`) register here to
+ * eagerly wrap decorated methods without coupling core to them.
+ */
+type ControllerMethodHook = (
+	proto: object,
+	propertyKey: string,
+	handler: Function,
+) => Function;
+
+let _controllerMethodHook: ControllerMethodHook | null = null;
+
+/**
+ * Register a global controller-method hook. Called once per method
+ * when `registerController()` processes a route.
+ *
+ * @internal — used by `@nexusts/resilience` and similar packages.
+ */
+export function setControllerMethodHook(fn: ControllerMethodHook | null): void {
+	_controllerMethodHook = fn;
+}
+
 class NexusRouterImpl implements NexusRouter {
 	private hono: Hono;
 	private root: ApplicationContainer;
@@ -306,6 +330,15 @@ class NexusRouterImpl implements NexusRouter {
 		const handlerName = String(route.propertyKey);
 		const controllerName = controller.name;
 
+		// Allow external packages to eagerly wrap the method (e.g. resilience).
+		const finalHandler = _controllerMethodHook
+			? _controllerMethodHook(
+					controller.prototype,
+					handlerName,
+					route.handler,
+				)
+			: route.handler;
+
 		const honoHandler = async (c: any) => {
 			// Build execution context for guards/interceptors/filters.
 			const req = c.req.raw ?? c.req;
@@ -342,7 +375,7 @@ class NexusRouterImpl implements NexusRouter {
 					const args = await this.buildArgs(c, paramMeta, validation);
 
 					const result = await Promise.resolve(
-						route.handler.call(instance, ...args),
+						finalHandler.call(instance, ...args),
 					);
 
 					return await this.serialize(c, result);

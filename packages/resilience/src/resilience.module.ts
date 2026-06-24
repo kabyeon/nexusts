@@ -19,9 +19,13 @@
  * `@Resilient`) work without the module — they pick up the
  * service from the DI container at controller-mount time.
  */
-import { Module } from "@nexusts/core";
+import { Module, setControllerMethodHook } from "@nexusts/core";
 import { ResilienceService } from "./resilience.service.js";
-import { setResilienceService } from "./decorators/index.js";
+import {
+	setResilienceService,
+	getResilientMetadata,
+	makeResilientWrapper,
+} from "./decorators/index.js";
 import type { ResilienceConfig } from "./types.js";
 
 @Module({
@@ -33,6 +37,20 @@ import type { ResilienceConfig } from "./types.js";
 })
 export class ResilienceModule {
 	static forRoot(config: ResilienceConfig = {}) {
+		// Eager-wrap: at controller-mount time, check each method for
+		// @Retry / @CircuitBreaker / @Bulkhead / @Resilient metadata and
+		// wrap it so the call goes through the resilience pipeline without
+		// any explicit `svc.retry(...)` / `cb.execute(...)` boilerplate.
+		// The service is resolved lazily at call time via getResilienceService().
+		setControllerMethodHook((proto, propertyKey, handler) => {
+			const meta = getResilientMetadata(proto, propertyKey);
+			if (!meta.retry && !meta.circuit && !meta.bulkhead) return handler;
+			return makeResilientWrapper(
+				handler,
+				() => getResilientMetadata(proto, propertyKey),
+			);
+		});
+
 		@Module({
 			providers: [
 				{
