@@ -21,6 +21,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.5] — 2026-06-24
+
+### Added
+
+- **Circuit breaker admin API**: `ResilienceService.listCircuits()` /
+  `listBulkheads()`, `CircuitBreaker.metrics()` / `forceOpen()` /
+  `forceClose()` / `reset()`. Inspect and manually control circuits
+  and bulkheads at runtime. Includes `CircuitMetrics` type for
+  monitoring (state, failure ratio, ms until half-open, etc.).
+- **`nx make:repository` command** (aliases: `mr`, `make-repo`):
+  generate a `DrizzleRepository` class under `app/repositories/`.
+
+### Fixed
+
+- **`nx make:service`**: missing `snake` context variable caused
+  broken imports (`import {  } from '...'`) and broken `eq()` calls
+  (`eq(.id, id)` instead of `eq(user.id, id)`).
+- **`nx db:seed`**: seed runner script used `./src/drizzle/index.js`
+  relative paths that only work in the monorepo. Fixed to use
+  `@nexusts/drizzle` and `@nexusts/logger` npm packages.
+- **`nx route:list`**: controller prefix was not applied because
+  the command read the wrong metadata key (`nexus:controller:prefix`
+  → `nexus:controller`). Routes now show correct paths like
+  `GET /posts/:id` instead of `GET /:id`.
+- **`nx make:model` (bun-sqlite)**: `createdAt` default was stored
+  as the literal string `(datetime('now'))` instead of a real
+  timestamp. Fixed to use `$defaultFn(() => new Date().toISOString())`.
+- **`SeedContext` type**: was referenced in seed template but never
+  defined or exported from `@nexusts/cli`. Now exported from CLI core.
+
+---
+
 ## [0.7.4] — 2026-06-24
 
 ### Added
@@ -1308,6 +1340,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.5]: https://github.com/kabyeon/nexusts/compare/v0.7.4...v0.7.5
 [0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
 [0.7.0]: https://github.com/kabyeon/nexusts/compare/v0.6.9...v0.7.0

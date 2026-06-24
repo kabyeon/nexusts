@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/tracing",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "OpenTelemetry distributed tracing",
   "type": "module",
   "main": "./dist/index.js",

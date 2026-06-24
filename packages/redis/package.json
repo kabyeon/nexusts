@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/redis",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Runtime-aware Redis client (Bun / Node / Workers)",
   "type": "module",
   "main": "./dist/index.js",

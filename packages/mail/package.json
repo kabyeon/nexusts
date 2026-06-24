@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/mail",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Outbound email (SMTP / File / Null transports)",
   "type": "module",
   "main": "./dist/index.js",

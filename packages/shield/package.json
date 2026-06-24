@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/shield",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "CSRF / HSTS / CSP security middleware",
   "type": "module",
   "main": "./dist/index.js",

@@ -21,6 +21,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.5] — 2026-06-24
+
+### 추가
+
+- **Circuit breaker admin API**: `ResilienceService.listCircuits()` /
+  `listBulkheads()`, `CircuitBreaker.metrics()` / `forceOpen()` /
+  `forceClose()` / `reset()`. 회로와 벌크헤드를 런타임에 검사하고
+  수동 제어. `CircuitMetrics` 타입으로 모니터링 (상태, 실패율,
+  half-open 전환까지 남은 ms 등).
+- **`nx make:repository` 명령어** (별칭: `mr`, `make-repo`):
+  `app/repositories/` 아래 `DrizzleRepository` 클래스 생성.
+
+### 수정
+
+- **`nx make:service`**: `snake` 컨텍스트 변수 누락으로 import와
+  `eq()` 호출이 깨짐 (`eq(.id, id)` → `eq(user.id, id)`).
+- **`nx db:seed`**: 모노레포 내부 상대경로(`./src/drizzle/...`)
+  사용 → `@nexusts/drizzle`, `@nexusts/logger`로 변경.
+- **`nx route:list`**: 컨트롤러 프리픽스 메타데이터 키 오류
+  (`nexus:controller:prefix` → `nexus:controller`).
+  `GET /:id` → `GET /posts/:id`로 수정.
+- **`nx make:model` (bun-sqlite)**: `createdAt` 기본값이 리터럴
+  문자열 `(datetime('now'))`로 저장되던 문제를
+  `$defaultFn(() => new Date().toISOString())`으로 수정.
+- **`SeedContext` 타입**: 시드 템플릿에서 참조만 하고 정의되지
+  않았음. `@nexusts/cli` 코어에서 export.
+
+---
+
 ## [0.7.4] — 2026-06-24
 
 ### 추가
@@ -983,6 +1012,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.5]: https://github.com/kabyeon/nexusts/compare/v0.7.4...v0.7.5
 [0.7.4]: https://github.com/kabyeon/nexusts/compare/v0.7.3...v0.7.4
 [0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
 [0.7.0]: https://github.com/kabyeon/nexusts/compare/v0.6.9...v0.7.0
