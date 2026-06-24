@@ -3,18 +3,22 @@
  * into a single Hono middleware that can be mounted globally.
  */
 import { Inject, Injectable } from "@nexusts/core";
-import type { CsrfConfig, ShieldConfig } from "./types.js";
-import { CsrfGuard, HeadersGuard } from "./guards/index.js";
+import type { CorsConfig, CsrfConfig, ShieldConfig } from "./types.js";
+import { CorsGuard, CsrfGuard, HeadersGuard } from "./guards/index.js";
 
 @Injectable()
 export class ShieldService {
 	/** DI token. */
 	static readonly TOKEN = Symbol.for("nexus:ShieldService");
 
+	cors?: CorsGuard;
 	csrf?: CsrfGuard;
 	headers: HeadersGuard;
 
 	constructor(@Inject("SHIELD_CONFIG") config: ShieldConfig = {}) {
+		if (config.cors) {
+			this.cors = new CorsGuard(config.cors as CorsConfig);
+		}
 		if (config.csrf) {
 			const secret =
 				config.secret ??
@@ -40,9 +44,23 @@ export class ShieldService {
 	 */
 	middleware() {
 		return async (c: any, next: () => Promise<any>) => {
+			const requestOrigin = (c.req.header("origin") as string) ?? "";
+			const method = (c.req.method as string).toUpperCase();
+
+			// 0. CORS preflight — short-circuit before CSRF so OPTIONS doesn't 403.
+			if (this.cors && method === "OPTIONS" && c.req.header("access-control-request-method")) {
+				const headers = new Headers();
+				const allowed = this.cors.applyPreflightHeaders(headers, requestOrigin);
+				return new Response(null, { status: allowed ? 204 : 403, headers });
+			}
+
+			// 0b. Apply CORS headers to regular requests.
+			if (this.cors) {
+				this.cors.applyHeaders(c.res.headers as Headers, requestOrigin);
+			}
+
 			// 1. CSRF check — must run before `next()` so we can short-circuit.
 			if (this.csrf) {
-				const method = (c.req.method as string).toUpperCase();
 				const ignoreMethods = (this.csrf as any).config.ignoreMethods as string[];
 				if (ignoreMethods.map((m) => m.toUpperCase()).includes(method)) {
 					// Safe method: ensure a CSRF cookie is present.

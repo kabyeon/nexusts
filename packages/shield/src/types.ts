@@ -60,8 +60,31 @@ export interface CspConfig {
 	reportUri?: string;
 }
 
+/** CORS configuration. */
+export interface CorsConfig {
+	/**
+	 * Allowed origin(s). Default: `"*"` (all origins).
+	 *   - `"*"` — reflect wildcard (credentials not supported)
+	 *   - `string` — exact match
+	 *   - `string[]` — whitelist
+	 *   - `(origin) => boolean | string | null` — custom resolver
+	 */
+	origin?: string | string[] | ((origin: string) => boolean | string | null);
+	/** Allowed HTTP methods. Default: GET POST PUT PATCH DELETE HEAD OPTIONS. */
+	methods?: string[];
+	/** Allowed request headers (`Access-Control-Allow-Headers`). */
+	allowedHeaders?: string[];
+	/** Headers exposed to the browser (`Access-Control-Expose-Headers`). */
+	exposedHeaders?: string[];
+	/** Set `Access-Control-Allow-Credentials: true`. Default: false. */
+	credentials?: boolean;
+	/** Preflight cache duration in seconds (`Access-Control-Max-Age`). */
+	maxAge?: number;
+}
+
 /** Top-level Shield config. */
 export interface ShieldConfig {
+	cors?: CorsConfig | false;
 	csrf?: CsrfConfig | false;
 	hsts?: HstsConfig | false;
 	csp?: CspConfig | false;
