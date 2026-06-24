@@ -21,6 +21,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] — 2026-06-24
+
+### 추가
+
+- **`ResilienceAdminModule`** — 회로 차단기/벌크헤드 HTTP Admin
+  엔드포인트 5개 (목록 조회, force-open/close, reset).
+- **Eager `applyResilience()`**: `@Retry`/`@CircuitBreaker`/
+  `@Bulkhead`/`@Resilient` 데코레이터가 컨트롤러 마운트 시
+  자동 래핑됨 — `svc.retry()` 수동 호출 불필요.
+- **한글 publishing 문서**: `README.ko.md`, `local-publish.ko.md`,
+  `npm-rate-limit.ko.md` 추가.
+
+### 변경
+
+- **저장소 이관**: `nexus-ts/nexusts`.
+- 버전 0.7.x → 0.8.0.
+
+---
+
 ## [0.7.9] — 2026-06-24
 
 ### 추가
@@ -1081,6 +1100,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0
 [0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
 [0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7

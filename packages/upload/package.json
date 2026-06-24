@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/upload",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "Multipart file upload with validation",
   "type": "module",
   "main": "./dist/index.js",

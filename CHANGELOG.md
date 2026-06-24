@@ -21,6 +21,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.0] — 2026-06-24
+
+### Added
+
+- **`ResilienceAdminModule`** — HTTP admin endpoints for circuit
+  breaker and bulkhead runtime inspection and control:
+  - `GET {prefix}/circuits` — list all circuits with metrics
+  - `GET {prefix}/bulkheads` — list all bulkheads with stats
+  - `POST {prefix}/circuits/:name/force-open` — force circuit open
+  - `POST {prefix}/circuits/:name/force-close` — force circuit closed
+  - `POST {prefix}/circuits/:name/reset` — reset circuit history
+  Default prefix: `"/resilience"`. Unknown circuit names return 404.
+- **Eager `applyResilience()`**: controller methods decorated with
+  `@Retry`/`@CircuitBreaker`/`@Bulkhead`/`@Resilient` are now
+  automatically wrapped at mount time when `ResilienceModule.forRoot()`
+  is imported. No manual `svc.retry()` / `cb.execute()` calls needed.
+- **Korean publishing docs**: `docs/publishing/README.ko.md`,
+  `local-publish.ko.md`, `npm-rate-limit.ko.md` added.
+
+### Changed
+
+- **Repository migrated** to `nexus-ts/nexusts` (GitHub org).
+  All URLs, git remote, and package.json fields updated.
+- Version bump from 0.7.x to 0.8.0.
+
+---
+
 ## [0.7.9] — 2026-06-24
 
 ### Added
@@ -1423,6 +1450,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0
 [0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
 [0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
 [0.7.7]: https://github.com/nexus-ts/nexusts/compare/v0.7.6...v0.7.7

@@ -1,9 +1,9 @@
 # NexusTS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.7.6**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.0**
 
-This document compares NexusTS v0.7.6 against [NestJS](https://nestjs.com)
+This document compares NexusTS v0.8.0 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
 has been closed; this analysis now focuses on the remaining Tier 3+
@@ -17,11 +17,11 @@ gaps that block complete feature parity.
 
 ---
 
-## 1. Summary table (v0.7.6)
+## 1. Summary table (v0.8.0)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusTS v0.7.6 | Notes |
+| Category | NestJS | NexusTS v0.8.0 | Notes |
 |----------|--------|--------------|-------|
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ✅ Hono + SSE + WS + gRPC + GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
@@ -46,9 +46,9 @@ Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 | Resilience (circuit breaker, retry) | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, exponential-jitter backoff |
 | GraphQL | ✅ @nestjs/graphql | ✅ `@nexusts/graphql` | SDL-first + code-first (`autoSchema: true`). `@Resolver`/`@Query`/`@Mutation` decorators with full SDL synthesis. Shipped v0.7.6. |
 | gRPC | ✅ @nestjs/microservices | ✅ `@nexusts/grpc` | Reflection-based, unary methods (streaming planned v2). Shipped v0.5. |
-| Resilience | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, admin API (listCircuits, metrics, forceOpen/Close). Shipped v0.7.0; admin API v0.7.5. **Zero new dependencies.** |
+| Resilience | ⚠️ nestjs-recq | ✅ `@nexusts/resilience` | Retry + Circuit Breaker + Bulkhead, shared named registry, HTTP admin API (`ResilienceAdminModule`), eager `applyResilience()` auto-wrap. **Zero new dependencies.** |
 
-**Headline**: NexusTS v0.7.6 closes **every Tier 1 and Tier 2 gap** from
+**Headline**: NexusTS v0.8.0 closes **every Tier 1 and Tier 2 gap** from
 the v0.2 analysis. All **31** shipped modules are first-party.
 
 ---
@@ -98,6 +98,9 @@ the v0.2 analysis. All **31** shipped modules are first-party.
 | **CLI improvements** | v0.7.5-6 | `make:repository` command, `drizzle.config.ts` auto-generation, `route:list` prefix fix, `make:service` import fix, `db:seed` path fix. |
 | **Logger pino dep** | v0.7.4 | pino is now a direct dependency — no manual `bun add pino`. |
 | **REPL improvements** | v0.7.4 | `.services`, `.modules`, `.routes` commands working; handler class.method display. |
+| **Eager `applyResilience()`** | v0.8.0 | `@Retry`/`@CircuitBreaker`/`@Bulkhead` auto-wrapped at controller mount. |
+| **ResilienceAdminModule** | v0.8.0 | HTTP admin endpoints for circuit breaker runtime control. |
+| **Repository migration** | v0.8.0 | Moved to `nexus-ts/nexusts` GitHub org. |
 | **Examples + smoke test expansion** | v0.7.0 | 33 examples total (added `32-graphql-hello`, `33-resilience-calls`). 67 smoke tests. |
 
 Total: **42+ Tier 1+2+3 gaps closed** since v0.2.
@@ -341,13 +344,20 @@ Shipped in v0.5–v0.6.8:
 
 ### v0.7.6 — Global @Resolver registry + code-first SDL (shipped)
 
-- **Code-first GraphQL SDL synthesis** (`autoSchema: true`) — SDL
-  auto-generated from `@Resolver`/`@Query`/`@Mutation` decorators.
-- `@Resolver`-decorated classes auto-registered via global Set.
-- `drizzle.config.ts` auto-generated on `init`/`new`.
-- Database driver deps auto-added based on dialect.
+### v0.7.7 — GraphQL code-first SDL synthesis (shipped)
 
-### v0.8 — Hardening + feature flags
+### v0.7.8 — Repository migration (shipped)
+
+### v0.7.9 — Bun decorator diagnostics (shipped)
+
+### v0.8.0 — ResilienceAdminModule + eager applyResilience (shipped)
+
+- **`ResilienceAdminModule`** — HTTP admin endpoints for circuit
+  breaker and bulkhead inspection/control.
+- **Eager `applyResilience()`** — decorators auto-wrap at mount time.
+- **Repository migration** to `nexus-ts/nexusts`.
+
+### v0.8.x — Feature flags & hardening
 
 - **`@nexusts/feature-flag`** — canary / A/B testing.
 - **Cross-pod circuit breakers** (resilience backed by Redis / Drizzle).
@@ -362,9 +372,9 @@ Shipped in v0.5–v0.6.8:
 
 ---
 
-## 8. Honest assessment (v0.7.6)
+## 8. Honest assessment (v0.8.0)
 
-NexusTS v0.7.6 is **production-ready for the vast majority of backend
+NexusTS v0.8.0 is **production-ready for the vast majority of backend
 services**:
 
 - The MVC + DI + validation core is solid and battle-tested.

@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/metrics",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "Prometheus / OpenMetrics counters and gauges",
   "type": "module",
   "main": "./dist/index.js",

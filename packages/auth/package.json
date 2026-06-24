@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/auth",
-  "version": "0.7.9",
+  "version": "0.8.0",
   "description": "Authentication via better-auth integration",
   "type": "module",
   "main": "./dist/index.js",

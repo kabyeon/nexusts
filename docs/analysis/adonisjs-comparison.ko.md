@@ -1,9 +1,9 @@
 # NexusTS vs AdonisJS — 기능 격차 분석
 
 > English version: [`adonisjs-comparison.md`](./adonisjs-comparison.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.7.6**
+> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.0**
 
-이 문서는 NexusTS v0.7.6와 [AdonisJS v6](https://adonisjs.com)를 비교하여
+이 문서는 NexusTS v0.8.0와 [AdonisJS v6](https://adonisjs.com)를 비교하여
 어떤 AdonisJS 스타일 "battery" (관례 기반, "그냥 동작" 기능)가
 **있음**, **부분적**, **없음** 상태인지 식별한다. v0.3–v0.7.0 마일스톤이
 모든 Tier 1, Tier 2, Tier 3 격차를 해소했다. 이제 프레임워크는
