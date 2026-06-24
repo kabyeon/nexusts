@@ -37,6 +37,46 @@ interface PlanEntry {
 	mode: WriteMode;
 }
 
+/** Valid options for each interactive prompt. */
+const VALID_OPTIONS = {
+	style: ["nest", "adonis", "functional"],
+	view: ["rendu", "edge", "eta", "inertia", "none"],
+	orm: ["drizzle", "prisma", "kysely", "none"],
+	db: ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
+	frontend: ["react", "vue", "svelte", "solid"],
+} as const;
+
+/**
+ * Resolve an option from flags or interactive prompt.
+ * Validates flag values against the allowed list and re-prompts on invalid input.
+ */
+async function resolveOpt(
+	flags: Record<string, unknown>,
+	key: string,
+	valid: readonly string[],
+	defaultVal: string,
+	interactive: boolean,
+): Promise<string> {
+	const flagVal = flags[key] as string | undefined;
+	if (flagVal) {
+		if (valid.includes(flagVal as any)) return flagVal;
+		if (!interactive) {
+			logger.error(`Invalid --${key} "${flagVal}". Valid values: ${valid.join(", ")}`);
+			process.exit(1);
+		}
+		logger.warn(`"${flagVal}" is not valid for --${key}. Please choose from the list.`);
+	}
+	return select(
+		key === "style" ? "Routing style" as const
+			: key === "view" ? "View engine" as const
+			: key === "orm" ? "ORM driver" as const
+			: key === "db" ? "Database driver" as const
+			: "Inertia frontend" as const,
+		[...valid],
+		{ default: defaultVal },
+	);
+}
+
 export const initCommand: Command = {
 	name: "init",
 	aliases: ["i"],
@@ -71,37 +111,11 @@ export const initCommand: Command = {
 			ctx.cwd,
 			(ctx.flags["target"] as string | undefined) ?? ".",
 		);
-		const routing =
-			(ctx.flags["style"] as string | undefined) ??
-			(interactive
-				? await select("Routing style", ["nest", "adonis", "functional"], { default: "nest" })
-				: "nest");
-		const view =
-			(ctx.flags["view"] as string | undefined) ??
-			(interactive
-				? await select("View engine", ["rendu", "edge", "eta", "inertia", "none"], {
-						default: "rendu",
-					})
-				: "rendu");
-		const orm =
-			(ctx.flags["orm"] as string | undefined) ??
-			(interactive
-				? await select("ORM driver", ["drizzle", "prisma", "kysely", "none"], { default: "drizzle" })
-				: "drizzle");
-		const db =
-			(ctx.flags["db"] as string | undefined) ??
-			(interactive
-				? await select("Database driver", ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"], {
-						default: "bun-sqlite",
-					})
-				: "bun-sqlite");
-		const frontend =
-			(ctx.flags["frontend"] as string | undefined) ??
-			(interactive
-				? await select("Inertia frontend", ["react", "vue", "svelte", "solid"], {
-						default: "react",
-					})
-				: "react");
+		const routing = await resolveOpt(ctx.flags, "style", VALID_OPTIONS.style, "nest", interactive);
+		const view = await resolveOpt(ctx.flags, "view", VALID_OPTIONS.view, "rendu", interactive);
+		const orm = await resolveOpt(ctx.flags, "orm", VALID_OPTIONS.orm, "drizzle", interactive);
+		const db = await resolveOpt(ctx.flags, "db", VALID_OPTIONS.db, "bun-sqlite", interactive);
+		const frontend = await resolveOpt(ctx.flags, "frontend", VALID_OPTIONS.frontend, "react", interactive);
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 		const name = target.split("/").pop() ?? "nexus-app";
 		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
@@ -171,7 +185,6 @@ export const initCommand: Command = {
 				skipped.push(entry.path);
 				continue;
 			}
-
 			created.push(entry.path);
 		}
 
