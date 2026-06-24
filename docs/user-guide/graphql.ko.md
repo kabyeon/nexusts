@@ -153,16 +153,33 @@ GraphQLModule.forRoot({
 });
 ```
 
-## 데코레이터를 통한 Code-first (alpha)
+## 데코레이터를 통한 Code-first
 
 `@Resolver`, `@Query`, `@Mutation`, `@Subscription`, `@Arg`
-데코레이터도 export한다. **현재는 alpha** — 스키마는 여전히
-`typeDefs`로 빌드되며, 데코레이터로 발견된 메서드는 SDL에 자동
-추가되지 않는다. 이 데코레이터 API는 v0.8 릴리스용으로
-예약되어 있으며, resolver 클래스에서 SDL을 합성할 예정이다
-(NestJS GraphQL의 code-first와 유사).
+데코레이터를 export한다. `@Resolver`로 장식된 클래스는 전역
+레지스트리에 자동 등록되므로 `GraphQLModule.forRoot()`에 수동으로
+나열할 필요가 없다. resolver 클래스를 모듈의 `providers` 배열에만
+추가하면 된다.
 
-프로덕션에서는 SDL을 권장한다.
+```ts
+import { Resolver, Query, Arg } from "@nexusts/graphql";
+
+@Resolver("Query")
+class HelloResolver {
+  @Query()
+  hello(@Arg("name", { type: "String!" }) name: string): string {
+    return `Hello, ${name}!`;
+  }
+}
+```
+
+전역 레지스트리(`getRegisteredResolvers()`)는 `@Resolver` 장식
+클래스를 데코레이션 시점에 수집하여 별도의 스캔 패스 없이 스키마
+빌더에서 사용할 수 있게 한다.
+
+**참고**: 데코레이터 메타데이터에서 SDL을 합성하는 기능은 아직
+alpha — 스키마는 현재 `typeDefs`로 빌드된다. 프로덕션에서는 SDL-우선
+방식을 권장한다. 풀 code-first SDL 합성은 v0.8에서 예정.
 
 ## Subscriptions
 
@@ -214,9 +231,10 @@ Install it with `bun add graphql`. Original error: ...
 
 ## v0.7에서 누락된 부분 (v0.8에서 예정)
 
-- **풀 code-first via `@Resolver` / `@Query` / `@Mutation`.**
-  데코레이터는 export되어 있지만 SDL 합성은 아직 연결되지 않았다.
-  현재는 복잡한 스키마에 SDL을 사용하라.
+- **풀 SDL 합성 from 데코레이터.** `@Resolver` 클래스는 자동
+  등록(`getRegisteredResolvers()`)되지만, 데코레이터 메타데이터에서
+  `typeDefs`를 합성하는 기능은 아직 연결되지 않았다.
+  현재는 `typeDefs`를 수동으로 정의하라.
 - **DataLoader 통합.** N+1 쿼리 배칭은 일반적인 요구사항;
   통합 지점은 resolver별 `loader` 옵션이 될 것이다.
 - **Federation.** Apollo Federation v2 subgraph 지원은 v0.8+ 로드맵에 있다.

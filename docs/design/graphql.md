@@ -221,7 +221,7 @@ This is intentional — the `resolvers` option in `forRoot()` is the
 user's "patch" over whatever the decorator-based or
 SDL-default-derived map has built.
 
-## Decorator API (alpha)
+## Decorator API & global resolver registry
 
 The framework exports `@Resolver`, `@Query`, `@Mutation`,
 `@Subscription`, and `@Arg` decorators. The metadata they write is
@@ -239,16 +239,32 @@ class UserResolver {
 }
 ```
 
-In v0.7 these decorators are **exported but not yet wired into the
-schema build**. The resolver metadata is collected but not added
-to the SDL or the resolver map. Users can read it with
-`getResolverFields()` and merge it manually if they want.
+### Global registry (v0.7.6+)
 
-For v0.8 we plan to:
+`@Resolver`-decorated classes are automatically collected into a
+global `Set<Function>` at decoration time. The registry is accessible
+via `getRegisteredResolvers()` (exported from `@nexusts/graphql`).
+This means resolver classes no longer need to be manually listed in
+`GraphQLModule.forRoot()` — just add them to the module's
+`providers` array and the framework picks them up.
 
-- Synthesize SDL from the decorator metadata (so users don't have
-  to write `@Resolver("User")` *and* `type User { ... }`).
-- Attach the collected fields to the resolver map automatically.
+```ts
+import { getRegisteredResolvers } from "@nexusts/graphql";
+
+const all = getRegisteredResolvers();
+// → [UserResolver, PostResolver, ...]
+```
+
+For testing, `clearResolverRegistry()` resets the registry.
+
+### Remaining work (v0.8)
+
+- **SDL synthesis.** The decorator metadata is collected but not yet
+  used to build `typeDefs` automatically. Users must still write
+  SDL by hand. Full code-first (decorators → SDL) is planned for v0.8.
+- **Auto-attach resolver map.** Currently the resolver map must be
+  merged manually or defined inline. v0.8 will attach collected
+  fields automatically.
 
 ## Future work
 

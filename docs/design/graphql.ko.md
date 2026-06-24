@@ -206,7 +206,7 @@ top-level 키는 GraphQL 타입 이름 (`Query`, `Mutation`,
 `forRoot()`의 `resolvers` 옵션은 데코레이터 기반 또는 SDL-default 맵의
 "패치"이다.
 
-## 데코레이터 API (alpha)
+## 데코레이터 API & 전역 Resolver 레지스트리
 
 프레임워크는 `@Resolver`, `@Query`, `@Mutation`, `@Subscription`,
 `@Arg` 데코레이터를 export한다. 그들이 작성한 메타데이터는
@@ -224,16 +224,32 @@ class UserResolver {
 }
 ```
 
-v0.7에서 이 데코레이터는 **export되어 있지만 아직 스키마 빌드에
-연결되지 않았다**. Resolver 메타데이터는 수집되지만 SDL이나
-resolver 맵에 추가되지 않는다. 사용자는 `getResolverFields()`로
-읽어서 직접 merge할 수 있다.
+### 전역 레지스트리 (v0.7.6+)
 
-v0.8에서 계획:
+`@Resolver`로 장식된 클래스는 데코레이션 시점에 자동으로 전역
+`Set<Function>`에 수집된다. 레지스트리는 `getRegisteredResolvers()`로
+접근 가능 (`@nexusts/graphql`에서 export).
+Resolver 클래스를 `GraphQLModule.forRoot()`에 수동으로 나열할 필요
+없이 모듈의 `providers` 배열에만 추가하면 된다.
 
-- 데코레이터 메타데이터에서 SDL 합성 (사용자가 `@Resolver("User")`과
-  `type User { ... }` 둘 다 작성할 필요 없게).
-- 수집된 필드를 resolver 맵에 자동 attach.
+```ts
+import { getRegisteredResolvers } from "@nexusts/graphql";
+
+const all = getRegisteredResolvers();
+// → [UserResolver, PostResolver, ...]
+```
+
+테스트 시 `clearResolverRegistry()`로 레지스트리를 초기화할 수 있다.
+
+### 남은 작업 (v0.8)
+
+- **SDL 합성.** 데코레이터 메타데이터는 수집되지만 아직
+  `typeDefs`를 자동으로 빌드하는 데 사용되지 않는다. 사용자는
+  여전히 SDL을 직접 작성해야 한다. 풀 code-first (데코레이터 → SDL)은
+  v0.8에서 예정.
+- **Resolver 맵 자동 attach.** 현재 resolver 맵은 수동으로 merge
+  하거나 인라인으로 정의해야 한다. v0.8에서 수집된 필드를 자동으로
+  attach할 예정.
 
 ## Future work
 

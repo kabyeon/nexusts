@@ -156,17 +156,35 @@ GraphQLModule.forRoot({
 });
 ```
 
-## Code-first via decorators (alpha)
+## Code-first via decorators
 
-In addition to the SDL-first approach, the module exports
-`@Resolver`, `@Query`, `@Mutation`, `@Subscription`, and `@Arg`
-decorators. **Currently these are alpha** — the schema is still
-built from `typeDefs`, and decorator-discovered methods are not
-yet auto-added to the SDL. The decorator API is reserved for a
-v0.8 release where we'll synthesize SDL from the resolver
-classes (similar to NestJS GraphQL's code-first mode).
+The module exports `@Resolver`, `@Query`, `@Mutation`,
+`@Subscription`, and `@Arg` decorators for a code-first approach.
+Decorated resolver classes are automatically registered in a global
+registry — they no longer need to be manually listed in
+`GraphQLModule.forRoot()`. Just add the resolver class to your
+module's `providers` array.
 
-For production, prefer SDL.
+```ts
+import { Resolver, Query, Arg } from "@nexusts/graphql";
+
+@Resolver("Query")
+class HelloResolver {
+  @Query()
+  hello(@Arg("name", { type: "String!" }) name: string): string {
+    return `Hello, ${name}!`;
+  }
+}
+```
+
+The global registry (`getRegisteredResolvers()`) collects all
+`@Resolver`-decorated classes at decoration time, making them
+available to the schema builder without a separate scan pass.
+
+**Note**: SDL synthesis from decorator metadata is still in
+alpha — the schema is currently built from `typeDefs`. For
+production, prefer the SDL-first approach. Full code-first SDL
+synthesis is planned for v0.8.
 
 ## Subscriptions
 
@@ -220,9 +238,10 @@ line. The 32-graphql-hello example demonstrates this in
 
 ## What's missing in v0.7 (and planned for v0.8)
 
-- **Full code-first via `@Resolver` / `@Query` / `@Mutation`.** The
-  decorators are exported but the SDL synthesis is not wired up
-  yet. Today, use SDL for non-trivial schemas.
+- **Full SDL synthesis from decorators.** `@Resolver` classes are
+  now auto-registered (`getRegisteredResolvers()`), but the SDL
+  synthesis that builds `typeDefs` from decorator metadata is not
+  wired up yet. Today, define `typeDefs` manually.
 - **DataLoader integration.** N+1 query batching is a common
   requirement; the integration point will be a per-resolver
   `loader` option.
