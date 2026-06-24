@@ -194,20 +194,15 @@ for (const pkg of publishOrder) {
 		console.error(`[publish] ✖ ${pkgJson.name}@${pkgJson.version} failed`);
 	}
 
-	// Wait between publishes to be a good citizen of the npm
-	// registry. The delay scales with the number of packages still
-	// pending so a small re-run after a partial failure is fast
-	// while a fresh first-time publish of 31 packages gives the
-	// registry plenty of breathing room.
-	//
+	// Wait briefly between publishes to avoid npm registry rate limits.
 	// Tunable via env:
-	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 10_000 = 10s)
-	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 30_000 = 30s)
+	//   PUBLISH_BATCH_DELAY_MS — per-package delay in ms (default 3_000 = 3s)
+	//   PUBLISH_BATCH_BREAK_MS  — extra delay every N packages (default 10_000 = 10s)
 	//   PUBLISH_BATCH_BREAK_N   — packages per break (default 5)
 	if (pkg !== publishOrder[publishOrder.length - 1]) {
 		const remaining = publishOrder.length - publishOrder.indexOf(pkg) - 1;
-		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 10_000);
-		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 30_000);
+		const batchDelay = Number(process.env.PUBLISH_BATCH_DELAY_MS ?? 3_000);
+		const batchBreak = Number(process.env.PUBLISH_BATCH_BREAK_MS ?? 10_000);
 		const batchN = Number(process.env.PUBLISH_BATCH_BREAK_N ?? 5);
 
 		const publishedSoFar = publishOrder.length - remaining;

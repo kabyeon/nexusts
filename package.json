@@ -20,8 +20,8 @@
     "examples:clean": "bash scripts/clean-examples.sh",
     "publish:all": "bun run scripts/publish.ts",
     "publish:dry-run": "bun run scripts/publish.ts --dry-run",
-    "publish:batch": "PUBLISH_BATCH_BREAK_MS=600000 PUBLISH_BATCH_BREAK_N=5 bun run scripts/publish.ts",
-    "publish:resume": "PUBLISH_BATCH_BREAK_MS=60000 PUBLISH_BATCH_BREAK_N=10 bun run scripts/publish.ts"
+    "publish:batch": "PUBLISH_BATCH_BREAK_MS=10000 PUBLISH_BATCH_BREAK_N=5 bun run scripts/publish.ts",
+    "publish:resume": "PUBLISH_BATCH_BREAK_MS=10000 PUBLISH_BATCH_BREAK_N=10 bun run scripts/publish.ts"
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.14.4",
