@@ -9,6 +9,7 @@ export * from "./logger.js";
 export * from "./loose-json.js";
 export * from "./prompts.js";
 export * from "./template.js";
+export { VERSION } from "./version.js";
 
 /**
  * The CLI command contract. Every command module exports a default

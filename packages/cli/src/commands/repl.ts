@@ -38,11 +38,12 @@ import { dirname, resolve } from "node:path";
 import * as readline from "node:readline";
 import * as vm from "node:vm";
 import { logger } from "../core/index.js";
+import { VERSION } from "../core/index.js";
 import type { Command, CommandContext } from "../core/index.js";
 
 const BANNER = `
 ╭─────────────────────────────────────────────────╮
-│  NexusTS REPL                              v0.7 │
+│  NexusTS REPL                          v${VERSION} │
 │                                                 │
 │  Type .help for available commands              │
 ╰─────────────────────────────────────────────────╯
