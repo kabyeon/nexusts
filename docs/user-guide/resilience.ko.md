@@ -14,7 +14,7 @@
 
 ```ts
 import {
-  ResilienceModule, ResilienceService, retry,
+  ResilienceModule, ResilienceAdminModule, ResilienceService, retry,
   CircuitBreaker, Bulkhead, CircuitOpenError, BulkheadFullError,
 } from "@nexusts/resilience";
 

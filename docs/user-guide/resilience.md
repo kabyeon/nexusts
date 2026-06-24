@@ -14,7 +14,7 @@ single, decorator-friendly API.
 
 ```ts
 import {
-  ResilienceModule, ResilienceService, retry,
+  ResilienceModule, ResilienceAdminModule, ResilienceService, retry,
   CircuitBreaker, Bulkhead, CircuitOpenError, BulkheadFullError,
 } from "@nexusts/resilience";
 
@@ -187,12 +187,11 @@ The bulkhead is fair — callers are released in FIFO order. With
 `rejectOnFull: true`, calls fail fast with `BulkheadFullError`
 when the queue is full.
 
-## `@Resilient` decorator (alpha)
+## `@Resilient` decorator
 
 A combined decorator that wraps a method with retry + circuit +
-bulkhead. Available as metadata today; eager wrapping at the
-decorator level is reserved for v0.8 alongside other Bun
-stage-3-decorator improvements.
+bulkhead. When `ResilienceModule.forRoot()` is imported, decorated
+controller methods are **automatically wrapped** at mount time.
 
 ```ts
 @Resilient({
@@ -206,6 +205,69 @@ async callExternal() { ... }
 The semantics: retry wraps the inner; circuit wraps retry; bulkhead
 wraps circuit. The order matters — bulkhead-on-outside means
 `rejectOnFull` fires before the circuit can.
+
+## Eager auto-wrapping
+
+When `ResilienceModule.forRoot()` is imported, the framework
+**automatically** wraps any controller method decorated with
+`@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient` at
+controller mount time. No manual `svc.retry(...)` or
+`cb.execute(...)` calls needed.
+
+```ts
+import { Retry, CircuitBreaker, Bulkhead, Resilient } from "@nexusts/resilience";
+
+@Controller("/payments")
+class PaymentController {
+  @Post("/charge")
+  @Resilient({
+    retry:    { attempts: 3, backoff: "exponential-jitter" },
+    circuit:  { threshold: 0.5, timeout: 30_000 },
+    bulkhead: { maxConcurrent: 5 },
+  })
+  async charge(@Body() body: ChargeDto) {
+    // ← auto-wrapped: bulkhead → circuit → retry
+    return stripe.charge(body);
+  }
+
+  @Get("/history")
+  @Retry({ attempts: 2, initialDelay: 200 })
+  async history() {
+    return db.query("SELECT ...");
+  }
+
+  @Get("/health")
+  @CircuitBreaker({ threshold: 0.5 })
+  async health() {
+    return externalApi.ping();
+  }
+}
+```
+
+### How it works
+
+1. `ResilienceModule.forRoot()` registers a controller-method hook
+   in the core router.
+2. When each controller is mounted, the hook checks each method for
+   resilience metadata.
+3. If metadata exists, the method is wrapped with `makeResilientWrapper`.
+4. At call time, the wrapper applies bulkhead → circuit → retry in
+   that order.
+
+### Wrap order (outside → inside)
+
+```
+bulkhead → circuit → retry → original method
+```
+
+### Notes
+
+- Without `ResilienceModule.forRoot()`, decorators are metadata-only
+  (no wrapping).
+- `@Retry` / `@CircuitBreaker` / `@Bulkhead` can be used independently
+  or combined via `@Resilient`.
+- Circuit names are derived from the method name (e.g. `charge`,
+  `history`).
 
 ## Service registry
 
@@ -289,6 +351,43 @@ cb.forceClose();
 // Reset to clean closed state (clears all history).
 cb.reset();
 ```
+
+### HTTP Admin endpoints
+
+`ResilienceAdminModule` mounts five HTTP endpoints for runtime
+inspection and control. Protect behind auth middleware in production.
+
+```ts
+import { ResilienceModule, ResilienceAdminModule } from "@nexusts/resilience";
+
+@Module({
+  imports: [
+    ResilienceModule.forRoot({ threshold: 0.5 }),
+    ResilienceAdminModule.forRoot({ prefix: "/resilience" }),
+  ],
+})
+class AppModule {}
+```
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `{prefix}/circuits` | List all circuits with metrics |
+| `GET` | `{prefix}/bulkheads` | List all bulkheads with stats |
+| `POST` | `{prefix}/circuits/:name/force-open` | Force a circuit open |
+| `POST` | `{prefix}/circuits/:name/force-close` | Force a circuit closed |
+| `POST` | `{prefix}/circuits/:name/reset` | Reset a circuit |
+
+Default prefix: `"/resilience"`.
+
+```bash
+# List all circuits
+curl http://localhost:3000/resilience/circuits
+
+# Force-close the stripe circuit
+curl -X POST http://localhost:3000/resilience/circuits/stripe/force-close
+```
+
+Unknown circuit names return 404.
 
 ## What's not in this release
 
