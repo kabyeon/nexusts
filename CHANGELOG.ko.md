@@ -21,6 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.8.1] — 2026-06-24
+
+### 추가
+
+- **Cross-pod 서킷 브레이커 스토어** — `ResilienceStore` 인터페이스:
+  - `RedisResilienceStore`: Redis로 pod 간 회로 상태 공유
+  - `DrizzleResilienceStore`: Drizzle DB 기반 영구 저장
+  - `MemoryResilienceStore`: 기본 in-process 스토어
+  `syncIntervalMs` 설정 가능. 최신 업데이트 기준 충돌 해결.
+  스토어 오류 시 로컬 상태로 폴백 (비치명적).
+
+---
+
 ## [0.8.0] — 2026-06-24
 
 ### 추가
@@ -1100,6 +1113,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.8.1]: https://github.com/nexus-ts/nexusts/compare/v0.8.0...v0.8.1
 [0.8.0]: https://github.com/nexus-ts/nexusts/compare/v0.7.9...v0.8.0
 [0.7.9]: https://github.com/nexus-ts/nexusts/compare/v0.7.8...v0.7.9
 [0.7.8]: https://github.com/nexus-ts/nexusts/compare/v0.7.7...v0.7.8
