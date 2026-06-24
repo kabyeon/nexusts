@@ -175,6 +175,63 @@ ShieldModule.forRoot({
 
 ---
 
+## CORS
+
+`cors` 옵션을 추가하면 preflight(OPTIONS)와 모든 응답에 `Access-Control-*` 헤더를
+자동으로 설정합니다. CSRF 보호와 함께 사용할 경우 OPTIONS preflight는 CSRF 검사를
+우회하므로 브라우저의 사전 요청이 정상적으로 처리됩니다.
+
+### 기본 설정
+
+```ts
+ShieldModule.forRoot({
+  cors: {
+    origin: ['https://app.example.com', 'https://admin.example.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  },
+});
+```
+
+### origin 옵션
+
+```ts
+// 모든 출처 허용 (기본값, credentials와 함께 사용 불가)
+cors: { origin: '*' }
+
+// 단일 출처
+cors: { origin: 'https://app.example.com' }
+
+// 화이트리스트
+cors: { origin: ['https://a.com', 'https://b.com'] }
+
+// 커스텀 함수
+cors: {
+  origin: (requestOrigin) => requestOrigin.endsWith('.mycompany.com'),
+}
+```
+
+### 전체 옵션 예시
+
+```ts
+ShieldModule.forRoot({
+  cors: {
+    origin: 'https://app.example.com',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['X-Request-Id'],
+    credentials: true,
+    maxAge: 86_400,       // preflight 캐시 24시간
+  },
+  csrf: { enabled: true },
+});
+```
+
+> **주의:** `origin: '*'`과 `credentials: true`는 함께 사용할 수 없습니다.
+> 특정 도메인으로 origin을 제한해야 credentials가 동작합니다.
+
+---
+
 ## 서비스 직접 접근
 
 ```ts
@@ -200,6 +257,7 @@ class FormController {
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 | -------- | ---- | ------ | ---- |
+| `cors` | `CorsConfig \| false` | `false` | CORS 헤더 |
 | `csrf` | `CsrfConfig \| false` | `{ enabled: true }` | CSRF 보호 |
 | `hsts` | `HstsConfig \| false` | `false` | HSTS 헤더 |
 | `csp` | `CspConfig \| false` | `false` | Content-Security-Policy |
@@ -207,6 +265,17 @@ class FormController {
 | `xContentTypeOptions` | `boolean` | `true` | X-Content-Type-Options |
 | `referrerPolicy` | `string \| undefined` | `undefined` | Referrer-Policy |
 | `secret` | `string` | `NEXUS_SHIELD_SECRET` 환경변수 | 토큰 서명 시크릿 |
+
+### `CorsConfig`
+
+| 옵션 | 타입 | 기본값 | 설명 |
+| ---- | ---- | ------ | ---- |
+| `origin` | `string \| string[] \| function \| false` | `'*'` | 허용 출처 |
+| `methods` | `string[]` | `GET POST PUT PATCH DELETE HEAD OPTIONS` | 허용 HTTP 메서드 |
+| `allowedHeaders` | `string[]` | `undefined` | `Access-Control-Allow-Headers` |
+| `exposedHeaders` | `string[]` | `undefined` | `Access-Control-Expose-Headers` |
+| `credentials` | `boolean` | `false` | `Access-Control-Allow-Credentials` |
+| `maxAge` | `number` | `undefined` | preflight 캐시 시간(초) |
 
 ### `CsrfConfig`
 

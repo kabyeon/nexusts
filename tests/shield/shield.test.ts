@@ -6,11 +6,12 @@ import "reflect-metadata";
 import { describe, it, expect } from "vitest";
 import { Hono } from "hono";
 import {
+	CorsGuard,
 	CsrfGuard,
 	HeadersGuard,
 	ShieldService,
-} from "../../src/shield/index.js";
-import type { ShieldConfig } from "../../src/shield/types.js";
+} from "@nexusts/shield";
+import type { ShieldConfig } from "@nexusts/shield";
 
 describe("CsrfGuard", () => {
 	const secret = "test-secret";
@@ -139,9 +140,110 @@ describe("HeadersGuard middleware", () => {
 	});
 });
 
+describe("CorsGuard", () => {
+	it("resolveOrigin — wildcard returns *", () => {
+		const g = new CorsGuard({ origin: "*" });
+		expect(g.resolveOrigin("https://example.com")).toBe("*");
+	});
+
+	it("resolveOrigin — exact string match", () => {
+		const g = new CorsGuard({ origin: "https://app.example.com" });
+		expect(g.resolveOrigin("https://app.example.com")).toBe("https://app.example.com");
+		expect(g.resolveOrigin("https://evil.com")).toBeNull();
+	});
+
+	it("resolveOrigin — array whitelist", () => {
+		const g = new CorsGuard({ origin: ["https://a.com", "https://b.com"] });
+		expect(g.resolveOrigin("https://a.com")).toBe("https://a.com");
+		expect(g.resolveOrigin("https://c.com")).toBeNull();
+	});
+
+	it("resolveOrigin — function resolver", () => {
+		const g = new CorsGuard({ origin: (o) => o.endsWith(".trusted.com") });
+		expect(g.resolveOrigin("https://sub.trusted.com")).toBe("https://sub.trusted.com");
+		expect(g.resolveOrigin("https://evil.com")).toBeNull();
+	});
+
+	it("applyHeaders — sets Access-Control-Allow-Origin", () => {
+		const g = new CorsGuard({ origin: "https://app.example.com", credentials: true });
+		const headers = new Headers();
+		g.applyHeaders(headers, "https://app.example.com");
+		expect(headers.get("Access-Control-Allow-Origin")).toBe("https://app.example.com");
+		expect(headers.get("Access-Control-Allow-Credentials")).toBe("true");
+		expect(headers.get("Vary")).toContain("Origin");
+	});
+
+	it("applyHeaders — skips disallowed origin", () => {
+		const g = new CorsGuard({ origin: "https://app.example.com" });
+		const headers = new Headers();
+		g.applyHeaders(headers, "https://evil.com");
+		expect(headers.get("Access-Control-Allow-Origin")).toBeNull();
+	});
+
+	it("applyPreflightHeaders — returns true and sets methods", () => {
+		const g = new CorsGuard({
+			origin: "https://app.example.com",
+			methods: ["GET", "POST"],
+			allowedHeaders: ["Content-Type", "Authorization"],
+			maxAge: 3600,
+		});
+		const headers = new Headers();
+		const allowed = g.applyPreflightHeaders(headers, "https://app.example.com");
+		expect(allowed).toBe(true);
+		expect(headers.get("Access-Control-Allow-Methods")).toBe("GET, POST");
+		expect(headers.get("Access-Control-Allow-Headers")).toBe("Content-Type, Authorization");
+		expect(headers.get("Access-Control-Max-Age")).toBe("3600");
+	});
+
+	it("middleware — handles OPTIONS preflight and returns 204", async () => {
+		const g = new CorsGuard({ origin: "https://app.example.com", methods: ["GET", "POST"] });
+		const app = new Hono();
+		app.use("/*", g.middleware());
+		app.get("/api", (c) => c.text("ok"));
+		const r = await app.request("http://x/api", {
+			method: "OPTIONS",
+			headers: {
+				Origin: "https://app.example.com",
+				"Access-Control-Request-Method": "POST",
+			},
+		});
+		expect(r.status).toBe(204);
+		expect(r.headers.get("Access-Control-Allow-Origin")).toBe("https://app.example.com");
+		expect(r.headers.get("Access-Control-Allow-Methods")).toContain("POST");
+	});
+
+	it("middleware — sets CORS headers on regular request", async () => {
+		const g = new CorsGuard({ origin: "*" });
+		const app = new Hono();
+		app.use("/*", g.middleware());
+		app.get("/", (c) => c.text("ok"));
+		const r = await app.request("http://x/", {
+			headers: { Origin: "https://any.com" },
+		});
+		expect(r.status).toBe(200);
+		expect(r.headers.get("Access-Control-Allow-Origin")).toBe("*");
+	});
+
+	it("middleware — returns 403 preflight for disallowed origin", async () => {
+		const g = new CorsGuard({ origin: "https://allowed.com" });
+		const app = new Hono();
+		app.use("/*", g.middleware());
+		app.get("/", (c) => c.text("ok"));
+		const r = await app.request("http://x/", {
+			method: "OPTIONS",
+			headers: {
+				Origin: "https://evil.com",
+				"Access-Control-Request-Method": "GET",
+			},
+		});
+		expect(r.status).toBe(403);
+	});
+});
+
 describe("ShieldService (combined middleware)", () => {
-	it("runs all configured guards", async () => {
+	it("runs all configured guards including CORS", async () => {
 		const svc = new ShieldService({
+			cors: { origin: "https://app.example.com", credentials: true },
 			csrf: { enabled: true, cookie: { secure: false } },
 			hsts: { maxAge: 60 },
 			csp: { directives: { defaultSrc: ["'self'"] } },
@@ -154,9 +256,13 @@ describe("ShieldService (combined middleware)", () => {
 		app.use("/*", svc.middleware());
 		app.get("/", (c) => c.text("ok"));
 		app.post("/submit", (c) => c.text("ok"));
-		// GET should set the cookie and security headers.
-		const r1 = await app.request("http://x/");
+		// GET with matching origin: CORS + security headers + CSRF cookie.
+		const r1 = await app.request("http://x/", {
+			headers: { Origin: "https://app.example.com" },
+		});
 		expect(r1.status).toBe(200);
+		expect(r1.headers.get("Access-Control-Allow-Origin")).toBe("https://app.example.com");
+		expect(r1.headers.get("Access-Control-Allow-Credentials")).toBe("true");
 		expect(r1.headers.get("X-Frame-Options")).toBe("DENY");
 		expect(r1.headers.get("X-Content-Type-Options")).toBe("nosniff");
 		expect(r1.headers.get("Strict-Transport-Security")).toBe("max-age=60");
@@ -169,5 +275,15 @@ describe("ShieldService (combined middleware)", () => {
 		// POST without CSRF should 403.
 		const r2 = await app.request("http://x/submit", { method: "POST" });
 		expect(r2.status).toBe(403);
+		// OPTIONS preflight should 204 (not CSRF 403).
+		const r3 = await app.request("http://x/submit", {
+			method: "OPTIONS",
+			headers: {
+				Origin: "https://app.example.com",
+				"Access-Control-Request-Method": "POST",
+			},
+		});
+		expect(r3.status).toBe(204);
+		expect(r3.headers.get("Access-Control-Allow-Origin")).toBe("https://app.example.com");
 	});
 });
