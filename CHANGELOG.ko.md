@@ -1,129 +1,82 @@
-# 변경 로그
-
-NexusTS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
-
-이 파일은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 형식을 따르며,
-[시맨틱 버전](https://semver.org/lang/ko/spec/v2.0.0.html)을 준수합니다.
-
-> English version: [`CHANGELOG.md`](./CHANGELOG.md)
-
----
-
-## [0.7.0] — 2026-06-22
-
-### 추가
-
-- `@nexusts/resilience` — 단일 DI singleton에 retry +
-  circuit breaker + bulkhead. 네 가지 백오프 전략(constant,
-  linear, exponential, exponential-jitter)을 가진 `retry()` 함수.
-  closed/open/half-open 상태 머신, rolling failure window,
-  threshold + `isFailure` predicate, `onStateChange` 훅을 가진
-  `CircuitBreaker` 클래스. FIFO 동시성 제한기와 fail-fast의
-  `rejectOnFull`을 가진 `Bulkhead` 클래스. `ResilienceService`가
-  `getOrCreateCircuit(name)` / `getOrCreateBulkhead(name)`
-  레지스트리를 노출하여 "stripe"용 단일 회로가 모든 코드 경로에서
-  공유되게 한다. `@Retry` / `@CircuitBreaker` / `@Bulkhead` /
-  `@Resilient` 메소드 데코레이터 (metadata-only; legacy decorator
-  tsconfig 사용자는 `applyResilience()`를 호출하여 수동 wrap).
-- `examples/33-resilience-calls` — primitive당 하나씩 세 라우트,
-  그리고 `tests/resilience/resilience.test.ts`의 테스트 (backoff,
-  상태 머신, FIFO 순서를 다루는 20개).
-- `docs/user-guide/resilience.md` + `.ko.md` — 사용자 가이드.
-- `docs/design/resilience.md` + `.ko.md` — 아키텍처 심층 문서
-  (상태 머신, FIFO 드레인, 데코레이터 메타데이터 디자인).
-
-### 참고
-
-- 새로운 런타임 의존성 없음 — 순수 TypeScript.
-- `@Retry` / `@CircuitBreaker` / `@Bulkhead` / `@Resilient`
-  데코레이터는 v0.7.0에서 **metadata-only**. 데코레이터 레벨에서의
-  즉시 wrapping은 v0.8에서 다른 Bun stage-3 데코레이터 개선과
-  함께 예정. v0.7에서 권장 패턴은 인라인: `svc.retry(() => ...)`,
-  `cb.execute(() => ...)`.
-
----
-
-## [0.6.9] — 2026-06-22
-
-### 추가
-
-- `@nexusts/graphql` — SDL-first GraphQL 엔드포인트
-  (`GraphQLService` + `GraphQLModule`). `POST /graphql`,
-  `GET /graphql?query=...`, `GET /graphql/schema`, 그리고
-  의존성 없는 in-bundle GraphiQL playground를 연결. resolver에
-  요청별 state를 주입하는 `context()` 팩토리. `@Resolver` /
-  `@Query` / `@Mutation` / `@Subscription` / `@Arg` 데코레이터
-  export (code-first SDL 합성은 v0.8에서 예정).
-- `examples/32-graphql-hello` — 최소 hello-world 예제, 그리고
-  `tests/graphql/graphql.test.ts` 테스트 15개.
-- `docs/user-guide/graphql.md` + `.ko.md` — 사용자 가이드.
-- `docs/design/graphql.md` + `.ko.md` — 아키텍처 심층 문서
-  (resolver 생명주기, 스키마 빌드, peer-dep 근거).
-
-### 참고
-
-- `graphql` (peer-dep)는 번들되지 **않는다**. 모듈 사용 전에
-  `bun add graphql` 설치. dep 없이 첫 사용 시 명확한 에러.
-- code-first 데코레이터 API는 **alpha**: 타입과 메타데이터는
-  연결되어 있지만 SDL 합성과 resolver-map 자동 attach는 v0.8 예정.
-
----
-
 ## [Unreleased]
 
 ### 추가
 
-- **End-to-end 검증 앱** `../blog-app/` (sibling repo) 추가. 실제
-  SQLite 데이터베이스에 실제 auth, 실제 CRUD, 실제 마크다운 렌더링으로
-  framework를 검증. 23개 endpoint 검증 스크립트
-  (`scripts/test-api.sh`) 포함.
-- `@nexusts/crypto`: standalone 헬퍼 함수 export —
-  `scryptHash()`, `scryptVerify()`, `hash()`, `verify()`. DI 컨테이너
-  밖에서 사용 가능 (CLI 스크립트, seeder, smoke test).
-- `@nexusts/drizzle`: `select<T>()` / `insert<T>(table)` /
-  `update<T>(table)` / `delete<T>(table)` 가 이제 generic.
-  `select(...).from(table).all()` 체인에서 완전한 타입 추론 제공.
-- **Build pipeline**: `tsc --emitDeclarationOnly` 로 `.d.ts` 파일
-  emit (best-effort; peer-deps와 cross-module 타입 resolution 실패는
-  로그만 남기고 build는 계속 성공).
-- **새 user-guide**: `docs/user-guide/common-pitfalls.md` +
-  `common-pitfalls.ko.md` — 처음 사용하는 사람들이 빠지는 10가지
-  함정과 해결책:
-  - `@Inject(X.TOKEN)` 이 동작 안 함 — `useExisting` 별칭 패턴
-  - 한 파일에 여러 controller 정의 시 404 라우트 누락
-  - `DrizzleService.client` 에 raw SQL 메서드 없음
-  - `No provider for "undefined"` 진단 트리
-  - Bun에서 SQLite init / migration 패턴
-  - `bun:sqlite` vs `better-sqlite3` 선택
-  - Bun 1.3.14 decorator + `private readonly` 호환성 이슈
-  - built-in auth 없을 때 cookie/session 패턴
-  - Custom error class → HTTP 상태 코드 매핑
-  - 마크다운 렌더링은 built-in이 아님
-- 기존 가이드 (`getting-started.md`, `dependency-injection.md`,
-  `controllers.md`, `drizzle.md`, `crypto.md`) 에 새 pitfalls doc으로의
-  cross-reference와 추가 팁 업데이트.
-- **새 분석**: `docs/analysis/wasp-comparison.md` +
-  `wasp-comparison.ko.md` — 2026년 6월 TypeScript-first spec
-  (`TS Spec`)으로의 전환을 발표한 [Wasp](https://wasp.sh)와 비교. 핵심
-  설계 차이를 강조: Wasp는 `main.wasp.ts` spec에서 React + Express +
-  Prisma 앱을 **생성하는 컴파일러**; NexusTS는 DI, decorator, module을
-  제공하는 **라이브러리**로 모든 파일을 직접 작성. 의사결정 프레임워크,
-  나란히 코드, 공유된 교훈 (둘 다 "no new language"로 수렴).
+- **Logger 사용자 가이드**: `docs/user-guide/logger.md` + `logger.ko.md` —
+  Logger 모듈의 Pino, pretty-print, request-scoped logging, transport 설정
+  가이드.
+- **CLI REPL 개선**:
+  - 배너에 `.help` 힌트 추가
+  - 버전을 package.json에서 동적으로 읽도록 개선 (`v0.7.4`)
+  - 버전 문자열 길이에 따라 자동 정렬 (어떤 버전이어도 표 깨짐 없음)
 
 ### 수정
 
-- `@nexusts/drizzle`: 이전 generic `T = unknown` 때문에
-  `db.select({...}).from(table).all()` 결과 타입이 monorepo 외부
-  consumer에서 `unknown` 이 됨. 명시적 generic + 개선된 `.d.ts`
-  emission으로 추론 복구.
-- `@nexusts/crypto`: `scryptHash` / `scryptVerify` 가 `HashService` 의
-  private 메서드로만 존재. CLI 스크립트와 seeder는 비밀번호 하나
-  해싱하려면 전체 class를 인스턴스화해야 했음. standalone 함수로 해결.
-- `Inertia`가 `package.json` `exports`에 `./inertia` subpath가 선언되지
-  않아 published package에서 import 불가했음.
-  `@nexusts/view` 에서 re-export 하는 방식으로 사용자 친화적으로 해결.
+- **CLI REPL preload 경로**: `../../drizzle/...` 상대경로를 npm 패키지명
+  (`@nexusts/drizzle` 등)으로 변경. npm 설치 환경에서도 `logger`, `db`,
+  `cfg`, `cache`, `events` 가 정상 주입됨.
+- **Schedule 핫리로드**: `ScheduleService` 가 `module.hot.dispose()` 핸들러를
+  등록하여 Bun `--hot` 리로드 시 모든 타이머를 정리 (크론 중복 실행 방지).
+- **`.d.ts` 생성 수정**: 11개 패키지의 타입 선언 실패 해결:
+  - `cache`, `limiter`, `session`: `../../drizzle/...` → `@nexusts/drizzle`
+  - `cli/init.ts`: `PlanEntry.mode`에 `as const` 추가
+  - `drizzle/drivers`: `loadMigrator` async 래퍼; `logger` 옵션 캐스트
+  - `sse`: `HonoSSEApi.sleep()` 반환타입 `Promise<unknown>`
+- **CI publish 워크플로우**: 대기시간 30s/10min → 3s/10s로 단순화
 
----
+## [0.7.3] — 2026-06-23
+
+### 추가
+
+- **Exception Filters**: `@UseFilters()`, `HttpException`, `ExceptionFilter`
+  인터페이스 — HTTP 에러를 캐치하여 응답 변환.
+- **Interceptors**: `@UseInterceptors()`, `LoggingInterceptor`,
+  `TimeoutInterceptor` — 파이프라인 인터셉션 (onion composition).
+- **HTTP Guards**: `@UseGuards()`, `AuthGuard`, `RolesGuard`,
+  `createHttpGuard()` — 선언적 요청 보호.
+- **Lifecycle Hooks**: `OnModuleInit`, `OnApplicationInit`,
+  `OnModuleDestroy`, `OnApplicationShutdown` — 정해진 순서로
+  startup/shutdown 실행.
+- **`@Global()` decorator**: 모듈을 전역 스코프로 표시 — import 없이
+  모든 모듈에서 provider 사용 가능.
+- **Router 통합 테스트**: `@Body("field")` 파라미터 추출, `@Param`/`@Query`/
+  `@Headers`, guards, filters, 응답 직렬화, DI 배선 등 17개 테스트.
+- **Application 생명주기 테스트**: 미들웨어 순서, bootstrap/shutdown,
+  idempotency 등 10개 테스트.
+- `@nexusts/drizzle`: `Entity` decorator + `generateMigrations()` /
+  `pushSchema()` export + Zod 스키마 생성 헬퍼.
+- **End-to-end 검증 앱** `../blog-app/` (sibling repo) 추가. 실제
+  SQLite 데이터베이스에 실제 auth, CRUD, 마크다운 렌더링 검증.
+  23개 endpoint 검증 스크립트 (`scripts/test-api.sh`) 포함.
+- `@nexusts/crypto`: standalone 헬퍼 함수 export —
+  `scryptHash()`, `scryptVerify()`, `hash()`, `verify()`.
+- `@nexusts/drizzle`: `select<T>()` / `insert<T>(table)` / `update<T>(table)` /
+  `delete<T>(table)` generic 지원 — `select(...).from(table).all()` 타입 추론.
+- **Build pipeline**: `tsc --emitDeclarationOnly` 로 `.d.ts` emit.
+- **새 user-guide**: `docs/user-guide/common-pitfalls.md` +
+  `common-pitfalls.ko.md` — 10가지 자주 하는 실수와 해결책.
+- **새 분석**: `docs/analysis/wasp-comparison.md` +
+  `wasp-comparison.ko.md` — Wasp와 비교 분석.
+
+### 수정
+
+- **Core framework 버그 (blog-app 개발 중 발견)**:
+  - `@Body("field")` 파라미터 추출 (router.ts)
+  - `listen()` 중복 시작 (bootstrap에서 server.start() 제거)
+  - 미들웨어 순서 (`ApplicationOptions.middleware[]` 라우트보다 먼저 등록)
+  - `require()` → static import (server.ts)
+- **CLI 템플릿**:
+  - 모든 import 경로 수정 (`@nexusts/core` → `../core/index.js`)
+  - `init.ts`/`new.ts`: package.json deps, DrizzleModule, StaticModule 조건부
+  - `make:crud`: `findOne(id)` → `findOne(eq(...))`, `DrizzleService` 주입
+  - `make-schedule.ts`: `scanForSchedulers` 제거
+  - `drizzle-dialect.ts`: bun-sqlite text timestamps, `defaultTs`/`defaultTsUpdate`
+- **Schedule 자동 스캔**: `ScheduleService.onApplicationInit()` 자동 시작;
+  `Application.bootstrap()` 가 `setScheduleScanner` hook으로 provider 스캔.
+- **Cron-parser next() 오프셋**: 5필드 표현식이 +1s가 아닌 +1m에서 시작;
+  `* * * * *`가 매초 실행되던 버그 수정.
+- `Inertia` published package에서 import 불가 — `package.json` `exports`에
+  `./inertia` subpath 추가.
 
 ## [0.6.8] — 2026-06-22
 
@@ -132,6 +85,8 @@ NexusTS의 모든 주요 변경 사항이 이 파일에 기록됩니다.
 - `examples/` 아래 27개 동작 예제 추가 — 모듈당 하나, 기본 MVC부터
   gRPC / tracing / request-scope까지. 각 예제는 자체 `README.md` 를
   가지며 `cd examples/NN-name && bun main.ts` 로 실행 가능.
+- `tests/examples/smoke.test.ts` — 각 예제를 실제 Bun 서브프로세스로
+  실행하고 "listening" 마커를 기다린 뒤 정상 종료를 확인하는 vitest
 - `tests/examples/smoke.test.ts` — 각 예제를 실제 Bun 서브프로세스로
   실행하고 "listening" 마커를 기다린 뒤 정상 종료를 확인하는 vitest
   슈트. 55개 테스트가 약 2초 안에 실행됨.
@@ -928,6 +883,7 @@ Feature-complete MVP. 프레임워크가 "v0.2 약속" 모듈을 모두 획득.
 
 ---
 
+[0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
 [0.4.0]: https://github.com/kabyeon/@nexusts/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/kabyeon/@nexusts/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/@nexusts/compare/v0.1.0...v0.2.0

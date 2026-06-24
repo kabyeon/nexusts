@@ -77,6 +77,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Logger user guide**: `docs/user-guide/logger.md` + `logger.ko.md` —
+  comprehensive guide for the Logger module with Pino, pretty-print,
+  request-scoped logging, and transport configuration.
+- **CLI REPL improvements**:
+  - `.help` hint added to the REPL banner
+  - Version now dynamically read from package.json (`v0.7.4`)
+  - Dynamic banner alignment (works with any version string length)
+
+### Fixed
+
+- **CLI REPL preload paths**: replaced brittle `../../drizzle/...`
+  relative paths with npm package names (`@nexusts/drizzle`, etc.)
+  so `logger`, `db`, `cfg`, `cache`, `events` are correctly
+  resolved in the published CLI package.
+- **Schedule hot-reload**: `ScheduleService` now registers a
+  `module.hot.dispose()` handler that clears all timers when Bun
+  reloads the module (prevents duplicate cron executions after
+  source changes with `--hot`).
+- **`.d.ts` generation**: fixed 11 packages whose type declarations
+  failed during `tsc --emitDeclarationOnly`:
+  - `cache`, `limiter`, `session`: relative `../../drizzle/...`
+    imports → `@nexusts/drizzle`
+  - `cli/init.ts`: `as const` for `PlanEntry.mode` literal type
+  - `drizzle/drivers`: `loadMigrator` now returns async functions;
+    `logger` option cast for drizzle-orm 0.45 type changes
+  - `sse`: `HonoSSEApi.sleep()` return type `Promise<unknown>`
+    matching Hono 4.12 API
+- **CI publish workflow**: simplified delays from 30s/10min to
+  3s/10s; removed separate batch/resume scripts
+
+## [0.7.3] — 2026-06-23
+
+### Added
+
+- **Exception Filters**: `@UseFilters()`, `HttpException`, `ExceptionFilter`
+  interface — catch and transform HTTP errors with full control over
+  the response shape.
+- **Interceptors**: `@UseInterceptors()`, `LoggingInterceptor`,
+  `TimeoutInterceptor` — pipeline interception with onion composition.
+- **HTTP Guards**: `@UseGuards()`, `AuthGuard`, `RolesGuard`,
+  `createHttpGuard()` — declarative request protection.
+- **Lifecycle Hooks**: `OnModuleInit`, `OnApplicationInit`,
+  `OnModuleDestroy`, `OnApplicationShutdown` — deterministic
+  startup/shutdown ordering.
+- **`@Global()` decorator**: mark a module as globally-scoped so its
+  providers are available in every module without explicit imports.
+- **Router integration tests**: 17 tests covering `@Body("field")`
+  param extraction, `@Param`/`@Query`/`@Headers`, guards, filters,
+  response serialization, and DI wiring.
+- **Application lifecycle tests**: 10 tests covering middleware
+  ordering, bootstrap/shutdown, and idempotency.
+- `@nexusts/drizzle`: `Entity` decorator + `generateMigrations()` /
+  `pushSchema()` exports + Zod schema creation helpers
+  (`createSelectSchema`/`InsertSchema`/`UpdateSchema`).
 - **End-to-end validation app** at `../blog-app/` (sibling repo) that
   exercises the framework against a real SQLite database with real auth,
   real CRUD, and real markdown rendering. Includes a 23-endpoint
@@ -89,48 +143,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `@nexusts/drizzle`: `select<T>()` / `insert<T>(table)` / `update<T>(table)` /
   `delete<T>(table)` are now generic so call sites get full type
   inference via `select(...).from(table).all()` chains.
-- **Build pipeline**: `.d.ts` files are now emitted via
-  `tsc --emitDeclarationOnly` (best-effort; peer-deps and cross-module
-  type-resolution failures are logged but don't fail the build).
 - **New user-guide**: `docs/user-guide/common-pitfalls.md` +
   `common-pitfalls.ko.md` — comprehensive debugging recipes for the
-  10 most common pitfalls first-time users hit:
-  - `@Inject(X.TOKEN)` not resolving — `useExisting` alias pattern
-  - Multiple controllers per file causing 404 routes
-  - `DrizzleService.client` not being a raw SQL handle
-  - `No provider for "undefined"` diagnostic tree
-  - SQLite init / migration patterns with Bun
-  - `bun:sqlite` vs `better-sqlite3` choice
-  - Bun 1.3.14 decorator + `private readonly` quirk
-  - Cookie/session pattern when no built-in auth
-  - Custom error class → HTTP status mapping
-  - Markdown rendering is not built-in
-- Existing guides (`getting-started.md`, `dependency-injection.md`,
-  `controllers.md`, `drizzle.md`, `crypto.md`) updated with cross-
-  references to the new pitfalls doc and additional tips.
+  10 most common pitfalls first-time users hit.
+- Existing guides updated with cross-references to the pitfalls doc.
 - **New analysis**: `docs/analysis/wasp-comparison.md` +
-  `wasp-comparison.ko.md` — comparison with [Wasp](https://wasp.sh),
-  which announced its transition from a custom DSL to TypeScript-first
-  spec (`TS Spec`) in June 2026. Highlights the fundamental design
-  difference: Wasp is a **compiler** that generates React + Express +
-  Prisma apps from a `main.wasp.ts` spec; NexusTS is a **library**
-  that gives you DI, decorators, and modules while you write every
-  file. Includes decision framework (when to choose which), side-by-
-  side code, and shared lessons (both converged on "no new language").
+  `wasp-comparison.ko.md` — comparison with [Wasp](https://wasp.sh).
 
 ### Fixed
 
-- `@nexusts/drizzle`: previous generic `T = unknown` made
-  `db.select({...}).from(table).all()` return type `unknown` in
-  monorepo-external consumers. The new explicit generic + better
-  `.d.ts` emission restore inference.
-- `@nexusts/crypto`: `scryptHash` / `scryptVerify` were only
-  available as private methods on `HashService`. CLI scripts and
-  seeders had to instantiate the full class to hash a single
-  password. Standalone functions fix this.
-- `Inertia` was unreachable from the published package because the
-  `./inertia` subpath was not declared in `package.json` `exports`.
-  Re-exporting from `@nexusts/view` is the user-friendly fix.
+- **Core framework bugs found via blog app**:
+  - `@Body("field")` param extraction (router.ts: added `param.name`
+    check in parsed branch)
+  - `listen()` double-start (bootstrap no longer calls `server.start()`)
+  - Middleware ordering (`ApplicationOptions.middleware[]` registers
+    before routes)
+  - `require()` → static import for `requestScopeMiddleware` (server.ts)
+- **CLI templates**:
+  - All import paths fixed (`@nexusts/core` → `../core/index.js`)
+  - `init.ts`/`new.ts`: package.json deps, DrizzleModule import,
+    StaticModule conditional, home.controller.ts JSON response
+  - `make:crud`: `findOne(id)` → `findOne(eq(...))`, `DrizzleService`
+    injection, `snake` context variable
+  - `make-schedule.ts`: removed manual `scanForSchedulers`
+  - `drizzle-dialect.ts`: bun-sqlite text timestamps, `defaultTs`/
+    `defaultTsUpdate` for all dialects
+- **Schedule auto-scan**: `ScheduleService.onApplicationInit()`
+  auto-starts; `Application.bootstrap()` calls `scanProviderForSchedules`
+  via global `setScheduleScanner` hook.
+- **Cron-parser next() offset**: 5-field expressions started from +1s
+  instead of +1m, causing `* * * * *` to fire every second.
+- `@nexusts/resilience` decorators: metadata-only pattern (no
+  `descriptor.value` reads in decorator body).
+- `Inertia` was unreachable from the published package — missing
+  `./inertia` subpath in `package.json` `exports`.
 
 ---
 
@@ -1249,6 +1295,7 @@ Initial release. **feature-complete MVP core.**
 
 ---
 
+[0.7.3]: https://github.com/kabyeon/nexusts/compare/v0.7.0...v0.7.3
 [0.6.2]: https://github.com/kabyeon/@nexusts/compare/v0.6.1...v0.6.2
 [0.3.0]: https://github.com/kabyeon/@nexusts/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/kabyeon/@nexusts/compare/v0.1.0...v0.2.0
