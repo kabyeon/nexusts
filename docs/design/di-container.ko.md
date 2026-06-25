@@ -8,7 +8,7 @@
 DI 컨테이너는 NexusTS의 핵심입니다. 다음을 담당합니다.
 
 - 프로바이더 등록 (클래스, 값, 팩토리, 별칭)
-- `reflect-metadata`를 통한 의존성 재귀 해석
+- `reflect-metadata` 또는 내부 Map을 통한 의존성 재귀 해석 (듀얼모드)
 - 인스턴스 라이프사이클 관리 (기본값: singleton)
 - 의미 있는 에러로 순환 의존성 감지
 - 모듈 단위 프로바이더 스코핑 (모듈은 캡슐화 단위)
@@ -112,14 +112,40 @@ resolve(token):
 
 `find_provider`는 컨테이너 체인을 self → parent → … → `ApplicationContainer`(루트) 순서로 탐색합니다. 이것이 모듈 간 주입이 동작하는 방식입니다 — export된 토큰은 부모에 살고, 자식은 체인을 통해 요청합니다.
 
-### 생성자 주입
+### 필드 인젝션 (표준 데코레이터 모드, v0.9+)
 
-컨테이너는 생성자 파라미터 타입을 읽기 위해 두 가지 전략을 사용합니다.
+표준 데코레이터 모드(TC39)에서는 컨테이너가 필드 인젝션을 기본 패턴으로 지원합니다:
 
-1. 각 파라미터의 명시적 `@Inject(Token)` (항상 사용 가능).
-2. `design:paramtypes` 메타데이터 (`tsc`로 빌드하고 `emitDecoratorMetadata` 플래그를 켠 경우에만 사용 가능).
+```ts
+@Injectable()
+class UserService {
+  @Inject('DB') declare db: DrizzleService;
+  @Inject(Logger) declare logger: Logger;
+}
+```
 
-Bun의 네이티브 TypeScript transformer는 `design:paramtypes`를 **emit하지 않으므로**, NexusTS는 명시적 `@Inject(...)` 파라미터 데코레이터를 표준으로 채택했습니다. bare-type 형태(`constructor(private svc: UserService)`)는 `tsc` 컴파일 출력으로 실행할 때 지원됩니다.
+컨테이너의 `instantiate()` 메서드는 먼저 필드 인젝션을 확인합니다:
+
+```ts
+const fieldInjections = getFieldInjections(cls);
+if (hasFieldInjections) {
+  // 인자 없이 인스턴스 생성 후 필드 주입
+  const instance = new cls();
+  for (const [fieldName, token] of Object.entries(fieldInjections)) {
+    instance[fieldName] = this.resolve(token);
+  }
+  return instance;
+}
+// 폴백: 레거시 생성자 인젝션
+const params = paramTypes.map(t => this.resolve(t));
+return new cls(...params);
+```
+
+`@Inject(token)` 필드 데코레이터는 `Class.__nexus_meta__`(표준 모드) 또는
+`safeDefineMeta`(레거시 모드)에 인젝션 메타데이터를 저장합니다.
+`getFieldInjections()` 헬퍼는 두 저장소를 모두 읽습니다.
+
+### 생성자 인젝션 (레거시)
 
 ### 순환 의존성 감지
 
