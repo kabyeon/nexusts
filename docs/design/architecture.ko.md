@@ -208,12 +208,92 @@ MVP를 집중적이고 출시 가능하게 유지하기 위해 다음은 이후 
 
 ---
 
-## 10. 설계 원칙 요약
+## 11. 표준 데코레이터 아키텍처 (v0.9+)
 
-| 원칙 | 구현 |
-| --------- | -------------- |
-| 데코레이터는 **옵트인 슈거 레이어** | 모든 데코레이터를 제거해도 raw 라우터 API를 통해 동작하는 앱이 남습니다. |
-| 라우터는 매칭의 **유일한 진실 소스** | 데코레이터 기반 라우트도 같은 라우터를 통해 등록됩니다. |
-| DI 그래프는 **시작 시점에 즉시 구성** | 실패는 요청 시점이 아니라 부팅 시점에 드러납니다. |
-| 모든 비동기 경계는 **Worker에서 await 가능** | `setTimeout` 기반 핫 패스 없음, Node 전용 API 없음. |
-| 공개 표면은 **작게 유지** | 실험적인 것은 `@nexusts/<x>` 서브 경로 뒤로. |
+NexusTS v0.9는 레거시 TypeScript 데코레이터(`experimentalDecorators: true`)에서 **TC39 표준 ES 데코레이터**로 마이그레이션했습니다.
+
+### 듀얼모드 접근법
+
+모든 데코레이터 팩토리는 두 가지 호출 규약을 지원합니다:
+
+```ts
+// 표준 모드 (TC39): (target, context) 받음
+@Module({...})  →  Module(options)(target, { kind: "class", metadata })
+
+// 레거시 모드: (target) 받음
+@Module({...})  →  Module(options)(target)
+```
+
+데코레이터는 `context?.kind`를 확인하여 모드를 감지합니다:
+
+```ts
+export function Module(options: ModuleOptions = {}): any {
+  return function (this: any, target: any, context?: any): void {
+    if (context?.kind === "class" && context?.metadata) {
+      // 표준 모드 — context.metadata에 저장
+      context.metadata[METADATA_KEY.MODULE] = options;
+      initNexusMeta(target, context.metadata);
+      return;
+    }
+    // 레거시 모드 — safeDefineMeta 사용
+    safeDefineMeta(METADATA_KEY.MODULE, options, target);
+  };
+}
+```
+
+### 메타데이터 저장소
+
+| 저장소 | 사용 시기 | 필요 조건 |
+|---------|-----------|----------|
+| `Class.__nexus_meta__` | 표준 데코레이터 모드 | 추가 필요 없음 |
+| `Reflect.defineMetadata` | 레거시 모드 + reflect-metadata 로드됨 | `import "reflect-metadata"` |
+| 내부 Map (`fallbackStore`) | 레거시 모드 + reflect-metadata 미로드 | framework 내장 |
+
+### 필드 인젝션
+
+DI 컨테이너는 두 가지 인젝션 패턴을 지원합니다:
+
+```ts
+// 표준 모드 (v0.9+): 필드 인젝션
+@Injectable()
+class UserService {
+  @Inject('DB') declare db: DrizzleLike;
+}
+
+// 레거시 모드: 생성자 인젝션
+@Injectable()
+class UserService {
+  constructor(@Inject('DB') private db: DrizzleLike) {}
+}
+```
+
+컨테이너가 필드 인젝션을 감지하면(`getFieldInjections()`가 비어있지 않음), `new Class()`(인자 없음)로 인스턴스를 생성한 후 필드를 할당합니다. 그렇지 않으면 `design:paramtypes` 또는 `@Inject` 파라미터 메타데이터를 통한 생성자 해석으로 폴백합니다.
+
+### InputValue 체인
+
+`inputValue()` 헬퍼는 요청 데이터 접근을 위한 파라미터 데코레이터를 대체합니다:
+
+```ts
+import { inputValue } from '@nexusts/core';
+
+const id   = inputValue(ctx.req.param('id')).number().required().value();
+const name = inputValue(ctx.req.query('name')).trim().max(100).value();
+```
+
+### 라우터 자동 감지
+
+라우터는 마운트 시점에 표준 데코레이터 모드를 감지합니다:
+
+```ts
+const isStandardMode = paramMeta.length === 0;
+if (isStandardMode) {
+  attachInputHelper(c);
+  result = await finalHandler.call(instance, c);
+}
+```
+
+컨트롤러 메서드에 `@Param`/`@Body` 등의 파라미터 데코레이터가 없으면, 라우터는 Hono Context를 직접 전달하고 `CtxInput` 헬퍼를 연결합니다.
+
+### 마이그레이션 경로
+
+전체 마이그레이션 가이드는 [`standard-decorators-migration.ko.md`](./standard-decorators-migration.ko.md)를 참조하세요.

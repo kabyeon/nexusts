@@ -1,6 +1,7 @@
 # 시작하기
 
 > English version: [`getting-started.md`](./getting-started.md)
+> Current version: **v0.9**
 
 이 가이드는 빈 디렉터리에서 약 5분 안에 실행되는 NexusTS 앱까지 안내합니다.
 

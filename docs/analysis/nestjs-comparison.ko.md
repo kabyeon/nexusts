@@ -1,7 +1,7 @@
 # NexusTS vs NestJS — 기능 격차 분석
 
 > English version: [`nestjs-comparison.md`](./nestjs-comparison.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**
+> 분석 일자: 2026-06-25 · 기준: NexusTS **v0.9.0**
 
 이 문서는 NexusTS v0.8.4와 [NestJS](https://nestjs.com)를 비교하여
 프로덕션 등급 백엔드 기능이 **있음**, **부분적**, **없음** 상태를
