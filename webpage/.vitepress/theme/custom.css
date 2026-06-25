@@ -36,21 +36,3 @@
     font-size: 4rem;
   }
 }
-
-/* ── Locale switcher ── */
-.VPNavBarTranslations .title {
-  cursor: pointer !important;
-  color: var(--vp-c-brand-1) !important;
-  font-weight: 600 !important;
-  padding: 0 24px 0 12px;
-  line-height: 32px;
-  font-size: 14px;
-}
-
-.VPNavBarTranslations .title:hover {
-  color: var(--vp-c-brand-2) !important;
-}
-
-.VPNavBarTranslations .items {
-  padding: 4px 0;
-}
