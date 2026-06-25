@@ -9,9 +9,9 @@
 [![CI (Workers)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml)
 [![Drizzle Dialects](https://github.com/nexus-ts/nexusts/actions/workflows/ci-drizzle.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-drizzle.yml)
 
-**Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance.
+**Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance × TC39 standard ES decorators.
 
-> **v0.8.4 — Inertia v3 scaffold + CLI validation.** The
+> **v0.9.0 — Standard decorator migration.** The
 > framework now ships **32 independent modules**. Tier 1 and Tier 2
 > gaps from the NestJS / AdonisJS gap analyses are fully closed.
 > v0.8 adds Inertia React/Vue SSR scaffold (`nx init`/`nx new`),
@@ -21,7 +21,7 @@
 
 ---
 
-## What's in v0.8
+## What's in v0.9
 
 The framework ships **32 independent modules** — every one is
 its own bundle entry point, so you install only what you use. Tier 1
@@ -83,6 +83,7 @@ for the detailed v0.8 release notes.
 | Cloudflare Workers / Edge        |   △    |   ❌   |   ✅   |    ✅     |
 | MVC + Service + Repository       |   △    |   ✅   |   ❌   |    ✅     |
 | Class decorators (Nest style)    |   ✅   |   ❌   |   ❌   |    ✅     |
+| **TC39 standard ES decorators** (no experimentalDecorators, no reflect-metadata) | △ | ❌ | ❌ | **✅** |
 | Adonis-style router              |   ❌   |   ✅   |   ❌   |    ✅     |
 | Functional handler (Hono style)  |   △    |   ❌   |   ✅   |    ✅     |
 | Zod validation pipeline          |   △    |   ✅   |   ❌   |    ✅     |
@@ -96,6 +97,60 @@ for the detailed v0.8 release notes.
 | **First-party retry / circuit / bulkhead** |   △   |   ❌   |   ❌   |    ✅     |
 | **First-party gRPC server + client** |   ✅   |   ❌   |   ❌   |    ✅     |
 | **Inertia.js v3 server-side**    |   ❌   |   ✅   |   ❌   |    ✅     |
+
+---
+
+## Standard decorators (v0.9+)
+
+NexusTS v0.9 migrates from legacy TypeScript decorators (`experimentalDecorators: true`) to **TC39 standard ES decorators**. This means:
+
+- **No `reflect-metadata` dependency** — saves ~16KB in your bundle
+- **No `experimentalDecorators` tsconfig flag** — works with Bun's defaults
+- **Field injection** instead of constructor injection — `@Inject(Token) declare field: Type`
+- **`ctx.req.*` methods** instead of `@Param`/`@Body`/`@Query` parameter decorators
+- **Backward compatible** — legacy decorator mode (`@Body()`, constructor `@Inject`) continues to work
+
+### Before (legacy decorators)
+
+```ts
+@Controller('/users')
+export class UserController {
+  constructor(@Inject(UserService) private users: UserService) {}
+
+  @Get('/:id')
+  show(@Param('id') id: string) {
+    return this.users.findById(Number(id));
+  }
+
+  @Post('/')
+  create(@Body() body: CreateUserDto) {
+    return this.users.create(body);
+  }
+}
+```
+
+### After (standard decorators)
+
+```ts
+@Controller('/users')
+export class UserController {
+  @Inject(UserService) declare users: UserService;
+
+  @Get('/:id')
+  show(ctx: Context) {
+    const id = ctx.req.param('id');
+    return this.users.findById(Number(id));
+  }
+
+  @Post('/')
+  async create(ctx: Context) {
+    const body = await ctx.req.json() as CreateUserDto;
+    return this.users.create(body);
+  }
+}
+```
+
+See the [migration guide](./docs/design/standard-decorators-migration.md) for details.
 
 ---
 
@@ -118,7 +173,7 @@ npx create-nexusts my-app
 ### Manual setup in an existing project
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core zod hono
 npx @nexusts/core init
 ```
 
@@ -210,7 +265,6 @@ export class AppModule {}
 
 ```ts
 // app/main.ts
-import 'reflect-metadata';
 import { Application } from '@nexusts/core';
 import { AppModule } from './app.module.js';
 
@@ -241,7 +295,7 @@ import { users } from '../../db/schema.js';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(DrizzleService.TOKEN) private db: DrizzleService) {}
+  @Inject(DrizzleService.TOKEN) declare db: DrizzleService;
 
   findAll() { return this.db.select().from(users).all(); }
   findById(id: number) { return this.db.select().from(users).where(eq(users.id, id)).get(); }
@@ -254,8 +308,9 @@ export class UserService {
 ```ts
 // app/modules/user/user.controller.ts
 import { z } from 'zod';
-import { Body, Controller, Delete, Get, Inject, Param, Post, Validate } from '@nexusts/core';
+import { Controller, Delete, Get, Inject, Post } from '@nexusts/core';
 import { UserService } from './user.service.js';
+import type { Context } from 'hono';
 
 const CreateUserSchema = z.object({
   email: z.string().email(),
@@ -263,12 +318,21 @@ const CreateUserSchema = z.object({
 
 @Controller('/users')
 export class UserController {
-  constructor(@Inject(UserService) private users: UserService) {}
+  @Inject(UserService) declare users: UserService;
 
   @Get('/')        async index() { return this.users.findAll(); }
-  @Get('/:id')     async show(@Param('id') id: string) { return this.users.findById(Number(id)); }
-  @Post('/')       @Validate({ body: CreateUserSchema }) async create(@Body() body: z.infer<typeof CreateUserSchema>) { return this.users.create(body.email); }
-  @Delete('/:id')  async destroy(@Param('id') id: string) { /* ... */ }
+  @Get('/:id')     async show(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    return this.users.findById(id);
+  }
+  @Post('/')       async create(ctx: Context) {
+    const body = CreateUserSchema.parse(await ctx.req.json());
+    return this.users.create(body.email);
+  }
+  @Delete('/:id')  async destroy(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    // ...
+  }
 }
 ```
 
@@ -331,13 +395,26 @@ full Drizzle integration guide.
 ```ts
 @Controller('/users')
 class UserController {
-  constructor(@Inject(UserService) private users: UserService) {}
+  @Inject(UserService) declare users: UserService;
 
-  @Get('/')        list() {}
-  @Get('/:id')     show(@Param('id') id: string) {}
-  @Post('/')       create(@Body() body: CreateUserDto) {}
-  @Put('/:id')     update(@Param('id') id: string, @Body() body: UpdateUserDto) {}
-  @Delete('/:id')  destroy(@Param('id') id: string) {}
+  @Get('/')        async list(ctx: Context) { return this.users.findAll(); }
+  @Get('/:id')     async show(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    return this.users.findById(id);
+  }
+  @Post('/')       async create(ctx: Context) {
+    const body = await ctx.req.json();
+    return this.users.create(body);
+  }
+  @Put('/:id')     async update(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    const body = await ctx.req.json();
+    return this.users.update(id, body);
+  }
+  @Delete('/:id')  async destroy(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    return this.users.delete(id);
+  }
 }
 ```
 
@@ -362,23 +439,41 @@ app.server.router.raw('POST', '/webhooks/stripe', async (c) => {
 
 ---
 
-## Parameter decorators
+## Parameter decorators *(Legacy — v0.8 and earlier)*
 
-| Decorator    | Reads                                         |
-| ------------ | --------------------------------------------- |
-| `@Body(key?)`| Parsed request body (JSON / form / multipart) |
-| `@Query(k?)` | URL query string                              |
-| `@Param(k?)` | Path parameters                               |
-| `@Headers(k?)`| Request headers                              |
-| `@Req()` / `@Ctx()` | Hono context                        |
-| `@Res()`     | Hono response                                 |
-| `@Next()`    | next() callback (for middleware-style)       |
-| `@User()`    | Authenticated user (set by auth middleware)   |
-| `@Session()`  | Cookie session (set by sessionMiddleware)    |
+These classic NestJS-style parameter decorators continue to work in legacy mode (`experimentalDecorators: true`).
 
-When a parameter has no key argument (e.g. `@Body()`), the full parsed
-object is injected. With a key (e.g. `@Param('id')`), only that property
-is injected.
+| Decorator    | Reads                                         | Standard replacement |
+| ------------ | --------------------------------------------- | --------------------- |
+| `@Body(key?)`| Parsed request body (JSON / form / multipart) | `await ctx.req.json()` |
+| `@Query(k?)` | URL query string                              | `ctx.req.query(k)` |
+| `@Param(k?)` | Path parameters                               | `ctx.req.param(k)` |
+| `@Headers(k?)`| Request headers                              | `ctx.req.header(k)` |
+| `@Req()` / `@Ctx()` | Hono context                        | `ctx` parameter directly |
+| `@Res()`     | Hono response                                 | `ctx.res` |
+| `@Next()`    | next() callback (for middleware-style)       | N/A |
+| `@User()`    | Authenticated user (set by auth middleware)   | `ctx.var.user` |
+| `@Session()`  | Cookie session (set by sessionMiddleware)    | `ctx.var.session` |
+
+With standard decorators, the controller method receives `ctx: Context` (Hono context) directly and accesses request data through it:
+
+```ts
+// Standard decorator mode (v0.9+)
+@Get('/:id')
+show(ctx: Context) {
+  const id   = ctx.req.param('id');       // was @Param('id')
+  const name = ctx.req.query('name');     // was @Query('name')
+  const body = await ctx.req.json();      // was @Body()
+}
+```
+
+For input sanitization, wrap the value with `inputValue()`:
+
+```ts
+import { inputValue } from '@nexusts/core';
+
+const id = inputValue(ctx.req.param('id')).number().required().value();
+```
 
 ---
 
@@ -409,19 +504,19 @@ Failed validation returns a 400 with details:
 
 ## Dependency injection
 
-NestJS-style constructor injection via the `@Inject(Token)` parameter
-decorator. Use `@Injectable()` on services and repositories, and the
-container resolves the dependency graph automatically.
+NexusTS supports two DI patterns:
+
+### 1. Field injection *(standard decorators, v0.9+)*
 
 ```ts
 @Injectable()
 class UserService {
-  constructor(@Inject('DB') private db: DrizzleLike) {}
+  @Inject('DB') declare db: DrizzleLike;
 }
 
 @Injectable()
 class UserRepository {
-  constructor(@Inject('DB') private db: DrizzleLike) {}
+  @Inject('DB') declare db: DrizzleLike;
 }
 
 @Module({
@@ -435,10 +530,20 @@ class UserRepository {
 class UserModule {}
 ```
 
-> **Why `@Inject(Token)`?** Bun's native TypeScript transformer does not
-> emit `design:paramtypes` metadata. The framework falls back to
-> explicit `@Inject()` tokens for portability. If you build with `tsc`
-> first and run with `node` or `bun src/...`, the bare-type form works.
+The `@Inject(Token) declare field: Type` pattern works with TC39 standard decorators — no `experimentalDecorators` or `reflect-metadata` required.
+
+### 2. Constructor injection *(legacy, v0.8 and earlier)*
+
+```ts
+@Injectable()
+class UserService {
+  constructor(@Inject('DB') private db: DrizzleLike) {}
+}
+```
+
+Constructor injection requires `experimentalDecorators: true` and an explicit `@Inject()` token for each parameter (Bun's native TS transformer doesn't emit `design:paramtypes`).
+
+> **Note:** If you build with `tsc` first and run with `node`, you can omit `@Inject()` when the type is a class — `design:paramtypes` is emitted by `tsc`. With Bun's native transformer, always use explicit `@Inject(Token)` or field injection.
 
 ---
 
@@ -459,7 +564,7 @@ import {
 class AppModule {}
 
 class OrderService {
-  constructor(@Inject(ResilienceService.TOKEN) private r: ResilienceService) {}
+  @Inject(ResilienceService.TOKEN) declare r: ResilienceService;
 
   // Plain-function retry. 3 attempts, exponential-jitter backoff.
   charge(order: Order) {
@@ -592,7 +697,7 @@ import { WebSocketService, WebSocketGateway, OnWebSocketMessage, OnWebSocketOpen
 @Injectable()
 @WebSocketGateway('/chat')
 class ChatGateway {
-  constructor(@Inject(WebSocketService) private ws: WebSocketService) {}
+  @Inject(WebSocketService) declare ws: WebSocketService;
 
   @OnWebSocketOpen() onOpen(socket: any) { /* ... */ }
 
@@ -664,7 +769,7 @@ const app = new Application(AppModule, {
 ```ts
 @Controller('/users')
 class UserController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+  @Inject(Inertia.TOKEN) declare inertia: Inertia;
 
   @Get('/')
   index() {
@@ -796,7 +901,8 @@ class UserController {
   constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
 
   @Post('/')
-  async store(@Body() input: Record<string, any>) {
+  async store(ctx: Context) {
+    const input = await ctx.req.json() as Record<string, any>;
     const form = this.inertia.form('Users/Create');
     const result = UserSchema.safeParse(input);
 
@@ -1032,6 +1138,7 @@ v1.0, only major bumps will.
 - **v0.8.2** (2026-06-24) — gRPC streaming v2: `@GrpcServerStream`, `@GrpcClientStream`, `@GrpcBidiStream`. Multi-runtime CI (Bun + Node.js 22 + Cloudflare Workers + Drizzle dialects). HTTP benchmark suite with auto-regression check.
 - **v0.8.3** (2026-06-25) — Static analysis CI (Biome lint + tsc typecheck). **32 modules**: `@nexusts/feature-flag` (canary / A–B testing, rollout %, allowlist/denylist), `@nexusts/cache` Redis backend, `@nexusts/drizzle` seeding `Factory<T>`.
 - **v0.8.4** (2026-06-25) — Inertia v3 scaffold (React/Vue SSR with `nx init`/`nx new`), CLI input validation & `--no-interaction` fix, `InertiaConfig.scripts` for client script injection, scaffold deduplication to `scaffold.ts`. `@inertiajs/react`/`@inertiajs/vue3` `^3.0.0`.
+- **v0.9.0** (2026-06-25) — **Standard decorator migration.** Migrate from legacy `experimentalDecorators` to TC39 standard ES decorators. Remove `reflect-metadata` dependency (~16KB savings). Field injection (`@Inject(Token) declare field: Type`) instead of constructor injection. `ctx.req.*` methods instead of `@Param`/`@Body`/`@Query` parameter decorators. Dual-mode backward compatibility with legacy decorator code. See [migration guide](./docs/design/standard-decorators-migration.md).
 
 ### Planned
 
@@ -1057,7 +1164,6 @@ reproduced at install time via `bun install` (and `npm install`).
 Notable runtime dependencies:
 
 - **Hono** — MIT (web framework)
-- **reflect-metadata** — Apache-2.0
 - **Zod** — MIT (schema validation)
 - **Rendu** — MIT (template engine)
 

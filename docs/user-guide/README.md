@@ -64,10 +64,8 @@ If you're new to NexusTS, read in this order:
 
 - All examples use **Bun** as the default runtime. Node and Cloudflare
   notes are called out explicitly when relevant.
-- Code samples assume `import 'reflect-metadata'` is included once at the
-  application entry point.
-- TypeScript decorators require `experimentalDecorators: true` in
-  `tsconfig.json` (and `emitDecoratorMetadata: true` if you want bare-type
-  constructor injection).
+- Code samples use **standard decorator mode** (field injection,
+  `ctx.req.*` methods) by default. Legacy examples are marked
+  `(Legacy)` and require `experimentalDecorators: true`.
 - Imports use the public entry point `@nexusts/core` unless the example
   intentionally demonstrates a deep import.

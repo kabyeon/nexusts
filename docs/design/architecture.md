@@ -312,12 +312,103 @@ cache state through any Drizzle-compatible database.
 
 ---
 
-## 11. Design principles · 설계 원칙 요약
+## 11. Standard decorator architecture (v0.9+)
 
-| Principle | Implementation |
-| --------- | -------------- |
-| Decorators are an **opt-in sugar layer** | Removing all decorators still leaves a working app via the raw router API. |
-| The router is **the single source of truth** for matching | Decorator-driven routes register through the same router. |
-| The DI graph is **constructed eagerly** at startup | Failures surface at boot, not at request time. |
-| Every async boundary is **await-able in a Worker** | No `setTimeout`-driven hot paths; no Node-only APIs. |
-| Public surface stays **small** | Anything experimental is behind a `@nexusts/<x>` sub-path. |
+NexusTS v0.9 migrated from legacy TypeScript decorators (`experimentalDecorators: true`) to **TC39 standard ES decorators**. This section explains the architecture.
+
+### Dual-mode approach
+
+Every decorator factory in the framework supports TWO calling conventions:
+
+```ts
+// Standard mode (TC39): receives (target, context)
+@Module({...})  →  Module(options)(target, { kind: "class", metadata })
+
+// Legacy mode: receives (target)
+@Module({...})  →  Module(options)(target)
+```
+
+The decorator detects which mode it's in by checking `context?.kind`:
+
+```ts
+export function Module(options: ModuleOptions = {}): any {
+  return function (this: any, target: any, context?: any): void {
+    if (context?.kind === "class" && context?.metadata) {
+      // Standard mode — store on context.metadata
+      context.metadata[METADATA_KEY.MODULE] = options;
+      // Copy to Class.__nexus_meta__ (Bun doesn't assign Symbol.metadata)
+      initNexusMeta(target, context.metadata);
+      return;
+    }
+    // Legacy mode — use safeDefineMeta (reflect-metadata or Map fallback)
+    safeDefineMeta(METADATA_KEY.MODULE, options, target);
+  };
+}
+```
+
+### Metadata storage
+
+| Storage | Used when | Requires |
+|---------|-----------|----------|
+| `Class.__nexus_meta__` | Standard decorator mode | Nothing extra |
+| `Reflect.defineMetadata` | Legacy mode + reflect-metadata loaded | `import "reflect-metadata"` |
+| Internal Map (`fallbackStore`) | Legacy mode + reflect-metadata NOT loaded | Nothing (framework built-in) |
+
+### Field injection
+
+The DI container supports TWO injection patterns:
+
+```ts
+// Standard mode (v0.9+): field injection
+@Injectable()
+class UserService {
+  @Inject('DB') declare db: DrizzleLike;
+}
+
+// Legacy mode: constructor injection
+@Injectable()
+class UserService {
+  constructor(@Inject('DB') private db: DrizzleLike) {}
+}
+```
+
+When the container detects field injection (`getFieldInjections()` returns
+non-empty), it creates the instance with `new Class()` (no args) and then
+assigns injected fields. Otherwise it falls back to constructor resolution
+via `design:paramtypes` or `@Inject` parameter metadata.
+
+### InputValue chain
+
+The `inputValue()` helper replaces parameter decorators for request data
+access:
+
+```ts
+import { inputValue } from '@nexusts/core';
+
+const id   = inputValue(ctx.req.param('id')).number().required().value();
+const name = inputValue(ctx.req.query('name')).trim().max(100).value();
+```
+
+### Router auto-detection
+
+The router detects standard decorator mode at mount time:
+
+```ts
+const isStandardMode = paramMeta.length === 0;
+if (isStandardMode) {
+  attachInputHelper(c);
+  result = await finalHandler.call(instance, c);
+} else {
+  const args = await this.buildArgs(c, paramMeta, validation);
+  result = await finalHandler.call(instance, ...args);
+}
+```
+
+When a controller method has NO `@Param`/`@Body`/etc. parameter decorators,
+the router passes the Hono Context directly and attaches the `CtxInput`
+helper for convenient access to `ctx.req.*`, `ctx.uploadedFile()`, etc.
+
+### Migration path
+
+See the [migration guide](./standard-decorators-migration.md) for the
+complete breakdown of which files changed and how to update existing code.

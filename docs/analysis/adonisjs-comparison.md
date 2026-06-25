@@ -1,7 +1,7 @@
 # NexusTS vs AdonisJS — Feature Gap Analysis
 
 > 한국어 버전: [`adonisjs-comparison.ko.md`](./adonisjs-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**
+> 분석 일자: 2026-06-25 · 기준: NexusTS **v0.9.0**
 
 This document compares NexusTS v0.8.4 against [AdonisJS v6](https://adonisjs.com)
 to identify which AdonisJS-style "batteries" (convention-driven,
@@ -20,13 +20,13 @@ covers every battery AdonisJS ships — and then some.
 
 ---
 
-## 1. Summary table (v0.8.4)
+## 1. Summary table (v0.9.0)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | AdonisJS | NexusTS v0.7.0 | Notes |
+| Category | AdonisJS | NexusTS v0.9.0 | Notes |
 |----------|----------|--------------|-------|
-| HTTP server | ✅ Custom (Node & Workers) | ✅ Hono (Bun / Node / Workers) | NexusTS uses Hono as the underlying server |
+| **Standard decorators** | ❌ experimentalDecorators only | ✅ **TC39 standard ES decorators** | No `experimentalDecorators`, no `reflect-metadata`. Dual-mode legacy fallback. |
 | Routing | ✅ Route groups, resources, subdomains | ✅ Class decorators + functional | Three styles: Nest, Adonis, Functional |
 | Controllers | ✅ "thin" (Adonis convention) | ✅ "fat" (Nest-style with DI) | Both work; pick your style |
 | Middleware | ✅ Class-based, ordered | ✅ Hono middleware (typed) | `app.use('*', mw)` |

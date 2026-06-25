@@ -26,18 +26,17 @@ Optional, depending on your target runtime:
 In a new project:
 
 ```bash
-bun add @nexusts/core reflect-metadata zod hono
+bun add @nexusts/core zod hono
 bun add -d @types/bun typescript vitest
 
-# Pick the modules you need. v0.4 ships 22 independent modules.
+# Pick the modules you need. v0.9 ships 32 independent modules.
 bun add @nexusts/drizzle            # the default ORM
 bun add @nexusts/auth               # if you need auth
 bun add @nexusts/queue              # if you need background jobs
 # ... etc.
 ```
 
-> `reflect-metadata` is a peer dependency and must be imported once at
-> the application entry point. `zod` and `hono` are bundled by NexusTS
+> `zod` and `hono` are bundled by NexusTS
 > but installing them explicitly is recommended so type resolution works.
 > `drizzle-orm` is a required peer dep of `@nexusts/drizzle` — install
 > the driver package (`pg`, `postgres`, `mysql2`, or `better-sqlite3`)

@@ -1,9 +1,9 @@
 # NexusTS vs NestJS — Feature Gap Analysis
 
 > 한국어 버전: [`nestjs-comparison.ko.md`](./nestjs-comparison.ko.md)
-> 분석 일자: 2026-06-24 · 기준: NexusTS **v0.8.4**
+> 분석 일자: 2026-06-25 · 기준: NexusTS **v0.9.0**
 
-This document compares NexusTS v0.8.4 against [NestJS](https://nestjs.com)
+This document compares NexusTS v0.9.0 against [NestJS](https://nestjs.com)
 to identify which production-grade backend features are **present**,
 **partially present**, or **missing**. Every Tier 1 *and* Tier 2 gap
 has been closed; this analysis now focuses on the remaining Tier 3+
@@ -17,12 +17,13 @@ gaps that block complete feature parity.
 
 ---
 
-## 1. Summary table (v0.8.4)
+## 1. Summary table (v0.9.0)
 
 Legend: ✅ ship · ⚠️ partial · ❌ missing · 🔵 third-party required
 
-| Category | NestJS | NexusTS v0.8.4 | Notes |
+| Category | NestJS | NexusTS v0.9.0 | Notes |
 |----------|--------|--------------|-------|
+| **Standard decorators** | ⚠️ experimentalDecorators only | ✅ **TC39 standard ES decorators** | No `experimentalDecorators`, no `reflect-metadata`. Dual-mode legacy fallback. |
 | HTTP / routing | ✅ GraphQL, WebSockets, gRPC, SSE, Fastify | ✅ Hono + SSE + WS + gRPC + GraphQL | REST + functional + Nest/Adonis styles |
 | DI | ✅ Request-scoped, circular auto-resolve | ✅ Singleton + transient + request | Request scope via `AsyncLocalStorage`; `@Injectable({ scope: 'request' })` |
 | Config | ✅ @nestjs/config, .env validation | ✅ `@nexusts/config` | Zod-validated, layered loading |

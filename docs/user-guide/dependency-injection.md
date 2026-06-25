@@ -6,20 +6,18 @@ NexusTS uses NestJS-style dependency injection. Services, repositories,
 and adapters are wired together through `@Module({ providers, exports })`
 and resolved automatically at construction time.
 
-## 1. The basics
+## 0. Two injection patterns
 
-A service is just a class with `@Injectable()`:
+NexusTS supports two DI patterns side-by-side:
+
+### Field injection (standard decorators, v0.9+)
 
 ```ts
-// app/services/user.service.ts
-import { Inject, Injectable } from '@nexusts/core';
-import type { UserRepository } from '../repositories/user.repository.js';
+import { Injectable, Inject } from '@nexusts/core';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @Inject('LOG') private readonly log: { info: (msg: string) => void },
-  ) {}
+  @Inject('LOG') declare log: { info: (msg: string) => void };
 
   findAll() {
     this.log.info('UserService.findAll');
@@ -27,6 +25,34 @@ export class UserService {
   }
 }
 ```
+
+This pattern works with TC39 standard ES decorators — no
+`experimentalDecorators` or `reflect-metadata` required.
+
+### Constructor injection (legacy, v0.8 and earlier)
+
+```ts
+@Injectable()
+export class UserService {
+  constructor(
+    @Inject('LOG') private readonly log: { info: (msg: string) => void },
+  ) {}
+  // ...
+}
+```
+
+Constructor injection requires `experimentalDecorators: true` and an
+explicit `@Inject(Token)` for each parameter (Bun's native TS
+transformer doesn't emit `design:paramtypes`).
+
+> **Migration tip**: Replace `constructor(@Inject(T) private t: T) {}`
+> with `@Inject(T) declare t: T;` and remove the constructor. The DI
+> container automatically detects field injection and switches to the
+> no-arg constructor path.
+
+---
+
+## 1. The basics
 
 The container builds the dependency graph from the module's `providers`
 list and resolves it lazily on first use.

@@ -6,7 +6,67 @@ Controllers are the entry point for HTTP requests. They map URLs to
 methods, validate input, and return a response (JSON, a view, or an
 Inertia page).
 
-## 1. Three routing styles
+## 0. Standard decorator mode (v0.9+)
+
+NexusTS v0.9 introduces **TC39 standard ES decorators** as the default.
+Controller methods receive the Hono `Context` directly and access
+request data through `ctx.req.*` methods instead of `@Body`/`@Param`
+parameter decorators.
+
+### Standard controller pattern
+
+```ts
+import { Controller, Get, Post, Inject } from '@nexusts/core';
+import { UserService } from '../services/user.service.js';
+import type { Context } from 'hono';
+import { z } from 'zod';
+
+const CreateUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
+@Controller('/users')
+export class UserController {
+  @Inject(UserService) declare users: UserService;
+
+  @Get('/')
+  async index(ctx: Context) {
+    const q = ctx.req.query('q');
+    const limit = Number(ctx.req.query('limit') ?? '10');
+    return this.users.findAll({ q, limit });
+  }
+
+  @Get('/:id')
+  async show(ctx: Context) {
+    const id = Number(ctx.req.param('id'));
+    return this.users.findById(id);
+  }
+
+  @Post('/')
+  async create(ctx: Context) {
+    const body = CreateUserSchema.parse(await ctx.req.json());
+    return this.users.create(body);
+  }
+}
+```
+
+### Key differences
+
+| Aspect | Legacy (v0.8) | Standard (v0.9+) |
+|--------|--------------|------------------|
+| Injection | `constructor(@Inject(Svc) private svc: Svc)` | `@Inject(Svc) declare svc: Svc` |
+| Path param | `@Param('id') id: string` | `ctx.req.param('id')` |
+| Query param | `@Query('q') q: string` | `ctx.req.query('q')` |
+| Request body | `@Body() body: DTO` | `await ctx.req.json()` |
+| Hono context | `@Ctx() c: Context` | `ctx: Context` (first arg) |
+| Decorator metadata | `emitDecoratorMetadata` + `reflect-metadata` | `Symbol.metadata` / `__nexus_meta__` |
+
+> **Backward compatible**: Legacy parameter decorators (`@Body`, `@Param`,
+> `@Query`, `@Ctx`) continue to work when `experimentalDecorators: true`
+> is set. The router auto-detects the mode by checking `paramMeta.length`.
+
+---
 
 NexusTS supports **three** styles side-by-side — pick the one that fits
 each route.

@@ -12,16 +12,21 @@
 `@nexusts/core` is a Bun-native fullstack framework. It
 publishes **32 independent modules** (one entry point each under
 `@nexusts/*`), so a user only ships the code they actually
-import. The runtime is built on **Hono** (HTTP) + **reflect-metadata**
-(legacy decorators) + **Drizzle** (default ORM).
+import. The runtime is built on **TC39 standard ES decorators**
+(dual-mode with legacy fallback) + **Hono** (HTTP) +
+**Drizzle** (default ORM).
 
 **The non-negotiables** (do not change these without a major version):
 
-- **Decorator semantics.** We use **legacy** (`MethodDecorator`,
-  `ClassDecorator`, `ParameterDecorator`), not the TC39 stage-3
-  form. Bun 1.3+ ships stage-3 by default; the per-example
-  `tsconfig.json` in `tests/examples/smoke.test.ts` flips it back.
-  See §7 below.
+- **Decorator semantics.** We use **TC39 standard ES decorators** as
+  the default. Bun 1.3+ ships stage-3 by default. Legacy decorators
+  (`experimentalDecorators: true`) are supported through a dual-mode
+  fallback in every decorator factory. New code MUST use standard
+  patterns (field injection, `ctx.req.*` methods). See §6 below.
+- **No `reflect-metadata` import required.** The framework lazy-loads
+  `reflect-metadata` only when legacy code paths are detected. New
+  modules MUST NOT import `reflect-metadata`.
+  See §6 (Standard decorator patterns) below.
 - **Each module is its own bundle entry point.** Add a new module →
   add a new `entrypoints:` line in `build.ts`, a new `./<name>` row
   in `package.json` `exports`, and a new include glob in
@@ -406,53 +411,107 @@ production-quality test surface.
 
 ---
 
-## 6. Decorator gotchas (Bun 1.3 + legacy decorators)
+## 6. Standard decorator patterns (v0.9+)
 
-Bun 1.3's default decorator mode is **TC39 stage-3**. Legacy
-decorators (the kind this framework uses) require:
+NexusTS v0.9 migrated from legacy TypeScript decorators to **TC39 standard ES decorators**. New code MUST use these patterns:
+
+### Field injection (NOT constructor injection)
+
+```ts
+// ✅ Standard decorator mode (v0.9+)
+@Injectable()
+class UserService {
+  @Inject('DB') declare db: DrizzleLike;
+}
+
+// ❌ Legacy (v0.8 and earlier)
+@Injectable()
+class UserService {
+  constructor(@Inject('DB') private db: DrizzleLike) {}
+}
+```
+
+### `ctx.req.*` methods (NOT `@Param`/`@Body`/`@Query`)
+
+```ts
+// ✅ Standard decorator mode
+@Get('/:id')
+async show(ctx: Context) {
+  const id = ctx.req.param('id');
+  const body = await ctx.req.json();
+}
+
+// ❌ Legacy
+@Get('/:id')
+async show(@Param('id') id: string, @Body() body: any) {}
+```
+
+### Writing a new method decorator (metadata-only)
+
+For metadata-only decorators (like `@Retry`, `@Cron`, `@OnEvent`),
+use the dual-mode factory pattern:
+
+```ts
+import { safeDefineMeta } from '@nexusts/core/di/safe-reflect';
+
+const KEY = Symbol.for('nexus:MyDecorator');
+
+export function MyDecorator(config: any): any {
+  return function (this: any, target: any, context?: any): void {
+    // Standard decorator mode (TC39)
+    if (context?.kind === 'method' && context?.metadata) {
+      context.metadata[KEY] = config;
+      return;
+    }
+    // Legacy decorator mode (experimentalDecorators)
+    const propertyKey = typeof context === 'string' ? context : arguments[1];
+    safeDefineMeta(KEY, config, target, propertyKey);
+  };
+}
+```
+
+The key points:
+
+- **Standard mode**: `context?.kind === 'method'` detects TC39 decorators. Store metadata on `context.metadata`.
+- **Legacy mode**: `target` is prototype, `propertyKey` is string/symbol from `arguments[1]`.
+- **Never read `descriptor.value`** in the decorator body — it's `undefined` in standard mode.
+- Use `safeDefineMeta`/`safeGetMeta` from `@nexusts/core/di/safe-reflect` for legacy fallback.
+
+### InputValue helper for sanitization
+
+```ts
+import { inputValue } from '@nexusts/core';
+
+const id = inputValue(ctx.req.param('id')).number().required().value();
+const name = inputValue(ctx.req.query('name')).trim().max(100).value();
+```
+
+### Existing decorators already dual-mode
+
+| Decorator | Package | Standard mode |
+|-----------|---------|--------------|
+| `@Module` | core | ✅ (since v0.6) |
+| `@Controller` | core | ✅ (since v0.6) |
+| `@Injectable` | core | ✅ (since v0.6) |
+| `@Inject` | core | ✅ field decorator (v0.9) |
+| `@Get/@Post/etc` | core | ✅ method decorator |
+| `@Retry/@CircuitBreaker/@Bulkhead` | resilience | ✅ metadata-only |
+| `@Cron/@Interval/@Timeout` | schedule | ✅ metadata-only |
+| `@OnEvent` | events | ✅ metadata-only |
+| `@Upload` | upload | ✅ (v0.9 dual-mode) |
+
+### Legacy decorator gotchas (Bun 1.3)
+
+Legacy decorators (`experimentalDecorators: true`) still require:
 
 ```jsonc
-// tsconfig.json (or per-example)
+// tsconfig.json
 "experimentalDecorators": true,
 "useDefineForClassFields": false
 ```
 
-If you write a method decorator that touches `descriptor.value`,
-Bun will pass it as `undefined` and your code will throw
-`Cannot read properties of undefined (reading 'value')`.
-
-**The safe pattern** is **metadata-only decorator + framework-side wire-up**:
-
-```ts
-function makeDecorator(key: symbol) {
-  return (config: any): MethodDecorator => {
-    return (_target, propertyKey) => {
-      Reflect.defineMetadata(key, config, _target, propertyKey);
-    };
-  };
-}
-```
-
-Then somewhere in the framework hook (controller mount, service
-init, etc.), read the metadata and apply the wrapper:
-
-```ts
-function apply<Name>(target, propertyKey, descriptor, svc) {
-  const config = Reflect.getMetadata(KEY, target, propertyKey);
-  if (!config) return descriptor;
-  const original = descriptor.value;
-  descriptor.value = function (...args) {
-    return svc.<doIt>(original.bind(this, ...args), config);
-  };
-  return descriptor;
-}
-```
-
-The `@Resilient` / `@Retry` / `@CircuitBreaker` / `@Bulkhead` decorators
-in `src/resilience/decorators/index.ts` are written this way. So are
-`@Cron` (in `src/schedule/decorators/`), `@OnEvent`
-(`src/events/decorators/`), `@OnQueueReady`
-(`src/queue/decorators/`).
+The per-example `tsconfig.json` in `tests/examples/smoke.test.ts`
+continues to flip this back for legacy tests.
 
 **The unsafe pattern** is reading `descriptor.value` in the decorator
 body. Don't do it. Even if it works on the version of Bun you're
@@ -648,6 +707,28 @@ you'll need the `PORT` env pattern.)
 
 ## 10. Troubleshooting
 
+### `Class "X" is missing the @Controller() decorator` (standard mode)
+
+The `@Controller` class decorator isn't applying metadata. Check that:
+
+- The decorator factory returns a function compatible with standard decorator mode (checks `context?.kind === "class"`).
+- The `@Injectable()` and `@Controller()` decorators are both present (order doesn't matter — they share `context.metadata`).
+- If in legacy mode, `experimentalDecorators: true` is set in tsconfig.
+
+### `Decorators are not valid here` (LSP error)
+
+This TypeScript LSP error appears when the project-level tsconfig uses
+the default (stage-3) decorator mode but the file uses legacy decorators
+(or vice versa). This is a pre-existing issue — the smoke test handles
+it by writing per-example tsconfig files. Ignore the LSP error; run the
+smoke test to verify.
+
+### `import 'reflect-metadata' not found / not needed`
+
+The framework no longer requires `import 'reflect-metadata'` anywhere.
+If you see this import in source code, remove it. The framework
+lazy-loads `reflect-metadata` only when legacy code paths are detected.
+
 ### `TypeError: undefined is not an object (evaluating 'descriptor.value')`
 
 You're writing a method decorator that reads `descriptor.value`
@@ -700,10 +781,9 @@ requirement — only update Korean if the change is significant.
 - **"Add a new ORM"** — Drizzle is the default and the only
   first-party ORM. New ORMs are out of scope until v1.0; use the
   `optional` peer-dep path (`@nexusts/drizzle` is a peer).
-- **"Change the decorator semantics"** — Bun 1.3's stage-3 vs
-  legacy problem is solved by the `tsconfig.json` written by the
-  smoke test. Changing decorator semantics breaks 30 modules at
-  once.
+- **"Change the decorator semantics"** — The framework uses TC39 standard ES decorators as the default. Legacy decorators (`experimentalDecorators`) continue to work via the dual-mode fallback. Do not remove the dual-mode paths.
+- **"Add reflect-metadata back"** — The framework lazy-loads reflect-metadata only when legacy code paths are detected. Adding a static import defeats the ~16KB bundle savings. Use `safeGetMeta`/`safeDefineMeta` from `@nexusts/core/di/safe-reflect` instead.
+- **"Use constructor injection"** — New code MUST use field injection (`@Inject(Token) declare field: Type`). Constructor injection is legacy-only.
 - **"Drop the Inertia / gRPC / GraphQL / Resilience module to save
   bundle size"** — modules are opt-in by import. If a user doesn't
   import it, it isn't in their bundle. Don't break the API.
@@ -742,7 +822,11 @@ Pre-commit checklist:
 3. `bun run examples:smoke` passes (or at minimum the new example's
    tests).
 4. `bun run build` succeeds; the new module appears in `dist/`.
-5. `README.md`, `CHANGELOG.md`, `examples/README.md`, the user-guide
+5. No `import 'reflect-metadata'` in new source files.
+6. New decorators use the dual-mode pattern (standard + legacy).
+7. New services/controllers use field injection
+   (`@Inject(Token) declare field: Type`), NOT constructor injection.
+8. `README.md`, `CHANGELOG.md`, `examples/README.md`, the user-guide
    table, and the analysis docs are all updated.
-6. Korean docs (user guide + design) are translated for user-visible
+9. Korean docs (user guide + design) are translated for user-visible
    additions.

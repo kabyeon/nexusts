@@ -124,7 +124,7 @@ resolve(token):
 works: an exported token lives on the parent, and a child asks for it
 through the chain.
 
-### Constructor injection
+### Constructor injection (legacy)
 
 The container uses two strategies to read constructor parameter types:
 
@@ -136,6 +136,40 @@ Because Bun's native TypeScript transformer does **not** emit
 `design:paramtypes`, NexusTS standardizes on explicit `@Inject(...)`
 parameter decorators. The bare-type form (`constructor(private svc: UserService)`)
 is supported when running with `tsc`-compiled output.
+
+### Field injection (standard decorator mode, v0.9+)
+
+In standard decorator mode (TC39), the container supports field injection
+as the primary pattern:
+
+```ts
+@Injectable()
+class UserService {
+  @Inject('DB') declare db: DrizzleService;
+  @Inject(Logger) declare logger: Logger;
+}
+```
+
+The container's `instantiate()` method checks for field injection first:
+
+```ts
+const fieldInjections = getFieldInjections(cls);
+if (hasFieldInjections) {
+  // Create instance with no args, then inject fields
+  const instance = new cls();
+  for (const [fieldName, token] of Object.entries(fieldInjections)) {
+    instance[fieldName] = this.resolve(token);
+  }
+  return instance;
+}
+// Fallback: legacy constructor injection
+const params = paramTypes.map(t => this.resolve(t));
+return new cls(...params);
+```
+
+The `@Inject(token)` field decorator stores injection metadata on
+`Class.__nexus_meta__` (standard mode) or via `safeDefineMeta` (legacy
+mode). The `getFieldInjections()` helper reads from both stores.
 
 ### Circular dependency detection
 

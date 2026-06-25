@@ -6,7 +6,47 @@ Validation is opt-in, Zod-based, and applied via the `@Validate(...)`
 decorator. It runs **before** the controller method is invoked, so a
 failing request never reaches your business logic.
 
-## 1. The `@Validate` decorator
+## 0. Standard decorator validation (v0.9+)
+
+In standard decorator mode, validation is done inline using Zod schemas
+with `ctx.req.json()` / `ctx.req.param()`:
+
+```ts
+import { z } from 'zod';
+import { Controller, Post, Get } from '@nexusts/core';
+import type { Context } from 'hono';
+
+const CreateUserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+});
+
+@Controller('/users')
+export class UserController {
+  @Post('/')
+  async create(ctx: Context) {
+    const body = CreateUserSchema.parse(await ctx.req.json());
+    return this.users.create(body);
+  }
+
+  @Get('/:id')
+  async show(ctx: Context) {
+    const id = z.coerce.number().int().positive().parse(ctx.req.param('id'));
+    return this.users.findById(id);
+  }
+}
+```
+
+For inline coercion of query params and path params, use Zod's
+`z.coerce.*` helpers directly in the handler. For request bodies,
+use `schema.parse()` or `schema.safeParse()` with `await ctx.req.json()`.
+
+> The `@Validate` decorator (legacy) still works with
+> `experimentalDecorators: true`. See sections below for the legacy API.
+
+---
+
+## 1. The `@Validate` decorator *(Legacy)*
 
 ```ts
 import { z } from 'zod';
