@@ -21,7 +21,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.8.4] — 2026-06-24
+## [0.9.0] — 2026-06-25
+
+### Added
+
+- **TC39 standard ES decorators**: Framework now uses standard decorators
+  by default. No `experimentalDecorators` or `reflect-metadata` required.
+  Dual-mode backward compatibility with legacy decorators.
+- **Field injection**: `@Inject(Token) declare field: Type` pattern replaces
+  constructor injection. DI container auto-detects field injection and
+  switches to no-arg constructor path.
+- **`ctx.req.*` methods**: Controller methods receive Hono `Context` directly
+  and access request data via `ctx.req.param()`, `ctx.req.query()`,
+  `await ctx.req.json()` instead of `@Param`/`@Body`/`@Query` parameter decorators.
+- **`inputValue()` helper**: Chained validation/sanitization helper for
+  standard decorator mode: `inputValue(ctx.req.param('id')).number().required().value()`
+- **`CtxInput` helper with `uploadedFile()`/`uploadedFiles()`**: File upload
+  access without `@UploadedFile` parameter decorator.
+- **Standard decorator CI pipeline**: New `test-standard-decorators` CI job
+  tests examples under TC39 stage-3 mode (`experimentalDecorators: false`).
+- **`@Upload` dual-mode decorator**: Works with both legacy and standard
+  decorator modes.
+- **DrizzleRepository field injection**: Repository template now supports
+  `@Inject(DrizzleService.TOKEN) declare db` pattern.
+
+### Changed
+
+- **Core decorators**: `@Module`, `@Controller`, `@Injectable` are now
+  dual-mode (standard + legacy).
+- **`reflect-metadata` removed**: No longer a runtime dependency. Lazy-loaded
+  only when legacy code paths are detected. ~16KB bundle savings.
+- **Router auto-detection**: Detects standard decorator mode by checking
+  `paramMeta.length === 0` — passes `ctx` directly with `attachInputHelper()`.
+- **54 test files**: `import 'reflect-metadata'` removed — synchronous Map
+  fallback handles legacy metadata storage.
+- **All 34 examples**: Migrated to standard decorator patterns (field
+  injection + `ctx.req.*` methods).
+- **AGENTS.md**: Updated for standard decorator conventions, field injection,
+  and dual-mode patterns.
+- **All documentation**: Updated to reflect TC39 standard ES decorators as
+  core value (README, architecture, DI, user guides, webpage).
+
+### Removed
+
+- **`reflect-metadata` peer dependency**: No longer required at install time.
+  See `docs/design/standard-decorators-migration.md` for migration guide.
+- **`ParameterDecorator` usage in CLI templates**: All generated code now
+  uses field injection and `ctx.req.*` methods.
 
 ### Added
 

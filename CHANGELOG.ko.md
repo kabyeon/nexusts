@@ -21,7 +21,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.8.4] — 2026-06-24
+## [0.9.0] — 2026-06-25
+
+### 추가
+
+- **TC39 표준 ES 데코레이터**: 프레임워크가 표준 데코레이터를 기본으로
+  사용합니다. `experimentalDecorators`나 `reflect-metadata`가 필요 없습니다.
+  레거시 데코레이터와 듀얼모드 하위 호환을 제공합니다.
+- **필드 인젝션**: `@Inject(Token) declare field: Type` 패턴이 생성자
+  인젝션을 대체합니다. DI 컨테이너가 필드 인젝션을 자동 감지하고 무인자
+  생성자 경로로 전환합니다.
+- **`ctx.req.*` 메서드**: 컨트롤러 메서드가 Hono `Context`를 직접 받고
+  `ctx.req.param()`, `ctx.req.query()`, `await ctx.req.json()`으로
+  요청 데이터에 접근합니다 (`@Param`/`@Body`/`@Query` 대신).
+- **`inputValue()` 헬퍼**: 표준 데코레이터 모드의 체이닝 validation/sanitization
+  헬퍼: `inputValue(ctx.req.param('id')).number().required().value()`
+- **`CtxInput` + `uploadedFile()`/`uploadedFiles()`**: `@UploadedFile`
+  파라미터 데코레이터 없이 파일 업로드 접근.
+- **표준 데코레이터 CI 파이프라인**: 새 `test-standard-decorators` CI 잡이
+  TC39 stage-3 모드에서 예제를 테스트합니다.
+- **`@Upload` 듀얼모드 데코레이터**: 레거시와 표준 데코레이터 모드 모두에서
+  동작합니다.
+- **DrizzleRepository 필드 인젝션**: 리포지토리 템플릿이
+  `@Inject(DrizzleService.TOKEN) declare db` 패턴을 지원합니다.
+
+### 변경
+
+- **코어 데코레이터**: `@Module`, `@Controller`, `@Injectable`이 듀얼모드
+  (표준 + 레거시)로 변경되었습니다.
+- **`reflect-metadata` 제거**: 런타임 의존성에서 제거되었습니다. 레거시
+  코드 경로가 감지될 때만 조건부로 로딩됩니다. ~16KB 번들 절약.
+- **라우터 자동 감지**: `paramMeta.length === 0` 확인으로 표준 데코레이터
+  모드를 감지하여 `attachInputHelper()`와 함께 `ctx`를 직접 전달합니다.
+- **54개 테스트 파일**: `import 'reflect-metadata'` 제거 — 동기 Map
+  폴백이 레거시 메타데이터 저장을 처리합니다.
+- **34개 예제 전부**: 표준 데코레이터 패턴(필드 인젝션 + `ctx.req.*` 메서드)으로
+  마이그레이션되었습니다.
+- **AGENTS.md**: 표준 데코레이터 규칙, 필드 인젝션, 듀얼모드 패턴으로 업데이트.
+- **모든 문서**: TC39 표준 ES 데코레이터를 핵심 가치로 반영하여 업데이트
+  (README, 아키텍처, DI, 사용자 가이드, 웹페이지).
+
+### 제거
+
+- **`reflect-metadata` 피어 의존성**: 설치 시 더 이상 필요하지 않습니다.
+  마이그레이션 가이드는 `docs/design/standard-decorators-migration.ko.md`를
+  참고하세요.
+- **CLI 템플릿의 `ParameterDecorator` 사용**: 모든 생성 코드가 필드 인젝션과
+  `ctx.req.*` 메서드를 사용합니다.
 
 ### 추가
 
