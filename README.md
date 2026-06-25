@@ -1,5 +1,9 @@
 # NexusTS
 
+<p align="center">
+  <img src="./webpage/public/logo.svg" alt="NexusTS" width="320">
+</p>
+
 [![CI (Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Bun)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
 [![CI (Node.js)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml/badge.svg?label=Node.js+22)](https://github.com/nexus-ts/nexusts/actions/workflows/ci.yml)
 [![CI (Workers)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml/badge.svg)](https://github.com/nexus-ts/nexusts/actions/workflows/ci-workers.yml)
@@ -7,12 +11,12 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance.
 
-> **v0.8.0 — ResilienceAdminModule + Eager applyResilience.** The
-> framework now ships **31 independent modules**. Tier 1 and Tier 2
+> **v0.8.4 — Inertia v3 scaffold + CLI validation.** The
+> framework now ships **32 independent modules**. Tier 1 and Tier 2
 > gaps from the NestJS / AdonisJS gap analyses are fully closed.
-> v0.8 adds `ResilienceAdminModule` (HTTP admin endpoints),
-> eager `applyResilience()` (auto-wrap at controller mount),
-> and CORS support in `@nexusts/shield`. See
+> v0.8 adds Inertia React/Vue SSR scaffold (`nx init`/`nx new`),
+> `InertiaConfig.scripts` for client script injection, CLI input
+> validation, and --no-interaction flag fix. See
 > [CHANGELOG.md](./CHANGELOG.md) for the full v0.8 release notes.
 
 ---
@@ -65,7 +69,7 @@ for GraphQL, [`docs/user-guide/resilience.md`](./docs/user-guide/resilience.md)
 for retry/circuit/bulkhead, and [CHANGELOG.md](./CHANGELOG.md)
 for the detailed v0.8 release notes.
 
-> 27 working examples under `examples/` — one per major module —
+> 34 working examples under `examples/` — one per major module —
 > double as living documentation and as the smoke-test suite. See
 > [`docs/user-guide/testing-examples.md`](./docs/user-guide/testing-examples.md).
 
@@ -85,7 +89,7 @@ for the detailed v0.8 release notes.
 | Three view engines (Rendu/Edge/Inertia) | ❌ |   ✅   |   ❌   |    ✅     |
 | **Default ORM (Drizzle, 5 dialects)** |   △   | Lucid  |   ❌   |    ✅     |
 | **Multi-pod session, cache, limiter via Drizzle** |  △ | ✅ | ❌ | **✅** |
-| **30 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
+| **32 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
 | **SQL-injection-safe raw queries by construction** |   △   |   △   |   ❌   |    ✅     |
 | **Migrations + autoMigrate on boot** |   △   |   ✅   |   ❌   |    ✅     |
 | **First-party GraphQL** (SDL + code-first) |   ✅   |   △    |   ❌   |    ✅     |
