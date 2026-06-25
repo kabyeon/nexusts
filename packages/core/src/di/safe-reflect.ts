@@ -54,16 +54,20 @@ function ensureReflectMetadata(): void {
 	if (_refMetaAttempted) return;
 	_refMetaAttempted = true;
 	if (typeof Reflect.getMetadata === "function") return; // already loaded
-	// Fire async import — result is NOT awaited because decorators
-	// run synchronously. The fallback Map handles the first access.
-	import("reflect-metadata").catch(() => {
-		/* not available — fallback Map stays active */
-	});
+	// Do NOT fire an async import here — it creates a race condition where
+	// `Reflect.decorate` becomes available during module evaluation,
+	// changing how third-party decorator helpers (like Bun's __decorate)
+	// apply decorators. The synchronous Map fallback handles everything.
 }
 
 /** Safely read metadata. Returns undefined when reflect-metadata is absent. */
 export function safeGetMeta(key: any, target: any, prop?: any): any {
 	ensureReflectMetadata();
+	// Check fallback Map FIRST — metadata may have been stored there
+	// during decorator execution before the async dynamic import of
+	// reflect-metadata completed.
+	const mapVal = fallbackStore.get(keyId(key, target, prop));
+	if (mapVal !== undefined) return mapVal;
 	try {
 		if (typeof Reflect.getMetadata === "function") {
 			const val = prop !== undefined
@@ -74,12 +78,51 @@ export function safeGetMeta(key: any, target: any, prop?: any): any {
 	} catch {
 		// reflect-metadata not loaded yet
 	}
-	return fallbackStore.get(keyId(key, target, prop));
+	// Fallback: check __nexus_meta__ on the class (shared across bundles)
+	if (typeof target === "function") {
+		const clsMeta = (target as any).__nexus_meta__;
+		if (clsMeta && key in clsMeta) {
+			const val = clsMeta[key];
+			if (prop !== undefined && val && typeof val === "object") {
+				return (val as any)[prop];
+			}
+			return val;
+		}
+	}
+	return undefined;
 }
 
 /** Safely define metadata. Falls back to internal Map when reflect-metadata is absent. */
 export function safeDefineMeta(key: any, value: any, target: any, prop?: any): void {
 	ensureReflectMetadata();
+	// ALWAYS store in the fallback Map first — guarantees the metadata
+	// is available synchronously even if the async reflect-metadata
+	// dynamic import hasn't completed yet.
+	fallbackStore.set(keyId(key, target, prop), value);
+	// Also store on __nexus_meta__ for cross-bundle consistency.
+	// Every package that imports safe-reflect gets its OWN bundled
+	// copy with its own fallbackStore Map. __nexus_meta__ is the only
+	// shared storage across all bundles.
+	if (typeof target === "function") {
+		let meta = (target as any).__nexus_meta__;
+		if (!meta) {
+			meta = {};
+			Object.defineProperty(target, "__nexus_meta__", {
+				value: meta,
+				writable: true,
+				configurable: true,
+				enumerable: false,
+			});
+		}
+		if (prop !== undefined) {
+			if (!meta[key]) meta[key] = {};
+			meta[key][prop] = value;
+		} else {
+			meta[key] = value;
+		}
+	}
+	// Also try Reflect if available (for consistency with code that
+	// reads via Reflect directly).
 	try {
 		if (typeof Reflect.defineMetadata === "function") {
 			if (prop !== undefined) {
@@ -87,17 +130,19 @@ export function safeDefineMeta(key: any, value: any, target: any, prop?: any): v
 			} else {
 				Reflect.defineMetadata(key, value, target);
 			}
-			return;
 		}
 	} catch {
 		// reflect-metadata not loaded yet
 	}
-	fallbackStore.set(keyId(key, target, prop), value);
 }
 
 /** Safely check metadata existence. Returns false when reflect-metadata is absent. */
 export function safeHasMeta(key: any, target: any): boolean {
 	ensureReflectMetadata();
+	// Check fallback Map FIRST — metadata may have been stored there
+	// during decorator execution before the async dynamic import of
+	// reflect-metadata completed.
+	if (fallbackStore.has(keyId(key, target))) return true;
 	try {
 		if (typeof Reflect.hasMetadata === "function") {
 			return Reflect.hasMetadata(key, target);
@@ -105,7 +150,7 @@ export function safeHasMeta(key: any, target: any): boolean {
 	} catch {
 		// reflect-metadata not loaded yet
 	}
-	return fallbackStore.has(keyId(key, target));
+	return false;
 }
 
 /**
