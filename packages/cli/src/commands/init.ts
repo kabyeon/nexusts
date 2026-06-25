@@ -26,9 +26,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { flagBool, logger, select } from "../core/index.js";
-import { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "../core/index.js";
-import { parseJsonLoose } from "../core/index.js";
+import { buildPackageJson, computeDeps, ensureDirectories, flagBool, generateProjectFiles, logger, parseJsonLoose, select } from "../core/index.js";
 
 type WriteMode = "write" | "skip" | "merge-pkg" | "merge-tsconfig";
 
@@ -112,7 +110,7 @@ export const initCommand: Command = {
 
 		const target = resolve(
 			ctx.cwd,
-			(ctx.flags["target"] as string | undefined) ?? ".",
+			(ctx.flags.target as string | undefined) ?? ".",
 		);
 		const routing = await resolveOpt(ctx.flags, "style", VALID_OPTIONS.style, "nest", interactive);
 		const view = await resolveOpt(ctx.flags, "view", VALID_OPTIONS.view, "rendu", interactive);
@@ -163,7 +161,7 @@ export const initCommand: Command = {
 					merged.push(entry.path);
 				} else {
 					const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
-					writeFileSync(abs, JSON.stringify(pkgJson, null, 2) + "\n");
+					writeFileSync(abs, `${JSON.stringify(pkgJson, null, 2)}\n`);
 					created.push(entry.path);
 				}
 				continue;
@@ -226,8 +224,8 @@ function mergePackageJson(
 	const pkg = parseJsonLoose<Record<string, unknown>>(raw);
 	let changed = false;
 
-	if (!pkg["type"]) { pkg["type"] = "module"; changed = true; }
-	if (!pkg["private"]) { pkg["private"] = true; changed = true; }
+	if (!pkg.type) { pkg.type = "module"; changed = true; }
+	if (!pkg.private) { pkg.private = true; changed = true; }
 
 	const SCRIPTS: Record<string, string> = {
 		dev: "bun --hot app/main.ts", build: "bun run build.ts",
@@ -236,29 +234,29 @@ function mergePackageJson(
 	if (view === "inertia") {
 		const ext = frontend === "vue" ? "ts" : "tsx";
 		SCRIPTS["build:frontend"] = `bun build ./resources/js/app.${ext} --outdir=./public --target=browser --format=esm --minify`;
-		SCRIPTS["dev"] = `bun run build:frontend && bun --hot app/main.ts`;
+		SCRIPTS.dev = `bun run build:frontend && bun --hot app/main.ts`;
 	}
-	const existingScripts = (pkg["scripts"] as Record<string, string> | undefined) ?? {};
+	const existingScripts = (pkg.scripts as Record<string, string> | undefined) ?? {};
 	for (const [k, v] of Object.entries(SCRIPTS)) {
 		if (!(k in existingScripts)) { existingScripts[k] = v; changed = true; }
 	}
-	if (Object.keys(existingScripts).length > 0) pkg["scripts"] = existingScripts;
+	if (Object.keys(existingScripts).length > 0) pkg.scripts = existingScripts;
 
-	const deps = (pkg["dependencies"] as Record<string, string> | undefined) ?? {};
+	const deps = (pkg.dependencies as Record<string, string> | undefined) ?? {};
 	for (const [k, v] of Object.entries(additions)) {
 		if (!(k in deps)) { deps[k] = v; changed = true; }
 	}
-	pkg["dependencies"] = deps;
+	pkg.dependencies = deps;
 
 	if (Object.keys(devAdditions).length > 0) {
-		const devDeps = (pkg["devDependencies"] as Record<string, string> | undefined) ?? {};
+		const devDeps = (pkg.devDependencies as Record<string, string> | undefined) ?? {};
 		for (const [k, v] of Object.entries(devAdditions)) {
 			if (!(k in devDeps)) { devDeps[k] = v; changed = true; }
 		}
-		pkg["devDependencies"] = devDeps;
+		pkg.devDependencies = devDeps;
 	}
 
-	if (changed) writeFileSync(path, JSON.stringify(pkg, null, 2) + "\n");
+	if (changed) writeFileSync(path, `${JSON.stringify(pkg, null, 2)}\n`);
 }
 
 function mergeTsconfig(path: string, additions: Record<string, boolean | string>): void {
@@ -275,7 +273,7 @@ function mergeTsconfig(path: string, additions: Record<string, boolean | string>
 		if (!include.includes(g)) { include.push(g); changed = true; }
 	}
 	cfg.include = include;
-	if (changed) writeFileSync(path, JSON.stringify(cfg, null, 2) + "\n");
+	if (changed) writeFileSync(path, `${JSON.stringify(cfg, null, 2)}\n`);
 }
 
 function defaultTsconfig(): string {

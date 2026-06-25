@@ -17,8 +17,8 @@
  *   app.use('/api/*', authMiddleware(auth, { mode: 'required' }));
  */
 
-import type { Context, MiddlewareHandler, Next } from "hono";
 import type { Auth } from "better-auth";
+import type { Context, MiddlewareHandler, } from "hono";
 import type { AuthVariables } from "./types.js";
 
 export type AuthMiddlewareMode = "optional" | "required" | "scoped";
@@ -48,7 +48,6 @@ export function authMiddleware(
 		protectedPaths,
 		ignoredPaths,
 		onUnauthenticated = defaultUnauthenticated,
-		onForbidden = defaultForbidden,
 	} = options;
 
 	const ignored = toMatcher(ignoredPaths);
@@ -102,13 +101,6 @@ function defaultUnauthenticated(c: Context): Response {
 	return c.json(
 		{ error: "Unauthorized", message: "Authentication required." },
 		401,
-	);
-}
-
-function defaultForbidden(c: Context): Response {
-	return c.json(
-		{ error: "Forbidden", message: "Insufficient permissions." },
-		403,
 	);
 }
 

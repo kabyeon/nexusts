@@ -12,8 +12,7 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Command, CommandContext } from "../core/index.js";
-import { flagBool, logger, select } from "../core/index.js";
-import { ensureDirectories, computeDeps, buildPackageJson, generateProjectFiles } from "../core/index.js";
+import { buildPackageJson, computeDeps, ensureDirectories, flagBool, generateProjectFiles, logger, select } from "../core/index.js";
 
 const VALID_OPTIONS = {
 	style: ["nest", "adonis", "functional"],
@@ -119,7 +118,7 @@ export const newCommand: Command = {
 
 		const { deps, devDeps } = computeDeps(view, orm, db, frontend);
 		const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
-		writeFileSync(resolve(target, "package.json"), JSON.stringify(pkgJson, null, 2) + "\n");
+		writeFileSync(resolve(target, "package.json"), `${JSON.stringify(pkgJson, null, 2)}\n`);
 
 		const opts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
 		const files = generateProjectFiles(target, opts);
