@@ -148,7 +148,9 @@ describe('Inertia adapter', () => {
     expect(res.status).toBe(200);
     expect(res.headers.get('content-type')).toMatch(/text\/html/);
     const html = await res.text();
-    expect(html).toContain('<div id="app" data-page=');
+    // Inertia v3 protocol: page data in <script data-page="app"> tag
+    expect(html).toContain('<script data-page="app" type="application/json">');
+    expect(html).toContain('<div id="app">');
     expect(html).toContain('Home');
     expect(html).toContain('hello');
   });

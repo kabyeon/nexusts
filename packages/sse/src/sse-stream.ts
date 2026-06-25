@@ -69,8 +69,10 @@ export class SseStream implements SseStreamController {
 		if (this.#pendingWrites.size > 0) {
 			await Promise.allSettled([...this.#pendingWrites]);
 		}
-		await this.#api.close();
+		// Fire cleanup callbacks before closing the underlying transport so
+		// that callers (e.g. clearInterval) run before the stream is torn down.
 		this.#fireClose();
+		await this.#api.close();
 	}
 
 	/** Register a cleanup callback. */

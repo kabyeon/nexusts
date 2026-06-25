@@ -277,8 +277,8 @@ describe("make:migration with --dialect", () => {
 });
 
 describe("nx db:migrate command exists", () => {
-	it("exports the db:migrate command with new name and aliases", () => {
-		const mod = require("../../src/cli/commands/db-migrate.js");
+	it("exports the db:migrate command with new name and aliases", async () => {
+		const mod = await import("../../src/cli/commands/db-migrate.js");
 		expect(mod.default.name).toBe("db:migrate");
 		// Old alias kept for backward-compat
 		expect(mod.default.aliases).toContain("migrate");

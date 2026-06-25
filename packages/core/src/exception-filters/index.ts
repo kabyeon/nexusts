@@ -29,6 +29,10 @@
 import "reflect-metadata";
 import { HttpException } from "./http-exception.js";
 import {
+	ValidationError,
+	formatValidationError,
+} from "../validation/validator.js";
+import {
 	EXCEPTION_FILTERS_METADATA,
 	CONTROLLER_EXCEPTION_FILTERS_METADATA,
 } from "../constants.js";
@@ -128,6 +132,14 @@ export function createDefaultExceptionFilter(): ExceptionFilter {
 			if (error instanceof HttpException) {
 				return new Response(JSON.stringify(error.toJSON()), {
 					status: error.statusCode,
+					headers: { "Content-Type": "application/json" },
+				});
+			}
+
+			if (error instanceof ValidationError) {
+				const { status, body } = formatValidationError(error);
+				return new Response(JSON.stringify(body), {
+					status,
 					headers: { "Content-Type": "application/json" },
 				});
 			}
