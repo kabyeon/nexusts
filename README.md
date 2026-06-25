@@ -11,13 +11,9 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance × TC39 standard ES decorators.
 
-> **v0.9.0 — Standard decorator migration.** The
-> framework now ships **32 independent modules**. Tier 1 and Tier 2
-> gaps from the NestJS / AdonisJS gap analyses are fully closed.
-> v0.8 adds Inertia React/Vue SSR scaffold (`nx init`/`nx new`),
-> `InertiaConfig.scripts` for client script injection, CLI input
-> validation, and --no-interaction flag fix. See
-> [CHANGELOG.md](./CHANGELOG.md) for the full v0.8 release notes.
+> **v0.9.0 — Standard decorator migration.** TC39 standard ES
+> decorators, no reflect-metadata. Field injection, `ctx.req.*` methods.
+> 32 independent modules. See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 ---
 
@@ -479,6 +475,23 @@ const id = inputValue(ctx.req.param('id')).number().required().value();
 
 ## Validation with Zod
 
+In standard decorator mode, validate directly with `schema.parse()`:
+
+```ts
+const CreateUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
+@Post('/')
+async create(ctx: Context) {
+  const body = CreateUserSchema.parse(await ctx.req.json());
+  return this.users.create(body);
+}
+```
+
+For legacy mode (`experimentalDecorators: true`), use `@Validate`:
+
 ```ts
 @Post('/')
 @Validate({
@@ -888,7 +901,7 @@ is the classic **Post/Redirect/Get**:
 
 ```ts
 import { z } from 'zod';
-import { Body, Controller, Post } from '@nexusts/core';
+import { Controller, Post } from '@nexusts/core';
 import { Inertia } from '@nexusts/view/inertia';
 
 const UserSchema = z.object({
@@ -898,7 +911,7 @@ const UserSchema = z.object({
 
 @Controller('/users')
 class UserController {
-  constructor(@Inject(Inertia.TOKEN) private inertia: Inertia) {}
+  @Inject(Inertia.TOKEN) declare inertia: Inertia;
 
   @Post('/')
   async store(ctx: Context) {
@@ -1081,7 +1094,7 @@ src/
 ### Examples
 
 ```
-examples/                                  # 33 working examples
+examples/                                  # 34 working examples
 ├── 01-basic-mvc/                          # one per module
 ├── 02-routing-styles/
 ├── 03-drizzle-crud/
@@ -1100,7 +1113,7 @@ examples/                                  # 33 working examples
 Every example is runnable as `cd examples/NN-name && bun main.ts`.
 The smoke test suite (`bun x vitest run tests/examples/`) boots
 each one in a subprocess, watches for a "listening" log line, and
-verifies a clean exit. 67 tests in ~2 seconds.
+verifies a clean exit. 70 tests in ~2 seconds.
 
 ---
 
