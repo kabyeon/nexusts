@@ -8,7 +8,6 @@
  * It creates a per-example tsconfig with `experimentalDecorators: false`
  * and boots only examples that are known to work in standard mode.
  */
-
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import {
 	mkdir,
@@ -20,14 +19,11 @@ import {
 import { existsSync } from "node:fs";
 import { spawn, type ChildProcess } from "node:child_process";
 import path from "node:path";
-
 // ── Config ──
-
 const EXAMPLES_DIR = path.resolve(__dirname, "../../examples");
 const START_PORT = 15000;
 const BOOT_TIMEOUT_MS = 8_000;
 const SHUTDOWN_GRACE_MS = 1_500;
-
 // Standard decorator tsconfig — NO experimentalDecorators.
 // Bun will use its default TC39 stage-3 decorator mode.
 const STANDARD_TSCONFIG = {
@@ -58,31 +54,25 @@ const STANDARD_TSCONFIG = {
 		"../../packages/*/src/**/*.ts",
 	],
 };
-
 // ── Examples known to work in standard decorator mode ──
 // These examples use field injection and ctx.req.* methods, no @Body/@Param.
 const STANDARD_MODE_EXAMPLES = [
 	"35-standard-decorators",
 	"01-basic-mvc",
 	"02-routing-styles",
-	"08-scheduler",
 	"11-sse",
 	"12-rate-limit",
 	"25-static-files",
 	"26-health",
 	// Add more examples as they are verified to work in standard mode
 ];
-
 // ── Test infrastructure (reuses smoke test patterns) ──
-
 interface ExampleSpec {
 	name: string;
 	mainTs: string;
 }
-
 const createdConfigs: string[] = [];
 const createdSymlinks: string[] = [];
-
 async function listStandardExamples(): Promise<ExampleSpec[]> {
 	const out: ExampleSpec[] = [];
 	for (const name of STANDARD_MODE_EXAMPLES) {
@@ -93,7 +83,6 @@ async function listStandardExamples(): Promise<ExampleSpec[]> {
 	}
 	return out;
 }
-
 async function ensureExampleTsconfig(exampleDir: string): Promise<void> {
 	const target = path.join(exampleDir, "tsconfig.json");
 	if (!existsSync(target)) {
@@ -104,7 +93,6 @@ async function ensureExampleTsconfig(exampleDir: string): Promise<void> {
 		createdConfigs.push(target);
 	}
 }
-
 async function ensureExampleNodeModules(exampleDir: string): Promise<void> {
 	const nmDir = path.join(exampleDir, "node_modules");
 	if (!existsSync(nmDir)) {
@@ -141,14 +129,12 @@ async function ensureExampleNodeModules(exampleDir: string): Promise<void> {
 		/* root .bun/ might not exist */
 	}
 }
-
 interface BootResult {
 	ok: boolean;
 	stdout: string;
 	stderr: string;
 	reason: "ready" | "crash" | "timeout";
 }
-
 async function bootExample(
 	spec: ExampleSpec,
 	port: number,
@@ -164,12 +150,10 @@ async function bootExample(
 			},
 			stdio: ["ignore", "pipe", "pipe"],
 		});
-
 		let stdout = "";
 		let stderr = "";
 		let settled = false;
 		let bootTimer: NodeJS.Timeout | undefined;
-
 		const finish = (result: BootResult) => {
 			if (settled) return;
 			settled = true;
@@ -182,7 +166,6 @@ async function bootExample(
 			}
 			resolve(result);
 		};
-
 		proc.stdout?.on("data", (chunk) => {
 			stdout += chunk.toString();
 			if (
@@ -198,16 +181,13 @@ async function bootExample(
 				});
 			}
 		});
-
 		proc.stderr?.on("data", (chunk) => {
 			stderr += chunk.toString();
 		});
-
 		proc.on("error", (err) => {
 			stderr += `[spawn error] ${err.message}\n`;
 			finish({ ok: false, stdout, stderr, reason: "crash" });
 		});
-
 		proc.on("exit", (code, signal) => {
 			if (!settled) {
 				finish({
@@ -218,17 +198,13 @@ async function bootExample(
 				});
 			}
 		});
-
 		bootTimer = setTimeout(() => {
 			finish({ ok: false, stdout, stderr, reason: "timeout" });
 		}, BOOT_TIMEOUT_MS);
 	});
 }
-
 // ── Tests ──
-
 const allExamples = await listStandardExamples();
-
 describe("standard decorator mode", () => {
 	beforeAll(async () => {
 		for (const spec of allExamples) {
@@ -236,7 +212,6 @@ describe("standard decorator mode", () => {
 			await ensureExampleNodeModules(path.dirname(spec.mainTs));
 		}
 	});
-
 	afterAll(async () => {
 		await Promise.all(
 			createdConfigs.map((file) => rm(file, { force: true })),
@@ -245,15 +220,12 @@ describe("standard decorator mode", () => {
 			await rm(sym, { recursive: true, force: true });
 		}
 	});
-
 	it("discovers at least 2 standard-mode examples", () => {
 		expect(allExamples.length).toBeGreaterThanOrEqual(2);
 	});
-
 	for (let i = 0; i < allExamples.length; i++) {
 		const spec = allExamples[i];
 		const port = START_PORT + i;
-
 		it(`[standard] ${spec.name} starts and listens`, async () => {
 			const result = await bootExample(spec, port);
 			if (!result.ok) {

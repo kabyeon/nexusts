@@ -16,7 +16,6 @@ import {
   Inject,
   Module,
 } from "@nexusts/core";
-import "reflect-metadata";
 import {
   GrpcModule,
   GrpcService as GrpcSvcClass,
