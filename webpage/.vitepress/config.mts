@@ -116,19 +116,16 @@ export default defineConfig({
     ['meta', { property: 'og:description', content: 'Bun-native fullstack framework — 32 modular packages under @nexusts/*' }],
     ['script', {}, `
 (function(){
-  var en="/nexusts/", ko=en+"ko/";
+  var en="/nexusts/",ko=en+"ko/",p=window.location.pathname;
   function fix(){
     var m=document.querySelector(".VPNavBarTranslations .menu .items");
-    if(!m||(m.querySelector(".VPMenuLink")&&!m.querySelector(".title")))return;
-    m.innerHTML='<div class="VPMenuLink"><a class="VPLink link" href="'+en+'"><span>English</span></a></div>'+
-      '<div class="VPMenuLink"><a class="VPLink link" href="'+ko+'"><span>\uD55C\uAD6D\uC5B4</span></a></div>';
+    if(!m||(m.querySelector(".nx-lang-item")&&!m.querySelector(".title")))return;
+    m.innerHTML='<div class="nx-lang-item'+(p.indexOf(ko)>=0?'':' nx-lang-active')+'"><a class="VPLink link" href="'+en+'"><span class="nx-lang-code">EN</span><span class="nx-lang-name">English</span></a></div><div class="nx-lang-item'+(p.indexOf(ko)>=0?' nx-lang-active':'')+'"><a class="VPLink link" href="'+ko+'"><span class="nx-lang-code">KO</span><span class="nx-lang-name">한국어</span></a></div>';
   }
   setTimeout(fix,200);
   var obs=new MutationObserver(fix);
-  setTimeout(function(){
-    var e=document.querySelector(".VPNavBarTranslations");
-    if(e)obs.observe(e,{childList:true,subtree:true});
-  },300);
+  setTimeout(function(){var e=document.querySelector(".VPNavBarTranslations");if(e)obs.observe(e,{childList:true,subtree:true})},300);
+  document.addEventListener('astro:after-swap',fix);
 })();
 `],
   ],
