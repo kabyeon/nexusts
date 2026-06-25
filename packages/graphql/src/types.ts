@@ -1,5 +1,5 @@
 /**
- * `nexusjs/graphql` — code-first GraphQL via Bun-native executor.
+ * `@nexusts/graphql` — code-first GraphQL via Bun-native executor.
  *
  * Public types and interfaces. The framework exposes a minimal but
  * complete GraphQL surface (queries, mutations, subscriptions,

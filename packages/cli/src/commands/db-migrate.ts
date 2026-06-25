@@ -9,7 +9,7 @@
  *
  *      Implementation: spawns `bunx drizzle-kit migrate` if the
  *      drizzle-kit binary is on PATH; otherwise runs an in-process
- *      migration script that uses `nexusjs/drizzle`'s
+ *      migration script that uses `@nexusts/drizzle`'s
  *      `db.migrate(folder)` directly.
  *
  *   2. **`--status`**: list applied migrations + pending count.

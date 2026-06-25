@@ -7,7 +7,7 @@
  * @example
  * ```ts
  * import { z } from "zod";
- * import { createInsertSchema, createSelectSchema } from "nexusjs/drizzle/validation";
+ * import { createInsertSchema, createSelectSchema } from "@nexusts/drizzle/validation";
  * import { users } from "../schema/users.js";
  *
  * const insertUserSchema = createInsertSchema(users);
@@ -145,7 +145,7 @@ function zodSchemaFromColumns(
 	const zod = loadZod();
 	if (!zod) {
 		throw new Error(
-			"[nexusjs/drizzle/validation] `zod` is required. Install with `bun add zod`.",
+			"[@nexusts/drizzle/validation] `zod` is required. Install with `bun add zod`.",
 		);
 	}
 

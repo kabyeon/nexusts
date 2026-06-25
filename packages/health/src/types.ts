@@ -1,5 +1,5 @@
 /**
- * Health check types — the contract for `nexusjs/health`.
+ * Health check types — the contract for `@nexusts/health`.
  *
  * Mirrors `@nestjs/terminus` and `@adonisjs/health`. Three check
  * kinds:

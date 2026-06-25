@@ -1,11 +1,11 @@
 /**
- * Public API for `nexusjs/static`.
+ * Public API for `@nexusts/static`.
  *
  * Quick start:
  *
  *   // src/app/app.module.ts
  *   import { Module } from 'nexusjs';
- *   import { StaticModule } from 'nexusjs/static';
+ *   import { StaticModule } from '@nexusts/static';
  *
  *   @Module({
  *     imports: [
@@ -18,7 +18,7 @@
  *   export class AppModule {}
  *
  *   // any service that needs to mount the middleware on a sub-app
- *   import { StaticService } from 'nexusjs/static';
+ *   import { StaticService } from '@nexusts/static';
  *
  *   @Injectable()
  *   class CustomServer {

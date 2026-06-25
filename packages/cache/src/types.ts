@@ -1,5 +1,5 @@
 /**
- * `nexusjs/cache` — application-level caching.
+ * `@nexusts/cache` — application-level caching.
  *
  * Two backends ship out of the box:
  *   - `MemoryStore`  — single-process LRU with TTL eviction

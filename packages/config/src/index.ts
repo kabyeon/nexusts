@@ -1,5 +1,5 @@
 /**
- * Public API for `nexusjs/config`.
+ * Public API for `@nexusts/config`.
  *
  * Quick start:
  *
@@ -12,7 +12,7 @@
  *
  *   // src/app/app.module.ts
  *   import { Module } from 'nexusjs';
- *   import { ConfigModule } from 'nexusjs/config';
+ *   import { ConfigModule } from '@nexusts/config';
  *
  *   @Module({
  *     imports: [
@@ -24,7 +24,7 @@
  *   export class AppModule {}
  *
  *   // any service
- *   import { ConfigService } from 'nexusjs/config';
+ *   import { ConfigService } from '@nexusts/config';
  *
  *   class MyService {
  *     constructor(

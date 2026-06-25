@@ -9,7 +9,7 @@
  *
  * Install (optional peer dep): `bun add eta`
  *
- *   import { EtaAdapter } from "nexusjs/view";
+ *   import { EtaAdapter } from "@nexusts/view";
  *   const eta = new EtaAdapter();
  *   const html = await eta.render("<h1><%= it.title %></h1>", { title: "Hi" });
  *

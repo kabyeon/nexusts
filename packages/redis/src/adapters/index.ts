@@ -1,5 +1,5 @@
 /**
- * Runtime detection and factory for `nexusjs/redis` adapters.
+ * Runtime detection and factory for `@nexusts/redis` adapters.
  *
  * - `Bun` → `BunRedisAdapter` (built-in `Bun.redis`, no extra package).
  * - `node` → `NodeRedisAdapter` (uses `ioredis` — install separately).

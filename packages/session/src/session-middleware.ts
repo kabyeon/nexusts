@@ -11,7 +11,7 @@
  *
  * Usage (manual, when SessionModule.forRoot is not used):
  *
- *   import { sessionMiddleware } from 'nexusjs/session';
+ *   import { sessionMiddleware } from '@nexusts/session';
  *   const sessions = app.container.resolve(SessionService.TOKEN);
  *   app.server.app.use('*', sessionMiddleware(sessions, { cookieName: 'my_sid' }));
  */

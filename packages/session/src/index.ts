@@ -4,14 +4,14 @@
  * Two backends out of the box:
  *   - cookie   — HMAC-signed, stateless, edge-friendly
  *   - memory   — in-process, for tests and single-instance dev
- *   - redis    — multi-pod via `nexusjs/redis` (Bun/Node/Workers KV)
- *   - cloudflare-kv — Workers KV (via `nexusjs/redis` cloudflare adapter)
+ *   - redis    — multi-pod via `@nexusts/redis` (Bun/Node/Workers KV)
+ *   - cloudflare-kv — Workers KV (via `@nexusts/redis` cloudflare adapter)
  *
  * Quick start:
  *
  *   // src/app/app.module.ts
  *   import { Module } from 'nexusjs';
- *   import { SessionModule } from 'nexusjs/session';
+ *   import { SessionModule } from '@nexusts/session';
  *
  *   @Module({
  *     imports: [
@@ -24,7 +24,7 @@
  *   export class AppModule {}
  *
  *   // any controller
- *   import { SessionService, Session } from 'nexusjs/session';
+ *   import { SessionService, Session } from '@nexusts/session';
  *
  *   class CartController {
  *     @Post('/')

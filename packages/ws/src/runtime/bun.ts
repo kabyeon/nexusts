@@ -1,5 +1,5 @@
 /**
- * Bun runtime adapter for `nexusjs/ws`.
+ * Bun runtime adapter for `@nexusts/ws`.
  *
  * Uses Hono's `createBunWebSocket` to bridge Hono's `WSEvents`
  * to Bun's native WebSocket API.

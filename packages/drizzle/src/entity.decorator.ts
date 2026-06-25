@@ -7,7 +7,7 @@
  *
  * @example
  * ```ts
- * import { Entity, DrizzleRepository, DrizzleService } from "nexusjs/drizzle";
+ * import { Entity, DrizzleRepository, DrizzleService } from "@nexusts/drizzle";
  * import { users } from "../schema/users.js";
  *
  * @Entity(users)

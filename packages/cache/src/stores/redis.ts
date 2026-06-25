@@ -1,12 +1,12 @@
 /**
- * `RedisCacheStore` — a `CacheStore` backed by `nexusjs/redis`.
+ * `RedisCacheStore` — a `CacheStore` backed by `@nexusts/redis`.
  *
  * Works on **Bun** (`Bun.redis`), **Node** (`ioredis`), and
  * **Cloudflare Workers KV** (via `CloudflareKVAdapter`). The
  * same adapter selection applies as for sessions.
  *
- *   import { CacheService } from 'nexusjs/cache';
- *   import { RedisCacheStore, createRedisClient } from 'nexusjs/redis';
+ *   import { CacheService } from '@nexusts/cache';
+ *   import { RedisCacheStore, createRedisClient } from '@nexusts/redis';
  *
  *   const cache = new CacheService({
  *     store: new RedisCacheStore(createRedisClient({ url: 'redis://localhost:6379' }), {

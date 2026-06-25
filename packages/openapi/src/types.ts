@@ -1,6 +1,6 @@
 /**
 import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
- * `nexusjs/openapi` — OpenAPI 3.1 + Scalar UI.
+ * `@nexusts/openapi` — OpenAPI 3.1 + Scalar UI.
  *
  *   @Module({
  *     imports: [

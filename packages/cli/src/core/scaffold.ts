@@ -180,7 +180,7 @@ function generateEnvFile(): string {
 		"# ── Database: MySQL ──",
 		"# DATABASE_URL=mysql://user:password@localhost:3306/myapp",
 		"",
-		"# ── Better Auth (if using nexusjs/auth) ──",
+		"# ── Better Auth (if using @nexusts/auth) ──",
 		"# BETTER_AUTH_SECRET=",
 		"# BETTER_AUTH_URL=http://localhost:3000",
 	].join("\n") + "\n";

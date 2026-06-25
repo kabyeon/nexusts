@@ -1,7 +1,7 @@
 /**
- * Public types for `nexusjs/redis`.
+ * Public types for `@nexusts/redis`.
  *
- * `nexusjs/redis` is a thin, runtime-aware abstraction over a
+ * `@nexusts/redis` is a thin, runtime-aware abstraction over a
  * Redis-compatible key-value store. The same API works on:
  *
  * - **Bun** (primary): uses the built-in `Bun.redis` — no

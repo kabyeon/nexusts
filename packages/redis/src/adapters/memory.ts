@@ -1,5 +1,5 @@
 /**
- * In-memory adapter for `nexusjs/redis`.
+ * In-memory adapter for `@nexusts/redis`.
  *
  * Used for tests and single-process dev. Not cluster-safe; values
  * don't survive process restart.

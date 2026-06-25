@@ -1,5 +1,5 @@
 /**
- * `nexusjs/i18n` — internationalization for the Bun-native stack.
+ * `@nexusts/i18n` — internationalization for the Bun-native stack.
  *
  * Public API:
  * - `I18nService` — the main service. Translates messages,
@@ -17,7 +17,7 @@
  * Quick start:
  *
  *   import { Module } from "nexusjs";
- *   import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "nexusjs/i18n";
+ *   import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@nexusts/i18n";
  *
  *   @Module({
  *     imports: [

@@ -16,7 +16,7 @@
  * ```ts
  * // Svelte 5
  * import HomePage from './pages/Home.svelte';
- * import { createSvelteAdapter } from 'nexusjs/view/inertia/ssr';
+ * import { createSvelteAdapter } from '@nexusts/view/inertia/ssr';
  * app.inertia.setSsrAdapter(createSvelteAdapter({ components: { Home: HomePage } }));
  *
  * // Svelte 4 — same call; the adapter detects the API at runtime.

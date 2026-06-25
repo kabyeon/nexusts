@@ -1,5 +1,5 @@
 /**
- * Runtime adapter types for `nexusjs/ws`.
+ * Runtime adapter types for `@nexusts/ws`.
  */
 
 import type { WebSocketClient } from "../types.js";

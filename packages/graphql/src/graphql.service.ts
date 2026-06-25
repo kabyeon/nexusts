@@ -57,7 +57,7 @@ export async function loadGraphQLJs(): Promise<GraphQLJs> {
 	if (_graphql) return _graphql;
 	if (_loadAttempted) {
 		throw new Error(
-			"[nexusjs/graphql] The optional `graphql` package failed to load. " +
+			"[@nexusts/graphql] The optional `graphql` package failed to load. " +
 				"Install it with `bun add graphql` to use the GraphQL module.",
 		);
 	}
@@ -68,7 +68,7 @@ export async function loadGraphQLJs(): Promise<GraphQLJs> {
 		return mod;
 	} catch (err) {
 		throw new Error(
-			"[nexusjs/graphql] The `graphql` package is required for execution. " +
+			"[@nexusts/graphql] The `graphql` package is required for execution. " +
 				"Install it with `bun add graphql`. " +
 				"Original error: " + (err as Error).message,
 		);
@@ -183,7 +183,7 @@ export class GraphQLService {
 
 			if (sdl.length === 0 && !autoSchema && !hasResolvers) {
 				throw new Error(
-					"[nexusjs/graphql] No typeDefs configured. " +
+					"[@nexusts/graphql] No typeDefs configured. " +
 						"Pass `typeDefs: '...'` to GraphQLModule.forRoot(), " +
 						"or set `autoSchema: true` and use `@Resolver` + `@Query` / `@Mutation` decorators.",
 				);

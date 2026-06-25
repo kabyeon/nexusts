@@ -2,7 +2,7 @@
  * `@Session()` — controller parameter decorator that injects the
  * current session record (or null when unauthenticated).
  *
- * Mirrors `@CurrentUser()` from `nexusjs/auth` (shorter name follows
+ * Mirrors `@CurrentUser()` from `@nexusts/auth` (shorter name follows
  * the same convention as `@Req()` / `@Body()` / `@Ctx()` — the most
  * common request decorator).
  *

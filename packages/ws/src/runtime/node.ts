@@ -1,5 +1,5 @@
 /**
- * Node runtime adapter for `nexusjs/ws`.
+ * Node runtime adapter for `@nexusts/ws`.
  *
  * Uses the `ws` package directly. The user provides a
  * `WebSocketServer` (or one is created automatically) and the

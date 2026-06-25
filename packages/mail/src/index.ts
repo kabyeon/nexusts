@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/mail`.
+ * Public entry point for `@nexusts/mail`.
  */
 export * from "./types.js";
 export {

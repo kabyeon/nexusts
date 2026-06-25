@@ -11,13 +11,13 @@
  *
  *   // src/app/app.module.ts
  *   import { Module } from 'nexusjs';
- *   import { EventsModule } from 'nexusjs/events';
+ *   import { EventsModule } from '@nexusts/events';
  *
  *   @Module({ imports: [EventsModule.forRoot()] })
  *   export class AppModule {}
  *
  *   // any service
- *   import { EventService, OnEvent, scanForListeners } from 'nexusjs/events';
+ *   import { EventService, OnEvent, scanForListeners } from '@nexusts/events';
  *
  *   @Injectable()
  *   class EmailListeners {

@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/resilience`.
+ * Public entry point for `@nexusts/resilience`.
  *
  *   import {
  *     ResilienceModule, ResilienceService,

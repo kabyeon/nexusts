@@ -1,7 +1,7 @@
 /**
- * Public types for `nexusjs/grpc`.
+ * Public types for `@nexusts/grpc`.
  *
- * `nexusjs/grpc` is a reflection-based gRPC integration. The user
+ * `@nexusts/grpc` is a reflection-based gRPC integration. The user
  * provides a `.proto` file and a service implementation class
  * with `@GrpcService` / `@GrpcMethod` decorators. The framework
  * loads the proto at runtime and wires the methods to the

@@ -1,7 +1,7 @@
 /**
- * Public types for `nexusjs/tracing`.
+ * Public types for `@nexusts/tracing`.
  *
- * `nexusjs/tracing` is a thin, ergonomic wrapper around the
+ * `@nexusts/tracing` is a thin, ergonomic wrapper around the
  * OpenTelemetry API (and, when configured, the SDK). It is
  * intentionally minimal — no global side effects on import.
  *
@@ -33,7 +33,7 @@ export interface TracingConfig {
 	sampleRatio?: number;
 	/** Whether to install the Hono HTTP server middleware. Default: `true`. */
 	enableHttpInstrumentation?: boolean;
-	/** Whether to capture DB spans via `nexusjs/drizzle` (if installed). Default: `true`. */
+	/** Whether to capture DB spans via `@nexusts/drizzle` (if installed). Default: `true`. */
 	enableDbInstrumentation?: boolean;
 	/** Extra static resource attributes (service.namespace, deployment.id, ...). */
 	resourceAttributes?: Record<string, string>;

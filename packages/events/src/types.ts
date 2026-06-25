@@ -1,5 +1,5 @@
 /**
- * Event System types — the public contract for `nexusjs/events`.
+ * Event System types — the public contract for `@nexusts/events`.
  *
  * Mirrors `@nestjs/event-emitter` and AdonisJS's emitter:
  *   - `emit(name, payload)` to dispatch an event
@@ -9,7 +9,7 @@
  *   - Guards (`if` predicate) for conditional handling
  *   - Sync and async listeners
  *
- * The events module is separate from `nexusjs/core` and ships as its
+ * The events module is separate from `@nexusts/core` and ships as its
  * own bundle entry point.
  */
 

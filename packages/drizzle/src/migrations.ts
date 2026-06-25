@@ -6,7 +6,7 @@
  *
  * @example
  * ```ts
- * import { generateMigrations } from "nexusjs/drizzle";
+ * import { generateMigrations } from "@nexusts/drizzle";
  *
  * await generateMigrations({
  *   schema: ["./src/schema/users.ts", "./src/schema/posts.ts"],

@@ -9,7 +9,7 @@
  * Usage:
  *
  * ```ts
- * import { createReactAdapter } from 'nexusjs/view/inertia/ssr';
+ * import { createReactAdapter } from '@nexusts/view/inertia/ssr';
  * import { HomePage, UsersIndexPage } from './pages';
  *
  * app.inertia.setSsrAdapter(createReactAdapter({

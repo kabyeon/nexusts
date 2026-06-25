@@ -5,7 +5,7 @@
  * `import { ... } from 'nexusjs'` without reaching into subpaths.
  *
  * Public surface intentionally stays small; advanced users can deep-import
- * from `nexusjs/core/<module>` for sub-paths.
+ * from `@nexusts/core/<module>` for sub-paths.
  */
 
 // Decorators

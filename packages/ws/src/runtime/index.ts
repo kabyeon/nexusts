@@ -1,5 +1,5 @@
 /**
- * Runtime detection & helper for `nexusjs/ws`.
+ * Runtime detection & helper for `@nexusts/ws`.
  */
 
 export type WsRuntime = "bun" | "node" | "cloudflare" | "unknown";

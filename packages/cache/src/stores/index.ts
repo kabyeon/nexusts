@@ -6,6 +6,6 @@ export type { MemoryStoreOptions } from "./memory.js";
 export { DrizzleCacheStore } from "./drizzle.js";
 export type { DrizzleCacheOptions } from "./drizzle.js";
 
-// Redis / Workers KV cache store (uses `nexusjs/redis`).
+// Redis / Workers KV cache store (uses `@nexusts/redis`).
 export { RedisCacheStore } from "./redis.js";
 export type { RedisCacheStoreOptions } from "./redis.js";

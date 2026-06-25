@@ -54,7 +54,7 @@ export class StaticModule {
 	 * without going through DI.
 	 *
 	 * ```ts
-	 * import { StaticModule } from 'nexusjs/static';
+	 * import { StaticModule } from '@nexusts/static';
 	 * const app = new Application(AppModule);
 	 * app.server.app.use('/static/*', StaticModule.mount({
 	 *   root: './public',

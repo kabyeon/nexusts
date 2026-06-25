@@ -10,7 +10,7 @@
  *
  *   // src/app/app.module.ts
  *   import { Module } from 'nexusjs';
- *   import { QueueModule } from 'nexusjs/queue';
+ *   import { QueueModule } from '@nexusts/queue';
  *
  *   @Module({
  *     imports: [
@@ -23,7 +23,7 @@
  *   export class AppModule {}
  *
  *   // any controller or service
- *   import { QueueService } from 'nexusjs/queue';
+ *   import { QueueService } from '@nexusts/queue';
  *
  *   class SignupController {
  *     constructor(@Inject(QueueService.TOKEN) private queue: QueueService) {}

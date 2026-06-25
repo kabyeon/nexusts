@@ -1,5 +1,5 @@
 /**
- * `nexusjs/resilience` — public types and config.
+ * `@nexusts/resilience` — public types and config.
  *
  * The resilience module groups three classic distributed-systems
  * primitives — retry with backoff, circuit breaker, and bulkhead

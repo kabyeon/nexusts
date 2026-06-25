@@ -145,7 +145,7 @@ export interface AuthContext {
  * Type augmentation so the Hono context has `user` and `session` keys.
  *
  * Usage in user code:
- *   import type { AuthVariables } from 'nexusjs/auth';
+ *   import type { AuthVariables } from '@nexusts/auth';
  *   const app = new Hono<{ Variables: AuthVariables }>();
  */
 export type AuthVariables = {

@@ -1,5 +1,5 @@
 /**
- * `nexusjs/crypto` — encryption + password hashing.
+ * `@nexusts/crypto` — encryption + password hashing.
  *
  * Public API:
  * - `EncryptionService` — AES-256-GCM + HMAC sign/unsign.
@@ -21,7 +21,7 @@
  * Quick start:
  *
  *   import { Module } from "nexusjs";
- *   import { CryptoModule, EncryptionService, HashService } from "nexusjs/crypto";
+ *   import { CryptoModule, EncryptionService, HashService } from "@nexusts/crypto";
  *
  *   @Module({
  *     imports: [CryptoModule.forRoot({ key: process.env.APP_KEY! })],
@@ -47,7 +47,7 @@
  *   }
  *
  *   // Or use the standalone helpers without DI:
- *   import { scryptHash, scryptVerify } from "nexusjs/crypto";
+ *   import { scryptHash, scryptVerify } from "@nexusts/crypto";
  *   const hash = await scryptHash("hunter2");
  *   const ok = await scryptVerify(hash, "hunter2");
  */

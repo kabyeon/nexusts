@@ -1,5 +1,5 @@
 /**
- * Decorator barrel for `nexusjs/resilience`.
+ * Decorator barrel for `@nexusts/resilience`.
  *
  * The three method decorators (`@Retry`, `@CircuitBreaker`,
  * `@Bulkhead`) plus the combined `@Resilient` decorator are

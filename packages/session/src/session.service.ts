@@ -237,7 +237,7 @@ export class SessionService {
 					throw new Error(
 						'[session] backend=redis requires `redis` in config. ' +
 							'Provide `{ client: RedisClient, keyPrefix?: string }`. ' +
-							'Use `createRedisClient({ ... })` from `nexusjs/redis`.',
+							'Use `createRedisClient({ ... })` from `@nexusts/redis`.',
 					);
 				}
 				return new RedisSessionStorage(config.redis.client, {
@@ -249,7 +249,7 @@ export class SessionService {
 					throw new Error(
 						'[session] backend=cloudflare-kv requires `cloudflareKv` in config. ' +
 							'Provide `{ client: RedisClient, keyPrefix?: string }` where ' +
-							'`client` is a `CloudflareKVAdapter` from `nexusjs/redis`.',
+							'`client` is a `CloudflareKVAdapter` from `@nexusts/redis`.',
 					);
 				}
 				return new CloudflareKVSessionStorage(config.cloudflareKv.client, {

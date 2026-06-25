@@ -1,8 +1,8 @@
 /**
- * `RedisSessionStorage` — session storage backed by `nexusjs/redis`.
+ * `RedisSessionStorage` — session storage backed by `@nexusts/redis`.
  *
  * Works on **Bun** (`Bun.redis`), **Node** (`ioredis`), and any
- * other runtime via the runtime-aware `nexusjs/redis` package. For
+ * other runtime via the runtime-aware `@nexusts/redis` package. For
  * Cloudflare Workers / Pages KV storage, use
  * `CloudflareKVSessionStorage` instead — same API, different
  * adapter.
@@ -11,8 +11,8 @@
  * under `<prefix><id>`. Expiry is enforced via the KV store's
  * own TTL (Redis `EX`, KV `expirationTtl`).
  *
- *   import { SessionService } from 'nexusjs/session';
- *   import { RedisSessionStorage, createRedisClient } from 'nexusjs/redis';
+ *   import { SessionService } from '@nexusts/session';
+ *   import { RedisSessionStorage, createRedisClient } from '@nexusts/redis';
  *
  *   const redis = createRedisClient({ url: 'redis://localhost:6379' });
  *   const storage = new RedisSessionStorage(redis, { keyPrefix: 'sess:' });
@@ -331,7 +331,7 @@ export class RedisSessionStorage implements SessionStorage {
  * `CloudflareKVSessionStorage` — Cloudflare Workers KV backed
  * session storage. Same interface as `RedisSessionStorage`; the
  * underlying `RedisClient` is a `CloudflareKVAdapter` from
- * `nexusjs/redis`.
+ * `@nexusts/redis`.
  */
 export class CloudflareKVSessionStorage extends RedisSessionStorage {
 	override readonly name: "cloudflare-kv" = "cloudflare-kv" as const;

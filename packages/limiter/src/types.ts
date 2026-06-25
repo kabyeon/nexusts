@@ -1,5 +1,5 @@
 /**
- * `nexusjs/limiter` — rate limiting.
+ * `@nexusts/limiter` — rate limiting.
  *
  * Two ways to apply limits:
  *

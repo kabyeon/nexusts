@@ -1,6 +1,6 @@
 /**
 import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
- * `nexusjs/drizzle` — Drizzle ORM integration. Default ORM for NexusTS.
+ * `@nexusts/drizzle` — Drizzle ORM integration. Default ORM for NexusTS.
  *
  *   @Module({
  *     imports: [

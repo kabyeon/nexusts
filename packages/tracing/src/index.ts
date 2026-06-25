@@ -1,5 +1,5 @@
 /**
- * `nexusjs/tracing` — OpenTelemetry-based distributed tracing.
+ * `@nexusts/tracing` — OpenTelemetry-based distributed tracing.
  *
  * Public API:
  * - `TracingService`        — the main service (lives in DI)

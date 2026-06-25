@@ -1,5 +1,5 @@
 /**
- * `nexusjs/upload` — file upload helper.
+ * `@nexusts/upload` — file upload helper.
  *
  *   @Module({
  *     imports: [
@@ -76,7 +76,7 @@ export interface UploadConfig {
 	storage?: "memory";
 	/**
 	 * When set, parsed files are also pushed to the configured
-	 * `nexusjs/drive` storage under this prefix. The drive is
+	 * `@nexusts/drive` storage under this prefix. The drive is
 	 * resolved by the DI token string.
 	 */
 	driveToken?: string;

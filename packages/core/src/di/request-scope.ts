@@ -10,7 +10,7 @@
  *
  * Usage from anywhere (e.g. a service deeper in the call tree):
  *
- *   import { getRequest, getRequestScope } from 'nexusjs/core';
+ *   import { getRequest, getRequestScope } from '@nexusts/core';
  *
  *   function audit() {
  *     const req = getRequest();

@@ -1,6 +1,6 @@
 /**
 import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
- * `nexusjs/drive` — file storage abstraction.
+ * `@nexusts/drive` — file storage abstraction.
  *
  *   const drive = new DriveService({ driver: new LocalDriver({ root: '/var/data' }) });
  *   await drive.put('avatars/42.png', bytes, { contentType: 'image/png' });

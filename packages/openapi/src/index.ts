@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/openapi`.
+ * Public entry point for `@nexusts/openapi`.
  */
 export * from "./types.js";
 export { OpenAPIService } from "./openapi.service.js";

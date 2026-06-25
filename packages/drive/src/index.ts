@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/drive`.
+ * Public entry point for `@nexusts/drive`.
  */
 export * from "./types.js";
 export { MemoryDriver, LocalDriver, S3Driver } from "./drivers/index.js";

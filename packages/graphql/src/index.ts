@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/graphql`.
+ * Public entry point for `@nexusts/graphql`.
  */
 export * from "./types.js";
 export { GraphQLService, loadGraphQLJs } from "./graphql.service.js";

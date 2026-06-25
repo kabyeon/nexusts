@@ -1,5 +1,5 @@
 /**
- * `nexusjs/view` — view engine adapter + file-based view loader.
+ * `@nexusts/view` — view engine adapter + file-based view loader.
  *
  * Public API:
  * - `renderView(template, data, context?)` — render a view.

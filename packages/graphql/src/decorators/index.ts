@@ -1,5 +1,5 @@
 /**
- * Decorator barrel for `nexusjs/graphql`.
+ * Decorator barrel for `@nexusts/graphql`.
  */
 export { Resolver, isResolverClass, getResolverTypeName, getResolverFields, getRegisteredResolvers, clearResolverRegistry, pushResolverField } from "./resolver.js";
 export { Query, Mutation, Subscription } from "./query.js";

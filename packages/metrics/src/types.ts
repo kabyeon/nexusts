@@ -1,7 +1,7 @@
 /**
- * Public types for `nexusjs/metrics`.
+ * Public types for `@nexusts/metrics`.
  *
- * `nexusjs/metrics` is a Prometheus-compatible metrics collection
+ * `@nexusts/metrics` is a Prometheus-compatible metrics collection
  * library. It implements the four standard metric types (counter,
  * gauge, histogram, summary), label support, and the Prometheus /
  * OpenMetrics text exposition formats.

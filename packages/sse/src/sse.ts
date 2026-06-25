@@ -2,7 +2,7 @@
  * `sse()` — wrap a stream-producing callback in a Hono `streamSSE()`
  * call. Returns a `Response` with `text/event-stream` content type.
  *
- *   import { sse } from 'nexusjs/sse';
+ *   import { sse } from '@nexusts/sse';
  *
  *   @Get('/events')
  *   events(@Req() c: any) {
@@ -35,7 +35,7 @@ export function sse(
 	c: any,
 	handler: (stream: SseStreamController) => void | Promise<void>,
 ): Response {
-	// Lazy import keeps the top-level `nexusjs/sse` module from
+	// Lazy import keeps the top-level `@nexusts/sse` module from
 	// hard-depending on `hono/streaming` (Hono is already a peer).
 	const mod = require("hono/streaming") as typeof import("hono/streaming");
 	const response = mod.streamSSE(c, async (api) => {

@@ -16,7 +16,7 @@
  *
  * Usage:
  *   // src/auth/auth.ts
- *   import { createAuth } from 'nexusjs/auth';
+ *   import { createAuth } from '@nexusts/auth';
  *   export const auth = createAuth({
  *     basePath: '/api/auth',
  *     emailAndPassword: { enabled: true },

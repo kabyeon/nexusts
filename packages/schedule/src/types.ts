@@ -1,5 +1,5 @@
 /**
- * Schedule types — the public contract for `nexusjs/schedule`.
+ * Schedule types — the public contract for `@nexusts/schedule`.
  *
  * The schedule module wraps three kinds of recurring work:
  *

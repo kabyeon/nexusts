@@ -1,5 +1,5 @@
 /**
- * `nexusjs/grpc` — gRPC integration for the Bun-native stack.
+ * `@nexusts/grpc` — gRPC integration for the Bun-native stack.
  *
  * Public API:
  * - `GrpcService` — the main service. Owns the @grpc/grpc-js server

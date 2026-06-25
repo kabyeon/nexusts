@@ -1,5 +1,5 @@
 /**
- * `nexusjs/redis` — runtime-aware Redis-compatible key/value client.
+ * `@nexusts/redis` — runtime-aware Redis-compatible key/value client.
  *
  * Public API:
  * - `createRedisClient(config)` — factory; auto-detects the runtime
@@ -20,8 +20,8 @@
  * | Cloudflare Workers   | `cloudflare`    | none (Workers KV) |
  * | (other / no signal)  | `memory`        | none |
  *
- * Same API across runtimes — `nexusjs/session`, `nexusjs/cache`, and
- * `nexusjs/queue` (where applicable) all use the `RedisClient`
+ * Same API across runtimes — `@nexusts/session`, `@nexusts/cache`, and
+ * `@nexusts/queue` (where applicable) all use the `RedisClient`
  * interface so a single config switch chooses the backend.
  *
  *   bun add ioredis          # only for Node runtime

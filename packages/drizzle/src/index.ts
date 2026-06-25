@@ -1,5 +1,5 @@
 /**
- * Public entry point for `nexusjs/drizzle`.
+ * Public entry point for `@nexusts/drizzle`.
  */
 export * from "./types.js";
 export { DrizzleService } from "./drizzle.service.js";

@@ -5,7 +5,7 @@
  * uWebSockets and provides the fastest HTTP throughput in JavaScript.
  *
  * Usage:
- *   const { bunAdapter } = await import('nexusjs/runtime');
+ *   const { bunAdapter } = await import('@nexusts/runtime');
  *   bunAdapter(honoApp, 3000);
  */
 import type { Hono } from "hono";

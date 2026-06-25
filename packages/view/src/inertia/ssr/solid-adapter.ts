@@ -9,7 +9,7 @@
  *
  * ```ts
  * import HomePage from './pages/Home';
- * import { createSolidAdapter } from 'nexusjs/view/inertia/ssr';
+ * import { createSolidAdapter } from '@nexusts/view/inertia/ssr';
  *
  * app.inertia.setSsrAdapter(createSolidAdapter({
  *   components: { Home: HomePage },

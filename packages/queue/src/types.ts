@@ -1,5 +1,5 @@
 /**
- * Queue types — the public contract for `nexusjs/queue`.
+ * Queue types — the public contract for `@nexusts/queue`.
  *
  * The queue module provides an abstraction over two backends:
  *   - BullMQ     (Redis-backed, for Bun / Node / long-running servers)
