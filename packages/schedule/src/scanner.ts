@@ -1,9 +1,9 @@
 /**
  * Scanner bridge — connects the Application's provider scanner with the
  * ScheduleService. Lives in its own file to avoid circular imports
-import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
  * between schedule.module.ts and schedule.service.ts.
  */
+import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 import type { ScheduleService } from "./schedule.service.js";
 
 let _scheduleService: ScheduleService | null = null;
