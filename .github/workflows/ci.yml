@@ -88,6 +88,32 @@ jobs:
           NODE_NO_WARNINGS: "1"
 
   # ──────────────────────────────────────────────────────────────────────────
+  # Standard decorator mode (TC39 stage-3) — verifies examples work
+  # WITHOUT experimentalDecorators and WITHOUT reflect-metadata
+  # ──────────────────────────────────────────────────────────────────────────
+  test-standard-decorators:
+    name: "Standard decorators · Bun"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: |
+          bun install --no-frozen-lockfile
+          bun add -d better-auth @faker-js/faker 2>/dev/null || true
+
+      - name: Run standard decorator smoke tests
+        # Tests examples with experimentalDecorators: false — Bun's default
+        # TC39 stage-3 decorator mode. No reflect-metadata loaded.
+        run: bun x vitest run tests/examples/standard-smoke.test.ts
+
+  # ──────────────────────────────────────────────────────────────────────────
   # Lint
   # ──────────────────────────────────────────────────────────────────────────
   lint:
