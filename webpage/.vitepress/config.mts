@@ -117,21 +117,33 @@ export default defineConfig({
     ['script', {}, `
 (function(){
   var en="/nexusts/",ko=en+"ko/";
-  function p(){return window.location.pathname;}
   function fix(){
-    var m=document.querySelector(".VPNavBarTranslations .menu .items");
-    if(!m)return;
-    var pa=p();
-    m.innerHTML='<div class="nx-lang-item'+(pa.indexOf(ko)>=0?'':' nx-lang-active')+'"><a class="VPLink link" href="'+en+'"><span class="nx-lang-code">EN</span><span class="nx-lang-name">English</span></a></div><div class="nx-lang-item'+(pa.indexOf(ko)>=0?' nx-lang-active':'')+'"><a class="VPLink link" href="'+ko+'"><span class="nx-lang-code">KO</span><span class="nx-lang-name">한국어</span></a></div>';
+    var items=document.querySelector(".VPNavBarTranslations .menu .items");
+    if(!items)return;
+    var isKo=window.location.pathname.indexOf(ko)>=0;
+    var title=items.querySelector(".title");
+    var link=items.querySelector(".VPMenuLink");
+    if(!title||!link)return;
+    // Update existing link (always points to the non-current language)
+    var a=link.querySelector("a");
+    if(a){
+      a.href=isKo?en:ko;
+      a.textContent=isKo?"English":"한국어";
+    }
+    // Update title to link to current language
+    title.textContent=isKo?"한국어":"English";
+    title.style.cursor="pointer";
+    title.style.color="var(--vp-c-brand-1)";
+    title.style.fontWeight="600";
+    // Make title clickable
+    title.onclick=function(){window.location.href=isKo?ko:en;};
   }
-  setTimeout(fix,200);
+  setTimeout(fix,300);
   document.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('a');
-    if(t&&(t.href.indexOf(en)>=0||t.href.indexOf(ko)>=0))setTimeout(fix,300);
+    if(t&&(t.href.indexOf(en)>=0||t.href.indexOf(ko)>=0))setTimeout(fix,500);
   });
-  window.addEventListener('popstate',function(){setTimeout(fix,100);});
-  var obs=new MutationObserver(function(){setTimeout(fix,50);});
-  setTimeout(function(){var e=document.querySelector(".VPNavBarTranslations");if(e)obs.observe(e,{childList:true,subtree:true,attributes:true})},300);
+  window.addEventListener('popstate',function(){setTimeout(fix,200);});
 })();
 `],
   ],
