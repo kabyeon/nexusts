@@ -15,13 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.4] — 2026-06-26
 
-### Added
-
-
-- (none)
-
-
 ### Fixed
+
+- **Deep import resolution**: Include `src/constants.ts` in published
+  `@nexusts/core` package. The `src/di/standard-inject.ts` and
+  `src/di/standard-meta.ts` deep imports reference `../constants.js`,
+  which was missing from the published package, causing
+  `Cannot find module '../constants.js'` errors.
 
 
 - (none)
@@ -54,13 +54,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.2] — 2026-06-25
 
-### Added
-
-- (none)
-
 ### Fixed
 
-- (none)
+- **`@Inject` dual-mode**: The `@Inject(Token)` decorator now properly handles
+  property decorator mode (field injection like `@Inject(Inertia.TOKEN) declare inertia: Inertia`).
+  Previously it only supported parameter decorator mode (constructor injection).
+  Fixes scaffold-generated Inertia controllers and CRUD repositories.
+- **`bump-version.sh` script**: Added `scripts/bump-version.sh` for batch
+  version updates across all 32 packages.
 
 ### Added
 

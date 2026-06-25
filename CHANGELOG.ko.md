@@ -15,13 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.4] — 2026-06-26
 
-### 추가
-
-
-- (없음)
-
-
 ### 수정
+
+- **Deep import 해결**: `@nexusts/core` 패키지에 `src/constants.ts`를 포함.
+  `src/di/standard-inject.ts`와 `src/di/standard-meta.ts`가 `../constants.js`
+ 를 참조하는데, 이 파일이 npm 퍼블리시에 누락되어 `Cannot find module` 오류가
+  발생하던 문제를 해결.
 
 
 - (없음)
@@ -47,13 +46,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.9.2] — 2026-06-25
 
-### 추가
-
-- (없음)
-
 ### 수정
 
-- (없음)
+- **`@Inject` 듀얼모드**: `@Inject(Token)` 데코레이터가 프로퍼티 데코레이터
+  모드(필드 인젝션, 예: `@Inject(Inertia.TOKEN) declare inertia: Inertia`)를
+  정상 처리하도록 수정. 기존에는 파라미터 데코레이터 모드(생성자 인젝션)만
+  지원하여 스캐폴드된 Inertia 컨트롤러와 CRUD 리포지토리가 동작하지 않던
+  문제를 해결.
+- **`bump-version.sh` 스크립트 추가**: 32개 패키지 일괄 버전 업데이트를 위한
+  `scripts/bump-version.sh` 추가.
 
 ### 추가
 
