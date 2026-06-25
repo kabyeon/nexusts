@@ -14,6 +14,10 @@
  */
 import "reflect-metadata";
 import { METADATA_KEY } from "../constants.js";
+import {
+	getScope as getScopeStandard,
+	getFieldInjections,
+} from "./standard-inject.js";
 import type {
 	FactoryProvider,
 	InjectionToken,
@@ -107,9 +111,11 @@ export class DIContainer {
 		if (this.isClass(provider)) {
 			const dependencies = this.readClassDependencies(provider);
 			// Read scope from @Injectable({ scope }) metadata if present.
-			const classScope = Reflect.getMetadata("nexus:di:scope", provider) as
-				| ProviderScope
-				| undefined;
+			// Checks both legacy (reflect-metadata) and standard (Symbol.metadata).
+			const classScope =
+				(Reflect.getMetadata("nexus:di:scope", provider) as
+					| ProviderScope
+					| undefined) ?? getScopeStandard(provider);
 			return {
 				token: provider,
 				provider,
@@ -130,14 +136,23 @@ export class DIContainer {
 		};
 	}
 
-	/** Read constructor parameter types from a class using reflect-metadata. */
+	/** Read constructor parameter types + field injection tokens from a class. */
 	private readClassDependencies(cls: Type<any>): Set<InjectionToken<any>> {
+		const set = new Set<InjectionToken<any>>();
+
+		// Legacy: design:paramtypes (requires emitDecoratorMetadata).
 		const paramTypes: any[] =
 			Reflect.getMetadata(METADATA_KEY.PARAMTYPES, cls) || [];
-		const set = new Set<InjectionToken<any>>();
 		for (const t of paramTypes) {
 			if (t && t !== Object) set.add(t);
 		}
+
+		// Standard: field injection tokens from Symbol.metadata.
+		const fieldInjections = getFieldInjections(cls);
+		for (const token of Object.values(fieldInjections)) {
+			if (token) set.add(token);
+		}
+
 		return set;
 	}
 
@@ -251,6 +266,19 @@ export class DIContainer {
 		const provider = record.provider;
 
 		if (this.isClass(provider)) {
+			// ── Try standard field injection first ──
+			const fieldInjections = getFieldInjections(provider);
+			const hasFieldInjections = Object.keys(fieldInjections).length > 0;
+			if (hasFieldInjections) {
+				// Standard decorator mode: create instance bare, then inject fields.
+				const instance = new provider();
+				for (const [fieldName, token] of Object.entries(fieldInjections)) {
+					instance[fieldName] = this.resolve(token as InjectionToken<any>);
+				}
+				return instance;
+			}
+
+			// ── Legacy constructor injection ──
 			const paramTypes: any[] =
 				Reflect.getMetadata(METADATA_KEY.PARAMTYPES, provider) || [];
 			// Bun's TypeScript transformer does NOT emit `design:paramtypes`,
@@ -296,8 +324,19 @@ export class DIContainer {
 
 		if ("useClass" in provider) {
 			const ClassRef = (provider as any).useClass as Type<any>;
-			// Same logic as the bare-class branch: prefer @Inject tokens, fall
-			// back to design:paramtypes, throw on missing metadata.
+
+			// ── Standard field injection (useClass) ──
+			const fieldInjections = getFieldInjections(ClassRef);
+			const hasFieldInjections = Object.keys(fieldInjections).length > 0;
+			if (hasFieldInjections) {
+				const instance = new ClassRef();
+				for (const [fieldName, token] of Object.entries(fieldInjections)) {
+					instance[fieldName] = this.resolve(token as InjectionToken<any>);
+				}
+				return instance;
+			}
+
+			// ── Legacy constructor injection (useClass) ──
 			const paramTypes: any[] =
 				Reflect.getMetadata(METADATA_KEY.PARAMTYPES, ClassRef) || [];
 			const injectMap: Map<number, any> =
@@ -358,7 +397,7 @@ export class DIContainer {
 	}
 
 	private isClass(value: any): value is Type<any> {
-		return typeof value === "function";
+		return typeof value === "function" && !("provide" in value);
 	}
 
 	private tokenName(token: InjectionToken<any>): string {
