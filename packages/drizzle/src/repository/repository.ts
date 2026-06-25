@@ -39,10 +39,27 @@ export interface FindAllOptions {
 }
 
 export class DrizzleRepository<TTable = any, TRow = Record<string, unknown>> {
+	/**
+	 * Drizzle service instance. In legacy mode, injected via constructor.
+	 * In standard decorator mode (field injection), set via `@Inject`
+	 * on a subclass field, then read by the optional constructor.
+	 */
+	protected readonly db!: DrizzleService;
+
+	/**
+	 * Drizzle table reference. In legacy mode, passed as second
+	 * constructor arg. In standard decorator mode, the subclass
+	 * should declare a field initializer or use a getter override.
+	 */
+	protected readonly table!: TTable;
+
 	constructor(
-		protected readonly db: DrizzleService,
-		protected readonly table: TTable,
-	) {}
+		db?: DrizzleService,
+		table?: TTable,
+	) {
+		if (db !== undefined) (this as any).db = db;
+		if (table !== undefined) (this as any).table = table;
+	}
 
 	/** Direct Drizzle client (for advanced queries). */
 	get client(): any {

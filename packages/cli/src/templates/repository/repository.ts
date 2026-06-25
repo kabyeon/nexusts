@@ -1,5 +1,10 @@
 /**
- * Repository template.
+ * Repository template (standard decorator mode).
+ *
+ * Uses field injection (@Inject on fields) instead of constructor params.
+ * The parent DrizzleRepository accepts optional constructor args, so
+ * `super()` is safe with no arguments — fields are injected by the DI
+ * container after construction.
  *
  * Context:
  *   name          — PascalCase class name
@@ -17,10 +22,7 @@ import type { {{ name }}, New{{ name }} } from '../models/{{ kebab }}.model.js';
 
 @Injectable()
 export class {{ repository }} extends DrizzleRepository<typeof {{ snake }}, {{ name }}> {
-  constructor(
-    @Inject(DrizzleService.TOKEN) db: DrizzleService,
-  ) {
-    super(db, {{ snake }});
-  }
+  @Inject(DrizzleService.TOKEN) declare db: DrizzleService;
+  protected readonly table = {{ snake }};
 }
 `.trimStart();

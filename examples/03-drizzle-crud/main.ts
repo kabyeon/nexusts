@@ -26,7 +26,8 @@ export const users = sqliteTable("users", {
 // ─── 2. Repository — Lucid-style typed CRUD ───────────────────────
 @Injectable()
 export class UserRepository extends DrizzleRepository<typeof users> {
-  constructor() { super(users); }
+  @Inject(DrizzleService.TOKEN) declare db: DrizzleService;
+  protected readonly table = users;
 }
 
 // ─── 3. Controller ────────────────────────────────────────────────
