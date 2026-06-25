@@ -20,6 +20,7 @@
  */
 import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
+import { FIELDS_KEY } from "../di/standard-inject.js";
 
 export interface InjectableOptions {
 	scope?: "singleton" | "request" | "transient";
@@ -56,20 +57,50 @@ export function getScope(
  * Mark a parameter as resolved by a specific token instead of its declared
  * type. Useful for interfaces, abstract classes, or string tokens.
  *
+ * Works as both a parameter decorator (constructor injection) and
+ * a property decorator (field injection in standard mode).
+ *
  * @example
  * ```ts
+ * // Constructor parameter injection (legacy)
  * constructor(@Inject('CONFIG') private config: AppConfig) {}
+ *
+ * // Field injection (standard decorators, v0.9+)
+ * @Inject('CONFIG') declare config: AppConfig;
  * ```
  */
-export function Inject<T = any>(token: any): ParameterDecorator {
+export function Inject<T = any>(token: any): any {
 	return (
 		target: object,
 		propertyKey: string | symbol | undefined,
-		parameterIndex: number,
+		parameterIndex?: number,
 	) => {
+		// Property decorator mode: @Inject(Token) on a class field
+		// (parameterIndex is undefined, propertyKey is the field name)
+		if (
+			parameterIndex === undefined &&
+			(typeof propertyKey === "string" || typeof propertyKey === "symbol")
+		) {
+			const cls =
+				typeof target === "function" ? target : (target as any)?.constructor;
+			if (cls) {
+				const key =
+					typeof propertyKey === "symbol"
+						? propertyKey
+						: String(propertyKey);
+				const existing: Record<string | symbol, any> =
+					safeGetMeta(FIELDS_KEY, cls) ?? {};
+				existing[key] = token;
+				safeDefineMeta(FIELDS_KEY, existing, cls);
+			}
+			return;
+		}
+
+		// Parameter decorator mode: constructor(@Inject(Token) private svc: T)
+		const idx = parameterIndex as number;
 		const existing: Map<number, any> =
 			safeGetMeta(METADATA_KEY.INJECT, target) ?? new Map();
-		existing.set(parameterIndex, token);
+		existing.set(idx, token);
 		safeDefineMeta(METADATA_KEY.INJECT, existing, target);
 	};
 }
