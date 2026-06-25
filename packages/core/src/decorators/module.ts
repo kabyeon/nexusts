@@ -33,6 +33,21 @@ export function Module(options: ModuleOptions = {}): any {
 
 		// ── Legacy decorator mode ──
 		safeDefineMeta(METADATA_KEY.MODULE, options, target);
+		// Also store on __nexus_meta__ for cross-module consistency
+		// (legacy decorators may run in a different module context
+		// than the scanner that reads the metadata).
+		if (typeof target === "function") {
+			if (!(target as any).__nexus_meta__) {
+				Object.defineProperty(target, "__nexus_meta__", {
+					value: { [METADATA_KEY.MODULE]: options },
+					writable: true,
+					configurable: true,
+					enumerable: false,
+				});
+			} else {
+				(target as any).__nexus_meta__[METADATA_KEY.MODULE] = options;
+			}
+		}
 	};
 }
 
