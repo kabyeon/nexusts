@@ -177,7 +177,7 @@ const CONFIG_CANDIDATES = [
  *
  * Missing / unloadable config files are not fatal — we log a debug
  * message and use defaults so the CLI works in fresh projects where
- * `nexusjs` hasn't been installed yet.
+ * `nexusts` hasn't been installed yet.
  */
 export async function loadConfig(
 	cwd: string = process.cwd(),

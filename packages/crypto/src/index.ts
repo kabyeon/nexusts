@@ -20,7 +20,7 @@
  *
  * Quick start:
  *
- *   import { Module } from "nexusjs";
+ *   import { Module } from "@nexusts/core";
  *   import { CryptoModule, EncryptionService, HashService } from "@nexusts/crypto";
  *
  *   @Module({

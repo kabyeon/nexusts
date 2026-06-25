@@ -15,7 +15,7 @@
  *   });
  *
  *   // src/app/app.module.ts
- *   import { Module } from 'nexusjs';
+ *   import { Module } from '@nexusts/core';
  *   import { AuthModule } from '@nexusts/auth';
  *
  *   @Module({ imports: [AuthModule.forRoot({ ... })] })

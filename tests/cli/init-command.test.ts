@@ -6,8 +6,8 @@
  * 2. Fresh init: only package.json exists → merge + create the rest
  * 3. Re-run: all files already exist → skip (non-destructive)
  * 4. --force: overwrites existing files
- * 5. package.json merge: existing deps preserved, nexusjs added if missing
- * 6. package.json no-op: nexusjs already in deps → file untouched
+ * 5. package.json merge: existing deps preserved, @nexusts added if missing
+ * 6. package.json no-op: @nexusts already in deps → file untouched
  * 7. tsconfig.json merge: experimentalDecorators added if missing
  * 8. Command registration: name, aliases
  */
@@ -130,7 +130,7 @@ describe("nx init — fresh install", () => {
 		);
 		expect(await exists(join(target, "README.md"))).toBe(true);
 
-		// package.json: merged — hono preserved, nexusjs added
+		// package.json: merged — hono preserved, @nexusts added
 		const pkg = JSON.parse(await readFile(join(target, "package.json"), "utf8"));
 		expect(pkg.dependencies.hono).toBe("^4.6.0");
 		expect(pkg.dependencies["@nexusts/core"]).toBe("*");
@@ -144,11 +144,11 @@ describe("nx init — fresh install", () => {
 		expect(ts.include).toContain("nx.config.ts");
 	});
 
-	it("is a no-op merge on package.json when nexusjs is already a dep", async () => {
+	it("is a no-op merge on package.json when @nexusts is already a dep", async () => {
 		const original = JSON.stringify(
 			{
 				name: "already-had-kabyeon",
-				dependencies: { "@nexusts/core": "../nexusjs/dist/nexusjs-0.6.5.tgz" },
+				dependencies: { "@nexusts/core": "../@nexusts/dist/@nexusts-0.6.5.tgz" },
 			},
 			null,
 			2,
@@ -169,7 +169,7 @@ describe("nx init — fresh install", () => {
 			{
 				name: "already-had-kabyeon",
 				dependencies: {
-					"@nexusts/core": "../nexusjs/dist/nexusjs-0.6.5.tgz",
+					"@nexusts/core": "../@nexusts/dist/@nexusts-0.6.5.tgz",
 					hono: "^4.6.0",
 					zod: "^3.23.8",
 				},
@@ -218,7 +218,7 @@ describe("nx init — fresh install", () => {
 		);
 		expect(code).toBe(0);
 
-		// hono preserved, nexusjs added, scripts added
+		// hono preserved, @nexusts added, scripts added
 		const pkg = JSON.parse(
 			await readFile(join(target, "package.json"), "utf8"),
 		);

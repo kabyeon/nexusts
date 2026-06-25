@@ -7,7 +7,7 @@
  *
  * @example
  * ```ts
- * import { Injectable, OnModuleInit, OnModuleDestroy } from "nexusjs";
+ * import { Injectable, OnModuleInit, OnModuleDestroy } from "@nexusts/core";
  *
  * @Injectable()
  * class DatabaseService implements OnModuleInit, OnModuleDestroy {

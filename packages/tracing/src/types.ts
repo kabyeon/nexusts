@@ -19,7 +19,7 @@ import type { SpanContext as OtelSpanContext } from "@opentelemetry/api";
 export type TracingExporter = "otlp-http" | "otlp-grpc" | "console" | "memory";
 
 export interface TracingConfig {
-	/** Service name reported in spans. Defaults to `process.env.OTEL_SERVICE_NAME ?? "nexusjs"`. */
+	/** Service name reported in spans. Defaults to `process.env.OTEL_SERVICE_NAME ?? "nexusts"`. */
 	serviceName?: string;
 	/** Service version (sent as `service.version` resource attribute). */
 	serviceVersion?: string;

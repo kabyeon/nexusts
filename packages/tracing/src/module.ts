@@ -60,7 +60,7 @@ export class TracingServiceWithLifecycle extends TracingService {
 export class TracingModule {
 	static forRoot(config: TracingConfig = {}) {
 		const fullConfig: Required<TracingConfig> = {
-			serviceName: config.serviceName ?? process.env.OTEL_SERVICE_NAME ?? "nexusjs",
+			serviceName: config.serviceName ?? process.env.OTEL_SERVICE_NAME ?? "nexusts",
 			serviceVersion: config.serviceVersion ?? "0.0.0",
 			environment: config.environment ?? process.env.NODE_ENV ?? "development",
 			exporter: config.exporter ?? "otlp-http",

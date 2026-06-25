@@ -16,7 +16,7 @@
  *
  * Quick start:
  *
- *   import { Module } from "nexusjs";
+ *   import { Module } from "@nexusts/core";
  *   import { I18nModule, I18nService, I18N_SERVICE_TOKEN } from "@nexusts/i18n";
  *
  *   @Module({

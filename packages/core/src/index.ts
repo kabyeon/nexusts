@@ -2,7 +2,7 @@
  * NexusTS framework — public entry point.
  *
  * Re-exports the public surface of every core module so users can
- * `import { ... } from 'nexusjs'` without reaching into subpaths.
+ * `import { ... } from '@nexusts/core'` without reaching into subpaths.
  *
  * Public surface intentionally stays small; advanced users can deep-import
  * from `@nexusts/core/<module>` for sub-paths.

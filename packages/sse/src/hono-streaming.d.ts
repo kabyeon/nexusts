@@ -1,8 +1,8 @@
 /**
  * Ambient type declarations for `hono/streaming`.
  *
- * `nexusjs/sse` uses Hono's `streamSSE()` helper. We import it lazily
- * so the top-level `nexusjs/sse` module has zero direct dependency on
+ * `@nexusts/sse` uses Hono's `streamSSE()` helper. We import it lazily
+ * so the top-level `@nexusts/sse` module has zero direct dependency on
  * `hono/streaming` (Hono is already a peer dep).
  */
 declare module "hono/streaming" {

@@ -1,7 +1,7 @@
 /**
  * Ambient type declarations for the optional `drizzle-orm` peer dep.
  *
- * The `nexusjs/drizzle` module is designed to work with Drizzle's full
+ * The `@nexusts/drizzle` module is designed to work with Drizzle's full
  * type machinery when the user has `drizzle-orm` installed. These
  * stubs let TypeScript resolve the symbols even if the package is
  * not present in the type-check environment.

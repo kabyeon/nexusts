@@ -88,7 +88,7 @@ export interface CacheConfig {
 	store?: CacheStore;
 	/** Default TTL in seconds when none is provided. Default: 60. */
 	defaultTtl?: number;
-	/** Prefix prepended to all keys. Default: 'nexusjs'. */
+	/** Prefix prepended to all keys. Default: 'nexusts'. */
 	prefix?: string;
 }
 

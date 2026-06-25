@@ -4,7 +4,7 @@
  * Unlike `nx new <name>` — which requires a fresh, empty directory —
  * `nx init` is non-destructive: it skips files that already exist,
  * preserves the user's existing `package.json` (only adding the
- * nexusjs dependency if missing), and merges its `tsconfig.json`
+ * nexusts dependency if missing), and merges its `tsconfig.json`
  * additions into the user's existing config.
  *
  * Typical use case: the user already ran `bun init` (or has an

@@ -33,7 +33,7 @@ export class CacheService {
 	constructor(@Inject("CACHE_CONFIG") config: CacheConfig = {}) {
 		this.store = config.store ?? new MemoryStore();
 		this.defaultTtl = config.defaultTtl ?? 60;
-		this.prefix = config.prefix ?? "nexusjs";
+		this.prefix = config.prefix ?? "nexusts";
 	}
 
 	private key(k: string): string {

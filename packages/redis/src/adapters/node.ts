@@ -2,7 +2,7 @@
  * Node.js runtime adapter for `@nexusts/redis`.
  *
  * Uses the `ioredis` package. The package is an **optional**
- * peer dependency of `nexusjs` — install it only when targeting
+ * peer dependency of `@nexusts/redis` — install it only when targeting
  * Node:
  *
  *     bun add ioredis

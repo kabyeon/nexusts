@@ -159,9 +159,9 @@ export class TracingService {
 	private initialized = false;
 
 	constructor() {
-		// Default OTel tracer: "nexusjs". Even with no SDK, this returns
+		// Default OTel tracer: "nexusts". Even with no SDK, this returns
 		// a no-op tracer that produces no-op spans — never throws.
-		this.tracer = trace.getTracer("nexusjs", "0.4.0");
+		this.tracer = trace.getTracer("nexusts", "0.4.0");
 	}
 
 	/** True if the SDK has been started (i.e. `forRoot()` was called). */
@@ -293,7 +293,7 @@ export class TracingService {
 	async startSdk(config: import("./types.js").TracingConfig): Promise<void> {
 		if (this.initialized) return;
 
-		const serviceName = config.serviceName ?? process.env.OTEL_SERVICE_NAME ?? "nexusjs";
+		const serviceName = config.serviceName ?? process.env.OTEL_SERVICE_NAME ?? "nexusts";
 		const endpoint = config.endpoint ?? process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? "http://localhost:4318";
 		const sampleRatio = config.sampleRatio ?? 1.0;
 

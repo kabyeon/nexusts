@@ -82,7 +82,7 @@ export function inertiaFormMiddleware(
 		if (options.validateCsrf) {
 			const expected = options.getCsrfToken
 				? options.getCsrfToken(c)
-				: (c.get("nexusjs") as any)?.shared?.[csrfSharedKey];
+				: (c.get("@nexusts") as any)?.shared?.[csrfSharedKey];
 
 			if (typeof expected === "string" && expected.length > 0) {
 				const submittedHeader = c.req.header(csrfHeader);

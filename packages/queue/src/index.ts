@@ -9,7 +9,7 @@
  * Quick start:
  *
  *   // src/app/app.module.ts
- *   import { Module } from 'nexusjs';
+ *   import { Module } from '@nexusts/core';
  *   import { QueueModule } from '@nexusts/queue';
  *
  *   @Module({

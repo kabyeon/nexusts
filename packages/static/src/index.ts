@@ -4,7 +4,7 @@
  * Quick start:
  *
  *   // src/app/app.module.ts
- *   import { Module } from 'nexusjs';
+ *   import { Module } from '@nexusts/core';
  *   import { StaticModule } from '@nexusts/static';
  *
  *   @Module({
