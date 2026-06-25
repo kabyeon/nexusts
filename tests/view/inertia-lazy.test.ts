@@ -5,7 +5,6 @@
  * at the same factory. This avoids redundant computation across
  * related props.
  */
-import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Application } from '@core/application';
 import { Module } from '@core/decorators/module';

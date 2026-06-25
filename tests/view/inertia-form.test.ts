@@ -10,7 +10,6 @@
  * - `.back()` returns a 303 with Location: back (or custom URL)
  * - Multiple errors on the same field accumulate
  */
-import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Application } from '@core/application';
 import { Module } from '@core/decorators/module';

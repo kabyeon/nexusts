@@ -5,7 +5,6 @@
  * fetch, and asserts on the responses. The server is not actually opened
  * on a TCP port — we use the Hono app's `fetch` method directly.
  */
-import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { z } from 'zod';
 import { Application } from '@core/application';

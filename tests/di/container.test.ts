@@ -1,7 +1,6 @@
 /**
  * Unit tests for the DI container.
  */
-import 'reflect-metadata';
 import { describe, it, expect } from 'vitest';
 import { DIContainer } from '@core/di/container';
 import { Injectable, Inject } from '@core/decorators/injectable';

@@ -19,7 +19,6 @@
  * - `inertia.location()` → 409 + X-Inertia-Location
  * - `inertia.back()` → 302 + Location: back
  */
-import 'reflect-metadata';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { z } from 'zod';
 import { Application } from '@core/application';
