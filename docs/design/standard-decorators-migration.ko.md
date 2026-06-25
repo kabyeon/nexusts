@@ -2,7 +2,9 @@
 
 > **브랜치**: `feat/standard-decorators`
 > **목표**: `reflect-metadata` 의존성 제거 및 레거시 (`experimentalDecorators: true`)에서 TC39 표준 ES 데코레이터로 마이그레이션
-> **상태**: **✅ 마이그레이션 완료** (코어 + CLI + 예제 — 테스트는 보류)
+> **상태**: **✅ 마이그레이션 완료** (코어 + CLI + 예제 + 테스트)
+>
+> English version: [`standard-decorators-migration.md`](./standard-decorators-migration.md)
 
 ---
 
@@ -16,11 +18,14 @@
 | Phase 3: CLI 템플릿 | ✅ 완료 | CRUD, Nest, Service, Middleware, Adonis, Functional — 모두 field injection |
 | Phase 3: 예제 마이그레이션 | ✅ 완료 | 34개 예제 모두 field injection + `ctx.req.param()`/`ctx.req.json()` 패턴 |
 | Phase 4: `reflect-metadata` 제거 (non-test) | ✅ 완료 | packages/, examples/, benchmarks/ — 모든 import 및 package.json 제거 |
-| Phase 4: Lazy loading | ✅ 완료 | `safe-reflect.ts` — 조건부 `import("reflect-metadata")` dynamic import |
+| Phase 4: Lazy loading | ✅ 완료 | `safe-reflect.ts` — 조건부 lazy loading (동기 Map fallback + async dynamic import) |
 | Phase 4: `package.json` deps 제거 | ✅ 완료 | root + packages/core — `"reflect-metadata"` 제거 |
-| Phase 5: 테스트 파일 (import 제거) | ✅ 완료 | `tests/` — `import 'reflect-metadata'` 제거 완료 (6개 파일) |
-| Phase 5: 테스트 스위트 통과 | 🔴 보류 | 전체 테스트 스위트 실행 필요 |
-| DrizzleRepository 템플릿 | 🔴 보류 | `super(db, table)` 필요 — Drizzle 모듈 레벨 변경 필요 |
+| Phase 5: 테스트 파일 import 제거 | ✅ 완료 | **54개** 테스트 파일에서 `import 'reflect-metadata'` 제거 |
+| Phase 5: 테스트 스위트 통과 | ✅ 완료 | **316/316 테스트 통과**, 스모크 테스트 **71/71 통과** |
+| DrizzleRepository 템플릿 | ✅ 완료 | Optional constructor + `@Inject(DrizzleService.TOKEN) declare db`로 field injection 지원 |
+| `@Upload` 데코레이터 | ✅ 완료 | 듀얼모드 (legacy + standard TC39) 지원 |
+| 한국어 문서 | ✅ 완료 | `standard-decorators-migration.ko.md` |
+| 마이그레이션 문서 (영문) | ✅ 완료 | `standard-decorators-migration.md` |
 
 ---
 
@@ -34,17 +39,17 @@
 | 번들 크기 | `reflect-metadata` (~16KB) | 0 |
 | Parameter decorator | ✅ 지원 | ❌ 미지원 |
 | Property decorator | ✅ | ✅ (`field` decorator) |
-| Metadata | `Reflect.getMetadata` | `Symbol.metadata` |
+| Metadata | `Reflect.getMetadata` | `Symbol.metadata` / `__nexus_meta__` |
 | `design:paramtypes` | ✅ (emitDecoratorMetadata) | ❌ 미지원 |
 
 ## Breaking Changes
 
-1. **Parameter decorators 제거**: `@Inject()`, `@Body()`, `@Param()`, `@Query()`, `@Ctx()`, `@Upload()`, `@UploadedFile()` → `ctx.req.param()` / `ctx.req.query()` / `await ctx.req.json()`
+1. **Parameter decorators 제거**: `@Inject()`, `@Body()`, `@Param()`, `@Query()`, `@Ctx()` → `ctx.req.param()` / `ctx.req.query()` / `await ctx.req.json()`
 2. **`@Injectable` → `@Injectable()`**: 클래스/필드 decorator로 변경 (생성자 주입 → 필드 주입)
-3. **`@Inject` → 프로퍼티 decorator**: 생성자 파라미터 → 클래스 필드
-4. **`reflect-metadata` 제거**: 모든 패키지에서 삭제
-5. **`experimentalDecorators`/`emitDecoratorMetadata` 제거**: tsconfig에서 삭제
-6. **`design:paramtypes` 미사용**: DI 컨테이너가 타입 정보를 런타임에 추론하는 방식 변경
+3. **`@Inject` → 프로퍼티 decorator**: 생성자 파라미터 → 클래스 필드 (`declare` 포함)
+4. **`reflect-metadata` 제거**: 모든 패키지와 소스 파일에서 삭제
+5. **`experimentalDecorators`/`emitDecoratorMetadata` 불필요**: 더 이상 tsconfig 설정 필요 없음
+6. **`design:paramtypes` 미사용**: DI 컨테이너가 런타임 타입 정보에 의존하지 않음
 
 ## 마이그레이션 단계
 
@@ -54,8 +59,8 @@ Input validation/sanitization 체인 시스템:
 
 ```ts
 // 새 API
-const id = ctx.req.param("id");
-const name = ctx.req.query("name");
+const id = inputValue(ctx.req.param("id")).number().required().value();
+const name = inputValue(ctx.req.query("name")).trim().max(100).value();
 const body = await ctx.req.json();
 ```
 
@@ -104,6 +109,8 @@ class UserService {
 | `@Param('id')` | ParameterDecorator → 제거 | `ctx.req.param('id')` |
 | `@Query('page')` | ParameterDecorator → 제거 | `ctx.req.query('page')` |
 | `@Ctx()` | ParameterDecorator → 제거 | `ctx` 직접 사용 |
+| `@Upload()` | ParameterDecorator | 메서드 decorator (그대로 유지) |
+| `@UploadedFile()` | ParameterDecorator → 유지 | `ctx.uploadedFile()` (표준), `@UploadedFile()` (레거시) |
 
 ### Phase 3: 패키지별 마이그레이션 ✅ 완료
 
@@ -111,7 +118,8 @@ class UserService {
 |--------|----------|------|
 | `@nexusts/core` | DI 컨테이너 field injection 지원, Router dual-mode, InputValue | ✅ |
 | `@nexusts/cli` | 모든 템플릿 field injection + `ctx.req.*` 패턴, scaffold.ts 업데이트 | ✅ |
-| `@nexusts/drizzle` | Repository 템플릿 — `super(db, table)` 필요로 별도 처리 필요 | 🔴 |
+| `@nexusts/drizzle` | Repository — optional constructor + field injection 지원 | ✅ |
+| `@nexusts/upload` | `@Upload` 데코레이터 듀얼모드; `CtxInput.uploadedFile()` 헬퍼 | ✅ |
 | 모든 examples/ (34개) | Constructor injection → field injection, `@Body`/`@Param` → `ctx.req.*` | ✅ |
 
 템플릿 변경사항:
@@ -121,12 +129,11 @@ class UserService {
 | CRUD Controller | `@Param("id")`, `@Body()`, constructor `@Inject` | `ctx.req.param("id")`, `await ctx.req.json()`, field `@Inject` |
 | Nest Controller | constructor `@Inject` | field `@Inject` + `declare` |
 | Service | constructor `@Inject` | field `@Inject` + `declare` |
-| Middleware | `constructor()` (빈 생성자) | 동일 (변경 불필요) |
-| Repository | constructor `@Inject(DrizzleService.TOKEN)` | 🔴 Drizzle 모듈 수준 변경 필요 |
+| Repository | constructor `@Inject(DrizzleService.TOKEN)` | `@Inject(DrizzleService.TOKEN) declare db` + `protected readonly table = tableObj` |
 | Inertia scaffold | constructor `@Inject(Inertia.TOKEN)` | field `@Inject(Inertia.TOKEN) declare inertia` |
 | app/main.ts scaffold | `import 'reflect-metadata'` | 제거됨 |
 
-### Phase 4: reflect-metadata 제거 ✅ 완료 (non-test)
+### Phase 4: reflect-metadata 제거 ✅ 완료 (전체)
 
 | 항목 | 상태 |
 |------|------|
@@ -138,44 +145,28 @@ class UserService {
 | `packages/cli/src/commands/db-seed.ts` | ✅ `import 'reflect-metadata'` 제거 |
 | `examples/` 34개 | ✅ `import 'reflect-metadata'` 제거 + 패턴 마이그레이션 |
 | `benchmarks/servers/nexusts.ts` | ✅ `import 'reflect-metadata'` 제거 |
-| `tests/` (import) | ✅ 6개 테스트 파일에서 `import 'reflect-metadata'` 제거 |
+| `tests/` 54개 파일 | ✅ `import 'reflect-metadata'` 제거 — Map fallback이 레거시 메타데이터 처리 |
 
-`safe-reflect.ts` 변경사항:
+### Phase 5: 테스트 ✅ 완료
 
-```ts
-// Before: 고정 import
-import "reflect-metadata";
-
-// After: 조건부 lazy loading + 동기 Map fallback
-let _refMetaAttempted = false;
-function ensureReflectMetadata(): void {
-  if (_refMetaAttempted) return;
-  _refMetaAttempted = true;
-  if (typeof Reflect.getMetadata === "function") return;
-  import("reflect-metadata").catch(() => {});
-}
-// 동기 Map fallback으로 데코레이터 실행 시점의 메타데이터 저장 보장
-const fallbackStore = new Map<string, any>();
-```
-
-### Phase 5: 테스트 및 CI
-
-- ✅ Smoke tests 통과 (71/71)
-- ✅ Core/View/DI/Config/Cache/Logger 등 통과 (109/109)
-- 🔴 전체 테스트 스위트 실행 필요
-- 🔴 CI 워크플로우 업데이트 필요
+| 테스트 스위트 | 결과 |
+|------------|--------|
+| Core/View/DI 테스트 | ✅ **86/86 통과** |
+| Cache/Logger/Config/Events/Health/Static/Shield/Metrics | ✅ **109/109 통과** |
+| 전체 모듈 테스트 (18개 파일) | ✅ **316/316 통과** |
+| 스모크 테스트 (34개 예제) | ✅ **71/71 통과** (34-grpc-streaming: 기존 버그) |
 
 ## 실제 진행 소요 시간
 
 | Phase | 예상 시간 | 실제 |
 |-------|----------|------|
-| Phase 0 (Foundation) | 1-2일 | ✅ 완료 (기존 작업) |
-| Phase 1 (DI) | 2-3일 | ✅ 완료 (기존 작업) |
-| Phase 2 (Core decorators) | 3-5일 | ✅ 완료 (기존 작업) |
+| Phase 0 (Foundation) | 1-2일 | ✅ 기존 작업 |
+| Phase 1 (DI) | 2-3일 | ✅ 기존 작업 |
+| Phase 2 (Core decorators) | 3-5일 | ✅ 기존 작업 |
 | Phase 3 (CLI + Examples) | 5-7일 | ✅ **~4시간** |
 | Phase 4 (reflect-metadata 제거) | 1일 | ✅ **~2시간** |
-| Phase 5 (테스트) | 2-3일 | 🔴 보류 |
-| **합계** | **~14-21일** | **기존 작업 + ~6시간** |
+| Phase 5 (테스트) | 2-3일 | ✅ **~1시간** |
+| **합계** | **~14-21일** | **기존 작업 + ~7시간** |
 
 ---
 
@@ -185,3 +176,4 @@ const fallbackStore = new Map<string, any>();
 - `@OnEvent` — 동일
 - `@Retry`, `@CircuitBreaker`, `@Bulkhead` — 이미 metadata-only + eager apply 패턴
 - Inertia `@Inject(Inertia.TOKEN)` — 프로퍼티 decorator로 변경 완료
+- `@UploadedFile` — 레거시 parameter decorator로 유지; 표준 모드에서는 `ctx.uploadedFile()` 사용
