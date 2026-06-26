@@ -11,11 +11,18 @@ export class ShieldService {
 	/** DI token. */
 	static readonly TOKEN = Symbol.for("nexus:ShieldService");
 
+	/** Shield config — injected by DI container. */
+	@Inject("SHIELD_CONFIG") declare private _config: ShieldConfig;
+
 	cors?: CorsGuard;
 	csrf?: CsrfGuard;
 	headers: HeadersGuard;
+	private _initialized = false;
 
-	constructor(@Inject("SHIELD_CONFIG") config: ShieldConfig = {}) {
+	private init(): void {
+		if (this._initialized) return;
+		this._initialized = true;
+		const config = this._config ?? {};
 		if (config.cors) {
 			this.cors = new CorsGuard(config.cors as CorsConfig);
 		}
@@ -35,6 +42,10 @@ export class ShieldService {
 		);
 	}
 
+	constructor() {
+		// DI sets @Inject fields before first use.
+	}
+
 	/**
 	 * Returns a Hono middleware that applies all configured guards.
 	 *
@@ -44,6 +55,7 @@ export class ShieldService {
 	 */
 	middleware() {
 		return async (c: any, next: () => Promise<any>) => {
+			this.init();
 			const requestOrigin = (c.req.header("origin") as string) ?? "";
 			const method = (c.req.method as string).toUpperCase();
 
@@ -87,8 +99,9 @@ export class ShieldService {
 		};
 	}
 
-	/** Generate a CSRF token and set the cookie. Useful for forms. */
+	/** Generate a CSRF token and set the cookie. */
 	issueToken(headers: Headers) {
+		this.init();
 		if (!this.csrf) throw new Error("CSRF guard is not enabled");
 		return this.csrf.issue(headers);
 	}

@@ -90,8 +90,8 @@ class ContactController {
   @Inject(ShieldService.TOKEN) declare shield: ShieldService;
 
   @Get('/contact')
-  contactPage(@Res() res: any) {
-    const t = this.shield.issueToken(res.headers);
+  contactPage(ctx: Context) {
+    const t = this.shield.issueToken(ctx.res.headers);
     return { csrfToken: t.token };
   }
 }
@@ -242,8 +242,8 @@ class FormController {
   @Inject(ShieldService.TOKEN) declare shield: ShieldService;
 
   @Get('/contact')
-  contactPage(@Res() res: any) {
-    const t = this.shield.issueToken(res.headers);
+  contactPage(ctx: Context) {
+    const t = this.shield.issueToken(ctx.res.headers);
     return { csrfToken: t.token, metaTag: t.html };
   }
 }
