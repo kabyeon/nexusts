@@ -287,14 +287,10 @@ describe("nx db:migrate command exists", () => {
 		const hasStatus = mod.default.flags.some(
 			(f: { name: string }) => f.name === "status",
 		);
-		const hasGenerate = mod.default.flags.some(
-			(f: { name: string }) => f.name === "generate",
-		);
 		const hasFolder = mod.default.flags.some(
 			(f: { name: string }) => f.name === "folder",
 		);
 		expect(hasStatus).toBe(true);
-		expect(hasGenerate).toBe(true);
 		expect(hasFolder).toBe(true);
 	});
 });

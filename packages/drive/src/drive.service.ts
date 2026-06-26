@@ -29,8 +29,12 @@ export class DriveService {
 	private _signedUrlBuilder!: (key: string, opts?: SignedUrlOptions) => Promise<string>;
 	defaultVisibility: NonNullable<DriveConfig["defaultVisibility"]> = "private";
 
-	constructor() {
-		// Lazy-init so DI can set @Inject fields first.
+	constructor(directConfig?: DriveConfig) {
+		// Support direct instantiation (non-DI): store config immediately.
+		// When using DI, @Inject("DRIVE_CONFIG") sets this.config after construction.
+		if (directConfig !== undefined) {
+			(this as any).config = directConfig;
+		}
 	}
 
 	/** Ensure driver and builder are initialized from config. */
