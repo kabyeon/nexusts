@@ -103,11 +103,31 @@ ApplicationContainer
 `AuthService.TOKEN`은 Symbol이므로 클래스 토큰과 충돌하지 않는다. `useExisting` 별칭이 이를 클래스 토큰과 같은 인스턴스로 묶어 소비자가 어느 쪽이든 사용할 수 있게 한다.
 
 ```ts
-constructor(@Inject(AuthService) private auth: AuthService) {}
-constructor(@Inject(AuthService.TOKEN) private auth: AuthService) {}
+@Inject(AuthService) declare auth: AuthService;
+@Inject(AuthService.TOKEN) declare auth: AuthService;
 ```
 
 둘 다 동작하며 같은 인스턴스를 반환한다.
+
+### AuthService 내부
+
+`AuthService`는 `better-auth` 인스턴스를 감싸는 얇은 DI 래퍼이다.
+필드 주입으로 `'AUTH_CONFIG'`를 받고, `instance` 게터에서
+지연 초기화한다:
+
+```ts
+@Injectable()
+export class AuthService {
+  static readonly TOKEN = Symbol.for("nexus:AuthService");
+
+  @Inject("AUTH_CONFIG") declare private readonly config: AuthConfig;
+
+  get instance(): NexusAuth {
+    if (!this._instance) this._instance = createAuth(this.config);
+    return this._instance;
+  }
+}
+```
 
 ## 6. 설정 형상
 
