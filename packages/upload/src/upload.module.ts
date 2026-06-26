@@ -18,9 +18,9 @@
  */
 import { Module } from "@nexusts/core";
 import { UploadService } from "./upload.service.js";
+import { safeGetMeta } from "@nexusts/core/di/safe-reflect";
 import type { UploadConfig } from "./types.js";
 import { uploadMiddleware } from "./upload.middleware.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [

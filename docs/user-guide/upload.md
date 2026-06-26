@@ -237,7 +237,7 @@ import { c } from 'hono';
 
 @Post('/upload')
 @Upload('video')
-async uploadVideo(@Req() ctx: any) {
+async uploadVideo(ctx: any) {
   const body = await ctx.req.parseBody({ all: true });
   const file = body.video as Blob;
   // Stream to S3 / R2 / disk using .stream() or .arrayBuffer().

@@ -231,7 +231,7 @@ import { c } from 'hono';
 
 @Post('/upload')
 @Upload('video')
-async uploadVideo(@Req() ctx: any) {
+async uploadVideo(ctx: any) {
   const body = await ctx.req.parseBody({ all: true });
   const file = body.video as Blob;
   // S3 / R2 / 디스크로 스트리밍. .stream() 또는 .arrayBuffer() 사용.
