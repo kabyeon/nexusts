@@ -11,6 +11,16 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance × TC39 standard ES decorators.
 
+<p align="center">
+  <a href="https://nexus-ts.github.io/nexusts/">🌐 Website</a>
+  ·
+  <a href="https://github.com/nexus-ts/nexusts">📦 GitHub</a>
+  ·
+  <a href="https://github.com/nexus-ts/nexusts/blob/main/docs/user-guide">📚 Docs</a>
+  ·
+  <a href="https://github.com/nexus-ts/nexusts/blob/main/CHANGELOG.md">📝 Changelog</a>
+</p>
+
 > **v0.9.4 — Kysely + standard decorators.** TC39 standard ES
 > decorators, no reflect-metadata. Field injection, `ctx.req.*` methods.
 > 33 independent modules. See [CHANGELOG.md](./CHANGELOG.md) for details.
