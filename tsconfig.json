@@ -25,6 +25,8 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
     "types": ["@types/bun"],
     "baseUrl": ".",
