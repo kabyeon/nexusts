@@ -71,10 +71,10 @@ export const makeCrudCommand: Command = {
 
 		const variants = nameVariants(name);
 		const style =
-			(ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
-		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
+			(ctx.flags.style as string | undefined) ?? ctx.config.routing;
+		const orm = (ctx.flags.orm as string | undefined) ?? ctx.config.orm;
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ??
+			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
 			"bun-sqlite";
 		const noRepo = flagBool(ctx.flags, "no-repo", false) || orm === "none";
@@ -104,7 +104,7 @@ export const makeCrudCommand: Command = {
 				snake: variants.snake,
 				tableName,
 				service,
-				serviceCamel: variants.camel + "Service",
+				serviceCamel: `${variants.camel}Service`,
 				controller,
 				viewComponent,
 				viewShowComponent,
@@ -132,7 +132,7 @@ export const makeCrudCommand: Command = {
 				snake: variants.snake,
 				hasRepo: !noRepo,
 				repository,
-				repositoryCamel: variants.camel + "Repository",
+				repositoryCamel: `${variants.camel}Repository`,
 			});
 			const out = resolve(
 				ctx.cwd,

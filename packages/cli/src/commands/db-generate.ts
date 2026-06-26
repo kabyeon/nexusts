@@ -50,8 +50,8 @@ export const dbGenerateCommand: Command = {
 	async run(ctx: CommandContext): Promise<number> {
 		const name = ctx.positional[0];
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
-		const isSql = ctx.flags["sql"] === true;
+			(ctx.flags.dialect as string | undefined) ?? ctx.config.dialect ?? "bun-sqlite";
+		const isSql = ctx.flags.sql === true;
 
 		if (isSql) {
 			if (!name) {

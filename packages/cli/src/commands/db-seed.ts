@@ -123,17 +123,17 @@ export const dbSeedCommand: Command = {
 	async run(ctx: CommandContext): Promise<number> {
 		const folder = resolve(
 			ctx.cwd,
-			(ctx.flags["folder"] as string | undefined) ??
+			(ctx.flags.folder as string | undefined) ??
 				(ctx.config.paths as { seeds?: string })?.seeds ??
 				"db/seeds",
 		);
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ??
+			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
 			"bun-sqlite";
-		const createName = ctx.flags["create"] as string | undefined;
-		const fileName = ctx.flags["file"] as string | undefined;
-		const reset = Boolean(ctx.flags["reset"]);
+		const createName = ctx.flags.create as string | undefined;
+		const fileName = ctx.flags.file as string | undefined;
+		const reset = Boolean(ctx.flags.reset);
 
 		// --create scaffolds a new seed file. Doesn't run anything else.
 		if (createName) {
@@ -293,14 +293,14 @@ async function createSeedFile(
 
 function readEnvUrl(dialect: string): string | null {
 	const url =
-		process.env["DATABASE_URL"] ??
-		process.env["NEXUS_DB_URL"] ??
+		process.env.DATABASE_URL ??
+		process.env.NEXUS_DB_URL ??
 		(dialect === "postgres"
-			? process.env["POSTGRES_URL"]
+			? process.env.POSTGRES_URL
 			: dialect === "mysql"
-				? process.env["MYSQL_URL"]
+				? process.env.MYSQL_URL
 				: dialect.includes("sqlite")
-					? process.env["SQLITE_FILENAME"]
+					? process.env.SQLITE_FILENAME
 					: null);
 	return url ?? null;
 }

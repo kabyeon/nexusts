@@ -75,7 +75,7 @@ describe("nx config command registration", () => {
 describe("nx config — error path", () => {
 	it("errors when target directory does not exist", async () => {
 		const target = join(tmpdir(), `nx-config-nope-${Date.now()}`);
-		const code = await configCommand.run!(
+		const code = await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -98,7 +98,7 @@ describe("nx config — fresh install", () => {
 	});
 
 	it("creates nx.config.ts with the provided values", async () => {
-		const code = await configCommand.run!(
+		const code = await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -113,7 +113,7 @@ describe("nx config — fresh install", () => {
 	});
 
 	it("creates drizzle.config.ts when orm=drizzle", async () => {
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -129,7 +129,7 @@ describe("nx config — fresh install", () => {
 	});
 
 	it("does NOT create drizzle.config.ts when orm=prisma or none", async () => {
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -161,7 +161,7 @@ describe("nx config — drizzle dialect mapping", () => {
 
 	for (const [driver, expectedDialect] of cases) {
 		it(`db=${driver} → dialect=${expectedDialect}`, async () => {
-			await configCommand.run!(
+			await configCommand.run?.(
 				makeCtx(target, {
 					"no-interaction": true,
 					view: "none",
@@ -181,7 +181,7 @@ describe("nx config — update", () => {
 	beforeEach(async () => {
 		target = await makeTmp();
 		// Seed with an initial config
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",
@@ -197,7 +197,7 @@ describe("nx config — update", () => {
 
 	it("re-run with no flags: file unchanged", async () => {
 		const before = await readFile(join(target, "nx.config.ts"), "utf8");
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",
@@ -211,7 +211,7 @@ describe("nx config — update", () => {
 	});
 
 	it("flag override updates only the targeted field", async () => {
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",
@@ -227,7 +227,7 @@ describe("nx config — update", () => {
 	});
 
 	it("db change updates both nx.config.ts and drizzle.config.ts", async () => {
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",
@@ -250,7 +250,7 @@ describe("nx config — update", () => {
 		const t = await makeTmp();
 		try {
 			// First: orm=none
-			await configCommand.run!(
+			await configCommand.run?.(
 				makeCtx(t, {
 					"no-interaction": true,
 					view: "none",
@@ -262,7 +262,7 @@ describe("nx config — update", () => {
 			expect(await exists(join(t, "drizzle.config.ts"))).toBe(false);
 
 			// Then: switch to drizzle
-			await configCommand.run!(
+			await configCommand.run?.(
 				makeCtx(t, {
 					"no-interaction": true,
 					view: "inertia",
@@ -282,7 +282,7 @@ describe("nx config — update", () => {
 		expect(await exists(join(target, "drizzle.config.ts"))).toBe(true);
 		const before = await readFile(join(target, "drizzle.config.ts"), "utf8");
 
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -303,7 +303,7 @@ describe("nx config — update", () => {
 		expect(nx).toContain("ssr: true");
 
 		// Disable
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",
@@ -317,7 +317,7 @@ describe("nx config — update", () => {
 		expect(nx).toContain("ssr: false");
 
 		// Re-enable
-		await configCommand.run!(
+		await configCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "inertia",

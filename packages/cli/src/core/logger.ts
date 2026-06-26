@@ -13,8 +13,8 @@
  */
 
 const USE_COLOR =
-	process.env["NO_COLOR"] === undefined &&
-	process.env["FORCE_COLOR"] !== "0" &&
+	process.env.NO_COLOR === undefined &&
+	process.env.FORCE_COLOR !== "0" &&
 	process.stdout.isTTY === true;
 
 const wrap = (open: number, close: number) => (s: string) =>

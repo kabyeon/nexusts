@@ -46,7 +46,7 @@ export const makeControllerCommand: Command = {
 
 		const variants = nameVariants(name);
 		const style =
-			(ctx.flags["style"] as string | undefined) ?? ctx.config.routing;
+			(ctx.flags.style as string | undefined) ?? ctx.config.routing;
 
 		if (!["nest", "adonis", "functional"].includes(style)) {
 			logger.error(
@@ -57,7 +57,7 @@ export const makeControllerCommand: Command = {
 
 		const skipService = ctx.flags["no-service"] === true;
 		const serviceName = `${variants.pascal}Service`;
-		const serviceCamel = variants.camel + "Service";
+		const serviceCamel = `${variants.camel}Service`;
 
 		const tpl =
 			templates.controller[style as keyof typeof templates.controller];

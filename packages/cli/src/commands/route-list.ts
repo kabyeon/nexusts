@@ -50,7 +50,7 @@ export const routeListCommand: Command = {
 		for (const file of files) {
 			const fullPath = resolve(controllersDir, file);
 			try {
-				const mod: any = await import(`${fullPath}?t=${Date.now()}`);
+				const mod: Record<string, unknown> = await import(`${fullPath}?t=${Date.now()}`);
 				for (const exportName of Object.keys(mod)) {
 					const cls = mod[exportName];
 					if (typeof cls !== "function") continue;
@@ -71,8 +71,8 @@ export const routeListCommand: Command = {
 						});
 					}
 				}
-			} catch (err: any) {
-				logger.warn(`could not parse ${file}: ${err.message ?? err}`);
+			} catch (err: unknown) {
+				logger.warn(`could not parse ${file}: ${err instanceof Error ? err.message : String(err)}`);
 			}
 		}
 
@@ -84,7 +84,7 @@ export const routeListCommand: Command = {
 			return 0;
 		}
 
-		const format = (ctx.flags["format"] as string | undefined) ?? "table";
+		const format = (ctx.flags.format as string | undefined) ?? "table";
 		if (format === "json") {
 			console.log(JSON.stringify(routes, null, 2));
 			return 0;

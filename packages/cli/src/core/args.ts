@@ -31,7 +31,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
 
 	let i = 0;
 	while (i < argv.length) {
-		const arg = argv[i]!;
+		const arg = argv[i] as string;
 
 		if (arg === "--") {
 			endOfOptions = true;
@@ -48,7 +48,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
 		const longMatch = LONG_RE.exec(arg);
 		if (longMatch) {
 			const [, name, inline] = longMatch;
-			const flagName = name!;
+			const flagName = name as string;
 
 			if (inline !== undefined) {
 				setFlag(flags, flagName, inline);
@@ -70,7 +70,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
 
 		const shortMatch = SHORT_RE.exec(arg);
 		if (shortMatch) {
-			const flagName = shortMatch[1]!;
+			const flagName = shortMatch[1] as string;
 			const next = argv[i + 1];
 			if (next !== undefined && !next.startsWith("-")) {
 				setFlag(flags, flagName, next);

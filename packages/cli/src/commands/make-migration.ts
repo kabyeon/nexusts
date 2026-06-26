@@ -61,9 +61,9 @@ export const makeMigrationCommand: Command = {
 			return 1;
 		}
 
-		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
+		const orm = (ctx.flags.orm as string | undefined) ?? ctx.config.orm;
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ??
+			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
 			"bun-sqlite";
 		const isDrizzle = orm === "drizzle";
@@ -72,7 +72,7 @@ export const makeMigrationCommand: Command = {
 
 		const variants = nameVariants(name);
 		const tableName = inferTableName(name);
-		const colsFlag = ctx.flags["columns"] as string | string[] | undefined;
+		const colsFlag = ctx.flags.columns as string | string[] | undefined;
 		const cols = parseColumns(colsFlag ?? "title:text");
 		// For Drizzle: use the dialect-aware TS-style column rendering
 		// (e.g. `text('email')`, `integer('age')`). For plain SQL: keep
@@ -139,10 +139,10 @@ function inferTableName(input: string): string {
 	// `create_users_table` → `users`; `add_email_to_users` → `users`;
 	// `Posts` → `posts`; fallback to the lowercased input.
 	const m = /^create_(\w+)_table$/.exec(input);
-	if (m) return m[1]!;
+	if (m) return m[1] ?? "";
 	const m2 = /^(?:add|remove|drop|alter)_(\w+)_to_(\w+)$/.exec(input);
-	if (m2) return m2[2]!;
-	return input.toLowerCase().replace(/s$/, "") + "s";
+	if (m2) return m2[2] ?? "";
+	return `${input.toLowerCase().replace(/s$/, "")}s`;
 }
 
 function parseColumns(input: string | string[]): Array<[string, string]> {
@@ -152,7 +152,7 @@ function parseColumns(input: string | string[]): Array<[string, string]> {
 		.filter(Boolean)
 		.map((c) => {
 			const [name, type = "text"] = c.split(":");
-			return [name!, type];
+			return [name as string, type];
 		});
 }
 

@@ -40,7 +40,7 @@ export const makeModuleCommand: Command = {
 		}
 
 		const variants = nameVariants(name);
-		const hasController = !flagBool(ctx.flags, "no-controller", false);
+		const _hasController = !flagBool(ctx.flags, "no-controller", false);
 		const hasService = !flagBool(ctx.flags, "no-service", false);
 		const hasRepo =
 			!flagBool(ctx.flags, "no-repo", false) && ctx.config.orm !== "none";

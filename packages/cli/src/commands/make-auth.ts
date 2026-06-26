@@ -119,13 +119,13 @@ export const makeAuthCommand: Command = {
 		logger.heading("Scaffolding auth module");
 
 		const providers = flagList(ctx.flags, "provider");
-		const jwtEnabled = ctx.flags["jwt"] === true;
-		const passkeyEnabled = ctx.flags["passkey"] === true;
+		const jwtEnabled = ctx.flags.jwt === true;
+		const passkeyEnabled = ctx.flags.passkey === true;
 		const rpId = (ctx.flags["rp-id"] as string | undefined) ?? "localhost";
 		const rpName =
 			(ctx.flags["rp-name"] as string | undefined) ?? "NexusTS App";
 		const origin =
-			(ctx.flags["origin"] as string | undefined) ?? "http://localhost:3000";
+			(ctx.flags.origin as string | undefined) ?? "http://localhost:3000";
 
 		const entries = providers.map((p) => {
 			const known = KNOWN_PROVIDERS[p.toLowerCase()];

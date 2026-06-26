@@ -30,7 +30,7 @@ export const makeServiceCommand: Command = {
 		const variants = nameVariants(name);
 		const hasRepo = ctx.flags["no-repo"] !== true && ctx.config.orm !== "none";
 		const repository = `${variants.pascal}Repository`;
-		const repositoryCamel = variants.camel + "Repository";
+		const repositoryCamel = `${variants.camel}Repository`;
 
 		const code = render(templates.service, {
 			name: variants.pascal,

@@ -60,8 +60,8 @@ export function computeDeps(
 	if (orm === "drizzle") {
 		deps["@nexusts/drizzle"] = "*";
 		deps["drizzle-orm"] = "^0.45.0";
-		if (db === "postgres") deps["pg"] = "^8.13.0";
-		if (db === "mysql") deps["mysql2"] = "^3.11.0";
+		if (db === "postgres") deps.pg = "^8.13.0";
+		if (db === "mysql") deps.mysql2 = "^3.11.0";
 		if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") deps["better-sqlite3"] = "^12.0.0";
 		devDeps["drizzle-kit"] = "^0.31.0";
 	}
@@ -72,10 +72,10 @@ export function computeDeps(
 	if (view === "inertia") {
 		if (frontend === "vue") {
 			deps["@inertiajs/vue3"] = "^3.0.0";
-			deps["vue"] = "^3.5.0";
+			deps.vue = "^3.5.0";
 		} else {
 			deps["@inertiajs/react"] = "^3.0.0";
-			deps["react"] = "^19.0.0";
+			deps.react = "^19.0.0";
 			deps["react-dom"] = "^19.0.0";
 		}
 	}
@@ -91,7 +91,7 @@ export function buildPackageJson(
 	devDeps: Record<string, string>,
 	view?: string,
 	frontend?: string,
-): Record<string, any> {
+): Record<string, unknown> {
 	const scripts: Record<string, string> = {
 		dev: "bun --hot app/main.ts",
 		build: "bun run build.ts",
@@ -102,9 +102,9 @@ export function buildPackageJson(
 	if (view === "inertia") {
 		const ext = frontend === "vue" ? "ts" : "tsx";
 		scripts["build:frontend"] = `bun build ./resources/js/app.${ext} --outdir=./public --target=browser --format=esm --minify`;
-		scripts["dev"] = `bun run build:frontend && bun --hot app/main.ts`;
+		scripts.dev = `bun run build:frontend && bun --hot app/main.ts`;
 	}
-	const pkg: Record<string, any> = {
+	const pkg: Record<string, unknown> = {
 		name,
 		version: "0.1.0",
 		type: "module",
@@ -154,7 +154,7 @@ export function generateDrizzleConfig(target: string, db: string, dbUrl: string)
 }
 
 function generateEnvFile(): string {
-	return [
+	return `${[
 		"# ──────────────────────────────────────────────────────",
 		"# NexusTS — Environment Variables (committed to git)",
 		"#",
@@ -183,11 +183,11 @@ function generateEnvFile(): string {
 		"# ── Better Auth (if using @nexusts/auth) ──",
 		"# BETTER_AUTH_SECRET=",
 		"# BETTER_AUTH_URL=http://localhost:3000",
-	].join("\n") + "\n";
+	].join("\n")}\n`;
 }
 
 function generateEnvLocalFile(): string {
-	return [
+	return `${[
 		"# ──────────────────────────────────────────────────────",
 		"# NexusTS — Local Overrides (DO NOT COMMIT to git)",
 		"#",
@@ -198,7 +198,7 @@ function generateEnvLocalFile(): string {
 		"# Override any value from .env here:",
 		"# DATABASE_URL=postgres://user:password@localhost:5432/myapp",
 		"# SESSION_SECRET=my-local-secret",
-	].join("\n") + "\n";
+	].join("\n")}\n`;
 }
 
 function generateGitIgnore(): string {
@@ -267,9 +267,6 @@ export function generateProjectFiles(target: string, opts: ScaffoldOptions): str
 		write("app/app.module.ts",
 			`${ormImport}${inertiaImport}import { Module } from '@nexusts/core';\nimport { HomeController } from './controllers/home.controller.js';\n\n@Module({\n  imports: [${hasOrm ? `\n${ormBlock},\n` : ''}  ],\n${inertiaProvider}  controllers: [HomeController],\n})\nexport class AppModule {}\n`);
 	}
-
-	// app/controllers/home.controller.ts
-	{
 		if (opts.view === "inertia") {
 			write("app/controllers/home.controller.ts",
 				`import { Controller, Get, Inject } from '@nexusts/core';\nimport { Inertia } from '@nexusts/view';\n\n@Controller('/')\nexport class HomeController {\n  @Inject(Inertia.TOKEN) private inertia!: Inertia;\n\n  @Get('/')\n  index() {\n    return this.inertia.render('Welcome', { name: 'NexusTS' });\n  }\n}\n`);
@@ -280,7 +277,6 @@ export function generateProjectFiles(target: string, opts: ScaffoldOptions): str
 			write("app/controllers/home.controller.ts",
 				`import { Controller, Get } from '@nexusts/core';\n\n@Controller('/')\nexport class HomeController {\n  @Get('/')\n  index() {\n    return { status: 200, body: { message: 'Hello from NexusTS!' } };\n  }\n}\n`);
 		}
-	}
 
 	if (opts.orm === "drizzle") {
 		generateDrizzleConfig(target, opts.db, opts.dbUrl);

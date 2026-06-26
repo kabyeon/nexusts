@@ -14,6 +14,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import type { CommandContext } from "../../src/cli/core/index.js";
 import { makeMigrationCommand } from "../../src/cli/commands/make-migration.js";
 import { makeModelCommand } from "../../src/cli/commands/make-model.js";
 
@@ -58,7 +59,7 @@ describe("make:model with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(0);
 		const out = await readFile(
 			join(cwd, "src/app/models/user.model.ts"),
@@ -100,7 +101,7 @@ describe("make:model with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(0);
 		const out = await readFile(
 			join(cwd, "src/app/models/item.model.ts"),
@@ -140,7 +141,7 @@ describe("make:model with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(1);
 		await rm(cwd, { recursive: true, force: true });
 	});
@@ -178,14 +179,14 @@ describe("make:migration with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(0);
 		const { readdir } = await import("node:fs/promises");
 		const list = await readdir(join(cwd, "src/app/database/migrations"));
 		expect(list).toHaveLength(1);
 		expect(list[0]).toMatch(/\.ts$/);
 		const content = await readFile(
-			join(cwd, "src/app/database/migrations", list[0]!),
+			join(cwd, "src/app/database/migrations", list[0] as string),
 			"utf-8",
 		);
 		expect(content).toContain("from 'drizzle-orm/pg-core'");
@@ -225,12 +226,12 @@ describe("make:migration with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(0);
 		const { readdir } = await import("node:fs/promises");
 		const dir = join(cwd, "src/app/database/migrations");
 		const files = await readdir(dir);
-		const content = await readFile(join(dir, files[0]!), "utf-8");
+		const content = await readFile(join(dir, files[0] as string), "utf-8");
 		expect(content).toContain("from 'drizzle-orm/mysql-core'");
 		await rm(cwd, { recursive: true, force: true });
 	});
@@ -265,7 +266,7 @@ describe("make:migration with --dialect", () => {
 				},
 				controllersExtra: [],
 			},
-		} as any);
+		} as CommandContext);
 		expect(code).toBe(0);
 		const { readdir } = await import("node:fs/promises");
 		const dir = join(cwd, "src/app/database/migrations");

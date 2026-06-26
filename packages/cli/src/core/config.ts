@@ -200,23 +200,23 @@ export async function loadConfig(
 				// a fresh project after `nx new`), swallow the import
 				// failure and fall back to defaults.
 				try {
-					const mod: any = await import(path);
+					const mod: { default?: unknown } = await import(path);
 					config = (mod.default ?? mod) as Partial<NxConfig>;
-				} catch (importErr: any) {
+				} catch (importErr: unknown) {
 					// If the file imports from NexusTS and NexusTS isn't installed,
 					// try to extract the config by evaluating the export with a
 					// simple regex (last resort). For now, just log and fall back.
 					console.warn(
-						`[nx] Could not dynamically import ${candidate}: ${importErr.message ?? importErr}. Falling back to defaults.`,
+						`[nx] Could not dynamically import ${candidate}: ${importErr instanceof Error ? importErr.message : String(importErr)}. Falling back to defaults.`,
 					);
 					config = {};
 				}
 			}
 			configSource = candidate;
 			break;
-		} catch (err: any) {
+		} catch (err: unknown) {
 			throw new Error(
-				`Failed to load ${candidate}: ${err.message ?? String(err)}`,
+				`Failed to load ${candidate}: ${err instanceof Error ? err.message : String(err)}`,
 			);
 		}
 	}
@@ -247,7 +247,7 @@ export async function loadConfig(
 		"solid",
 	]);
 
-	if (process.env["NX_DEBUG"] === "1") {
+	if (process.env.NX_DEBUG === "1") {
 		console.log(`[nx] config source: ${configSource}`);
 	}
 
@@ -270,19 +270,19 @@ function mergeWithEnv(base: NxConfig, override: Partial<NxConfig>): NxConfig {
 		paths: { ...base.paths, ...(override.paths ?? {}) },
 	};
 
-	if (env["NX_ROUTING"]) merged.routing = env["NX_ROUTING"] as RoutingStyle;
-	if (env["NX_VIEW"]) merged.view = env["NX_VIEW"] as ViewEngine;
-	if (env["NX_ORM"]) merged.orm = env["NX_ORM"] as OrmDriver;
-	if (env["NX_DATABASE_DRIVER"])
-		merged.database.driver = env["NX_DATABASE_DRIVER"] as DatabaseDriver;
-	if (env["NX_DATABASE_URL"]) merged.database.url = env["NX_DATABASE_URL"]!;
-	if (env["NX_INERTIA_FRONTEND"])
-		merged.inertia.frontend = env["NX_INERTIA_FRONTEND"] as InertiaFrontend;
-	if (env["NX_INERTIA_SSR"])
+	if (env.NX_ROUTING) merged.routing = env.NX_ROUTING as RoutingStyle;
+	if (env.NX_VIEW) merged.view = env.NX_VIEW as ViewEngine;
+	if (env.NX_ORM) merged.orm = env.NX_ORM as OrmDriver;
+	if (env.NX_DATABASE_DRIVER)
+		merged.database.driver = env.NX_DATABASE_DRIVER as DatabaseDriver;
+	if (env.NX_DATABASE_URL) merged.database.url = env.NX_DATABASE_URL as string;
+	if (env.NX_INERTIA_FRONTEND)
+		merged.inertia.frontend = env.NX_INERTIA_FRONTEND as InertiaFrontend;
+	if (env.NX_INERTIA_SSR)
 		merged.inertia.ssr =
-			env["NX_INERTIA_SSR"] !== "false" && env["NX_INERTIA_SSR"] !== "0";
-	if (env["NX_INERTIA_VERSION"])
-		merged.inertia.version = env["NX_INERTIA_VERSION"]!;
+			env.NX_INERTIA_SSR !== "false" && env.NX_INERTIA_SSR !== "0";
+	if (env.NX_INERTIA_VERSION)
+		merged.inertia.version = env.NX_INERTIA_VERSION as string;
 
 	return merged;
 }

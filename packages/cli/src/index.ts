@@ -30,12 +30,12 @@ async function main(): Promise<number> {
 	logger.setVerbose(verbose);
 
 	// Top-level flags.
-	if (parsed.flags["version"] === true) {
+	if (parsed.flags.version === true) {
 		console.log(PKG_VERSION);
 		return 0;
 	}
 
-	if (parsed.flags["help"] === true || parsed.command === "help") {
+	if (parsed.flags.help === true || parsed.command === "help") {
 		return renderHelp(parsed.positional[0]);
 	}
 
@@ -143,7 +143,7 @@ main()
 	.then((code) => process.exit(code))
 	.catch((err) => {
 		logger.error(err?.message ?? String(err));
-		if (process.env["NX_DEBUG"] === "1" && err?.stack) {
+		if (process.env.NX_DEBUG === "1" && err?.stack) {
 			console.error(err.stack);
 		}
 		process.exit(1);

@@ -123,11 +123,11 @@ export const replCommand: Command = {
 		},
 	],
 	async run(ctx: CommandContext): Promise<number> {
-		const mod = ctx.flags["module"] as string | undefined;
+		const mod = ctx.flags.module as string | undefined;
 		const noBoot = Boolean(ctx.flags["no-boot"]);
 		const histPath = resolve(
 			ctx.cwd,
-			(ctx.flags["history"] as string | undefined) ?? ".nx-repl-history",
+			(ctx.flags.history as string | undefined) ?? ".nx-repl-history",
 		);
 
 		const env: Record<string, unknown> = { console };
@@ -282,7 +282,7 @@ export const replCommand: Command = {
 					const getRoutes = app?.server?.router?.getRoutes;
 					const raw =
 						typeof getRoutes === "function"
-							? getRoutes.call(app!.server!.router)
+							? getRoutes.call(app?.server?.router)
 							: [];
 					const seen = new Set<string>();
 					const routes = raw.filter((r) => {
@@ -332,7 +332,7 @@ export const replCommand: Command = {
 			if (trimmed.startsWith(".")) {
 				await handleDotCommand(trimmed);
 			} else {
-				buffer += line + "\n";
+				buffer += `${line}\n`;
 				if (isIncomplete(buffer)) {
 					rl.setPrompt("... ");
 					rl.prompt();

@@ -149,7 +149,7 @@ describe("formatResult", () => {
 
 	it("handles objects that throw on JSON.stringify", () => {
 		const circular: Record<string, unknown> = {};
-		circular["self"] = circular;
+		circular.self = circular;
 		// Should not throw
 		const out = formatResult(circular);
 		expect(typeof out).toBe("string");
@@ -220,7 +220,7 @@ describe("preloadService", () => {
 		const env: Record<string, unknown> = {};
 		const app = { container: { resolve: () => "should-not-be-called" } };
 		await preloadService(env, app, "x", "./does-not-exist-12345.mjs", "X");
-		expect(env["x"]).toBeUndefined();
+		expect(env.x).toBeUndefined();
 	});
 
 	it("resolves the service via the token when the module exports it", async () => {
@@ -247,7 +247,7 @@ describe("preloadService", () => {
 			},
 		};
 		await preloadService(env, app, "x", modPath, "X");
-		expect((env["x"] as { greet: () => string }).greet()).toBe("hi");
+		expect((env.x as { greet: () => string }).greet()).toBe("hi");
 	});
 
 	it("falls back to resolving the class when the token fails", async () => {
@@ -278,7 +278,7 @@ describe("preloadService", () => {
 		};
 		await preloadService(env, app, "x", modPath, "X");
 		expect(calls).toBe(2); // 1 for token, 1 for class
-		expect((env["x"] as { ok: boolean }).ok).toBe(true);
+		expect((env.x as { ok: boolean }).ok).toBe(true);
 	});
 });
 

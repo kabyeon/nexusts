@@ -56,5 +56,5 @@ export interface SeedContext {
 	db: import("@nexusts/drizzle").DrizzleService;
 	logger: import("@nexusts/logger").Logger;
 	dialect: string;
-	truncate: (table: any) => Promise<void>;
+	truncate: (table: unknown) => Promise<void>;
 }

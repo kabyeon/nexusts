@@ -70,7 +70,7 @@ describe("nx init — error path", () => {
 	it("errors when target directory does not exist", async () => {
 		const target = join(tmpdir(), `nx-init-nope-${Date.now()}`);
 		// Don't create the directory
-		const code = await initCommand.run!(
+		const code = await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -109,7 +109,7 @@ describe("nx init — fresh install", () => {
 			),
 		);
 
-		const code = await initCommand.run!(
+		const code = await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -155,7 +155,7 @@ describe("nx init — fresh install", () => {
 		);
 		await writeFile(join(target, "package.json"), original);
 
-		await initCommand.run!(
+		await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -165,7 +165,7 @@ describe("nx init — fresh install", () => {
 			}),
 		);
 
-		const expected = JSON.stringify(
+		const expected = `${JSON.stringify(
 			{
 				name: "already-had-kabyeon",
 				dependencies: {
@@ -185,7 +185,7 @@ describe("nx init — fresh install", () => {
 			},
 			null,
 			2,
-		) + "\n";
+		)}\n`;
 		const after = await readFile(join(target, "package.json"), "utf8");
 		expect(after).toBe(expected);
 	});
@@ -207,7 +207,7 @@ describe("nx init — fresh install", () => {
 		await writeFile(join(target, "package.json"), original);
 
 		// Should NOT throw "Unrecognized token '/'"
-		const code = await initCommand.run!(
+		const code = await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -242,7 +242,7 @@ describe("nx init — fresh install", () => {
 `;
 		await writeFile(join(target, "package.json"), original);
 
-		const code = await initCommand.run!(
+		const code = await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -275,7 +275,7 @@ describe("nx init — idempotent re-run", () => {
 		await writeFile(join(target, "nx.config.ts"), "// existing config");
 
 		// First run: creates everything
-		await initCommand.run!(
+		await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -289,7 +289,7 @@ describe("nx init — idempotent re-run", () => {
 		const existingConfig = await readFile(join(target, "nx.config.ts"), "utf8");
 
 		// Second run: should skip (or merge) without overwriting
-		await initCommand.run!(
+		await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",
@@ -309,7 +309,7 @@ describe("nx init — idempotent re-run", () => {
 		await mkdir(join(target, "app"), { recursive: true });
 		await writeFile(join(target, "app/main.ts"), "// OLD");
 
-		await initCommand.run!(
+		await initCommand.run?.(
 			makeCtx(target, {
 				"no-interaction": true,
 				view: "none",

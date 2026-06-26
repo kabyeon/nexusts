@@ -144,7 +144,7 @@ export const makeQueueCommand: Command = {
 
 		const variants = nameVariants(name);
 		const backend =
-			(ctx.flags["backend"] as string | undefined) ??
+			(ctx.flags.backend as string | undefined) ??
 			ctx.config.queue?.backend ??
 			"memory";
 
@@ -201,7 +201,7 @@ export const makeQueueCommand: Command = {
 		logger.info(
 			render(WIRE_HINT, { name: variants.pascal, kebab: variants.kebab })
 				.split("\n")
-				.map((l) => "     " + l)
+				.map((l) => `     ${l}`)
 				.join("\n"),
 		);
 		logger.info(

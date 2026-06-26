@@ -57,7 +57,7 @@ async function resolveOpt(
 ): Promise<string> {
 	const flagVal = flags[key] as string | undefined;
 	if (flagVal) {
-		if (valid.includes(flagVal as any)) return flagVal;
+		if (valid.includes(flagVal)) return flagVal;
 		if (!interactive) {
 			logger.error(`Invalid --${key} "${flagVal}". Valid values: ${valid.join(", ")}`);
 			process.exit(1);
@@ -73,7 +73,7 @@ async function resolveOpt(
 	// Non-interactive returns the default.
 	for (;;) {
 		const answer = await select(label, [...valid], { default: defaultVal });
-		if (valid.includes(answer as any)) return answer;
+		if (valid.includes(answer)) return answer;
 		logger.warn(`"${answer}" is not valid. Please choose from: ${valid.join(", ")}`);
 	}
 }

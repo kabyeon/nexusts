@@ -71,12 +71,12 @@ export function render(template: string, context: RenderContext): string {
 function lookup(ctx: RenderContext, dotted: string): RenderValue {
 	if (dotted in ctx) return ctx[dotted] as RenderValue;
 	const parts = dotted.split(".");
-	let cur: any = ctx;
+	let cur: unknown = ctx;
 	for (const p of parts) {
 		if (cur == null || typeof cur !== "object") return undefined;
-		cur = cur[p];
+		cur = (cur as Record<string, unknown>)[p];
 	}
-	return cur === undefined || cur === null ? undefined : cur;
+	return cur === undefined || cur === null ? undefined : cur as RenderValue;
 }
 
 function isTruthy(v: RenderValue): boolean {

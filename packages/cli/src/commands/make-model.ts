@@ -68,7 +68,7 @@ export const makeModelCommand: Command = {
 			return 1;
 		}
 
-		const orm = (ctx.flags["orm"] as string | undefined) ?? ctx.config.orm;
+		const orm = (ctx.flags.orm as string | undefined) ?? ctx.config.orm;
 		if (orm !== "drizzle" && orm !== "prisma" && orm !== "kysely") {
 			logger.error(
 				`Unsupported ORM: ${orm}. Allowed: drizzle, prisma, kysely. Use --orm or set "orm" in nx.config.ts.`,
@@ -85,14 +85,14 @@ export const makeModelCommand: Command = {
 		const columnLines = renderColumns(
 			columns,
 			orm,
-			ctx.flags["dialect"] as string | undefined,
+			ctx.flags.dialect as string | undefined,
 		);
 		const prismaBlock = renderPrismaBlock(variants.pascal, columns);
 
 		let code: string;
 		if (orm === "drizzle") {
 			const dialect =
-				(ctx.flags["dialect"] as string | undefined) ??
+				(ctx.flags.dialect as string | undefined) ??
 				ctx.config.dialect ??
 				"bun-sqlite";
 			if (!isValidDialect(dialect)) {
@@ -179,7 +179,6 @@ function renderColumns(
 					const tsType = colType === "text" ? "string" : colType;
 					return `  ${colName}: ${tsType},`;
 				}
-				case "prisma":
 				default:
 					return `  ${colName} ${colType},`;
 			}

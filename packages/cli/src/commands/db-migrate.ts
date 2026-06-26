@@ -70,17 +70,17 @@ export const dbMigrateCommand: Command = {
 	],
 	async run(ctx: CommandContext): Promise<number> {
 		const folder =
-			(ctx.flags["folder"] as string | undefined) ??
+			(ctx.flags.folder as string | undefined) ??
 			resolve(ctx.cwd, ctx.config.paths.migrations);
 		const dialect =
-			(ctx.flags["dialect"] as string | undefined) ??
+			(ctx.flags.dialect as string | undefined) ??
 			ctx.config.dialect ??
 			"bun-sqlite";
 		const configPath =
-			(ctx.flags["config"] as string | undefined) ??
+			(ctx.flags.config as string | undefined) ??
 			resolve(ctx.cwd, "drizzle.config.ts");
-		const wantStatus = Boolean(ctx.flags["status"]);
-		const generateName = ctx.flags["generate"] as string | undefined;
+		const wantStatus = Boolean(ctx.flags.status);
+		const generateName = ctx.flags.generate as string | undefined;
 
 		if (generateName) {
 			return runDrizzleKit(ctx.cwd, [
@@ -96,7 +96,7 @@ export const dbMigrateCommand: Command = {
 			ctx.cwd,
 			folder,
 			dialect,
-			(ctx.config.database as any)?.url ?? "",
+			ctx.config.database.url,
 		);
 		}
 
@@ -185,14 +185,14 @@ await svc.close();
 
 function readEnvUrl(dialect: string): string | null {
 	const url =
-		process.env["DATABASE_URL"] ??
-		process.env["NEXUS_DB_URL"] ??
+		process.env.DATABASE_URL ??
+		process.env.NEXUS_DB_URL ??
 		(dialect === "postgres"
-			? process.env["POSTGRES_URL"]
+			? process.env.POSTGRES_URL
 			: dialect === "mysql"
-				? process.env["MYSQL_URL"]
+				? process.env.MYSQL_URL
 				: dialect.includes("sqlite")
-					? process.env["SQLITE_FILENAME"]
+					? process.env.SQLITE_FILENAME
 					: null);
 	return url ?? null;
 }

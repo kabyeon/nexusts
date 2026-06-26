@@ -177,7 +177,7 @@ export const configCommand: Command = {
 		const force = flagBool(ctx.flags, "force", false);
 		const target = resolve(
 			ctx.cwd,
-			(ctx.flags["target"] as string | undefined) ?? ".",
+			(ctx.flags.target as string | undefined) ?? ".",
 		);
 
 		if (!existsSync(target)) {
@@ -193,15 +193,20 @@ export const configCommand: Command = {
 		const flag = (k: string) => ctx.flags[k] as string | undefined;
 		const flagBoolStrict = (k: string, def: boolean) =>
 			flagBool(ctx.flags, k, def);
-		if (flag("style")) values.routing = flag("style")!;
-		if (flag("view")) values.view = flag("view")!;
-	if (flag("view-paths")) {
-		values.viewPaths = flag("view-paths")!;
-	}
-		if (flag("orm")) values.orm = flag("orm")!;
-		if (flag("db")) values.dbDriver = flag("db")!;
-		if (flag("db-url") !== undefined) values.dbUrl = flag("db-url")!;
-		if (flag("frontend")) values.inertiaFrontend = flag("frontend")!;
+		const style = flag("style");
+		if (style) values.routing = style;
+		const view = flag("view");
+		if (view) values.view = view;
+		const viewPaths = flag("view-paths");
+		if (viewPaths) values.viewPaths = viewPaths;
+		const orm = flag("orm");
+		if (orm) values.orm = orm;
+		const db = flag("db");
+		if (db) values.dbDriver = db;
+		const dbUrl = flag("db-url");
+		if (dbUrl !== undefined) values.dbUrl = dbUrl;
+		const frontend = flag("frontend");
+		if (frontend) values.inertiaFrontend = frontend;
 		if (flagBoolStrict("ssr", false)) values.inertiaSSR = true;
 		if (flagBoolStrict("no-ssr", false)) values.inertiaSSR = false;
 		// --inertia-version intentionally not exposed — too internal
