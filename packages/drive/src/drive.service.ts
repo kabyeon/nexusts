@@ -22,56 +22,77 @@ export class DriveService {
 	/** DI token. */
 	static readonly TOKEN = Symbol.for("nexus:DriveService");
 
-	private _driver: import("./types.js").StorageDriver;
-	defaultVisibility: NonNullable<DriveConfig["defaultVisibility"]>;
-	private signedUrlBuilder: NonNullable<DriveConfig["signedUrlBuilder"]>;
+	/** Drive configuration — injected by DI container. */
+	@Inject("DRIVE_CONFIG") declare private readonly config: DriveConfig;
 
-	constructor(@Inject("DRIVE_CONFIG") config: DriveConfig = {}) {
-		this._driver = config.driver ?? new MemoryDriver();
-		this.defaultVisibility = config.defaultVisibility ?? "private";
-		this.signedUrlBuilder =
-			config.signedUrlBuilder ??
-			(async (key, opts) => this._driver.getSignedUrl(key, opts));
+	private _driver!: import("./types.js").StorageDriver;
+	private _signedUrlBuilder!: (key: string, opts?: SignedUrlOptions) => Promise<string>;
+	defaultVisibility: NonNullable<DriveConfig["defaultVisibility"]> = "private";
+
+	constructor() {
+		// Lazy-init so DI can set @Inject fields first.
+	}
+
+	/** Ensure driver and builder are initialized from config. */
+	private ensureInit(): void {
+		if (this._driver) return;
+		const cfg = this.config ?? {};
+		this._driver = cfg.driver ?? new MemoryDriver();
+		this.defaultVisibility = cfg.defaultVisibility ?? "private";
+		this._signedUrlBuilder =
+			cfg.signedUrlBuilder ??
+			(async (key: string, opts?: SignedUrlOptions) =>
+				this._driver.getSignedUrl(key, opts));
 	}
 
 	/** Direct access to the underlying driver (for advanced use). */
 	get driver(): import("./types.js").StorageDriver {
+		this.ensureInit();
 		return this._driver;
 	}
 
 	async put(key: string, body: FileContent, opts?: PutOptions): Promise<void> {
+		this.ensureInit();
 		return this._driver.put(key, body, opts);
 	}
 
 	async get(key: string): Promise<Buffer> {
+		this.ensureInit();
 		return this._driver.get(key);
 	}
 
 	async delete(key: string): Promise<boolean> {
+		this.ensureInit();
 		return this._driver.delete(key);
 	}
 
 	async exists(key: string): Promise<boolean> {
+		this.ensureInit();
 		return this._driver.exists(key);
 	}
 
 	async head(key: string): Promise<FileMetadata> {
+		this.ensureInit();
 		return this._driver.head(key);
 	}
 
 	async list(opts?: ListOptions): Promise<ListResult> {
+		this.ensureInit();
 		return this._driver.list(opts);
 	}
 
 	async getSignedUrl(key: string, opts?: SignedUrlOptions): Promise<string> {
-		return this.signedUrlBuilder(key, opts);
+		this.ensureInit();
+		return this._signedUrlBuilder(key, opts);
 	}
 
 	async copy(src: string, dest: string): Promise<void> {
+		this.ensureInit();
 		return this._driver.copy(src, dest);
 	}
 
 	async move(src: string, dest: string): Promise<void> {
+		this.ensureInit();
 		return this._driver.move(src, dest);
 	}
 }

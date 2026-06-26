@@ -14,7 +14,6 @@ import { Module } from "@nexusts/core";
 import { DriveService } from "./drive.service.js";
 import { MemoryDriver } from "./drivers/memory.js";
 import type { DriveConfig } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [
