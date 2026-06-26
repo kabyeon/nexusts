@@ -16,6 +16,7 @@ import { Module } from "@core/decorators/module";
 import { Controller } from "@core/decorators/controller";
 import { Get } from "@core/decorators/http-methods";
 import { Injectable, Inject } from "@core/decorators/injectable";
+import { Ctx } from "@core/decorators/params";
 import {
 	SessionService,
 	SessionModule,
@@ -26,6 +27,7 @@ import {
 	Session,
 	UnauthenticatedError,
 	SessionForbiddenError,
+	sessionMiddleware,
 } from "../../src/session/index.js";
 import { AuthService, AuthModule } from "../../src/auth/index.js";
 
@@ -381,5 +383,37 @@ describe("SessionModule.forRoot validation", () => {
 		expect(() => app.container.resolve(SessionService)).toThrow(
 			/cookie\.secret/,
 		);
+	});
+});
+
+describe("c.session AdonisJS-style getter", () => {
+	it("c.session is defined and equals c.get('session')", async () => {
+		const svc = new SessionService({ backend: "memory" });
+		let sessionResult: { hasSession: boolean; sameAsGet: boolean } | null = null;
+
+		@Controller("/ctx-probe")
+		class CtxProbeController {
+			@Get("/session")
+			probeSession(@Ctx() c: any) {
+				sessionResult = {
+					hasSession: c.session != null,
+					sameAsGet: c.session === c.get("session"),
+				};
+				return { ok: true };
+			}
+		}
+
+		@Module({ controllers: [CtxProbeController] })
+		class ProbeModule {}
+
+		const app = new Application(ProbeModule, {
+			middleware: [sessionMiddleware(svc)],
+		});
+
+		const res = await app.server.app.fetch(new Request("http://test/ctx-probe/session"));
+		expect(res.status).toBe(200);
+		expect(sessionResult).not.toBeNull();
+		expect(sessionResult!.hasSession).toBe(true);
+		expect(sessionResult!.sameAsGet).toBe(true);
 	});
 });

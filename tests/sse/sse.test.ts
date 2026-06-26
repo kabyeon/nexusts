@@ -138,6 +138,35 @@ describe("SseStream · onClose callback", () => {
 	});
 });
 
+describe("SseStream · onAbort alias", () => {
+	it("fires when close() is called (delegates to onClose)", async () => {
+		const api = makeMockApi();
+		const stream = new SseStream(api as any);
+		const cb = vi.fn();
+		stream.onAbort(cb);
+		await stream.close();
+		expect(cb).toHaveBeenCalledTimes(1);
+	});
+
+	it("fires when the underlying API is aborted", () => {
+		const api = makeMockApi();
+		const stream = new SseStream(api as any);
+		const cb = vi.fn();
+		stream.onAbort(cb);
+		api.triggerAbort();
+		expect(cb).toHaveBeenCalledTimes(1);
+	});
+
+	it("invokes immediately if already closed", async () => {
+		const api = makeMockApi();
+		const stream = new SseStream(api as any);
+		await stream.close();
+		const cb = vi.fn();
+		stream.onAbort(cb);
+		expect(cb).toHaveBeenCalledTimes(1);
+	});
+});
+
 // ---------------------------------------------------------------------------
 // Hono integration
 // ---------------------------------------------------------------------------
