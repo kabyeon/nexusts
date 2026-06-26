@@ -34,13 +34,13 @@ class CryptoController {
   @Post("/hash")
   async hash(ctx: Context) {
     const body = await ctx.req.json() as { password: string };
-    return { value: await this.hashService.make(body.password) };
+    return { value: await this.hashService.hash(body.password) };
   }
 
   @Post("/verify")
   async verify(ctx: Context) {
     const body = await ctx.req.json() as { password: string; value: string };
-    return { valid: await this.hashService.verify(body.password, body.value) };
+    return { valid: await this.hashService.verify(body.value, body.password) };
   }
 }
 
