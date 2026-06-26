@@ -249,7 +249,49 @@ nx make:migration create_users_table --columns "name:text,email:text"
 nx make:migration add_email_to_users
 ```
 
-파일명 패턴: `YYYYMMDD_HHmmss_<snake>.sql` (Drizzle는 `.ts`).
+파일명 패턴: `YYYYMMDD_HHmmss_<snake>.sql` (Drizzle) 또는 `.ts` (Kysely).
+
+### `nx db:generate [name]`
+
+스키마 변경 사항으로 마이그레이션 파일을 생성합니다.
+
+```bash
+# Drizzle: drizzle-kit generate 실행
+nx db:generate
+nx db:generate add_users_table
+
+# Kysely: .ts 파일 (up/down 함수) 생성
+nx db:generate create_posts_table --orm kysely
+
+# 직접 SQL 작성:
+nx db:generate add_index --sql
+```
+
+### `nx db:migrate`
+
+대기 중인 마이그레이션을 적용합니다.
+
+```bash
+# Drizzle: drizzle-kit migrate 실행
+nx db:migrate
+
+# Kysely: Kysely Migrator 인프로세스 실행
+nx db:migrate --orm kysely
+
+# 상태 확인
+nx db:migrate --status --orm kysely
+```
+
+**Drizzle vs Kysely 마이그레이션:**
+
+| 기능 | Drizzle | Kysely |
+|------|---------|--------|
+| 엔진 | `drizzle-kit` (외부 CLI) | Kysely `Migrator` (내장) |
+| 파일 형식 | SQL (`*.sql`) | TypeScript (`*.ts`) |
+| 개발 의존성 | `drizzle-kit` 설치 필요 | 없음 |
+| 추적 테이블 | `__nexus_migrations` | `kysely_migration` |
+| 생성 명령어 | `nx db:generate [name]` | `nx db:generate [name] --orm kysely` |
+| 적용 명령어 | `nx db:migrate` | `nx db:migrate --orm kysely` |
 
 ### `nx make:middleware <Name>`
 

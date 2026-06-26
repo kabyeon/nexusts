@@ -11,9 +11,9 @@
 
 **Bun Native Fullstack Framework** — NestJS structure × Adonis productivity × Hono edge performance × TC39 standard ES decorators.
 
-> **v0.9.0 — Standard decorator migration.** TC39 standard ES
+> **v0.9.4 — Kysely + standard decorators.** TC39 standard ES
 > decorators, no reflect-metadata. Field injection, `ctx.req.*` methods.
-> 32 independent modules. See [CHANGELOG.md](./CHANGELOG.md) for details.
+> 33 independent modules. See [CHANGELOG.md](./CHANGELOG.md) for details.
 
 ---
 
@@ -88,7 +88,7 @@ for the detailed v0.8 release notes.
 | Three view engines (Rendu/Edge/Inertia) | ❌ |   ✅   |   ❌   |    ✅     |
 | **Default ORM (Drizzle, 5 dialects)** |   △   | Lucid  |   ❌   |    ✅     |
 | **Multi-pod session, cache, limiter via Drizzle** |  △ | ✅ | ❌ | **✅** |
-| **32 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
+| **33 independent bundle entry points** |   ❌   |   △   |   ❌   |    ✅     |
 | **SQL-injection-safe raw queries by construction** |   △   |   △   |   ❌   |    ✅     |
 | **Migrations + autoMigrate on boot** |   △   |   ✅   |   ❌   |    ✅     |
 | **First-party GraphQL** (SDL + code-first) |   ✅   |   △    |   ❌   |    ✅     |
@@ -180,6 +180,7 @@ Add the modules you need:
 ```bash
 # Core stack — pick one or more
 bun add @nexusts/drizzle            # the default ORM
+bun add @nexusts/kysely            # typed SQL query builder (alternative)
 bun add @nexusts/auth               # authentication (better-auth)
 bun add @nexusts/queue              # background jobs
 bun add @nexusts/session            # cookie/memory/drizzle sessions
@@ -1096,7 +1097,7 @@ src/
 ### Examples
 
 ```
-examples/                                  # 34 working examples
+examples/                                  # 36 working examples
 ├── 01-basic-mvc/                          # one per module
 ├── 02-routing-styles/
 ├── 03-drizzle-crud/
@@ -1109,7 +1110,10 @@ examples/                                  # 34 working examples
 ├── 30-inertia-vue-spa/                    # Inertia v3 — Vue 3, client-side
 ├── 31-inertia-vue-ssr/                    # Inertia v3 — Vue 3, server-side
 ├── 32-graphql-hello/                      # GraphQL endpoint
-└── 33-resilience-calls/                  # retry / circuit / bulkhead
+├── 33-resilience-calls/                  # retry / circuit / bulkhead
+├── 34-grpc-streaming/                    # gRPC streaming
+├── 35-standard-decorators/               # Standard decorator mode
+└── 36-kysely-crud/                      # Kysely typed SQL query builder
 ```
 
 Every example is runnable as `cd examples/NN-name && bun main.ts`.
@@ -1154,6 +1158,7 @@ v1.0, only major bumps will.
 - **v0.8.3** (2026-06-25) — Static analysis CI (Biome lint + tsc typecheck). **32 modules**: `@nexusts/feature-flag` (canary / A–B testing, rollout %, allowlist/denylist), `@nexusts/cache` Redis backend, `@nexusts/drizzle` seeding `Factory<T>`.
 - **v0.8.4** (2026-06-25) — Inertia v3 scaffold (React/Vue SSR with `nx init`/`nx new`), CLI input validation & `--no-interaction` fix, `InertiaConfig.scripts` for client script injection, scaffold deduplication to `scaffold.ts`. `@inertiajs/react`/`@inertiajs/vue3` `^3.0.0`.
 - **v0.9.0** (2026-06-25) — **Standard decorator migration.** Migrate from legacy `experimentalDecorators` to TC39 standard ES decorators. Remove `reflect-metadata` dependency (~16KB savings). Field injection (`@Inject(Token) declare field: Type`) instead of constructor injection. `ctx.req.*` methods instead of `@Param`/`@Body`/`@Query` parameter decorators. Dual-mode backward compatibility with legacy decorator code. See [migration guide](./docs/design/standard-decorators-migration.md).
+- **v0.9.4** (2026-06-26) — **Kysely first-party module.** `@nexusts/kysely` with `KyselyService`, `KyselyRepository` (Lucid-style), `KyselyModule.forRoot()`, built-in Migrator. CLI integration: `nx db:generate`/`db:migrate --orm kysely`, `make:crud`/`make:model`/`make:migration` Kysely templates. `BunSqliteDialect` for bun:sqlite. **33 modules.** Prisma removed from CLI options.
 
 ### Planned
 

@@ -136,10 +136,8 @@ function buildKyselyMigrateScript(
 
 	return `
 import { readdirSync, readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const migrationsFolder = ${JSON.stringify(folder)};
 
 // Build the Kysely instance with the configured dialect.
@@ -148,17 +146,15 @@ ${dialectSetup}
 import {
   Kysely,
   Migrator,
-  MigrationProvider,
-  Migration,
 } from "kysely";
 
-class FsMigrationProvider implements MigrationProvider {
-  async getMigrations(): Promise<Record<string, Migration>> {
+class FsMigrationProvider {
+  async getMigrations() {
     const files = readdirSync(migrationsFolder)
       .filter((f) => f.endsWith(".ts") || f.endsWith(".js"))
       .sort();
 
-    const migrations: Record<string, Migration> = {};
+    const migrations = {};
     for (const file of files) {
       const name = file.replace(/\\.(ts|js)$/, "");
       const mod = await import(join(migrationsFolder, file));

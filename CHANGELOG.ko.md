@@ -13,6 +13,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.5] — 2026-06-26
+
+### 추가
+
+- **`@nexusts/kysely`**: 새로운 퍼스트파티 모듈 — Kysely 타입 안전 SQL 쿼리
+  빌더 통합. `KyselyService`, `KyselyRepository` (Lucid 스타일),
+  `KyselyModule.forRoot()` / `forRootAsync()`, 내장 마이그레이션 지원
+  (Kysely Migrator). `BunSqliteDialect` 어댑터로 bun:sqlite 지원.
+  선택적 `kysely` 피어 의존성.
+  [`docs/user-guide/kysely.md`](./docs/user-guide/kysely.md) 참고.
+  ([예제: 36-kysely-crud](./examples/36-kysely-crud/))
+
+- **CLI Kysely 통합**: 모든 스캐폴드 명령어 Kysely 지원:
+  - `nx init`/`new --orm kysely` — KyselyModule 프로젝트 생성
+  - `nx make:model --orm kysely` — KyselyRepository + 타입드 테이블 인터페이스
+  - `nx make:migration --orm kysely` — `.ts` 마이그레이션 파일 (up/down 함수)
+  - `nx make:crud --orm kysely` — 전체 CRUD (KyselyRepository)
+  - `nx make:repository` — ORM 인식 (DrizzleRepository/KyselyRepository)
+  - `nx db:generate --orm kysely` — Kysely `.ts` 마이그레이션 생성
+  - `nx db:migrate --orm kysely` — Kysely Migrator 인프로세스 실행
+
+### 변경
+
+- **Service 템플릿**: Drizzle 전용 `eq()` import를 ORM 중립적인
+  `findById()`/`updateById()`/`deleteById()`로 대체. Drizzle과 Kysely
+  모두에서 동작.
+
+- **KyselyService**: 생성자에서 동기 auto-open 지원 (DrizzleService와 동일).
+
+### 제거
+
+- **Prisma**: 모든 CLI ORM 옵션에서 제거 (`init`, `new`, `config`,
+  `make:model`, `make:migration`, `make:crud`, `make:repository`).
+  `packages/cli/src/templates/model/prisma.ts` 삭제.
+  모든 문서 업데이트 (user-guide, design docs, webpage).
+
+### 마이그레이션 (v0.9.4 → v0.9.5)
+
+기존 Drizzle 사용자에게 호환성 문제 없음. `--orm prisma`를 사용하던
+프로젝트는 오류가 발생하므로 `--orm drizzle` 또는 `--orm kysely`로 변경.
+
+---
+
 ## [0.9.4] — 2026-06-26
 
 ### 수정
@@ -22,9 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  를 참조하는데, 이 파일이 npm 퍼블리시에 누락되어 `Cannot find module` 오류가
   발생하던 문제를 해결.
 
-
 - (없음)
-
 
 ---
 

@@ -257,7 +257,49 @@ nx make:migration create_users_table --columns "name:text,email:text"
 nx make:migration add_email_to_users
 ```
 
-Filename pattern: `YYYYMMDD_HHmmss_<snake>.sql` (or `.ts` for Drizzle).
+Filename pattern: `YYYYMMDD_HHmmss_<snake>.sql` (Drizzle) or `.ts` (Kysely).
+
+### `nx db:generate [name]`
+
+Generate a migration file from schema changes.
+
+```bash
+# Drizzle: runs drizzle-kit generate
+nx db:generate
+nx db:generate add_users_table
+
+# Kysely: generates a .ts file with up/down functions
+nx db:generate create_posts_table --orm kysely
+
+# Plain SQL (any ORM):
+nx db:generate add_index --sql
+```
+
+### `nx db:migrate`
+
+Apply pending database migrations.
+
+```bash
+# Drizzle: runs drizzle-kit migrate
+nx db:migrate
+
+# Kysely: runs Kysely Migrator in-process
+nx db:migrate --orm kysely
+
+# Check migration status
+nx db:migrate --status --orm kysely
+```
+
+**Drizzle vs Kysely migration:**
+
+| Feature | Drizzle | Kysely |
+|---------|---------|--------|
+| Engine | `drizzle-kit` (external CLI) | Kysely `Migrator` (built-in) |
+| File format | SQL (`*.sql`) | TypeScript (`*.ts`) |
+| Dev dependency | `drizzle-kit` | None |
+| Track table | `__nexus_migrations` | `kysely_migration` |
+| Generate | `nx db:generate [name]` | `nx db:generate [name] --orm kysely` |
+| Apply | `nx db:migrate` | `nx db:migrate --orm kysely` |
 
 ### `nx make:middleware <Name>`
 

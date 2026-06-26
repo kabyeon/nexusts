@@ -11,14 +11,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.9.5] — 2026-06-26
+
 ### Added
 
 - **`@nexusts/kysely`**: New first-party module — Kysely typed SQL query
   builder integration. `KyselyService`, `KyselyRepository` (Lucid-style),
   `KyselyModule.forRoot()` / `forRootAsync()`, built-in migration support
-  via Kysely Migrator. Optional `kysely` peer dependency.
+  via Kysely Migrator. `BunSqliteDialect` adapter for bun:sqlite.
+  Optional `kysely` peer dependency.
   See [`docs/user-guide/kysely.md`](./docs/user-guide/kysely.md).
   ([#example: 36-kysely-crud](./examples/36-kysely-crud/))
+
+- **CLI Kysely integration**: All scaffold commands now Kysely-aware:
+  - `nx init`/`new --orm kysely` — project scaffold with `KyselyModule`
+  - `nx make:model --orm kysely` — `KyselyRepository` + typed table interface
+  - `nx make:migration --orm kysely` — `.ts` migration files with `up()`/`down()`
+  - `nx make:crud --orm kysely` — full CRUD with KyselyRepository
+  - `nx make:repository` — ORM-aware (DrizzleRepository/KyselyRepository)
+  - `nx db:generate --orm kysely` — Kysely `.ts` migration generator
+  - `nx db:migrate --orm kysely` — runs Kysely `Migrator` in-process
+
+### Changed
+
+- **Service template**: Replaced Drizzle-specific `eq()` import with
+  ORM-agnostic `findById()`/`updateById()`/`deleteById()` methods.
+  Works for both Drizzle and Kysely repositories.
+
+- **KyselyService**: Auto-opens synchronously on construction when Kysely
+  is available (matching DrizzleService behaviour for bun:sqlite).
+
+### Removed
+
+- **Prisma**: Removed from all CLI ORM options (`init`, `new`, `config`,
+  `make:model`, `make:migration`, `make:crud`, `make:repository`).
+  Deleted `packages/cli/src/templates/model/prisma.ts`.
+  Updated all documentation (user-guide, design docs, webpage).
+
+### Migration (from v0.9.4)
+
+No breaking changes for existing Drizzle users. Projects using `--orm prisma`
+will now receive an error — use `--orm drizzle` or `--orm kysely` instead.
+
+---
+
+## [0.9.4]
 
 ---
 

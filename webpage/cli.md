@@ -40,7 +40,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 |------|-------------|
 | `--style` | Routing style: `nest` / `adonis` / `functional` |
 | `--view` | View engine: `rendu` / `edge` / `eta` / `inertia` / `none` |
-| `--orm` | ORM driver: `drizzle` / `prisma` / `kysely` / `none` |
+| `--orm` | ORM driver: `drizzle` / `kysely` / `none` |
 | `--db` | Database: `bun-sqlite` / `node-sqlite` / `libsql` / `postgres` / `mysql` / `none` |
 | `--frontend` | Inertia frontend: `react` / `vue` / `svelte` / `solid` |
 | `--no-ssr` | Disable Inertia SSR |
@@ -246,7 +246,7 @@ export default defineConfig({
   routing: 'nest',           // nest | adonis | functional
   view: 'rendu',             // rendu | edge | eta | inertia | none
   viewPaths: 'resources/views',  // template directory
-  orm: 'drizzle',            // drizzle | prisma | kysely | none
+  orm: 'drizzle',            // drizzle | kysely | none
   dbDriver: 'bun-sqlite',    // bun-sqlite | postgres | mysql | ...
   dbUrl: 'app.db',           // database URL
 });

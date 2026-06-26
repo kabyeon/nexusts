@@ -147,6 +147,35 @@ KyselyModule.forRoot({
 });
 ```
 
+### CLI 기반 마이그레이션 워크플로
+
+NexusTS는 `nx db:generate`와 `nx db:migrate` 명령어로
+Kysely 마이그레이션을 지원합니다. Drizzle의 `drizzle-kit`과 달리
+외부 CLI가 필요하지 않습니다:
+
+```bash
+# 1. 마이그레이션 파일 생성
+nx db:generate create_users_table --orm kysely
+# → app/database/migrations/20260626_123000_create_users_table.ts
+
+# 2. 생성된 파일 검토 및 편집
+
+# 3. 마이그레이션 적용
+nx db:migrate --orm kysely
+# → Kysely Migrator가 .ts 로드 → up() 실행
+```
+
+**Drizzle vs Kysely 마이그레이션:**
+
+| 기능 | Drizzle | Kysely |
+|------|---------|--------|
+| 엔진 | `drizzle-kit` (외부 CLI) | Kysely `Migrator` (내장) |
+| 파일 형식 | SQL (`*.sql`) | TypeScript (`*.ts`) |
+| 개발 의존성 | `drizzle-kit` 설치 필요 | 없음 |
+| 추적 테이블 | `__nexus_migrations` | `kysely_migration` |
+| 생성 명령어 | `nx db:generate [name]` | `nx db:generate [name] --orm kysely` |
+| 적용 명령어 | `nx db:migrate` | `nx db:migrate --orm kysely` |
+
 ---
 
 ## KyselyRepository — Lucid 스타일 CRUD

@@ -1,11 +1,11 @@
 ---
 title: Module Overview
-description: All 32 @nexusts/* modules
+description: All 33 @nexusts/* modules
 ---
 
 # Module Overview
 
-NexusTS ships **32 independent packages** under the `@nexusts/*` namespace. Each is a separate entry point — you only install what you import.
+NexusTS ships **33 independent packages** under the `@nexusts/*` namespace. Each is a separate entry point — you only install what you import.
 
 ## Core
 
@@ -19,6 +19,7 @@ NexusTS ships **32 independent packages** under the `@nexusts/*` namespace. Each
 | Package | Description |
 |---------|-------------|
 | `@nexusts/drizzle` | Default ORM. 5 dialects (postgres, mysql, sqlite, bun-sqlite, d1). Migrations, seeding `Factory<T>`, `DrizzleModel`, `DrizzleRepository`. |
+| `@nexusts/kysely` | Typed SQL query builder. `KyselyService`, `KyselyRepository` (Lucid-style), `KyselyModule.forRoot()`. Built-in `Migrator`. All Kysely dialects. |
 
 ## API & Communication
 

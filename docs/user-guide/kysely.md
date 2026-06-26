@@ -188,6 +188,54 @@ export async function down(db: Kysely<any>): Promise<void> {
 }
 ```
 
+### CLI-based migration workflow
+
+NexusTS provides `nx db:generate` and `nx db:migrate` CLI commands
+for Kysely — no external CLI needed, unlike Drizzle's `drizzle-kit`:
+
+```bash
+# 1. Generate a migration file (TypeScript with up/down functions)
+nx db:generate create_users_table --orm kysely
+# → app/database/migrations/20260626_123000_create_users_table.ts
+
+# 2. Review and edit the generated file
+#    app/database/migrations/20260626_123000_create_users_table.ts
+
+# 3. Apply pending migrations
+nx db:migrate --orm kysely
+# → Kysely Migrator loads .ts files, runs up(), tracks in kysely_migration table
+```
+
+**How `nx db:migrate --orm kysely` works:**
+
+1. Generates a temporary `.mjs` script that sets up `bun:sqlite` + `SqliteDialect`
+2. Uses `FsMigrationProvider` to scan `app/database/migrations/` folder
+3. Runs Kysely's built-in `Migrator.migrateToLatest()`
+4. Tracks applied migrations in `kysely_migration` table
+5. Cleans up the temporary file
+
+**Migration status:**
+
+```bash
+nx db:migrate --status --orm kysely
+# Migration status:
+#   001_create_users: Success
+#   002_add_email: Success
+```
+
+### Drizzle vs Kysely migration comparison
+
+| Feature | Drizzle | Kysely |
+|---------|---------|--------|
+| Engine | `drizzle-kit` (external CLI) | Kysely `Migrator` (built-in) |
+| File format | SQL (`*.sql`) | TypeScript (`*.ts`) |
+| Dev dependency | `drizzle-kit` ^0.31.0 | None |
+| Track table | `__nexus_migrations` | `kysely_migration` |
+| Generate command | `nx db:generate [name]` | `nx db:generate [name] --orm kysely` |
+| Apply command | `nx db:migrate` | `nx db:migrate --orm kysely` |
+| Rollback | Manual SQL | `migrator.migrateTo(target)` |
+| Auto-run on boot | `autoMigrate: true` | `migrations.autoMigrate: true` |
+
 ---
 
 ## KyselyRepository — Lucid-style CRUD
