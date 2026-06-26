@@ -46,12 +46,14 @@ class EventController {
     const body = await ctx.req.json();
     const event = `${type}.created`;
     const results = await this.events.emit(event, body);
-    return { event, fired: results.length };
+    return { event, fired: results.matched, completed: results.completed };
   }
 
   @Get("/listeners")
   listeners(ctx: Context) {
-    return { events: this.events.eventNames() };
+    const all = this.events.listListeners();
+    const names = [...new Set(all.map((l) => l.pattern))];
+    return { events: names, count: all.length };
   }
 }
 

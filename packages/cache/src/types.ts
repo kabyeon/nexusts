@@ -16,7 +16,31 @@
  */
 
 import { METADATA_KEY } from "@nexusts/core";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import { safeGetMeta, safeDefineMeta } from "@nexusts/core/di/safe-reflect";
+
+// ── Standard-mode helper ──────────────────────────────────────────
+// In TC39 standard decorator mode (Bun 1.3+ default), `fn.constructor`
+// is `Function`, not the class. To bridge metadata we store it directly
+// on the prototype function using a Symbol key.
+// ───────────────────────────────────────────────────────────────────
+
+/** Symbol key used to stash CacheableSpec on the decorated function. */
+const FN_SPEC_KEY = Symbol.for("nexus:cache:fn:spec");
+
+/** Collect specs stored on prototype methods (standard mode path). */
+function collectFnSpecs<T>(target: any, key: string): T[] {
+	const result: T[] = [];
+	// Methods live on `target.prototype` for classes.
+	const proto = target.prototype;
+	if (!proto) return result;
+	for (const name of Object.getOwnPropertyNames(proto)) {
+		const fn = proto[name];
+		if (typeof fn !== "function") continue;
+		const spec = (fn as any)[FN_SPEC_KEY]?.[key] as T | undefined;
+		if (spec) result.push(spec);
+	}
+	return result;
+}
 
 /** A single cache entry. */
 export interface CacheEntry<T = unknown> {
@@ -114,18 +138,20 @@ export function Cacheable(
 			const { name, metadata } = contextOrKey;
 
 			const existing: CacheableSpec[] = metadata[CACHEABLE_META] ?? [];
-			existing.push({
+			const spec: CacheableSpec = {
 				prefix,
 				keyFn,
 				ttl: ttlSeconds,
 				propertyKey: name,
 				original: fn,
-			});
+			};
+			existing.push(spec);
 			metadata[CACHEABLE_META] = existing;
 
-			// Also store on constructor so legacy readers (applyDecorators, etc.) can find it.
-			// In standard mode fn.constructor is the class constructor.
-			safeDefineMeta(CACHEABLE_META, existing, fn.constructor, name);
+			// Stash the spec on the function itself so getCacheableSpecs
+			// can find it without going through the class constructor.
+			if (!(fn as any)[FN_SPEC_KEY]) (fn as any)[FN_SPEC_KEY] = {};
+			(fn as any)[FN_SPEC_KEY][CACHEABLE_META] = spec;
 			return;
 		}
 
@@ -165,11 +191,18 @@ export function CacheInvalidate(
 
 			const existing: CacheInvalidateSpec[] =
 				metadata[CACHE_INVALIDATE_META] ?? [];
-			existing.push({ prefix, keyFn, propertyKey: name, original: fn });
+			const spec: CacheInvalidateSpec = {
+				prefix,
+				keyFn,
+				propertyKey: name,
+				original: fn,
+			};
+			existing.push(spec);
 			metadata[CACHE_INVALIDATE_META] = existing;
 
-			// Also store on constructor for legacy readers.
-			safeDefineMeta(CACHE_INVALIDATE_META, existing, fn.constructor, name);
+			// Stash the spec on the function itself.
+			if (!(fn as any)[FN_SPEC_KEY]) (fn as any)[FN_SPEC_KEY] = {};
+			(fn as any)[FN_SPEC_KEY][CACHE_INVALIDATE_META] = spec;
 			return;
 		}
 
@@ -201,9 +234,16 @@ export interface CacheInvalidateSpec {
 }
 
 export function getCacheableSpecs(target: any): CacheableSpec[] {
+	// Standard mode: specs are stashed on prototype functions.
+	const fromFn = collectFnSpecs<CacheableSpec>(target, CACHEABLE_META);
+	if (fromFn.length > 0) return fromFn;
+	// Legacy mode: stored via safeDefineMeta on the constructor.
 	return safeGetMeta(CACHEABLE_META, target) ?? [];
 }
+
 export function getCacheInvalidateSpecs(target: any): CacheInvalidateSpec[] {
+	const fromFn = collectFnSpecs<CacheInvalidateSpec>(target, CACHE_INVALIDATE_META);
+	if (fromFn.length > 0) return fromFn;
 	return safeGetMeta(CACHE_INVALIDATE_META, target) ?? [];
 }
 
