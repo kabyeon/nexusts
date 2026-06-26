@@ -10,7 +10,7 @@
 ## 1. What this project is
 
 `@nexusts/core` is a Bun-native fullstack framework. It
-publishes **32 independent modules** (one entry point each under
+publishes **33 independent modules** (one entry point each under
 `@nexusts/*`), so a user only ships the code they actually
 import. The runtime is built on **TC39 standard ES decorators**
 (dual-mode with legacy fallback) + **Hono** (HTTP) +
@@ -23,9 +23,10 @@ import. The runtime is built on **TC39 standard ES decorators**
   (`experimentalDecorators: true`) are supported through a dual-mode
   fallback in every decorator factory. New code MUST use standard
   patterns (field injection, `ctx.req.*` methods). See §6 below.
-- **No `reflect-metadata` import required.** The framework lazy-loads
-  `reflect-metadata` only when legacy code paths are detected. New
-  modules MUST NOT import `reflect-metadata`.
+- **No `reflect-metadata` import required.** The framework ships an
+  inline Reflect Metadata polyfill in `@nexusts/core/di/safe-reflect`.
+  No external `reflect-metadata` package is needed. New modules MUST
+  NOT import `reflect-metadata`.
   See §6 (Standard decorator patterns) below.
 - **Each module is its own bundle entry point.** Add a new module →
   add a new `entrypoints:` line in `build.ts`, a new `./<name>` row
@@ -44,7 +45,7 @@ import. The runtime is built on **TC39 standard ES decorators**
 
 ```
 nexusts/                          # Monorepo root
-├── packages/                     # 32 independently-published npm packages
+├── packages/                     # 33 independently-published npm packages
 │   ├── core/                     # @nexusts/core — main package (MVC + DI + routing + validation + view)
 │   │   ├── package.json          # name: "@nexusts/core", depends on @nexusts/cli, @nexusts/view
 │   │   ├── src/
@@ -57,17 +58,20 @@ nexusts/                          # Monorepo root
 │   │   metrics, openapi, queue, redis, resilience, schedule,
 │   │   session, shield, sse, static, tracing, upload, ws/
 │   │   # (26 more modules, all @nexusts/<name>)
-│   └── ...                       # 32 packages total, each independently installable
+│   └── ...                       # 33 packages total, each independently installable
 ├── tests/                        # Vitest suites (one directory per package's tests)
 │   ├── auth, cache, ...          # one directory per module
 │   ├── examples/                 # smoke test for examples/
 │   └── e2e/                      # (mostly empty — reserved for future)
-├── examples/                     # 34 working examples (1 per module) — also serves as smoke-test corpus
+├── examples/                     # 36 working examples (1 per module) — also serves as smoke-test corpus
 │   ├── 01-basic-mvc/ ... 27-request-scope/         # core/DI/etc.
 │   ├── 28-inertia-react-spa/ 29-inertia-react-ssr/   # Inertia v3 examples
 │   ├── 30-inertia-vue-spa/ 31-inertia-vue-ssr/     # Inertia v3 + Vue
 │   ├── 32-graphql-hello/                            # GraphQL example
-│   └── 33-resilience-calls/                         # retry/circuit/bulkhead
+│   ├── 33-resilience-calls/                         # retry/circuit/bulkhead
+│   ├── 34-grpc-streaming/                           # gRPC streaming
+│   ├── 35-standard-decorators/                      # Standard decorator mode
+│   └── 36-kysely-crud/                              # Kysely typed SQL query builder
 ├── create-nexusts/               # `bunx create-nexusts my-app` scaffolder
 ├── docs/
 │   ├── user-guide/               # Step-by-step guides (en + .ko)
@@ -497,6 +501,8 @@ const name = inputValue(ctx.req.query('name')).trim().max(100).value();
 | `@Cron/@Interval/@Timeout` | schedule | ✅ metadata-only |
 | `@OnEvent` | events | ✅ metadata-only |
 | `@Upload` | upload | ✅ (v0.9 dual-mode) |
+| `@WebSocketGateway` | ws | ✅ dual-mode (v0.9.5) |
+| `@OnWebSocketOpen`/`@OnWebSocketMessage`/`@OnWebSocketClose` | ws | ✅ dual-mode (v0.9.5) |
 
 ### Legacy decorator gotchas (Bun 1.3)
 
@@ -721,8 +727,9 @@ smoke test to verify.
 ### `import 'reflect-metadata' not found / not needed`
 
 The framework no longer requires `import 'reflect-metadata'` anywhere.
-If you see this import in source code, remove it. The framework
-lazy-loads `reflect-metadata` only when legacy code paths are detected.
+If you see this import in source code, remove it. The framework ships
+an inline Reflect Metadata polyfill in `@nexusts/core/di/safe-reflect`.
+No external `reflect-metadata` package is needed.
 
 ### `TypeError: undefined is not an object (evaluating 'descriptor.value')`
 
@@ -777,7 +784,10 @@ requirement — only update Korean if the change is significant.
   first-party ORM. New ORMs are out of scope until v1.0; use the
   `optional` peer-dep path (`@nexusts/drizzle` is a peer).
 - **"Change the decorator semantics"** — The framework uses TC39 standard ES decorators as the default. Legacy decorators (`experimentalDecorators`) continue to work via the dual-mode fallback. Do not remove the dual-mode paths.
-- **"Add reflect-metadata back"** — The framework lazy-loads reflect-metadata only when legacy code paths are detected. Adding a static import defeats the ~16KB bundle savings. Use `safeGetMeta`/`safeDefineMeta` from `@nexusts/core/di/safe-reflect` instead.
+- **"Add reflect-metadata back"** — The framework ships an inline
+  Reflect Metadata polyfill in `@nexusts/core/di/safe-reflect`. No
+  external `reflect-metadata` package is needed. Use
+  `safeGetMeta`/`safeDefineMeta` instead.
 - **"Use constructor injection"** — New code MUST use field injection (`@Inject(Token) declare field: Type`). Constructor injection is legacy-only.
 - **"Drop the Inertia / gRPC / GraphQL / Resilience module to save
   bundle size"** — modules are opt-in by import. If a user doesn't

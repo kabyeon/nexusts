@@ -14,9 +14,13 @@
  * `@WebSocketGateway` walks the prototype to collect them. This
  * pattern is robust regardless of the target passed by the TS
  * decorator transform.
+ *
+ * Dual-mode: supports both TC39 standard (stage-3) and legacy
+ * (experimentalDecorators) decorator modes.
  */
 
 import type { WsLifecycle } from "./types.js";
+import { safeDefineMeta, safeGetMeta } from "@nexusts/core/di/safe-reflect";
 
 const GATEWAY_KEY = Symbol.for("nexus:ws:gateway");
 const LIFECYCLE_KEY = Symbol.for("nexus:ws:lifecycle");
@@ -35,10 +39,22 @@ interface GatewayMetadata {
  *   class ChatGateway { ... }
  */
 export function WebSocketGateway(path: string): ClassDecorator {
-	return function (target: Function) {
+	return function (target: any, context?: any): void {
+		// Standard decorator mode (TC39 stage-3)
+		if (context?.kind === "class") {
+			const proto = target.prototype;
+			const handlers: Record<string, string> = {};
+			for (const name of Object.getOwnPropertyNames(proto)) {
+				if (name === "constructor") continue;
+				const meta = safeGetMeta(LIFECYCLE_KEY, proto, name) as Record<string, string> | undefined;
+				if (meta) Object.assign(handlers, meta);
+			}
+			proto[GATEWAY_KEY] = { path, handlers } satisfies GatewayMetadata;
+			return;
+		}
+		// Legacy decorator mode (experimentalDecorators)
 		const ctor = target as unknown as { prototype: object };
 		const proto = ctor.prototype ?? (target as unknown as object);
-		// Collect lifecycle handlers from method-level decorators.
 		const handlers: Record<string, string> = {};
 		for (const name of Object.getOwnPropertyNames(proto)) {
 			if (name === "constructor") continue;
@@ -66,9 +82,18 @@ function makeLifecycleDecorator(lifecycle: WsLifecycle) {
 	return function (
 		_target: object,
 		propertyKey: string | symbol,
-		descriptor: PropertyDescriptor,
-	) {
-		const fn = descriptor.value as Function & { [LIFECYCLE_KEY]?: Record<string, string> };
+		descriptorOrContext?: PropertyDescriptor | any,
+	): any {
+		// Standard decorator mode (TC39 stage-3) — context-based
+		if (descriptorOrContext?.kind === "method") {
+			const meta: Record<string, string> = safeGetMeta(LIFECYCLE_KEY, _target, propertyKey) ?? {};
+			meta[lifecycle] = String(propertyKey);
+			safeDefineMeta(LIFECYCLE_KEY, meta, _target, propertyKey);
+			return;
+		}
+		// Legacy decorator mode (experimentalDecorators) — descriptor-based
+		const descriptor = descriptorOrContext as PropertyDescriptor;
+		const fn = descriptor?.value as Function & { [LIFECYCLE_KEY]?: Record<string, string> };
 		if (typeof fn !== "function") return descriptor;
 		fn[LIFECYCLE_KEY] = fn[LIFECYCLE_KEY] ?? {};
 		fn[LIFECYCLE_KEY][lifecycle] = String(propertyKey);

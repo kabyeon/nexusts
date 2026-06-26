@@ -230,10 +230,16 @@ export class Application {
 
 	/**
 	 * Bootstrap + start the HTTP server.
+	 *
+	 * @param portOrOpts - Port number or an object with port and optional websocket config.
 	 */
-	async listen(port?: number): Promise<any> {
-		if (port) {
-			this.server.setPort(port);
+	async listen(portOrOpts?: number | { port?: number; websocket?: any }): Promise<any> {
+		if (typeof portOrOpts === "number") {
+			this.server.setPort(portOrOpts);
+		} else if (portOrOpts) {
+			if (portOrOpts.port) this.server.setPort(portOrOpts.port);
+			await this.bootstrap();
+			return this.server.start(portOrOpts.websocket);
 		}
 		await this.bootstrap();
 		return this.server.start();

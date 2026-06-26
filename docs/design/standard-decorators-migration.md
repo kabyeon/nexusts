@@ -16,12 +16,12 @@
 | Phase 1: DI Container Refactoring | ✅ Done | `standard-inject.ts`, `standard-meta.ts` — dual-mode (field + constructor injection) |
 | Phase 2: Router Dual-Mode | ✅ Done | `paramMeta.length === 0` detection → passes ctx directly + `attachInputHelper()` |
 | Phase 3: CLI Templates | ✅ Done | CRUD, Nest, Service, Middleware, Adonis, Functional — all field injection |
-| Phase 3: Example Migration | ✅ Done | All 34 examples use field injection + `ctx.req.param()`/`ctx.req.json()` patterns |
+| Phase 3: Example Migration | ✅ Done | All 36 examples use field injection + `ctx.req.param()`/`ctx.req.json()` patterns |
 | Phase 4: `reflect-metadata` removal (non-test) | ✅ Done | packages/, examples/, benchmarks/ — all imports and package.json entries removed |
-| Phase 4: Lazy loading | ✅ Done | `safe-reflect.ts` — conditional `import("reflect-metadata")` dynamic import |
+| Phase 4: Inline polyfill | ✅ Done | `safe-reflect.ts` — inline Reflect Metadata polyfill, no external package needed |
 | Phase 4: `package.json` deps removal | ✅ Done | root + packages/core — `"reflect-metadata"` removed |
 | Phase 5: Test file import removal | ✅ Done | 54 test files — `import 'reflect-metadata'` removed |
-| Phase 5: Test suite passing | ✅ Done | **316/316 tests passing**, 71/71 smoke tests passing |
+| Phase 5: Test suite passing | ✅ Done | **325/325 tests passing**, 72/72 smoke tests passing |
 | DrizzleRepository template | ✅ Done | Field injection support via optional constructor + `@Inject(DrizzleService.TOKEN) declare db` |
 
 ---
@@ -117,7 +117,7 @@ class UserService {
 | `@nexusts/cli` | All templates field injection + `ctx.req.*` patterns, scaffold.ts updated | ✅ |
 | `@nexusts/drizzle` | Repository template — `super(db, table)` needed separate handling; now supports field injection via optional constructor | ✅ |
 | `@nexusts/upload` | `@Upload` decorator dual-mode support; `CtxInput.uploadedFile()` helper | ✅ |
-| All examples/ (34) | Constructor injection → field injection, `@Body`/`@Param` → `ctx.req.*` | ✅ |
+| All examples/ (36) | Constructor injection → field injection, `@Body`/`@Param` → `ctx.req.*` | ✅ |
 
 Template changes:
 
@@ -137,11 +137,11 @@ Template changes:
 |------|--------|
 | `packages/core/package.json` | ✅ `"reflect-metadata"` removed |
 | root `package.json` | ✅ `"reflect-metadata"` removed |
-| `packages/core/src/di/safe-reflect.ts` | ✅ Replaced with conditional lazy loading (sync Map fallback + async dynamic import) |
+| `packages/core/src/di/safe-reflect.ts` | ✅ Replaced with inline Reflect Metadata polyfill (no external package needed) |
 | `packages/cli/src/commands/db-migrate.ts` | ✅ `import 'reflect-metadata'` removed |
 | `packages/cli/src/commands/make-auth.ts` | ✅ `import 'reflect-metadata'` removed |
 | `packages/cli/src/commands/db-seed.ts` | ✅ `import 'reflect-metadata'` removed |
-| `examples/` (34) | ✅ `import 'reflect-metadata'` removed + pattern migration |
+| `examples/` (36) | ✅ `import 'reflect-metadata'` removed + pattern migration |
 | `benchmarks/servers/nexusts.ts` | ✅ `import 'reflect-metadata'` removed |
 | `tests/` (54 files) | ✅ `import 'reflect-metadata'` removed — Map fallback handles legacy metadata |
 
@@ -151,17 +151,21 @@ Template changes:
 // Before: static import
 import "reflect-metadata";
 
-// After: conditional lazy loading + synchronous Map fallback
-let _refMetaAttempted = false;
-function ensureReflectMetadata(): void {
-  if (_refMetaAttempted) return;
-  _refMetaAttempted = true;
-  if (typeof Reflect.getMetadata === "function") return; // already loaded
-  import("reflect-metadata").catch(() => {});
+// After: inline Reflect Metadata polyfill — no external package needed
+// Provides getMetadata, defineMetadata, hasMetadata, deleteMetadata, metadata(),
+// and getOwnMetadata directly on the global Reflect object.
+if (typeof Reflect.metadata !== "function") {
+  const metadataStore = new Map<string, any>();
+  let metaId = 0;
+
+  function targetId(target: any): string { /* ... */ }
+  function metaKey(key: any, target: any, prop?: any): string { /* ... */ }
+
+  Reflect.defineMetadata = (key, value, target, prop) => { /* ... */ };
+  Reflect.getMetadata = (key, target, prop) => { /* ... */ };
+  Reflect.metadata = (key, value) => (target, prop) => { /* ... */ };
+  // ...
 }
-// Synchronous Map fallback guarantees metadata is stored during
-// synchronous decorator execution, even before the dynamic import completes.
-const fallbackStore = new Map<string, any>();
 ```
 
 `DIContainer` changes:
@@ -187,8 +191,8 @@ return new cls(...params);
 |------------|--------|
 | Core/View/DI tests | ✅ **86/86 passing** |
 | Cache/Logger/Config/Events/Health/Static/Shield/Metrics | ✅ **109/109 passing** |
-| All module tests (18 files) | ✅ **316/316 passing** |
-| Smoke tests (34 examples) | ✅ **71/71 passing** (34-grpc-streaming: pre-existing issue) |
+| All module tests (19 files) | ✅ **325/325 passing** |
+| Smoke tests (36 examples) | ✅ **72/72 passing** (34-grpc-streaming: pre-existing issue) |
 | Drizzle/Resilience/GraphQL/Crypto/etc. | ✅ **All passing** |
 
 ---
@@ -200,7 +204,7 @@ return new cls(...params);
 | Phase 0 (Foundation) | 1-2 days | ✅ Pre-existing work |
 | Phase 1 (DI) | 2-3 days | ✅ Pre-existing work |
 | Phase 2 (Core decorators) | 3-5 days | ✅ Pre-existing work |
-| Phase 3 (CLI + Examples) | 5-7 days | ✅ **~4 hours** (scaffold + templates + 34 examples) |
+| Phase 3 (CLI + Examples) | 5-7 days | ✅ **~4 hours** (scaffold + templates + 36 examples) |
 | Phase 4 (reflect-metadata removal) | 1 day | ✅ **~2 hours** |
 | Phase 5 (Testing) | 2-3 days | ✅ **~1 hour** (54 test files cleaned, suite verified) |
 | **Total** | **~14-21 days** | **Pre-existing work + ~7 hours** |

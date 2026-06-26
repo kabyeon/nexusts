@@ -8,7 +8,7 @@
  * Server.start() chooses the correct runtime adapter (Bun, Node, or
  * Cloudflare) automatically based on the global environment.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+
 import { Hono } from "hono";
 import type { ApplicationContainer } from "../di/container.js";
 import { errorHandler, logger } from "./middleware.js";
@@ -78,11 +78,13 @@ export class NexusServer {
 	 * Returns the underlying server handle (Bun.Server, Node http.Server, or
 	 * a fetch-compatible Hono instance for Cloudflare Workers).
 	 */
-	async start(): Promise<any> {
+	async start(websocketConfig?: any): Promise<any> {
 		const runtime = await detectRuntime();
 		if (runtime === "bun") {
 			const { bunAdapter } = await import("../runtime/bun.js");
-			return bunAdapter(this.app, this.options.port);
+			const opts: { port?: number; websocket?: any } = { port: this.options.port };
+			if (websocketConfig) opts.websocket = websocketConfig;
+			return bunAdapter(this.app, opts);
 		}
 		if (runtime === "node") {
 			const { nodeAdapter } = await import("../runtime/node.js");

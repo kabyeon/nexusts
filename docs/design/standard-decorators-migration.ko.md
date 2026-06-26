@@ -16,12 +16,12 @@
 | Phase 1: DI 컨테이너 리팩토링 | ✅ 완료 | `standard-inject.ts`, `standard-meta.ts` — 듀얼모드 (field + constructor injection) |
 | Phase 2: 라우터 듀얼모드 | ✅ 완료 | `paramMeta.length === 0` 감지 → ctx 직접 전달 + `attachInputHelper()` |
 | Phase 3: CLI 템플릿 | ✅ 완료 | CRUD, Nest, Service, Middleware, Adonis, Functional — 모두 field injection |
-| Phase 3: 예제 마이그레이션 | ✅ 완료 | 34개 예제 모두 field injection + `ctx.req.param()`/`ctx.req.json()` 패턴 |
+| Phase 3: 예제 마이그레이션 | ✅ 완료 | 36개 예제 모두 field injection + `ctx.req.param()`/`ctx.req.json()` 패턴 |
 | Phase 4: `reflect-metadata` 제거 (non-test) | ✅ 완료 | packages/, examples/, benchmarks/ — 모든 import 및 package.json 제거 |
-| Phase 4: Lazy loading | ✅ 완료 | `safe-reflect.ts` — 조건부 lazy loading (동기 Map fallback + async dynamic import) |
+| Phase 4: Inline polyfill | ✅ 완료 | `safe-reflect.ts` — 인라인 Reflect Metadata 폴리필, 외부 패키지 불필요 |
 | Phase 4: `package.json` deps 제거 | ✅ 완료 | root + packages/core — `"reflect-metadata"` 제거 |
 | Phase 5: 테스트 파일 import 제거 | ✅ 완료 | **54개** 테스트 파일에서 `import 'reflect-metadata'` 제거 |
-| Phase 5: 테스트 스위트 통과 | ✅ 완료 | **316/316 테스트 통과**, 스모크 테스트 **71/71 통과** |
+| Phase 5: 테스트 스위트 통과 | ✅ 완료 | **325/325 테스트 통과**, 스모크 테스트 **72/72 통과** |
 | DrizzleRepository 템플릿 | ✅ 완료 | Optional constructor + `@Inject(DrizzleService.TOKEN) declare db`로 field injection 지원 |
 | `@Upload` 데코레이터 | ✅ 완료 | 듀얼모드 (legacy + standard TC39) 지원 |
 | 한국어 문서 | ✅ 완료 | `standard-decorators-migration.ko.md` |
@@ -120,7 +120,7 @@ class UserService {
 | `@nexusts/cli` | 모든 템플릿 field injection + `ctx.req.*` 패턴, scaffold.ts 업데이트 | ✅ |
 | `@nexusts/drizzle` | Repository — optional constructor + field injection 지원 | ✅ |
 | `@nexusts/upload` | `@Upload` 데코레이터 듀얼모드; `CtxInput.uploadedFile()` 헬퍼 | ✅ |
-| 모든 examples/ (34개) | Constructor injection → field injection, `@Body`/`@Param` → `ctx.req.*` | ✅ |
+| 모든 examples/ (36개) | Constructor injection → field injection, `@Body`/`@Param` → `ctx.req.*` | ✅ |
 
 템플릿 변경사항:
 
@@ -139,11 +139,11 @@ class UserService {
 |------|------|
 | `packages/core/package.json` | ✅ `"reflect-metadata"` 제거 |
 | root `package.json` | ✅ `"reflect-metadata"` 제거 |
-| `packages/core/src/di/safe-reflect.ts` | ✅ 조건부 lazy loading으로 대체 (동기 Map fallback + async dynamic import) |
+| `packages/core/src/di/safe-reflect.ts` | ✅ 인라인 Reflect Metadata 폴리필로 대체 (외부 패키지 불필요) |
 | `packages/cli/src/commands/db-migrate.ts` | ✅ `import 'reflect-metadata'` 제거 |
 | `packages/cli/src/commands/make-auth.ts` | ✅ `import 'reflect-metadata'` 제거 |
 | `packages/cli/src/commands/db-seed.ts` | ✅ `import 'reflect-metadata'` 제거 |
-| `examples/` 34개 | ✅ `import 'reflect-metadata'` 제거 + 패턴 마이그레이션 |
+| `examples/` 36개 | ✅ `import 'reflect-metadata'` 제거 + 패턴 마이그레이션 |
 | `benchmarks/servers/nexusts.ts` | ✅ `import 'reflect-metadata'` 제거 |
 | `tests/` 54개 파일 | ✅ `import 'reflect-metadata'` 제거 — Map fallback이 레거시 메타데이터 처리 |
 
@@ -153,8 +153,8 @@ class UserService {
 |------------|--------|
 | Core/View/DI 테스트 | ✅ **86/86 통과** |
 | Cache/Logger/Config/Events/Health/Static/Shield/Metrics | ✅ **109/109 통과** |
-| 전체 모듈 테스트 (18개 파일) | ✅ **316/316 통과** |
-| 스모크 테스트 (34개 예제) | ✅ **71/71 통과** (34-grpc-streaming: 기존 버그) |
+| 전체 모듈 테스트 (19개 파일) | ✅ **325/325 통과** |
+| 스모크 테스트 (36개 예제) | ✅ **72/72 통과** (34-grpc-streaming: 기존 버그) |
 
 ## 실제 진행 소요 시간
 
@@ -164,7 +164,7 @@ class UserService {
 | Phase 1 (DI) | 2-3일 | ✅ 기존 작업 |
 | Phase 2 (Core decorators) | 3-5일 | ✅ 기존 작업 |
 | Phase 3 (CLI + Examples) | 5-7일 | ✅ **~4시간** |
-| Phase 4 (reflect-metadata 제거) | 1일 | ✅ **~2시간** |
+| Phase 4 (reflect-metadata 제거 → 인라인 폴리필) | 1일 | ✅ **~2시간** |
 | Phase 5 (테스트) | 2-3일 | ✅ **~1시간** |
 | **합계** | **~14-21일** | **기존 작업 + ~7시간** |
 
