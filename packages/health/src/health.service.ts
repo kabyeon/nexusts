@@ -28,11 +28,12 @@ export class HealthCheckService {
 
 	/** Registered indicators keyed by name. */
 	indicators = new Map<string, HealthIndicator>();
-	/** Public, read-only view of the resolved config. */
-	config: HealthConfig;
 
-	constructor(@Inject("HEALTH_CONFIG") config: HealthConfig = {}) {
-		this.config = config;
+	/** Health config — injected by DI container. */
+	@Inject("HEALTH_CONFIG") declare config: HealthConfig;
+
+	constructor() {
+		// DI sets @Inject fields before first use.
 		this.registerBuiltIns();
 	}
 
@@ -95,7 +96,8 @@ export class HealthCheckService {
 	// ===========================================================================
 
 	private registerBuiltIns(): void {
-		const bi = this.config.builtIn ?? {};
+		const cfg = this.config ?? {};
+		const bi = cfg.builtIn ?? {};
 		if (bi.memory) {
 			const opts = typeof bi.memory === "object" ? bi.memory : {};
 			this.register(new MemoryHealthIndicator(opts));

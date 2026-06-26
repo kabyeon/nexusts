@@ -24,7 +24,6 @@ import { Module } from "@nexusts/core";
 import { HealthCheckService } from "./health.service.js";
 import { HealthController } from "./health.controller.js";
 import type { HealthConfig } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	controllers: [HealthController],

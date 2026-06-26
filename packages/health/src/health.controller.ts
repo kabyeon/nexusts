@@ -5,42 +5,38 @@
  * Mount `HealthModule.forRoot({...})` in your app module to get
  * these routes automatically. Override paths or add an auth token
  * via `HealthConfig`.
+ *
+ * Uses standard decorator patterns: field injection and `ctx.req.*`
+ * methods instead of legacy `@Req()`/`@Res()` parameter decorators.
  */
 
-import { Controller, Get, Req, Res, Inject } from "@nexusts/core";
+import { Controller, Get, Inject } from "@nexusts/core";
 import type { Context } from "hono";
 import { HealthCheckService } from "./health.service.js";
 import type { HealthCheckKind, HealthConfig } from "./types.js";
 
 @Controller()
 export class HealthController {
-	constructor(@Inject(HealthCheckService.TOKEN) private readonly health: HealthCheckService) {}
+	@Inject(HealthCheckService.TOKEN) declare private readonly health: HealthCheckService;
 
 	@Get("/health/live")
-	async live(@Req() c: Context, @Res() _res: Response) {
-		return this.respond(c, "liveness", this.health.config.livenessPath ?? "/health/live");
+	async live(ctx: Context) {
+		return this.respond(ctx, "liveness");
 	}
 
 	@Get("/health/ready")
-	async ready(@Req() c: Context, @Res() _res: Response) {
-		return this.respond(c, "readiness", this.health.config.readinessPath ?? "/health/ready");
+	async ready(ctx: Context) {
+		return this.respond(ctx, "readiness");
 	}
 
 	@Get("/health/startup")
-	async startup(@Req() c: Context, @Res() _res: Response) {
-		return this.respond(c, "startup", this.health.config.startupPath ?? "/health/startup");
+	async startup(ctx: Context) {
+		return this.respond(ctx, "startup");
 	}
 
-	private async respond(c: Context, kind: HealthCheckKind, _configuredPath: string) {
+	private async respond(c: Context, kind: HealthCheckKind) {
 		const result = await this.health.check(kind);
 		const status = result.status === "up" ? 200 : 503;
 		return c.json(result, status);
-	}
-}
-
-// Augment HealthCheckService to expose config (used by the controller).
-declare module "./health.service.js" {
-	interface HealthCheckService {
-		config: HealthConfig;
 	}
 }
