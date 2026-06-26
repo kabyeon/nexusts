@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 수정
+
+- **Cache 데코레이터 (듀얼 모드)**: `@Cacheable`과 `@CacheInvalidate`가
+  TC39 표준 ES 데코레이터 모드 + 레거시 폴백을 지원하도록 업데이트.
+  기존에는 `descriptor.value`를 직접 읽어 Bun의 기본 stage-3 데코레이터
+  모드에서 `undefined`로 인해 크래시가 발생했습니다. 이제 표준 모드를
+  `context.kind === "method"`로 감지하여 `context.metadata`와 생성자의
+  `__nexus_meta__`에 메타데이터를 저장합니다.
+
 ---
 
 ## [0.9.6] — 2026-06-26

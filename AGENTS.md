@@ -499,6 +499,7 @@ const name = inputValue(ctx.req.query('name')).trim().max(100).value();
 | `@Get/@Post/etc` | core | ✅ method decorator |
 | `@Retry/@CircuitBreaker/@Bulkhead` | resilience | ✅ metadata-only |
 | `@Cron/@Interval/@Timeout` | schedule | ✅ metadata-only |
+| `@Cacheable/@CacheInvalidate` | cache | ✅ dual-mode (v0.9.7) |
 | `@OnEvent` | events | ✅ metadata-only |
 | `@Upload` | upload | ✅ (v0.9 dual-mode) |
 | `@WebSocketGateway` | ws | ✅ dual-mode (v0.9.5) |

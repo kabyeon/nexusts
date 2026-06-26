@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Cache decorators (dual-mode)**: `@Cacheable` and `@CacheInvalidate`
+  updated to support TC39 standard ES decorator mode + legacy fallback.
+  Previously they read `descriptor.value` directly, which is `undefined`
+  in Bun's default stage-3 decorator mode. Now detects standard mode via
+  `context.kind === "method"` and stores metadata on `context.metadata`
+  and the constructor's `__nexus_meta__`.
+
 ---
 
 ## [0.9.6] — 2026-06-26
