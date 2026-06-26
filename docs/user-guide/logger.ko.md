@@ -230,14 +230,18 @@ const ctx = logger.context;
 
 ```ts
 class OrderService {
-  private logger: Logger;
+  @Inject(Logger.TOKEN) declare logger: Logger;
+  private _orderLogger: Logger | null = null;
 
-  constructor(@Inject(Logger.TOKEN) base: Logger) {
-    this.logger = base.child({ service: 'order', version: 'v2' });
+  private get orderLogger(): Logger {
+    if (!this._orderLogger) {
+      this._orderLogger = this.logger.child({ service: 'order', version: 'v2' });
+    }
+    return this._orderLogger;
   }
 
   async createOrder(data: OrderData) {
-    this.logger.info({ data }, '주문 생성 중');
+    this.orderLogger.info({ data }, '주문 생성 중');
     // 출력: { "service": "order", "version": "v2", "data": {...}, "msg": "주문 생성 중" }
   }
 }

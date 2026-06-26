@@ -6,7 +6,7 @@
  * `logger.with({ requestId, userId, ... })`.
  *
  * Usage:
- *   constructor(@Inject(Logger.TOKEN) private logger: Logger) {}
+ *   @Inject(Logger.TOKEN) declare logger: Logger;
  *
  *   this.logger.info({ userId: 'u-1' }, 'user signed in');
  *   this.logger.error({ err }, 'failed to save');
@@ -37,27 +37,49 @@ export class Logger {
 	/** DI token — use with `@Inject(Logger.TOKEN)`. */
 	static readonly TOKEN = Symbol.for("nexus:Logger");
 
-	transports: LogTransport[];
-	silent: boolean;
-	base: Record<string, unknown>;
-	level: LogLevel;
+	/** Logger options — injected by DI container. */
+	@Inject("LOGGER_OPTIONS") declare private options: LoggerOptions;
+
+	private _transports: LogTransport[] = [];
+	private _silent = false;
+	private _base: Record<string, unknown> = {};
+	private _level: LogLevel = "info";
+	private _initialized = false;
 	als = new AsyncLocalStorage<LogContext>();
 
-	constructor(@Inject("LOGGER_OPTIONS") options: LoggerOptions = {}) {
-		this.silent = options.silent ?? false;
-		this.base = options.base ?? {};
-		this.level = options.level ?? (process.env["NODE_ENV"] === "production" ? "info" : "debug");
-		if (options.transports && options.transports.length > 0) {
-			this.transports = options.transports;
-		} else {
-			const pretty = options.pretty ?? process.env["NODE_ENV"] !== "production";
-			this.transports = [
-				pretty
-					? new PrettyTransport(this.level, this.base)
-					: new PinoTransport(this.level, this.base),
-			];
+	private init(): void {
+		if (this._initialized) return;
+		this._initialized = true;
+		const opts = this.options ?? {};
+		this._silent = opts.silent ?? false;
+		this._base = opts.base ?? {};
+		this._level = opts.level ?? (process.env["NODE_ENV"] === "production" ? "info" : "debug");
+		// Only set default transports if none have been assigned externally.
+		if (this._transports.length === 0) {
+			if (opts.transports && opts.transports.length > 0) {
+				this._transports = opts.transports;
+			} else {
+				const pretty = opts.pretty ?? process.env["NODE_ENV"] !== "production";
+				this._transports = [
+					pretty
+						? new PrettyTransport(this._level, this._base)
+						: new PinoTransport(this._level, this._base),
+				];
+			}
 		}
 	}
+
+	get silent(): boolean { this.init(); return this._silent; }
+	set silent(v: boolean) { this.init(); this._silent = v; }
+
+	get base(): Record<string, unknown> { this.init(); return this._base; }
+	set base(v: Record<string, unknown>) { this.init(); this._base = v; }
+
+	get level(): LogLevel { this.init(); return this._level; }
+	set level(v: LogLevel) { this.init(); this._level = v; }
+
+	get transports(): LogTransport[] { this.init(); return this._transports; }
+	set transports(v: LogTransport[]) { this.init(); this._transports = v; }
 
 	// ===========================================================================
 	// Level methods
@@ -127,12 +149,14 @@ export class Logger {
 	 * record. Useful for service-scoped loggers.
 	 */
 	child(bindings: Record<string, unknown>): Logger {
+		this.init();
 		const child = Object.create(Logger.prototype) as Logger;
-		child.transports = this.transports;
-		child.silent = this.silent;
-		child.base = { ...this.base, ...bindings };
-		child.level = this.level;
+		child._transports = this._transports;
+		child._silent = this._silent;
+		child._base = { ...this._base, ...bindings };
+		child._level = this._level;
 		child.als = this.als;
+		child._initialized = true;
 		return child;
 	}
 
@@ -142,7 +166,8 @@ export class Logger {
 
 	/** Wait for transports to finish loading (Pino is async). */
 	async ready(): Promise<void> {
-		for (const t of this.transports) {
+		this.init();
+		for (const t of this._transports) {
 			const r = (t as { ready?: () => Promise<void> }).ready;
 			if (r) await r.call(t);
 		}
@@ -153,8 +178,9 @@ export class Logger {
 	// ===========================================================================
 
 	private emit(level: LogLevel, arg1: Record<string, unknown> | string, arg2?: string): void {
-		if (this.silent) return;
-		if (LEVEL_RANK[level] < LEVEL_RANK[this.level]) return;
+		this.init();
+		if (this._silent) return;
+		if (LEVEL_RANK[level] < LEVEL_RANK[this._level]) return;
 
 		let meta: Record<string, unknown> = {};
 		let msg: string;
@@ -170,11 +196,11 @@ export class Logger {
 			level,
 			time: Date.now(),
 			msg,
-			...this.base,
+			...this._base,
 			...meta,
 			...ctx,
 		};
-		for (const t of this.transports) {
+		for (const t of this._transports) {
 			try {
 				t.write(record);
 			} catch {

@@ -29,7 +29,6 @@
 import { Module } from "@nexusts/core";
 import { Logger } from "./logger.service.js";
 import type { LoggerOptions } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
 
 @Module({
 	providers: [Logger, { provide: Logger.TOKEN, useExisting: Logger }],
