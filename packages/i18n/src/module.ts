@@ -31,8 +31,7 @@ import {
 	I18N_SERVICE_TOKEN,
 } from "./service.js";
 import { i18nMiddleware } from "./middleware.js";
-import type { I18nConfig, Locale, MessageCatalog } from "./types.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+import type { I18nConfig, MessageCatalog } from "./types.js";
 
 @Module({
 	providers: [
@@ -80,7 +79,7 @@ export class I18nModule {
 			exports: [I18nService, I18N_SERVICE_TOKEN, "I18N_CONFIG"],
 		})
 		class ConfiguredI18nModule {
-			constructor(@Inject(I18N_SERVICE_TOKEN) readonly service: I18nService) {}
+			@Inject(I18N_SERVICE_TOKEN) declare readonly service: I18nService;
 
 			/** Returns a Hono middleware bound to the configured service. */
 			middleware() {
