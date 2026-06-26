@@ -16,7 +16,7 @@ key differences.
 | **Standard decorators** | TC39 standard ES decorators — no `experimentalDecorators` or `reflect-metadata` required. Field injection instead of constructor injection. |
 | **32 independent modules** | Install only what you import. Tree-shakeable, no dead code. |
 | **Built-in ecosystem** | GraphQL, gRPC, WebSocket, SSE, resilience (retry/circuit/bulkhead), cache, queue, scheduler — all first-party, no community packages. |
-| **Zero `reflect-metadata`** | ~16KB bundle savings. Lazy-loaded only for legacy compatibility. |
+| **Zero `reflect-metadata`** | Inline polyfill in `@nexusts/core/di/safe-reflect`. No external package needed. |
 
 ---
 
@@ -167,7 +167,7 @@ NexusTS v0.9+ uses **TC39 standard ES decorators**. This means:
 - **Field injection** replaces constructor injection
 - Controller methods receive `ctx: Context` instead of `@Param`/`@Body`/`@Query`
 - No `experimentalDecorators` or `emitDecoratorMetadata` in tsconfig
-- No `reflect-metadata` import (saves ~16KB)
+- No `reflect-metadata` import (inline polyfill in safe-reflect.ts)
 
 ```ts
 // NestJS — constructor injection
@@ -554,7 +554,7 @@ private service = new UserService();
 ## Quick Migration Checklist
 
 1. **Install Bun** ≥ 1.3 — `curl -fsSL https://bun.sh/install | bash`
-2. **Remove** `reflect-metadata` from dependencies — no longer needed
+2. **Remove** `reflect-metadata` from dependencies — inline polyfill handles it
 3. **Update tsconfig** — remove `experimentalDecorators` and `emitDecoratorMetadata`
 4. **Replace** `@Param`/`@Body`/`@Query` with `ctx.req.param()`/`await ctx.req.json()`/`ctx.req.query()`
 5. **Replace** constructor injection with field injection: `constructor(@Inject(S) private s: S) {}` → `@Inject(S) declare s: S;`

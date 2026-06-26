@@ -15,7 +15,7 @@
 | **표준 데코레이터** | TC39 표준 ES 데코레이터 — `experimentalDecorators` 불필요 |
 | **32개 독립 모듈** | 필요한 것만 설치, 트리셰이크 가능 |
 | **내장 생태계** | GraphQL, gRPC, WebSocket, Resilience 등 모두 자체 제공 |
-| **`reflect-metadata` 제로** | ~16KB 번들 절약, 레거시 호환 시에만 로딩 |
+| **`reflect-metadata` 제로** | `@nexusts/core/di/safe-reflect`에 인라인 폴리필 내장. 외부 패키지 불필요. |
 
 ---
 
@@ -498,7 +498,7 @@ export class NotificationService {
 ## 빠른 마이그레이션 체크리스트
 
 1. **Bun** ≥ 1.3 설치
-2. `reflect-metadata` 의존성 제거
+2. `reflect-metadata` 의존성 제거 — 인라인 폴리필로 대체
 3. tsconfig에서 `experimentalDecorators`/`emitDecoratorMetadata` 제거
 4. `@Param`/`@Body`/`@Query` → `ctx.req.param()`/`ctx.req.json()`/`ctx.req.query()`
 5. 생성자 주입 → 필드 주입으로 변경
