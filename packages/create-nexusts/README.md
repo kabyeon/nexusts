@@ -7,9 +7,9 @@ The official scaffolder for [NexusTS](https://github.com/nexus-ts/nexusts). Crea
 ## Quick start
 
 ```bash
-# All three forms are equivalent:
+# Create a new NexusTS project:
 bun create nexusts@latest my-app
-bun create nexusts@latest my-app
+# Or:
 bunx create-nexusts@latest my-app
 ```
 
@@ -61,7 +61,7 @@ my-app/
 │   └── main.ts                # Bootstrap (listens on PORT)
 ├── app.config.ts              # Framework config (loaded at boot)
 ├── package.json               # @nexusts/core + your chosen add-ons
-├── tsconfig.json              # Legacy decorators (Bun 1.3 compatible)
+├── tsconfig.json              # Standard decorators (Bun 1.3 default)
 └── README.md                  # Project-specific README
 ```
 
