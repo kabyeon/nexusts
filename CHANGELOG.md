@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.13] — 2026-06-27
+
+### Changed
+
+- **CLI prompt labels**: "Database driver" → "Database" across
+  `config.ts`, `init.ts`, and `new.ts` commands.
+
+### Added
+
+- **`--runtime` flag in `nx init`**: `nx init` now accepts
+  `--runtime bun` (default) or `--runtime cloudflare` to specify
+  the target runtime when scaffolding a new project.
+
+---
+
 ## [0.9.12] — 2026-06-27
 
 ### Added

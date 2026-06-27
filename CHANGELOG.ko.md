@@ -13,6 +13,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.13] — 2026-06-27
+
+### 변경
+
+- **CLI 프롬프트 라벨**: `config.ts`, `init.ts`, `new.ts` 명령어에서
+  "Database driver" → "Database"로 간소화.
+
+### 추가
+
+- **`nx init`의 `--runtime` 플래그**: `nx init`에서
+  `--runtime bun`(기본값) 또는 `--runtime cloudflare`를 지정하여
+  새 프로젝트의 대상 런타임을 선택 가능.
+
+---
+
 ## [0.9.12] — 2026-06-27
 
 ### 추가

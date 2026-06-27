@@ -1175,6 +1175,10 @@ v1.0, only major bumps will.
   Reflect Metadata polyfill (no npm package needed). WebSocket decorators
   dual-mode (`@WebSocketGateway`, `@OnWebSocket*`). SSE `onAbort()` alias.
   WS client ID persistence fix. `bunAdapter` WebSocket env fix. with `KyselyService`, `KyselyRepository` (Lucid-style), `KyselyModule.forRoot()`, built-in Migrator. CLI integration: `nx db:generate`/`db:migrate --orm kysely`, `make:crud`/`make:model`/`make:migration` Kysely templates. `BunSqliteDialect` for bun:sqlite. **33 modules.** Prisma removed from CLI options.
+- **v0.9.13** (2026-06-27) — **CLI prompt refinement + `nx init` runtime flag.**
+  "Database driver" → "Database" across all CLI commands. `nx init` now
+  accepts `--runtime bun|cloudflare` to specify the target runtime when
+  scaffolding a new project.
 
 ### Planned
 
