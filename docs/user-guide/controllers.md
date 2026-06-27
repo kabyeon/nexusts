@@ -75,7 +75,6 @@ each route.
 > `@Controller` classes in a single `.ts` file can cause Bun to
 > misorder decorator execution, resulting in some routes not being
 > registered. Move each controller into its own file. See
-> [`common-pitfalls.md §2`](./common-pitfalls.md).
 
 ### 1.1 Nest style (class decorators)
 
@@ -572,7 +571,6 @@ class AppModule {}
 ```
 
 For the full debugging walkthrough see
-**[common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨)**.
 
 ### 10.2 Standard decorator mode: use field injection
 

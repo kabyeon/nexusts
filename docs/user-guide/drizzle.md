@@ -59,7 +59,6 @@ bun add better-sqlite3
 > **Bun 사용자 주의**: `bun:sqlite`를 강력히 권장합니다. Bun 1.3+에서
 > `better-sqlite3`는 로드 실패합니다. `bun add drizzle-orm`만 설치하고
 > `dialect: 'bun-sqlite'`로 설정하세요 (별도 driver 패키지 불필요).
-> 자세한 내용은 **[common-pitfalls.md §6](./common-pitfalls.md#6-bunsqlite-vs-better-sqlite3-선택)**.
 
 ### Configure
 
@@ -266,7 +265,6 @@ If you absolutely need a low-level connection (rare), use
 or grab the handle via `db.driver.db` (internal — may change).
 
 > For the most common gotcha around `DrizzleService.client` see
-> **[common-pitfalls.md §3](./common-pitfalls.md#3-drizzlestoredserviceclient에-raw-쿼리-메서드가-없음)**.
 
 ### Inspecting the generated SQL
 

@@ -522,4 +522,4 @@ Output:
 | `@Inject(SomeClass)` works but `@Inject(SomeClass.TOKEN)` doesn't | Only the class is registered | Register both: `providers: [SomeClass, { provide: SomeClass.TOKEN, useExisting: SomeClass }]` |
 
 > For a complete walkthrough of these patterns with real examples see
-> **[common-pitfalls.md](./common-pitfalls.md)**.
+> **[debugging guide](../design/architecture.md)**.

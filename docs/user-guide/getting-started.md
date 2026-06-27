@@ -250,15 +250,13 @@ Bun's `--hot` flag restarts the process on file change.
 | ------- | ------------ | --- |
 | `Class "X" is missing the @Module() decorator` | Module class missing `@Module({...})` | Add `@Module({ controllers: [...] })` to the class |
 | `Cannot resolve token "DB"` | Token not in any module's `providers` | Add `{ provide: 'DB', useValue: drizzleInstance }` to the relevant module |
-| `No provider for "undefined"` | Injecting a `static TOKEN` that isn't registered | See [common-pitfalls.md §1](./common-pitfalls.md#1-inject-someclasstoken이-동작하지-않음) — register both class and `{ provide: TOKEN, useExisting: Class }` |
-| 404 on a route you defined | Controller class defined inline in `main.ts` | See [common-pitfalls.md §2](./common-pitfalls.md#2-한-파일에-여러-controller를-정의하면-라우터가-누락됨) — put each controller in its own file |
 | `sqlite.query is not a function` | `DrizzleService.client` isn't a raw `bun:sqlite` handle | Use Drizzle's query builder: `db.select().from(table).all()` |
 | `Decorator function return type expected` | Decorator applied to a non-method | Decorators belong on classes, methods, or parameters |
 | 404 on a route you defined (path) | Path mismatch | Check `@Controller('/users')` + `@Get('/:id')` produces `/users/:id` |
 | `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'bun-sqlite'` |
 | Injecting into constructor parameter | Using `experimentalDecorators` without `@Inject()` | Use field injection: `@Inject(Token) declare field: Type` |
 
-> For more debugging recipes see **[common-pitfalls.md](./common-pitfalls.md)** — a comprehensive guide to
+> For more debugging recipes see **[debugging guide](../design/architecture.md)** — a comprehensive guide to
 > the most common gotchas.
 
 ---
