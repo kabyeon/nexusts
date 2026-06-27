@@ -13,6 +13,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.12] — 2026-06-27
+
+### Added
+
+- **`runtime` in generated `nx.config.ts`**: Scaffold now includes
+  `runtime: 'bun'` or `runtime: 'cloudflare'` in the generated config.
+- **`nx info` runtime display**: Shows `runtime` field and `NX_RUNTIME`
+  environment variable.
+- **Drizzle config auto-mapping**: `drizzle.config.ts` dialect is now
+  resolved from `runtime + db`. `cloudflare + sqlite` → `d1`.
+
+### Changed
+
+- **CLI prompt labels**: "ORM driver" → "ORM", "Database driver" → "Database".
+  `runtime` prompt now shows "Runtime target" instead of "Inertia frontend".
+
+### Fixed
+
+- **`.github/workflows/ci.yml`**: Updated for `bun test` migration.
+  Removed vitest references from Workers and Drizzle CI workflows.
+- **`nx.config.ts` template**: Now includes `runtime` field in generated
+  project config.
+
+---
+
 ## [0.9.11] — 2026-06-27
 
 ### Added

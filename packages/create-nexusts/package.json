@@ -1,6 +1,6 @@
 {
   "name": "create-nexusts",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "description": "Scaffold a new NexusTS project — bun create nexusts@latest or bunx create-nexusts",
   "bin": {
     "create-nexusts": "index.js"

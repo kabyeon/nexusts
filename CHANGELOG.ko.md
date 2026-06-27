@@ -13,6 +13,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.12] — 2026-06-27
+
+### 추가
+
+- **`nx.config.ts`에 `runtime` 필드**: 생성된 설정 파일에 `runtime: 'bun'`
+  또는 `runtime: 'cloudflare'` 포함.
+- **`nx info` runtime 표시**: `runtime` 필드와 `NX_RUNTIME` 환경변수 출력.
+- **Drizzle config 자동 매핑**: `drizzle.config.ts` dialect이
+  `runtime + db` 조합으로 자동 결정됨.
+
+### 변경
+
+- **CLI 프롬프트 라벨**: "ORM driver" → "ORM", "Database driver" → "Database".
+  runtime 프롬프트가 "Inertia frontend" 대신 "Runtime target"으로 표시.
+
+### 수정
+
+- **CI 워크플로우**: `bun test` 마이그레이션 반영. Workers/Drizzle CI에서
+  vitest 참조 제거.
+- **`nx.config.ts` 템플릿**: 생성된 설정에 `runtime` 필드 포함.
+
+---
+
 ## [0.9.11] — 2026-06-27
 
 ### 추가
