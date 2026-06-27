@@ -14,6 +14,7 @@ import { render } from "./template.js";
 export interface ScaffoldOptions {
 	target: string;
 	name: string;
+	runtime: string;
 	routing: string;
 	view: string;
 	orm: string;
@@ -259,15 +260,28 @@ export function generateProjectFiles(target: string, opts: ScaffoldOptions): str
 		const isDrizzle = opts.orm === "drizzle";
 		const isKysely = opts.orm === "kysely";
 		const hasOrm = isDrizzle || isKysely;
+		
+		// Resolve dialect from runtime + db
+		const resolveDialect = (runtime: string, db: string): string => {
+			if (db !== "sqlite") return db;
+			if (runtime === "cloudflare") return "d1";
+			return "sqlite"; // bun → bun:sqlite
+		};
+		
 		let ormImport = '';
 		let ormBlock = '';
 		if (isDrizzle) {
+			const dialect = resolveDialect(opts.runtime, opts.db);
 			ormImport = `import { DrizzleModule } from '@nexusts/drizzle';\n`;
-			const d = 'sqlite';
-			ormBlock = `    DrizzleModule.forRoot({\n      dialect: '${d}',\n      connection: { filename: '${opts.dbUrl || "app.db"}' },\n      logging: true,\n    })`;
+			ormBlock = `    DrizzleModule.forRoot({\n      dialect: '${dialect}',\n      connection: { filename: '${opts.dbUrl || "app.db"}' },\n      logging: true,\n    })`;
 		} else if (isKysely) {
-			ormImport = "import { KyselyModule, BunSqliteDialect } from '@nexusts/kysely';\nimport { SqliteDialect } from 'kysely';\nimport { Database } from 'bun:sqlite';\n";
-			ormBlock = `    KyselyModule.forRoot({\n      config: {\n        dialect: new SqliteDialect({\n          database: BunSqliteDialect.wrap(new Database('${opts.dbUrl || "app.db"}')),\n        }),\n      },\n      logging: true,\n    })`;
+			if (opts.runtime === "cloudflare") {
+				ormImport = "import { KyselyModule } from '@nexusts/kysely';\nimport { D1Dialect } from 'kysely-d1';";
+				ormBlock = `    KyselyModule.forRoot({\n      config: {\n        dialect: new D1Dialect({ database: process.env['D1_DATABASE'] }),\n      },\n      logging: true,\n    })`;
+			} else {
+				ormImport = "import { KyselyModule, BunSqliteDialect } from '@nexusts/kysely';\nimport { SqliteDialect } from 'kysely';\nimport { Database } from 'bun:sqlite';\n";
+				ormBlock = `    KyselyModule.forRoot({\n      config: {\n        dialect: new SqliteDialect({\n          database: BunSqliteDialect.wrap(new Database('${opts.dbUrl || "app.db"}')),\n        }),\n      },\n      logging: true,\n    })`;
+			}
 		}
 		const isInertia = opts.view === "inertia";
 		const inertiaImport = isInertia ? `import { Inertia } from '@nexusts/view';\n` : '';
