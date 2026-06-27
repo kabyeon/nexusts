@@ -17,7 +17,7 @@ Optional, depending on your target runtime:
 
 - **Bun** ≥ 1.3.10
 - **Cloudflare Wrangler** — only if deploying to Workers
-- A **Drizzle-compatible database** (postgres, mysql, sqlite, bun-sqlite, d1)
+- A **Drizzle-compatible database** (postgres, mysql, sqlite, sqlite, d1)
 
 ---
 
@@ -122,7 +122,7 @@ export default {
   routing: 'nest',
   view: 'none',
   orm: 'drizzle',
-  dialect: 'postgres',     // postgres | mysql | sqlite | bun-sqlite | d1
+  dialect: 'postgres',     // postgres | mysql | sqlite | d1
   database: {
     driver: 'postgres',
     url: process.env.DATABASE_URL ?? 'postgres://localhost/myapp',
@@ -250,7 +250,7 @@ Bun's `--hot` flag restarts the process on file change.
 | `sqlite.query is not a function` | `DrizzleService.client` isn't a raw `bun:sqlite` handle | Use Drizzle's query builder: `db.select().from(table).all()` |
 | `Decorator function return type expected` | Decorator applied to a non-method | Decorators belong on classes, methods, or parameters |
 | 404 on a route you defined (path) | Path mismatch | Check `@Controller('/users')` + `@Get('/:id')` produces `/users/:id` |
-| `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'bun-sqlite'` |
+| `'better-sqlite3' is not yet supported in Bun` | Using better-sqlite3 with Bun runtime | Switch to `dialect: 'sqlite'` |
 | Injecting into constructor parameter | Using `experimentalDecorators` without `@Inject()` | Use field injection: `@Inject(Token) declare field: Type` |
 
 > For more debugging recipes see **[debugging guide](../design/architecture.md)** — a comprehensive guide to

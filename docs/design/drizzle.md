@@ -90,7 +90,7 @@ config field:
 | `postgres` | `postgres.js` + `drizzle-orm/pg` | `postgres` | ✅ |
 | `mysql` | `mysql2` + `drizzle-orm/mysql` | `mysql2` | ⚠️ (needs Node compat) |
 | 'sqlite' | `bun:sqlite` + `drizzle-orm/sqlite` | `bun` built-in | ✅ |
-| `bun-sqlite` | `better-sqlite3` + `drizzle-orm/better-sqlite` | `better-sqlite3` | ⚠️ |
+| `sqlite` | `better-sqlite3` + `drizzle-orm/better-sqlite` | `better-sqlite3` | ⚠️ |
 | `d1` | `@cloudflare/d1` + `drizzle-orm/d1` | `@cloudflare/d1` | ❌ (Workers only) |
 
 Each driver is loaded lazily from its npm package, so unused drivers

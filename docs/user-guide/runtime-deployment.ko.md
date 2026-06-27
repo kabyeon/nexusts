@@ -270,7 +270,7 @@ NexusTS는 세 가지 GitHub Actions 워크플로우를 제공한다.
 
 | 잡 | 방언 | 서비스 컨테이너 |
 | --- | ---- | -------------- |
-| `bun-sqlite` | bun-sqlite | 없음 |
+| `sqlite` | bun:sqlite | 없음 |
 | `postgres` | postgres | postgres:16-alpine |
 | `factory` | 방언 무관 | 없음 |
 

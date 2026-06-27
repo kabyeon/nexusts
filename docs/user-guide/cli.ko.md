@@ -329,7 +329,7 @@ nx info
   routing           nest
   view              inertia
   orm               drizzle
-  database.driver   bun-sqlite
+  database.driver   sqlite
   database.url      app.db
   inertia.frontend  react
   inertia.ssr       true

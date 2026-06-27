@@ -11,7 +11,7 @@ and a SQL-injection-safe raw-query API.
 @Module({
   imports: [
     DrizzleModule.forRoot({
-      dialect: 'bun-sqlite',                 // 'postgres' | 'mysql' | 'sqlite' | 'bun-sqlite' | 'd1'
+      dialect: 'sqlite',                 // 'postgres' | 'mysql' | 'sqlite' | 'd1'
       connection: { filename: './data.db' },  // dialect-specific
       logging: true,                         // optional query logger
       autoMigrate: true,                     // run migrations on boot
@@ -35,7 +35,7 @@ class UserService {
 | `postgres` | `{ url }` or `{ host, port, user, password, database, ssl, pool }` | `postgres.js` (default) → `pg` fallback |
 | `mysql` | `{ host, port, user, password, database, pool }` | `mysql2` |
 | 'sqlite' | `{ filename, readonly? }` | `better-sqlite3` |
-| `bun-sqlite` | `{ filename }` | `bun:sqlite` (Bun built-in) |
+| `sqlite` | `{ filename }` | `bun:sqlite` (Bun built-in) |
 | `d1` | `{ binding: D1Database }` | Cloudflare D1 (Workers) |
 
 All connection driver packages are **optional peer dependencies** —
@@ -58,7 +58,7 @@ bun add better-sqlite3
 
 > **Bun 사용자 주의**: `bun:sqlite`를 강력히 권장합니다. Bun 1.3+에서
 > `better-sqlite3`는 로드 실패합니다. `bun add drizzle-orm`만 설치하고
-> `dialect: 'bun-sqlite'`로 설정하세요 (별도 driver 패키지 불필요).
+> `dialect: 'sqlite'`로 설정하세요 (별도 driver 패키지 불필요).
 
 ### Configure
 
@@ -341,8 +341,8 @@ the dialect's native form before sending:
 
 | Dialect | Native placeholder |
 | ------- | ------------------ |
-| `postgres` / `bun-sqlite` w/ postgres.js | `$1, $2, ...` |
-| `mysql` / 'sqlite' / `bun-sqlite` / `d1` | `?, ?, ...` |
+| `postgres` / `sqlite` w/ postgres.js | `$1, $2, ...` |
+| `mysql` / 'sqlite' / `sqlite` / `d1` | `?, ?, ...` |
 
 You can write portable code without thinking about it.
 

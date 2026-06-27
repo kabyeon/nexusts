@@ -199,7 +199,7 @@ app.server.router.raw('GET', '/api/users', (c) => c.json([]));
 
 ```ts
 @Module({
-  imports: [DrizzleModule.forRoot({ dialect: 'bun-sqlite', connection: { filename: 'app.db' } })],
+  imports: [DrizzleModule.forRoot({ dialect: 'sqlite', connection: { filename: 'app.db' } })],
   controllers: [UserController],
   providers: [UserService, UserRepository],
   exports: [UserService],
