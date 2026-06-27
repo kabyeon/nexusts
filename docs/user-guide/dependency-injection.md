@@ -63,7 +63,7 @@ list and resolves it lazily on first use.
 
 TypeScript can read constructor parameter types from
 `design:paramtypes` metadata — **but only** when you compile with `tsc`
-and `emitDecoratorMetadata: true`. Bun's native TypeScript transformer
+and `emitDecoratorMetadata: true` (no longer needed — removed). Bun's native TypeScript transformer
 does **not** emit that metadata.
 
 NexusTS therefore standardizes on **explicit `@Inject(Token)`** on each

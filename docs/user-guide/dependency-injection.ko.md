@@ -75,7 +75,7 @@ export class UserService {
 
 ## 2. 왜 명시적 `@Inject(...)`인가?
 
-TypeScript는 생성자 파라미터 타입을 `design:paramtypes` 메타데이터에서 읽을 수 있지만 — 이는 `tsc`로 빌드하고 `emitDecoratorMetadata: true`일 때만 가능합니다. Bun의 네이티브 TypeScript transformer는 그 메타데이터를 emit하지 **않습니다**.
+TypeScript는 생성자 파라미터 타입을 `design:paramtypes` 메타데이터에서 읽을 수 있지만 — 이는 `tsc`로 빌드하고 `emitDecoratorMetadata: true`(더 이상 불필요 — 제거됨)일 때만 가능합니다. Bun의 네이티브 TypeScript transformer는 그 메타데이터를 emit하지 **않습니다**.
 
 따라서 NexusTS는 각 파라미터의 **명시적 `@Inject(Token)`**을 표준으로 채택했습니다. 이는 `tsc`, `ts-node`, Bun, Deno 모두에서 휴대 가능하게 만듭니다.
 

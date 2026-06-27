@@ -100,8 +100,8 @@ bunx wrangler deploy
 
 - **No filesystem access at request time** — pre-bundle any templates
   or assets.
-- **`emitDecoratorMetadata` is ignored** by Cloudflare's esbuild — use
-  explicit `@Inject(...)` everywhere.
+- **`emitDecoratorMetadata` is ignored** by Cloudflare's esbuild — always
+  use explicit `@Inject(Token)` or field injection (`@Inject(Token) declare field`).
 - **Inertia SSR is edge-friendly** because the framework ships a
   pluggable adapter; pick a runtime-compatible renderer (React works
   fine; Svelte 4 with the standalone `svelte/server` is fine too).
