@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/grpc",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "description": "gRPC server + typed client (reflection-based)",
   "type": "module",
   "main": "./dist/index.js",

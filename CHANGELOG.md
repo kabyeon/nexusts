@@ -13,6 +13,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.10] — 2026-06-27
+
+### Changed
+
+- **Runtime policy**: Official support narrowed to **Bun + Cloudflare Workers**
+  only. Node.js and Deno references removed from all documentation.
+- **CLI db options**: `libsql` removed. `sqlite` is the only SQLite option
+  (maps to `bun-sqlite` dialect internally).
+- **Docs cleanup**: Removed `common-pitfalls.md`, `standard-decorators-migration.md`,
+  `testing-published-package.md`. All docs updated for Bun-native focus.
+- **Organization profile**: GitHub `.github/profile/README.md` updated to v0.9.10.
+
+### Fixed
+
+- **`@Validate` decorator**: Converted to dual-mode (standard + legacy).
+- **`@nexusts/view`**: `lazy()` helper now exported from package index.
+- **Doc links**: Fixed broken `common-pitfalls.md` references.
+
+---
+
 ## [0.9.9] — 2026-06-27
 
 ### Added

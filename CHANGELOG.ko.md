@@ -13,6 +13,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.9.10] — 2026-06-27
+
+### 변경
+
+- **런타임 정책**: **Bun + Cloudflare Workers**만 공식 지원.
+  Node.js/Deno 참조 문서에서 제거.
+- **CLI db 옵션**: `libsql` 제거. `sqlite`만 SQLite 옵션으로 유지.
+- **문서 정리**: 불필요 문서 3개 삭제. 모든 문서 Bun-native 중심으로 업데이트.
+
+### 수정
+
+- **`@Validate` 데코레이터**: 듀얼 모드 변환 완료.
+- **`@nexusts/view`**: `lazy()` 헬퍼 패키지 인덱스에서 export.
+- **문서 링크**: 깨진 `common-pitfalls.md` 참조 제거.
+
+---
+
 ## [0.9.9] — 2026-06-27
 
 ### 추가

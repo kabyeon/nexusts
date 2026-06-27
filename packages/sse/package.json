@@ -1,6 +1,6 @@
 {
   "name": "@nexusts/sse",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "description": "Server-Sent Events streaming",
   "type": "module",
   "main": "./dist/index.js",
