@@ -49,7 +49,7 @@ node dist/main.js       # 또는 bun dist/main.js
 빌드 없는 워크플로우의 경우:
 
 ```bash
-npx tsx app/main.ts
+bun run app/main.ts
 ```
 
 `tsx`와 `ts-node` 모두 `tsconfig.json`을 존중하고 `design:paramtypes`를 emit하므로 bare-type 생성자 주입이 동작합니다.

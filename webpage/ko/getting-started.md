@@ -15,7 +15,7 @@ description: NexusTS 시작하기
 새 NexusTS 프로젝트를 만드는 가장 빠른 방법:
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev

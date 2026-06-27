@@ -8,8 +8,8 @@ The official scaffolder for [NexusTS](https://github.com/nexus-ts/nexusts). Crea
 
 ```bash
 # All three forms are equivalent:
-npm create nexusts@latest my-app
-npx create-nexusts@latest my-app
+bun create nexusts@latest my-app
+bun create nexusts@latest my-app
 bunx create-nexusts@latest my-app
 ```
 
@@ -36,16 +36,16 @@ Your app will be running at `http://localhost:3000`.
 
 ```bash
 # Minimal: NestJS-style + Rendu + Drizzle + SQLite
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 
 # Inertia.js v3 + React SPA
-npm create nexusts@latest my-app --view inertia
+bun create nexusts@latest my-app --view inertia
 
 # No ORM (just an HTTP skeleton)
-npm create nexusts@latest my-app --orm none --db none
+bun create nexusts@latest my-app --orm none --db none
 
 # Functional handler style (Hono-style)
-npm create nexusts@latest my-app --style functional
+bun create nexusts@latest my-app --style functional
 ```
 
 ## What you get
@@ -65,7 +65,7 @@ my-app/
 └── README.md                  # Project-specific README
 ```
 
-Internally this runs `npx @nexusts/core init` in the new directory — you can use that command directly in an existing project to add NexusTS without losing files.
+Internally this runs `bunx @nexusts/core init` in the new directory — you can use that command directly in an existing project to add NexusTS without losing files.
 
 ## Help
 

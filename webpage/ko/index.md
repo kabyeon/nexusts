@@ -60,7 +60,7 @@ features:
 ## 빠른 시작
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev

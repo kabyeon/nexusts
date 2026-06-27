@@ -18,7 +18,7 @@
 
 ```bash
 bun add @nexusts/core
-npx @nexusts/core init
+bunx @nexusts/core init
 ```
 
 That's it. No additional dependencies required to get a working app.

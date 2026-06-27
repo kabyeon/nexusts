@@ -60,7 +60,7 @@ The framework provides a complete set of tools for building production backend s
 ## Quick Start
 
 ```bash
-npm create nexusts@latest my-app
+bun create nexusts@latest my-app
 cd my-app
 bun install
 bun run dev

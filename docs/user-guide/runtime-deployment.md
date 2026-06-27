@@ -53,7 +53,7 @@ node dist/main.js       # or bun dist/main.js
 For a build-free workflow:
 
 ```bash
-npx tsx app/main.ts
+bun run app/main.ts
 ```
 
 Both `tsx` and `ts-node` respect `tsconfig.json` and emit

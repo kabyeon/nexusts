@@ -174,17 +174,17 @@ bun install
 bun run dev
 ```
 
-Or use npm:
+Or use bun:
 
 ```bash
-npx create-nexusts my-app
+bun create nexusts my-app
 ```
 
 ### Manual setup in an existing project
 
 ```bash
 bun add @nexusts/core zod hono
-npx @nexusts/core init
+bunx @nexusts/core init
 ```
 
 Add the modules you need:
@@ -1196,7 +1196,7 @@ file for the full text.
 ### Third-party notices
 
 NexusTS depends on several open-source projects. Their licenses are
-reproduced at install time via `bun install` (and `npm install`).
+reproduced at install time via `bun install` (and `bun add`).
 Notable runtime dependencies:
 
 - **Hono** — MIT (web framework)
