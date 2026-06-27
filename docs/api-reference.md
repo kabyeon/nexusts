@@ -803,7 +803,7 @@ type DrizzleDialect = 'postgres' | 'mysql' | 'sqlite' | 'bun-sqlite' | 'd1';
 | ------- | ------ | ----------------- |
 | `postgres` | `postgres.js` (default) → `pg` fallback | `postgres` or `pg` |
 | `mysql` | `mysql2` | `mysql2` |
-| `sqlite` | `better-sqlite3` | `better-sqlite3` |
+| 'sqlite' | `better-sqlite3` | `better-sqlite3` |
 | `bun-sqlite` | `bun:sqlite` (built-in) | none (Bun only) |
 | `d1` | Cloudflare D1 binding | none (Workers only) |
 

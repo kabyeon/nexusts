@@ -37,7 +37,7 @@ For more control over the scaffolding, use the `nx` CLI directly:
 bunx nx new my-app
 
 # Create with specific options
-bunx nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 
 # Initialize in an existing directory (non-destructive)
 bunx nx init --style nest --view inertia --orm drizzle

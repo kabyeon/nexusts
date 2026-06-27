@@ -30,7 +30,7 @@ Your app will be running at `http://localhost:3000`.
 | `--style` | `nest` | Routing style: `nest`, `adonis`, `functional` |
 | `--view` | `rendu` | View engine: `rendu`, `edge`, `eta`, `inertia`, `none` |
 | `--orm` | `drizzle` | ORM: `drizzle`, `prisma`, `kysely`, `none` |
-| `--db` | `bun-sqlite` | Database: `bun-sqlite`, `postgres`, `mysql`, `none` |
+| `--db` | `sqlite` | Database: `sqlite`, `postgres`, `mysql`, `none` |
 
 ### Examples
 

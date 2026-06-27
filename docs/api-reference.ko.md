@@ -373,7 +373,7 @@ class CloudflareRuntime{ fetch: (req: Request, env?: any, ctx?: any) => Promise<
 ```ts
 interface DrizzleAdapterConfig {
   schema: Record<string, any>;
-  driver: 'bun-sqlite' | 'libsql' | 'postgres' | 'mysql';
+  driver: 'sqlite' | 'postgres' | 'mysql';
 }
 
 class DrizzleAdapter {

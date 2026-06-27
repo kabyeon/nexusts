@@ -67,7 +67,7 @@ bun run dev
 
 ```bash
 # Or use the CLI directly:
-bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 ## Architecture

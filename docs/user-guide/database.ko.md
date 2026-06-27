@@ -11,7 +11,7 @@
 
 ```bash
 # 1. Drizzle + SQLite로 새 프로젝트 스캐폴딩
-nx init --orm drizzle --db bun-sqlite
+nx init --orm drizzle --db sqlite
 
 # 2. 스키마 수정
 #    app/models/user.model.ts

@@ -19,7 +19,7 @@ Choose **[Kysely](./kysely.md)** for SQL-first development with maximum type saf
 
 ```bash
 # 1. Scaffold a new project with Drizzle + SQLite
-nx init --orm drizzle --db bun-sqlite
+nx init --orm drizzle --db sqlite
 
 # 2. Edit your schema
 #    app/models/user.model.ts

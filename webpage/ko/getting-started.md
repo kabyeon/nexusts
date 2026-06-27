@@ -37,7 +37,7 @@ bun run dev
 bunx nx new my-app
 
 # 특정 옵션으로 생성
-bunx nx new my-app --style nest --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --style nest --view inertia --orm drizzle --db sqlite --frontend react
 
 # 기존 디렉토리에 초기화 (비파괴적)
 bunx nx init --style nest --view inertia --orm drizzle

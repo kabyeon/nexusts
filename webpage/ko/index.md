@@ -68,7 +68,7 @@ bun run dev
 
 ```bash
 # 또는 CLI 직접 사용:
-bunx nx new my-app --view inertia --orm drizzle --db bun-sqlite --frontend react
+bunx nx new my-app --view inertia --orm drizzle --db sqlite --frontend react
 ```
 
 ## 아키텍처

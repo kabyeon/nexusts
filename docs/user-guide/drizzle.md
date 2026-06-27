@@ -34,7 +34,7 @@ class UserService {
 | ------- | ----------------- | ------ |
 | `postgres` | `{ url }` or `{ host, port, user, password, database, ssl, pool }` | `postgres.js` (default) → `pg` fallback |
 | `mysql` | `{ host, port, user, password, database, pool }` | `mysql2` |
-| `sqlite` | `{ filename, readonly? }` | `better-sqlite3` |
+| 'sqlite' | `{ filename, readonly? }` | `better-sqlite3` |
 | `bun-sqlite` | `{ filename }` | `bun:sqlite` (Bun built-in) |
 | `d1` | `{ binding: D1Database }` | Cloudflare D1 (Workers) |
 
@@ -342,7 +342,7 @@ the dialect's native form before sending:
 | Dialect | Native placeholder |
 | ------- | ------------------ |
 | `postgres` / `bun-sqlite` w/ postgres.js | `$1, $2, ...` |
-| `mysql` / `sqlite` / `bun-sqlite` / `d1` | `?, ?, ...` |
+| `mysql` / 'sqlite' / `bun-sqlite` / `d1` | `?, ?, ...` |
 
 You can write portable code without thinking about it.
 

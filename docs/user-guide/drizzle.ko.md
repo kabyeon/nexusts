@@ -34,7 +34,7 @@ class UserService {
 | ------- | ----------------- | ------ |
 | `postgres` | `{ url }` 또는 `{ host, port, user, password, database, ssl, pool }` | `postgres.js` (기본) → `pg` fallback |
 | `mysql` | `{ host, port, user, password, database, pool }` | `mysql2` |
-| `sqlite` | `{ filename, readonly? }` | `better-sqlite3` |
+| 'sqlite' | `{ filename, readonly? }` | `better-sqlite3` |
 | `bun-sqlite` | `{ filename }` | `bun:sqlite` (Bun 내장) |
 | `d1` | `{ binding: D1Database }` | Cloudflare D1 (Workers) |
 
@@ -309,7 +309,7 @@ dialect의 native 형식으로 변환한 후 전송한다:
 | Dialect | Native placeholder |
 | ------- | ------------------ |
 | `postgres` / `bun-sqlite` w/ postgres.js | `$1, $2, ...` |
-| `mysql` / `sqlite` / `bun-sqlite` / `d1` | `?, ?, ...` |
+| `mysql` / 'sqlite' / `bun-sqlite` / `d1` | `?, ?, ...` |
 
 신경 쓰지 않고 portable 코드를 작성할 수 있다.
 
