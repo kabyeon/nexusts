@@ -18,7 +18,7 @@ export type OrmDriver = "drizzle" | "kysely" | "none";
 export type InertiaFrontend = "react" | "vue" | "svelte" | "solid";
 export type DatabaseDriver =
 	| "bun-sqlite"
-	| "node-sqlite"
+	| "sqlite"
 	| "libsql"
 	| "postgres"
 	| "mysql"
@@ -233,7 +233,7 @@ export async function loadConfig(
 	assertEnum("orm", merged.orm, ["drizzle", "kysely", "none"]);
 	assertEnum("database.driver", merged.database.driver, [
 		"bun-sqlite",
-		"node-sqlite",
+		"sqlite",
 		"libsql",
 		"postgres",
 		"mysql",

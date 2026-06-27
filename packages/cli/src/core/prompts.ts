@@ -87,7 +87,7 @@ export const VALID_PROJECT_OPTIONS = {
 	style: ["nest", "adonis", "functional"] as const,
 	view: ["rendu", "edge", "eta", "inertia", "none"] as const,
 	orm: ["drizzle", "kysely", "none"] as const,
-	db: ["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"] as const,
+	db: ["bun-sqlite", "sqlite", "libsql", "postgres", "mysql", "none"] as const,
 	frontend: ["react", "vue", "svelte", "solid"] as const,
 } as const;
 

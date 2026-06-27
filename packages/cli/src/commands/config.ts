@@ -109,7 +109,7 @@ function parseExistingConfig(path: string): NxConfigValues {
 function driverToDialect(driver: string): string {
 	switch (driver) {
 		case "bun-sqlite":
-		case "node-sqlite":
+		case "sqlite":
 		case "libsql":
 			return "sqlite";
 		case "postgres":
@@ -123,7 +123,7 @@ function driverToDialect(driver: string): string {
 
 /** Default DATABASE_URL fallback based on the driver. */
 function defaultDbUrl(driver: string): string {
-	if (driver === "bun-sqlite" || driver === "node-sqlite" || driver === "libsql") {
+	if (driver === "bun-sqlite" || driver === "sqlite" || driver === "libsql") {
 		return "app.db";
 	}
 	return "";
@@ -157,7 +157,7 @@ export const configCommand: Command = {
 		{
 			name: "db",
 			description:
-				"Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)",
+				"Database driver (bun-sqlite|sqlite|libsql|postgres|mysql|none)",
 		},
 		{
 			name: "db-url",
@@ -236,7 +236,7 @@ export const configCommand: Command = {
 			values.dbDriver =
 				(await select(
 					"Database driver",
-					["bun-sqlite", "node-sqlite", "libsql", "postgres", "mysql", "none"],
+					["bun-sqlite", "sqlite", "libsql", "postgres", "mysql", "none"],
 					{ interactive, default: values.dbDriver },
 				)) ?? values.dbDriver;
 			values.inertiaFrontend =

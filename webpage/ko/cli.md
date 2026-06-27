@@ -41,7 +41,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 | `--style` | 라우팅 스타일: `nest` / `adonis` / `functional` |
 | `--view` | 뷰 엔진: `rendu` / `edge` / `eta` / `inertia` / `none` |
 | `--orm` | ORM 드라이버: `drizzle` / `kysely` / `none` |
-| `--db` | 데이터베이스: `bun-sqlite` / `node-sqlite` / `libsql` / `postgres` / `mysql` / `none` |
+| `--db` | 데이터베이스: `bun-sqlite` / `sqlite` / `libsql` / `postgres` / `mysql` / `none` |
 | `--frontend` | Inertia 프론트엔드: `react` / `vue` / `svelte` / `solid` |
 | `--no-ssr` | Inertia SSR 비활성화 |
 | `--force` | 기존 파일 덮어쓰기 |

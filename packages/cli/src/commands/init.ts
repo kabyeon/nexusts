@@ -16,7 +16,7 @@
  *   --style <name>    Routing style (nest|adonis|functional)
  *   --view <name>     View engine (rendu|edge|eta|inertia|none)
  *   --orm <name>      ORM driver (drizzle|kysely|none)
- *   --db <name>       Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)
+ *   --db <name>       Database driver (bun-sqlite|sqlite|libsql|postgres|mysql|none)
  *   --frontend <name> Inertia frontend (react|vue|svelte|solid)
  *   --no-ssr          Disable Inertia SSR
  *   --force           Overwrite existing files
@@ -54,7 +54,7 @@ export const initCommand: Command = {
 		{ name: "style", description: "Routing style (nest|adonis|functional)" },
 		{ name: "view", description: "View engine (rendu|edge|eta|inertia|none)" },
 		{ name: "orm", description: "ORM driver (drizzle|kysely|none)" },
-		{ name: "db", description: "Database driver (bun-sqlite|node-sqlite|libsql|postgres|mysql|none)" },
+		{ name: "db", description: "Database driver (bun-sqlite|sqlite|libsql|postgres|mysql|none)" },
 		{
 			name: "frontend",
 			description: "Inertia frontend (react|vue|svelte|solid)",
@@ -78,7 +78,7 @@ export const initCommand: Command = {
 		const frontend = await resolveProjectOption(ctx.flags, "frontend", VALID_PROJECT_OPTIONS.frontend, "react", interactive);
 		const ssr = !flagBool(ctx.flags, "no-ssr", false);
 		const name = target.split("/").pop() ?? "nexus-app";
-		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
+		const dbUrl = db === "bun-sqlite" || db === "sqlite" ? "app.db" : "";
 
 		const plan: PlanEntry[] = [
 			{ path: "package.json", mode: "merge-pkg" },

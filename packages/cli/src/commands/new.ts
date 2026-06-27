@@ -56,7 +56,7 @@ export const newCommand: Command = {
 
 		mkdirSync(target, { recursive: true });
 
-		const dbUrl = db === "bun-sqlite" || db === "node-sqlite" ? "app.db" : "";
+		const dbUrl = db === "bun-sqlite" || db === "sqlite" ? "app.db" : "";
 
 		ensureDirectories(target, view);
 

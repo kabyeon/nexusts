@@ -62,7 +62,7 @@ export function computeDeps(
 		deps["drizzle-orm"] = "^0.45.0";
 		if (db === "postgres") deps.pg = "^8.13.0";
 		if (db === "mysql") deps.mysql2 = "^3.11.0";
-		if (db === "sqlite" || db === "node-sqlite" || db === "bun-sqlite") deps["better-sqlite3"] = "^12.0.0";
+		if (db === "sqlite" || db === "sqlite" || db === "bun-sqlite") deps["better-sqlite3"] = "^12.0.0";
 		devDeps["drizzle-kit"] = "^0.31.0";
 	}
 	if (orm === "kysely") {
@@ -144,8 +144,8 @@ export function generateNxConfig(target: string, opts: ScaffoldOptions): void {
  * Generate a drizzle.config.ts file (only when ORM is drizzle).
  */
 export function generateDrizzleConfig(target: string, db: string, dbUrl: string): void {
-	if (db !== "bun-sqlite" && db !== "node-sqlite" && db !== "libsql" && db !== "postgres" && db !== "mysql") return;
-	const dialect = db === "bun-sqlite" || db === "node-sqlite" || db === "libsql"
+	if (db !== "bun-sqlite" && db !== "sqlite" && db !== "libsql" && db !== "postgres" && db !== "mysql") return;
+	const dialect = db === "bun-sqlite" || db === "sqlite" || db === "libsql"
 		? "sqlite"
 		: db === "postgres"
 			? "postgresql"

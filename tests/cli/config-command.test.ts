@@ -153,7 +153,7 @@ describe("nx config — drizzle dialect mapping", () => {
 
 	const cases: Array<[string, string]> = [
 		["bun-sqlite", "sqlite"],
-		["node-sqlite", "sqlite"],
+		["sqlite", "sqlite"],
 		["libsql", "sqlite"],
 		["postgres", "postgresql"],
 		["mysql", "mysql"],

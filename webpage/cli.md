@@ -41,7 +41,7 @@ nx init --style nest --view inertia --orm drizzle --db bun-sqlite --frontend rea
 | `--style` | Routing style: `nest` / `adonis` / `functional` |
 | `--view` | View engine: `rendu` / `edge` / `eta` / `inertia` / `none` |
 | `--orm` | ORM driver: `drizzle` / `kysely` / `none` |
-| `--db` | Database: `bun-sqlite` / `node-sqlite` / `libsql` / `postgres` / `mysql` / `none` |
+| `--db` | Database: `bun-sqlite` / `sqlite` / `libsql` / `postgres` / `mysql` / `none` |
 | `--frontend` | Inertia frontend: `react` / `vue` / `svelte` / `solid` |
 | `--no-ssr` | Disable Inertia SSR |
 | `--force` | Overwrite existing files |
