@@ -72,7 +72,7 @@ export const initCommand: Command = {
 			ctx.cwd,
 			(ctx.flags.target as string | undefined) ?? ".",
 		);
-		await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
+		const runtime = await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
@@ -149,7 +149,7 @@ export const initCommand: Command = {
 		}
 
 		// Generate remaining project files via scaffold
-		const scaffoldOpts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const scaffoldOpts = { target, name, runtime, routing, view, orm, db, frontend, ssr, dbUrl };
 		const scaffoldFiles = generateProjectFiles(target, scaffoldOpts);
 		for (const f of scaffoldFiles) {
 			if (!plan.some((p) => p.path === f)) {

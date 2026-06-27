@@ -48,8 +48,7 @@ export const newCommand: Command = {
 			return 1;
 		}
 
-		// Resolve runtime (reserved for future driver mapping)
-		await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
+		const runtime = await resolveProjectOption(ctx.flags, "runtime", VALID_PROJECT_OPTIONS.runtime, "bun", interactive);
 		const routing = await resolveProjectOption(ctx.flags, "style", VALID_PROJECT_OPTIONS.style, "nest", interactive);
 		const view = await resolveProjectOption(ctx.flags, "view", VALID_PROJECT_OPTIONS.view, "rendu", interactive);
 		const orm = await resolveProjectOption(ctx.flags, "orm", VALID_PROJECT_OPTIONS.orm, "drizzle", interactive);
@@ -84,7 +83,7 @@ export const newCommand: Command = {
 		const pkgJson = buildPackageJson(name, deps, devDeps, view, frontend);
 		writeFileSync(resolve(target, "package.json"), `${JSON.stringify(pkgJson, null, 2)}\n`);
 
-		const opts = { target, name, routing, view, orm, db, frontend, ssr, dbUrl };
+		const opts = { target, name, runtime, routing, view, orm, db, frontend, ssr, dbUrl };
 		const files = generateProjectFiles(target, opts);
 
 		logger.success(`created ${name}`);
