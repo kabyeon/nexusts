@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { DrizzleService, RawQuery } from "../../src/drizzle/index.js";
+import { DrizzleService, RawQuery } from "@nexusts/drizzle";
 
 let hasBunSqlite = false;
 let hasBetterSqlite3 = false;
