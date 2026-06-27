@@ -68,7 +68,6 @@ const EXAMPLE_TSCONFIG = {
 		module: "ESNext",
 		moduleResolution: "Bundler",
 		lib: ["ES2022", "DOM"],
-		experimentalDecorators: true,
 		useDefineForClassFields: false,
 		esModuleInterop: true,
 		skipLibCheck: true,

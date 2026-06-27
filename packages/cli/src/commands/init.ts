@@ -129,7 +129,6 @@ export const initCommand: Command = {
 			if (entry.mode === "merge-tsconfig") {
 				if (exists) {
 					mergeTsconfig(abs, {
-						experimentalDecorators: true,
 					});
 					merged.push(entry.path);
 				} else {

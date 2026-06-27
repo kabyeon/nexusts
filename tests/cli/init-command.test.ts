@@ -136,9 +136,8 @@ describe("nx init — fresh install", () => {
 		expect(pkg.dependencies["@nexusts/core"]).toBe("*");
 		expect(pkg.name).toBe("my-app"); // existing name preserved
 
-		// tsconfig.json: experimentalDecorators added
+		// tsconfig.json: no experimentalDecorators
 		const ts = JSON.parse(await readFile(join(target, "tsconfig.json"), "utf8"));
-		expect(ts.compilerOptions.experimentalDecorators).toBe(true);
 		expect(ts.include).toContain("app/**/*.ts");
 		expect(ts.include).toContain("nx.config.ts");
 	});

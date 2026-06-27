@@ -39,7 +39,6 @@ bun add -d @types/bun typescript vitest
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -51,7 +50,6 @@ bun add -d @types/bun typescript vitest
 
 | 플래그 | 필수? | 이유 |
 | ---- | --------- | --- |
-| `experimentalDecorators` | 예 | `@Controller`, `@Inject` 등을 활성화 |
 | `moduleResolution: "bundler"` | 권장 | Bun + ESM에 대한 최선의 지원 |
 | `strict` | 권장 | 표준 TS 위생 |
 

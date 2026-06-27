@@ -53,7 +53,6 @@ bun add @nexusts/queue              # if you need background jobs
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "experimentalDecorators": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -65,8 +64,6 @@ bun add @nexusts/queue              # if you need background jobs
 
 | Flag | Required? | Why |
 | ---- | --------- | --- |
-| `experimentalDecorators` | yes | Enables `@Controller`, `@Inject`, etc. |
-| `emitDecoratorMetadata` | not needed | Ignored by Bun — safe to remove |
 | `moduleResolution: "bundler"` | recommended | Best support for Bun + ESM |
 | `strict` | recommended | Standard TS hygiene |
 
