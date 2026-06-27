@@ -140,7 +140,7 @@ export class DIContainer {
 	private readClassDependencies(cls: Type<any>): Set<InjectionToken<any>> {
 		const set = new Set<InjectionToken<any>>();
 
-		// Legacy: design:paramtypes (requires emitDecoratorMetadata).
+		// Legacy: design:paramtypes (tsc-only; Bun doesn't emit it).
 		const paramTypes: any[] =
 			safeGetMeta(METADATA_KEY.PARAMTYPES, cls) || [];
 		for (const t of paramTypes) {
