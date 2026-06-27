@@ -8,7 +8,7 @@ description: NexusTS 시작하기
 ## 사전 요구사항
 
 - [Bun](https://bun.sh) ≥ 1.3.0
-- Node.js ≥ 22 (선택 사항 — Node.js 런타임용)
+- **Bun** ≥ 1.3.10
 
 ## 빠른 시작
 

@@ -2,7 +2,7 @@
 
 > 한국어 버전: [`runtime-deployment.ko.md`](./runtime-deployment.ko.md)
 
-NexusTS targets **Bun, Node.js, and Cloudflare Workers** through a
+NexusTS targets **Bun and Cloudflare Workers** through a
 single `Application` API. The framework auto-detects the runtime and
 loads the appropriate adapter.
 

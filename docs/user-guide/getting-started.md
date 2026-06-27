@@ -15,7 +15,7 @@ about five minutes.
 
 Optional, depending on your target runtime:
 
-- **Node.js** ≥ 22 (only if not using Bun)
+- **Bun** ≥ 1.3.10
 - **Cloudflare Wrangler** — only if deploying to Workers
 - A **Drizzle-compatible database** (postgres, mysql, sqlite, bun-sqlite, d1)
 
