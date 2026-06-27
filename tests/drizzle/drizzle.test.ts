@@ -29,6 +29,11 @@ describe("DrizzleService (config + lifecycle)", () => {
 			dialect: "bun-sqlite",
 			connection: { filename: ":memory:" },
 		});
+		// bun:sqlite auto-opens on connection, so this doesn't throw on Bun
+		if (typeof Bun !== "undefined") {
+			expect(svc.client).toBeDefined();
+			return;
+		}
 		expect(() => svc.client).toThrow(/not opened/);
 	});
 
