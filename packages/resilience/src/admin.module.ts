@@ -23,8 +23,9 @@
  * module resolves `ResilienceService.TOKEN` through the shared DI parent
  * container that both modules register into.
  */
-import { Controller, Get, Post, Param, Inject, Module } from "@nexusts/core";
+import { Controller, Get, Post, Module, Inject } from "@nexusts/core";
 import { ResilienceService } from "./resilience.service.js";
+import type { Context } from "hono";
 
 export interface ResilienceAdminConfig {
 	/** Route prefix. Default: `"/resilience"`. */
@@ -50,7 +51,8 @@ export class ResilienceAdminModule {
 			}
 
 			@Post("/circuits/:name/force-open")
-			forceOpen(@Param("name") name: string) {
+			forceOpen(ctx: Context) {
+				const name = ctx.req.param("name") ?? "";
 				const cb = this._svc.getCircuit(name);
 				if (!cb) {
 					return { status: 404, body: { error: `Circuit "${name}" not found` } };
@@ -60,7 +62,8 @@ export class ResilienceAdminModule {
 			}
 
 			@Post("/circuits/:name/force-close")
-			forceClose(@Param("name") name: string) {
+			forceClose(ctx: Context) {
+				const name = ctx.req.param("name") ?? "";
 				const cb = this._svc.getCircuit(name);
 				if (!cb) {
 					return { status: 404, body: { error: `Circuit "${name}" not found` } };
@@ -70,7 +73,8 @@ export class ResilienceAdminModule {
 			}
 
 			@Post("/circuits/:name/reset")
-			reset(@Param("name") name: string) {
+			reset(ctx: Context) {
+				const name = ctx.req.param("name") ?? "";
 				const cb = this._svc.getCircuit(name);
 				if (!cb) {
 					return { status: 404, body: { error: `Circuit "${name}" not found` } };

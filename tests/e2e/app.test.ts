@@ -11,7 +11,6 @@ import { Application } from '@core/application';
 import { Module } from '@core/decorators/module';
 import { Controller } from '@core/decorators/controller';
 import { Get, Post, Delete } from '@core/decorators/http-methods';
-import { Body, Param } from '@core/decorators/params';
 import { Injectable, Inject } from '@core/decorators/injectable';
 import { Validate } from '@core/decorators/validate';
 
@@ -50,13 +49,14 @@ class EchoController {
   @Validate({
     body: z.object({ message: z.string().min(1) }),
   })
-  echo(@Body() body: { message: string }) {
+  async echo(ctx: any) {
+    const body = await ctx.req.json();
     return { received: body.message, at: new Date().toISOString() };
   }
 
   @Delete('/:id')
-  del(@Param('id') id: string) {
-    return { removed: id };
+  del(ctx: any) {
+    return { removed: ctx.req.param('id') };
   }
 }
 
