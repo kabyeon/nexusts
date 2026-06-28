@@ -42,8 +42,7 @@ function buildArgs(
 }
 
 function makeOperationDecorator(kind: OperationKind) {
-	return function (name?: string, opts?: OperationOptions) {
-		return (...args: any[]): void => {
+	return (name?: string, opts?: OperationOptions) => (...args: any[]): void => {
 			// ── Standard decorator mode (TC39) ──
 			if (args.length >= 2 && args[1]?.kind === "method") {
 				const [_target, context] = args as [object, DecoratorContext];
@@ -73,7 +72,6 @@ function makeOperationDecorator(kind: OperationKind) {
 				args: buildArgs(argsMeta, opts?.args),
 			});
 		};
-	};
 }
 
 export const Query = makeOperationDecorator("query");

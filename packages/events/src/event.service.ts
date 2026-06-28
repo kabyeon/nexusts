@@ -10,7 +10,6 @@
 import { Inject, Injectable } from '@nexusts/core';
 import {
 	NexusEventEmitter,
-	compilePattern,
 } from './emitter.js';
 import type {
 	EventEmitter,
@@ -19,7 +18,6 @@ import type {
 	EmitResult,
 	ListenerOptions,
 	EventsConfig,
-	EmitterEvent,
 	EmitterEventListener,
 } from './types.js';
 
@@ -85,21 +83,5 @@ export class EventService {
 			return internal.onEmitterEvent(listener);
 		}
 		return () => {};
-	}
-
-	// ===========================================================================
-	// Internal
-	// ===========================================================================
-
-	#bridgeEmitterEvents(): void {
-		// Forward emitter events through our public EventService — useful
-		// for testing / debugging.
-		const internal = this.emitter as NexusEventEmitter;
-		if (typeof internal.onEmitterEvent === 'function') {
-			internal.onEmitterEvent((event: EmitterEvent) => {
-				// Reserved for future log/metric integration.
-				void event;
-			});
-		}
 	}
 }

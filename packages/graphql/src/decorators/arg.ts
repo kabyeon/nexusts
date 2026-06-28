@@ -1,21 +1,5 @@
-/**
- * `@Arg(name, type?)` parameter decorator.
- *
- * Declares a method parameter as a GraphQL field argument. Used on
- * resolver methods marked with `@Query`/`@Mutation`/`@Subscription`.
- *
- *   @Mutation()
- *   updateProfile(
- *     @Arg("name") name: string,
- *     @Arg("email", "String!") email: string,
- *   ) { ... }
- *
- * The optional `type` argument is the SDL type (e.g. `"String!"`,
- * `"Int"`, `"[User!]!"`). When omitted, the framework uses `"String"`
- * as a safe default — explicit is better than implicit.
- */
-import { pushResolverField, getResolverTypeName } from "./resolver.js";
-import { safeGetMeta, safeDefineMeta, safeHasMeta } from "@nexusts/core/di/safe-reflect";
+
+import { safeGetMeta, safeDefineMeta, } from "@nexusts/core/di/safe-reflect";
 
 const ARGS_KEY = Symbol.for("nexus:GraphQL:MethodArgs");
 

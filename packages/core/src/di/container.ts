@@ -12,7 +12,7 @@
  *   container for global providers. Exports propagate tokens upward.
  * - The container is lazy: nothing is instantiated until first resolve.
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "./safe-reflect.js";
+import { safeGetMeta, } from "./safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import {
 	getScope as getScopeStandard,

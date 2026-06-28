@@ -25,9 +25,6 @@ import { formatTimestamp, inferTableName, logger, nameVariants, render, writeFil
 import { templates } from "../templates/index.js";
 import {
 	isValidDialect,
-	mapDrizzleType,
-	mapKyselyType,
-	mapSqlType,
 	renderDrizzleColumns,
 	renderDrizzleDialect,
 	renderKyselyColumns,

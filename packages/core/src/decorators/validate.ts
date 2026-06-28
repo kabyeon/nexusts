@@ -14,7 +14,7 @@
  * create(@Body() body: z.infer<typeof UserSchema>) { ... }
  * ```
  */
-import { safeGetMeta, safeDefineMeta, safeHasMeta, safeParamTypes } from "../di/safe-reflect.js";
+import { safeGetMeta, safeDefineMeta, } from "../di/safe-reflect.js";
 import { METADATA_KEY } from "../constants.js";
 import type { ValidationMetadata } from "../di/tokens.js";
 

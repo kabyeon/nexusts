@@ -27,7 +27,7 @@
 
 import { Module } from "@nexusts/core";
 import { createRedisClient } from "./adapters/index.js";
-import type { RedisClient, RedisConfig } from "./types.js";
+import type { RedisConfig } from "./types.js";
 
 export const REDIS_CLIENT_TOKEN = Symbol.for("nexus:RedisClient");
 
