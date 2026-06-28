@@ -197,10 +197,10 @@ export class ResilienceService {
 				raw = initialDelay * attempt;
 				break;
 			case "exponential":
-				raw = initialDelay * Math.pow(multiplier, attempt - 1);
+				raw = initialDelay * multiplier ** (attempt - 1);
 				break;
 			case "exponential-jitter":
-				raw = Math.random() * initialDelay * Math.pow(multiplier, attempt - 1);
+				raw = Math.random() * initialDelay * multiplier ** (attempt - 1);
 				break;
 		}
 		return Math.min(raw, maxDelay);

@@ -39,7 +39,7 @@ interface GatewayMetadata {
  *   class ChatGateway { ... }
  */
 export function WebSocketGateway(path: string): ClassDecorator {
-	return function (target: any, context?: any): void {
+	return (target: any, context?: any): void => {
 		// Standard decorator mode (TC39 stage-3)
 		if (context?.kind === "class") {
 			const proto = target.prototype;
@@ -79,11 +79,11 @@ export function getGatewayPath(target: object): string | undefined {
  * ------------------------------------------------------------------ */
 
 function makeLifecycleDecorator(lifecycle: WsLifecycle) {
-	return function (
+	return (
 		_target: object,
 		propertyKey: string | symbol,
 		descriptorOrContext?: PropertyDescriptor | any,
-	): any {
+	): any => {
 		// Standard decorator mode (TC39 stage-3) — context is second arg
 		if (propertyKey && typeof propertyKey === "object" && (propertyKey as any)?.kind === "method") {
 			const ctx = propertyKey as any;

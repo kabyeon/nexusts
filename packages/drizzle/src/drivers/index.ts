@@ -8,7 +8,6 @@ import { postgresDriver } from "./postgres.js";
 import { mysqlDriver } from "./mysql.js";
 import { bunSqliteDriver } from "./bun-sqlite.js";
 import { d1Driver } from "./d1.js";
-import { sqliteDriver } from "./sqlite.js";
 
 export { postgresDriver } from "./postgres.js";
 export { mysqlDriver } from "./mysql.js";

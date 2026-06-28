@@ -57,10 +57,6 @@ export class AuthService {
 	 */
 	#sessionService: SessionService | null = null;
 
-	constructor() {
-		// No constructor logic — DI sets @Inject fields before first use.
-	}
-
 	// ===========================================================================
 	// Session integration
 	// ===========================================================================
