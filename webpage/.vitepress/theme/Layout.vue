@@ -12,12 +12,13 @@ import DefaultTheme from 'vitepress/theme';
 <style>
 .experimental-banner {
   position: fixed;
-  top: 18px;
-  right: -32px;
+  top: 24px;
+  right: -44px;
   z-index: 9999;
+  width: 160px;
+  text-align: center;
   transform: rotate(45deg);
-  transform-origin: center;
-  padding: 2px 40px;
+  padding: 3px 0;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;
